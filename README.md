@@ -1,11 +1,17 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repository is in bitbucket being used for free and as such it has a maximum of 5 users. I only see it being used at most by 3 users.
 
 ### What is this repository for? ###
 
 * Quick summary
+
+  It hold the current sources for the port from COBOL application CTOS to running as GNUCobol applications on LINUX.
+
 * Version
+ 
+  Initial
+
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
