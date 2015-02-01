@@ -1,0 +1,6 @@
+           SELECT STCAT-MASTER ASSIGN TO Ws-StCatalogue
+               ORGANIZATION IS INDEXED
+               LOCK MANUAL
+               ACCESS MODE IS DYNAMIC
+               FILE STATUS IS WS-STCAT-STATUS
+               RECORD KEY IS STCAT-KEY.

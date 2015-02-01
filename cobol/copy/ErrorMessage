@@ -1,0 +1,50 @@
+      *
+       ERROR-MESSAGE SECTION.
+       ERROR-000.
+      *      PERFORM CENTRE-MESSAGE-INFO.
+             
+             MOVE 3001 TO POS.
+             DISPLAY "                                      " AT POS.
+             DISPLAY WS-MESSAGE AT 3001
+              WITH reverse-video BLINK
+                BELL FOREGROUND-COLOR IS 4.
+      *      CALL "C$SLEEP" USING 1.
+       ERROR-010.
+             CALL "LOCKKBD" USING F-ERROR1.
+       ERROR-020.
+             MOVE SPACES TO WS-MESSAGE.
+             DISPLAY WS-MESSAGE AT 3001.
+       ERROR-999.
+             EXIT.
+      *
+       CENTRE-MESSAGE-INFO SECTION.
+       CMI-000.
+             MOVE SPACES TO ALPHA-RATE DATA-RATE.
+             MOVE WS-MESSAGE TO ALPHA-RATE.
+             MOVE 79 TO SUB-30
+             MOVE 0  TO SUB-35.
+       CMI-010.
+             IF SUB-30 < 1
+                MOVE 1 TO SUB-30
+                GO TO  CMI-050.
+             IF AL-RATE (SUB-30) = " "
+                SUBTRACT 1 FROM SUB-30
+                ADD 1 TO SUB-35
+                GO TO CMI-010.
+       CMI-020.
+             COMPUTE SUB-5 = SUB-35 / 2.
+       CMI-030.
+             MOVE 1     TO SUB-30
+             MOVE SUB-5 TO SUB-3.
+       CMI-035.
+             MOVE AL-RATE (SUB-30) TO DAT-RATE (SUB-3)
+             IF SUB-3 < 79
+                 ADD 1 TO SUB-30 SUB-3
+                 GO TO CMI-035.
+       CMI-050.
+             MOVE DATA-RATE TO WS-MESSAGE.
+       CMI-999.
+             EXIT.
+      *
+       Copy "Error5Message".
+      *
