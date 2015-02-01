@@ -1,0 +1,79 @@
+project (source_main)
+
+set (STANDARD_FRONT ${CMAKE_CURRENT_SOURCE_DIR})
+
+if (UNIX)
+  exec_program (uname OUTPUT_VARIABLE SYSTEM_NAME)
+  set (SYSTEM_NAME "${SYSTEM_NAME}" CACHE INTERNAL "")
+  message (STATUS "SYSTEM_NAME")
+  if (SYSTEM_NAME STREQUAL "Linux")
+    set (LINUX ON)
+   elseif (SYSTEM_NAME STREQUAL "FreeBSD")
+    set (FREEBSD ON)
+   endif ()
+endif ()
+
+if (LINUX)
+  set (switches
+    " -g -fPIC -Wno-write-strings"
+    )
+  list (APPEND CMAKE_C_FLAGS "${switches}")
+  list (APPEND CMAKE_CXX_FLAGS "${switches}")
+  string (REPLACE ";" " " CMAKE_C_FLAGS   ${CMAKE_C_FLAGS})
+  string (REPLACE ";" " " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+  set (switches
+    " -pthread"
+    )
+  list (APPEND CMAKE_EXE_LINKER_FLAGS "${switches}")
+  list (APPEND CMAKE_MODULE_LINKER_FLAGS "${switches}")
+  list (APPEND CMAKE_SHARED_LINKER_FLAGS "${switches}")
+  string (REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS    ${CMAKE_EXE_LINKER_FLAGS})
+  string (REPLACE ";" " " CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS})
+  string (REPLACE ";" " " CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS})
+endif ()
+
+if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+  message(FATAL_ERROR "Running CMake in the Source directory is disallowed.")
+endif ()
+
+set (TOOLS_DIR ${CMAKE_SOURCE_DIR}/tools)
+
+set (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
+set (LIBRARY_OUTPUT_PATH    "${CMAKE_BINARY_DIR}/lib")
+set (CMAKE_INSTALL_PREFIX   "${CMAKE_BINARY_DIR}/install" CACHE FILEPATH "Install path prefix, prepended onto install directories")
+
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+
+if (LINUX)
+  add_definitions(-DHAVE_MEMMOVE -DXML_STATIC -D_H_MACROS)
+endif ()
+
+set (CTOS_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+set (CTOS_BINARY_DIR ${CMAKE_BINARY_DIR})
+
+set (COBOL_C_OUTPUT  
+  ${CMAKE_BINARY_DIR}/cobol/OPENFILE.o
+  ${CMAKE_BINARY_DIR}/cobol/OPENFORM.o
+  ${CMAKE_BINARY_DIR}/cobol/CLOSEFORM.o
+  ${CMAKE_BINARY_DIR}/cobol/CLOSEFILE.o
+  ${CMAKE_BINARY_DIR}/cobol/DEFAULTFIELD.o
+  ${CMAKE_BINARY_DIR}/cobol/DEFAULTFORM.o
+  ${CMAKE_BINARY_DIR}/cobol/DISPLAYFORM.o
+  ${CMAKE_BINARY_DIR}/cobol/GETFIELDINFO.o
+  ${CMAKE_BINARY_DIR}/cobol/LOCKKBD.o
+  ${CMAKE_BINARY_DIR}/cobol/READFIELD.o
+  ${CMAKE_BINARY_DIR}/cobol/SETFIELDATTRS.o
+  ${CMAKE_BINARY_DIR}/cobol/UNDISPLAYFORM.o
+  ${CMAKE_BINARY_DIR}/cobol/USERFILLFIELD.o
+  ${CMAKE_BINARY_DIR}/cobol/WRITEFIELD.o
+  ${CMAKE_BINARY_DIR}/cobol/ANYCHAR.o
+  ${CMAKE_BINARY_DIR}/cobol/ANYCODE.o
+  ${CMAKE_BINARY_DIR}/cobol/WRITEALL.o
+  ${CMAKE_BINARY_DIR}/cobol/WRITETO.o
+  ${CMAKE_BINARY_DIR}/cobol/READALL.o
+)  
+
+set (INSTALL_DIR  "/main/program")
+add_subdirectory(tools/cocoR/cpp)
+add_subdirectory(decode)
+add_subdirectory(cobol)
