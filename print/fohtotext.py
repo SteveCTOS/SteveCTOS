@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys, os, os.path
 from optparse import OptionParser
 
