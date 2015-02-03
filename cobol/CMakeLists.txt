@@ -38,9 +38,8 @@ function (cobol_module name)
 endfunction()
 
 set (executable_list 
-
-  CODATAXX MainCont TestMenu TestStuff 
-  
+  #CODATAXX 
+  MainCont TestMenu TestStuff 
 )
 
 foreach (name ${executable_list})

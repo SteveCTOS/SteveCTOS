@@ -1,0 +1,3 @@
+       FD  PARAMETER-ASCII.
+       01  ASCII-REC.
+         02  ASCII-MESSAGE             PIC X(358).
