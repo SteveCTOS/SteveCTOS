@@ -9,10 +9,10 @@ else:
 (options, args) = parser.parse_args()
 maindir = options.maindir.replace('\\','/')
 if os.path.exists(maindir) == False:
-  os.makedirs(maindir, 0754)  
+  print '%s does not exist. Please create it with the correct permissions and run again.' % (maindir)  
 if sys.platform == 'win32':
   command = 'mklink /J %s/source .' % (maindir)
 else:
-  command = 'ln -sf . %s/source' % (maindir)
+  command = 'ln -sf %s %s/source' % (os.getcwd(), maindir)
 print command  
 os.system(command)
