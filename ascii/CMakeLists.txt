@@ -15,7 +15,7 @@ foreach (name ${bdb_list})
   set (ENV{DD_${name}} ${CMAKE_CURRENT_BINARY_DIR}/data/${name})
 endforeach()  
 
-set (ascii_list
+set (data_list
   BmMasterASCII CbMasterASCII CbMasterLyASCII CbTransASCII CbTransLyASCII
   CoCompanyASCII CoDataNameASCII CoMenuASCII CoPrintersASCII CoPullByASCII
   CoPullersASCII CoStaffInOutASCII CrAliasASCII CrCamsTransASCII CrJrnASCII
@@ -29,9 +29,11 @@ set (ascii_list
   StTransASCII StTransLyASCII
   )
 
-foreach (name ${ascii_list})
+foreach (name ${data_list})
   set (ENV{DD_${name}} ${CMAKE_CURRENT_SOURCE_DIR}/data/${name})
 endforeach()  
+
+
 
 function (cobol_executable name)
   set (source ${CMAKE_CURRENT_SOURCE_DIR}/programs/${name}.SRC)
