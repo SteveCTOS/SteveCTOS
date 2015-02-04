@@ -18,7 +18,7 @@
           Copy "SelectStReceiptLy".
           Copy "SelectBmMaster".
           Copy "SelectStBranchCat".
-           SELECT COMPANY-MENU ASSIGN TO "/main/data01/CoCompany"
+           SELECT COMPANY-MENU ASSIGN TO "CoCompany"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

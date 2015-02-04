@@ -7,20 +7,20 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT DATA-FILE ASSIGN TO "/main/data01/CoDataName"
+           SELECT DATA-FILE ASSIGN TO "CoDataName"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS DATA-KEY
                FILE STATUS IS WS-DATA-STATUS.
            SELECT DATA-ASCII ASSIGN TO 
-                         "/main/asciidata/CoDataNameASCII"
+                         "CoDataNameASCII"
                FILE STATUS IS WS-DATA-STATUS.
       *
         DATA DIVISION.
         FILE SECTION.
-           COPY "/main/ASCIIPrograms/ChlfdDataName".
-           COPY "/main/ASCIIPrograms/ChlfdDataNameASCII".
+           COPY "ChlfdDataName".
+           COPY "ChlfdDataNameASCII".
       *
        WORKING-STORAGE SECTION.
        77  WS-EOF                PIC X(3) VALUE "   ".
@@ -188,5 +188,5 @@
                  DATA-ASCII.
         C-EXIT.
            EXIT.
-           COPY "/main/ASCIIPrograms/ErrorMessage".
+           COPY "ErrorMessage".
       * END-OF-JOB.

@@ -7,9 +7,9 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT MAILSEQ-MASTER ASSIGN TO "/main/data01/DrMailSequ"
+           SELECT MAILSEQ-MASTER ASSIGN TO "DrMailSequ"
                FILE STATUS IS WS-DEBTOR-STATUS.
-           SELECT MAIL-MASTER ASSIGN TO "/main/data01/MailMaster"
+           SELECT MAIL-MASTER ASSIGN TO "MailMaster"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

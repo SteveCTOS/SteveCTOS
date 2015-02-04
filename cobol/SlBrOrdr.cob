@@ -16,7 +16,7 @@
           Copy "SelectStTrans".
           Copy "SelectSlRegister".
           Copy "SelectStDiscAcc".
-           SELECT COMPANY-MENU ASSIGN TO "/main/data01/CoCompany"
+           SELECT COMPANY-MENU ASSIGN TO "CoCompany"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

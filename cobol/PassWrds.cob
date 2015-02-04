@@ -159,7 +159,7 @@
       *
        WORK-OUT-REMOTE-PRINTER-FILE SECTION.
        WORPF-000.
-      * "/main/data01/CoPrintersRemote"
+      * "CoPrintersRemote"
             MOVE WS-COPRINTERSREMOTE TO ALPHA-RATE.
 
             MOVE WS-COPRINTERSREMOTE TO WS-MESSAGE
