@@ -1,4 +1,4 @@
-project (ctos_cobol)
+project (ctools_cobol)
 
 set (COBOL_SOURCE ${CMAKE_SOURCE_DIR}/cobol)
 set (COBOL_BINARY ${CMAKE_BINARY_DIR}/cobol)
@@ -17,7 +17,7 @@ function (cobol_executable name)
     DEPENDS ${output} b20forms
     SOURCES ${source}
   )
-  install (PROGRAMS ${output} DESTINATION ${INSTALL_DIR} COMPONENT cobol_executable)
+  install (PROGRAMS ${output} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin COMPONENT cobol_executable)
 endfunction()
 
 function (cobol_module name)
@@ -34,11 +34,10 @@ function (cobol_module name)
     DEPENDS ${output} b20forms
     SOURCES ${source}
   )
-  install (FILES ${output} DESTINATION ${INSTALL_DIR} COMPONENT cobol_module)
+  install (FILES ${output} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin COMPONENT cobol_module)
 endfunction()
 
 set (executable_list 
-  #CODATAXX 
   MainCont TestMenu TestStuff 
 )
 

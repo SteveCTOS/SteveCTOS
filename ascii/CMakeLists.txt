@@ -1,3 +1,8 @@
+#project (ctools ascii)
+
+set (takeon ${CMAKE_CURRENT_BINARY_DIR}/programs/takeon.sh)
+file(WRITE ${takeon})
+
 set (bdb_list
   BmMaster CbMaster CbMasterLy CbTrans CbTransLy CoCashSales CoCompany
   CoDataName CoDataNamex CoFaxParam CoMenu CoPrinters CoPrintersRemote3
@@ -12,8 +17,9 @@ set (bdb_list
   )
 
 foreach (name ${bdb_list})
-  set (ENV{DD_${name}} ${CMAKE_CURRENT_BINARY_DIR}/data/${name})
+  file(APPEND ${takeon} "export DD_${name}=${CMAKE_CURRENT_BINARY_DIR}/data/${name}\n")
 endforeach()  
+file(APPEND ${takeon} "#-------------------\n")
 
 set (data_list
   BmMasterASCII CbMasterASCII CbMasterLyASCII CbTransASCII CbTransLyASCII
@@ -30,19 +36,18 @@ set (data_list
   )
 
 foreach (name ${data_list})
-  set (ENV{DD_${name}} ${CMAKE_CURRENT_SOURCE_DIR}/data/${name})
+  file(APPEND ${takeon} "export DD_${name}=${CMAKE_CURRENT_SOURCE_DIR}/data/${name}\n")
 endforeach()  
-
-
+file(APPEND ${takeon} "#-------------------\n")
 
 function (cobol_executable name)
-  set (source ${CMAKE_CURRENT_SOURCE_DIR}/programs/${name}.SRC)
+  set (source ${CMAKE_CURRENT_SOURCE_DIR}/programs/${name}.cob)
   set (output ${CMAKE_CURRENT_BINARY_DIR}/programs/${name})
+  file(APPEND ${takeon} "${CMAKE_CURRENT_BINARY_DIR}/programs/${name}\n")
   add_custom_command (
     OUTPUT ${output} 
     DEPENDS ${source}
-    COMMAND cobc -g -I ${CMAKE_CURRENT_SOURCE_DIR} -x ${source} -o ${output}
-    COMMAND ${SUBMIT} ${output} ${SUBMIT_CODES}
+    COMMAND cobc -g -I ${CMAKE_CURRENT_SOURCE_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}/copy -x ${source} -o ${output}
   )
   add_custom_target (${name}_project ALL
     DEPENDS ${output}
@@ -50,18 +55,28 @@ function (cobol_executable name)
 endfunction()
 
 set (source_list
-  BMMASTXX CBMALYXX CBMASTXX CBTRANXX CBTRLYXX COCOMPXX CODATAXX 
-  COMENUXX COPUBYXX COPULLXX COSTFFXX CRALIAXX CRCATRXX CRJRNLXX CRMASTXX
+  BMMASTXX CBMALYXX CBMASTXX CBTRANXX CBTRLYXX COCOMPXX CODATAXX COMENUXX 
+  COPRINXX COPUBYXX COPULLXX COSTFFXX CRALIAXX CRCATRXX CRJRNLXX CRMASTXX
   CRREMIXX CRTRANXX DRCONTXX DRDELVXX DRMAOLXX DRMASTXX DRTRANXX GLJRNLXX
   GLMALYXX GLMASTXX GLPARMXX GLTRANXX GLTRLYXX SLDISTXX SLMASTXX SLREGIXX
   SLRELYXX SLSBRPXX SLSOBYXX STALTEXX STBRNCXX STCATAXX STDISCXX STIMPOXX
-  STORDEXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX
+  STLOOKXX STORDEXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX
 )
 
 set (source_list_with_error
-  COPRINXX  CRMAOLXX  CRRETRXX SLPARMXX  STLOOKXX  STMASTXX STOCKXX
+   
+  #CRMAOLXX  Error: CHLFDCREDITOROLD, CHLFDCREDITOROLDASCII: No such file or directory
+  #CRRETRXX  In paragraph 'BE-010':
+  #          95: Error: syntax error, unexpected $undefined
+  #SLPARMXX  22: Error: CHLFDPARAM: No such file or directory
+  #          23: Error: CHLFDPARAMASCII: No such file or directory  
+    
+  #STMASTXX  In paragraph 'BE-010'
+  #          89: Error: INVALID KEY clause invalid with this file type
+  #stockxx   27: Error: ChlfdStockASCII: No such file or directory
 )
 
 foreach(name ${source_list})
   cobol_executable(${name})
 endforeach ()
+file(APPEND ${takeon} "#-------------------\n")
