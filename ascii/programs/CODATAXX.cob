@@ -19,8 +19,8 @@
       *
         DATA DIVISION.
         FILE SECTION.
-           COPY "/main/ASCIIPrograms/ChlfdDataName".
-           COPY "/main/ASCIIPrograms/ChlfdDataNameASCII".
+           COPY "ChlfdDataName".
+           COPY "ChlfdDataNameASCII".
       *
        WORKING-STORAGE SECTION.
        77  WS-EOF                PIC X(3) VALUE "   ".
@@ -188,5 +188,5 @@
                  DATA-ASCII.
         C-EXIT.
            EXIT.
-           COPY "/main/ASCIIPrograms/ErrorMessage".
+           COPY "ErrorMessage".
       * END-OF-JOB.
