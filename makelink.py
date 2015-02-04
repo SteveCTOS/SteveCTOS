@@ -10,6 +10,7 @@ else:
 maindir = options.maindir.replace('\\','/')
 if os.path.exists(maindir) == False:
   print '%s does not exist. Please create it with the correct permissions and run again.' % (maindir)  
+  exit(1)
 if sys.platform == 'win32':
   command = 'mklink /J %s/source .' % (maindir)
 else:
