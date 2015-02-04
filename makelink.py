@@ -5,7 +5,7 @@ parser = OptionParser()
 if sys.platform == 'win32':
   parser.add_option("-m", "--maindir",  dest="maindir",  default=r"c:/ctools",     help="main directory")
 else:
-  parser.add_option("-m", "--maindir",  dest="maindir",  default=r"/main/ctools",  help="main directory")
+  parser.add_option("-m", "--maindir",  dest="maindir",  default=r"/ctools/dev",   help="main directory")
 (options, args) = parser.parse_args()
 maindir = options.maindir.replace('\\','/')
 if os.path.exists(maindir) == False:
