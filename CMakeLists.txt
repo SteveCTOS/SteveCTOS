@@ -40,7 +40,7 @@ set (TOOLS_DIR ${CMAKE_SOURCE_DIR}/tools)
 
 set (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 set (LIBRARY_OUTPUT_PATH    "${CMAKE_BINARY_DIR}/lib")
-set (CMAKE_INSTALL_PREFIX   "${CMAKE_BINARY_DIR}/install" CACHE FILEPATH "Install path prefix, prepended onto install directories")
+set (CMAKE_INSTALL_PREFIX   "/ctools" CACHE FILEPATH "Install path prefix, prepended onto install directories")
 
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
@@ -73,7 +73,9 @@ set (COBOL_C_OUTPUT
   ${CMAKE_BINARY_DIR}/cobol/READALL.o
 )  
 
-set (INSTALL_DIR  "/main/program")
+set (INSTALL_DIR  "/ctools/bin")
+
 add_subdirectory(tools/cocoR/cpp)
 add_subdirectory(decode)
+add_subdirectory(ascii)
 add_subdirectory(cobol)

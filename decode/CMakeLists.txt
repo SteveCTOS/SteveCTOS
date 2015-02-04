@@ -1,4 +1,4 @@
-project (ctos_decode)
+project (ctools_decode)
 
 set(generated
   ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp
@@ -153,6 +153,7 @@ set (source
 )
 add_library (b20forms SHARED ${source})
 target_link_libraries (b20forms ncurses)
+install(TARGETS b20forms LIBRARY DESTINATION lib)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/b20codes.c
@@ -179,21 +180,27 @@ set (source
 )
 add_executable (Record ${source})
 target_link_libraries (Record)
-install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/Record DESTINATION ${INSTALL_DIR} COMPONENT utility)
+install (TARGETS Record RUNTIME DESTINATION bin)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/submit.c
 )
 add_executable (Submit ${source})
 target_link_libraries (Submit)
-install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/Submit DESTINATION ${INSTALL_DIR} COMPONENT utility)
+install (TARGETS Submit RUNTIME DESTINATION bin)
+
+set (source
+  ${CMAKE_CURRENT_SOURCE_DIR}/submit_popen.c
+)
+add_executable (submitp ${source})
+target_link_libraries (submitp ncurses)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/text2pdf.c
 )
 add_executable (text2pdf ${source})
 target_link_libraries (text2pdf)
-install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/text2pdf DESTINATION ${INSTALL_DIR} COMPONENT utility)
+install (TARGETS text2pdf RUNTIME DESTINATION bin)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/header.cpp
@@ -217,5 +224,5 @@ add_custom_target (ctos_objects ALL
   SOURCES ${cobcalls}
 )
 
-install (FILES ${CMAKE_BINARY_DIR}/cobol/cobcalls.o DESTINATION ${INSTALL_DIR} COMPONENT cobol_object)
+install (FILES ${CMAKE_BINARY_DIR}/cobol/cobcalls.o DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
