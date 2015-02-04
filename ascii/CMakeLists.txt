@@ -1,5 +1,6 @@
 #project (ctools ascii)
 
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/programs)
 set (takeon ${CMAKE_CURRENT_BINARY_DIR}/programs/takeon.sh)
 file(WRITE ${takeon})
 
@@ -16,6 +17,7 @@ set (bdb_list
   StTrans StTransLy
   )
 
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
 foreach (name ${bdb_list})
   file(APPEND ${takeon} "export DD_${name}=${CMAKE_CURRENT_BINARY_DIR}/data/${name}\n")
 endforeach()  
