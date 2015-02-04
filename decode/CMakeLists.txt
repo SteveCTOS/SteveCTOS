@@ -143,6 +143,8 @@ add_custom_target (ctos_compile ALL
   SOURCES ${frp_source}
 )
 
+install (FILES ${libfile} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
 set (source 
   ${CMAKE_CURRENT_SOURCE_DIR}/b20forms.c
   ${CMAKE_CURRENT_SOURCE_DIR}/b20forms.h
@@ -225,4 +227,3 @@ add_custom_target (ctos_objects ALL
 )
 
 install (FILES ${CMAKE_BINARY_DIR}/cobol/cobcalls.o DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-

@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
 {
   INT erc, file, i, key, ch, state=0;
   char work[256];
-  CHAR filename[] = "/main/ctos/build/data/CoForms.Lib";
+  CHAR filename[] = "/ctools/dev/build/data/CoForms.Lib";
   CHAR formname[] = "StReLoMt";
   CHAR password[] = "";
   CHAR form[100];
