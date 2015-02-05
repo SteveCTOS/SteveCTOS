@@ -2,7 +2,17 @@
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/programs)
 set (takeon ${CMAKE_CURRENT_BINARY_DIR}/programs/takeon.sh)
-file(WRITE ${takeon})
+file(WRITE  ${takeon} "if [ \"$2\" = \"\" ]\nthen\n")
+file(APPEND ${takeon} "  DATACO2=\"data\"\n")
+file(APPEND ${takeon} "else\n")
+file(APPEND ${takeon} "  DATACO2=$2\n")
+file(APPEND ${takeon} "fi\n")
+file(APPEND ${takeon} "if [ \"$1\" = \"\" ]\nthen\n")
+file(APPEND ${takeon} "  DATACO1=\"data01\"\n")
+file(APPEND ${takeon} "else\n")
+file(APPEND ${takeon} "  DATACO1=$1\n")
+file(APPEND ${takeon} "fi\n")
+file(APPEND ${takeon} "#-------------------\n")
 
 set (bdb_list
   BmMaster CbMaster CbMasterLy CbTrans CbTransLy CoCashSales CoCompany
@@ -19,7 +29,7 @@ set (bdb_list
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
 foreach (name ${bdb_list})
-  file(APPEND ${takeon} "export DD_${name}=${CMAKE_CURRENT_BINARY_DIR}/data/${name}\n")
+  file(APPEND ${takeon} "export DD_${name}=${CMAKE_INSTALL_PREFIX}/$DATACO1/${name}\n")
 endforeach()  
 file(APPEND ${takeon} "#-------------------\n")
 
@@ -38,7 +48,7 @@ set (data_list
   )
 
 foreach (name ${data_list})
-  file(APPEND ${takeon} "export DD_${name}=${CMAKE_CURRENT_SOURCE_DIR}/data/${name}\n")
+  file(APPEND ${takeon} "export DD_${name}=${CMAKE_CURRENT_SOURCE_DIR}/$DATACO2/${name}\n")
 endforeach()  
 file(APPEND ${takeon} "#-------------------\n")
 
@@ -65,20 +75,18 @@ set (source_list
   STLOOKXX STORDEXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX
 )
 
-set (source_list_with_error
-   
-  #CRMAOLXX  Error: CHLFDCREDITOROLD, CHLFDCREDITOROLDASCII: No such file or directory
-  #CRRETRXX  In paragraph 'BE-010':
-  #          95: Error: syntax error, unexpected $undefined
-  #SLPARMXX  22: Error: CHLFDPARAM: No such file or directory
-  #          23: Error: CHLFDPARAMASCII: No such file or directory  
+#CRMAOLXX  Error: CHLFDCREDITOROLD, CHLFDCREDITOROLDASCII: No such file or directory
+#CRRETRXX  In paragraph 'BE-010':
+#          95: Error: syntax error, unexpected $undefined
+#SLPARMXX  22: Error: CHLFDPARAM: No such file or directory
+#          23: Error: CHLFDPARAMASCII: No such file or directory  
     
-  #STMASTXX  In paragraph 'BE-010'
-  #          89: Error: INVALID KEY clause invalid with this file type
-  #stockxx   27: Error: ChlfdStockASCII: No such file or directory
-)
+#STMASTXX  In paragraph 'BE-010'
+#          89: Error: INVALID KEY clause invalid with this file type
+#stockxx   27: Error: ChlfdStockASCII: No such file or directory
 
 foreach(name ${source_list})
   cobol_executable(${name})
 endforeach ()
+
 file(APPEND ${takeon} "#-------------------\n")

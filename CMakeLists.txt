@@ -40,7 +40,8 @@ set (TOOLS_DIR ${CMAKE_SOURCE_DIR}/tools)
 
 set (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 set (LIBRARY_OUTPUT_PATH    "${CMAKE_BINARY_DIR}/lib")
-set (CMAKE_INSTALL_PREFIX   "/ctools" CACHE FILEPATH "Install path prefix, prepended onto install directories")
+set (CMAKE_INSTALL_PREFIX   "/ctools" 
+     CACHE FILEPATH "Install path prefix, prepended onto install directories" FORCE)
 
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
