@@ -8,7 +8,7 @@
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
          Copy "SelectDrMail".
-           SELECT PRINT-FILE ASSIGN TO "/main/spl/DrMailList"
+           SELECT PRINT-FILE ASSIGN TO "/ctools/spl/DrMailList"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-SPL-STATUS.
       *

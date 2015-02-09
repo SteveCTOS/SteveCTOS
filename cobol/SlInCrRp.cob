@@ -413,11 +413,11 @@
            PERFORM END-OFF.
        CONT-032.
            IF WS-INVCRED = "I" OR = "P" OR = "Q"
-               MOVE "/main/spl/InPrintCo" TO WS-PRINTER
+               MOVE "/ctools/spl/InPrintCo" TO WS-PRINTER
            ELSE
-               MOVE "/main/spl/CrPrintCo" TO WS-PRINTER.
+               MOVE "/ctools/spl/CrPrintCo" TO WS-PRINTER.
            IF WS-INVCRED = "D"
-               MOVE "/main/spl/DBPrintCo" TO WS-PRINTER.
+               MOVE "/ctools/spl/DBPrintCo" TO WS-PRINTER.
                
            MOVE WS-PRINTER   TO ALPHA-RATE
            MOVE 20           TO SUB-1

@@ -44,13 +44,13 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(33) VALUE
-              "/main/spl/RandomHighAccSales".
+              "/ctools/spl/RandomHighAccSales".
        77  WS-RANDOM-FILE-ind   PIC X(33) VALUE
-              "/main/spl/RandomHighAccSales.Ind".
+              "/ctools/spl/RandomHighAccSales.Ind".
        77  WS-High-FILE         PIC X(33) VALUE
-              "/main/spl/CreditHighSales".
+              "/ctools/spl/CreditHighSales".
        77  WS-High-FILE-ind     PIC X(33) VALUE
-              "/main/spl/CreditHighSales.Ind".
+              "/ctools/spl/CreditHighSales.Ind".
        77  WS-XFAX-MAN3000      PIC X VALUE " ".
        77  WS-ONLY-VALID        PIC X VALUE " ".
        77  WS-ONLY-BAL          PIC X VALUE " ".

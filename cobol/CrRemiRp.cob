@@ -2028,7 +2028,7 @@
            MOVE 1 TO SUB-10.
            
            IF WS-PRINTERSELECTED = 1
-               MOVE "/main/spl/CrRemitCo" TO WS-PRINTER
+               MOVE "/ctools/spl/CrRemitCo" TO WS-PRINTER
                MOVE WS-PRINTER            TO ALPHA-RATE
                MOVE 20                    TO SUB-1
                MOVE WS-CO-NUMBER          TO AL-RATE (SUB-1)
@@ -2530,7 +2530,7 @@
        QUEUE-PRINT-FILE SECTION.
            MOVE 20         TO W-CBSPOOLERFILESPEC.
            MOVE Ws-Printer TO W-SPOOLERFILESPEC.
-      *     MOVE "/main/spl/CrRemitPrt" TO W-SPOOLERFILESPEC.
+      *     MOVE "/ctools/spl/CrRemitPrt" TO W-SPOOLERFILESPEC.
            CALL "ADDQUEUEENTRY" USING
                                 W-ERROR
                                 W-QUEUENAME

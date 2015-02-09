@@ -280,7 +280,7 @@
       *
        OPEN-FILES SECTION.
        OPEN-010.
-           MOVE "/main/ctos/build/data/CoForms.Lib" TO F-FILENAME
+           MOVE "/ctools/lib/CoForms.Lib" TO F-FILENAME
                                                       WS-FORMS-NAME.
            MOVE 33                                  TO F-CBFILENAME
                                                       WS-CBFORMS-NAME.

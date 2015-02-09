@@ -120,7 +120,7 @@
        PROCEDURE DIVISION.
        000-Main.
            DISPLAY 'Starting cobmain'.
-           MOVE '/main/ctos/build/data/COFORMS.lib' TO F-FILENAME.
+           MOVE '/ctools/lib/CoForms.Lib' TO F-FILENAME.
            MOVE 33 TO F-CBFILENAME.
            MOVE N-FORMNAME   OF DEFS-STRELOMT  TO F-FORMNAME.
            MOVE N-CBFORMNAME OF DEFS-STRELOMT  TO F-CBFORMNAME.

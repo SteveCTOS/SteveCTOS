@@ -81,7 +81,7 @@
            PERFORM DISPLAY-FORM.
        CONTROL-010.
            PERFORM GET-DATA.
-           MOVE "/main/spl/CrLabelPrt" TO WS-PRINTER.
+           MOVE "/ctools/spl/CrLabelPrt" TO WS-PRINTER.
            OPEN OUTPUT PRINT-FILE.
       *     MOVE WTELL-PAUSE TO PRINT-REC.
       *     WRITE PRINT-REC.
@@ -358,7 +358,7 @@
       *
        QUEUE-PRINT-FILE SECTION.
            MOVE 20                     TO W-CBSPOOLERFILESPEC
-           MOVE "/main/spl/CrLabelPrt" TO W-SPOOLERFILESPEC.
+           MOVE "/ctools/spl/CrLabelPrt" TO W-SPOOLERFILESPEC.
            CALL "ADDQUEUEENTRY" USING
                                 W-ERROR
                                 W-QUEUENAME
@@ -375,7 +375,7 @@
       *
        OPEN-SPOOLER-FILES SECTION.
            MOVE SPACE                  TO W-QUEUEENTRYBUFFERSEND.
-           MOVE "/main/spl/CrLabelPrt" TO W-FILENAME.
+           MOVE "/ctools/spl/CrLabelPrt" TO W-FILENAME.
            MOVE X"00"                  TO W-FDELETEAFTERPROC.
            MOVE 0     TO W-CBFORMNAME.
            MOVE 0     TO W-CBWHEELNAME.

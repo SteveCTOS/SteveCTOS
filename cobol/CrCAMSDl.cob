@@ -37,7 +37,7 @@
            03  WS-GLPARAMETER-ST1     PIC 99.
       *     03  WS-GLPARAMETER-ST2     PIC X.
        01  WS-DOWNLOAD-FILE.
-           03  WS-VOL-DIR     PIC X(10) VALUE "/main/spl/".
+           03  WS-VOL-DIR     PIC X(10) VALUE "/ctools/spl/".
            03  WS-DL-NAME     PIC X(10) VALUE " ".
        01  WS-END-MESSAGE.
            03  WS-END-1       PIC X(29) VALUE

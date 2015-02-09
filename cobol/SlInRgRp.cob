@@ -31,9 +31,9 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(30) VALUE
-              "/main/spl/RandomInvoice".
+              "/ctools/spl/RandomInvoice".
        77  WS-RANDOM-FILE-ind   PIC X(30) VALUE
-              "/main/spl/RandomInvoice.Ind".
+              "/ctools/spl/RandomInvoice.Ind".
        77  WS-TOTI-INVOICE      PIC S9(8)V99 VALUE 0.
        77  WS-TOTI-TAX          PIC S9(8)V99 VALUE 0.
        77  WS-TOTI-ADDON        PIC S9(8)V99 VALUE 0.

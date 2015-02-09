@@ -303,13 +303,13 @@
        CONT-010.
            Perform CDNVD-005
            IF WS-PRINTER-TYPE = 1
-               MOVE "/main/spl/DrStateCo" To Alpha-Rate.
+               MOVE "/ctools/spl/DrStateCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = 2
-               MOVE "/main/spl/DrLaserCo" To Alpha-Rate.
+               MOVE "/ctools/spl/DrLaserCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = 3
-               MOVE "/main/spl/DrEMailCo" To Alpha-Rate.
+               MOVE "/ctools/spl/DrEMailCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = 4
-               MOVE "/main/spl/DrNoMalCo" To Alpha-Rate.
+               MOVE "/ctools/spl/DrNoMalCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = 5
                MOVE WS-ACCNOBEGIN      TO WS-ESTATEMENT
                MOVE WS-EMAIL-STATEMENT TO WS-PRINTER

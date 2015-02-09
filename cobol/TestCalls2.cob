@@ -130,7 +130,7 @@ copy "STRELOMT.cob".
 procedure division.
 000-Main.
   display 'Starting cobmain'.
-  move '/main/ctos/build/data/COFORMS.lll' to F-FILENAME.
+  move '/ctools/lib/CoForms.Lib' to F-FILENAME.
   move 33 to F-CBFILENAME.
   move N-FORMNAME   of DEFS-STRELOMT  to F-FORMNAME.
   move N-CBFORMNAME of DEFS-STRELOMT  to F-CBFORMNAME.

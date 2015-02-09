@@ -6,7 +6,7 @@
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
        GUPN-006.
             MOVE SPACES TO ALPHA-RATE DATA-RATE.
-            MOVE "/main/spl/" TO ALPHA-RATE
+            MOVE "/ctools/spl/" TO ALPHA-RATE
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
             MOVE WS-USERNAME TO DATA-RATE.
             MOVE 11 TO SUB-45

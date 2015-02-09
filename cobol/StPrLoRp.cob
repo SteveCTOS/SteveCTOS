@@ -12,7 +12,7 @@
           Copy "SelectStChanges".
           Copy "SelectSlParameter".
           Copy "SelectSlDaily".
-           SELECT PRINT-FILE ASSIGN TO "/main/spl/PriceLists"
+           SELECT PRINT-FILE ASSIGN TO "/ctools/spl/PriceLists"
                FILE STATUS IS WS-SPOOL-STATUS
                ORGANIZATION IS LINE SEQUENTIAL.
       *

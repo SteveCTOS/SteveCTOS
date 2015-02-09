@@ -8,7 +8,7 @@
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
          Copy "SelectDrMaster".
-           SELECT PRINT-FILE ASSIGN TO "/main/spl/LabelPrint"
+           SELECT PRINT-FILE ASSIGN TO "/ctools/spl/LabelPrint"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-SPL-STATUS.
            Select HIGH-File Assign To WS-HIGH-FILE
@@ -42,13 +42,13 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(33) VALUE
-              "/main/spl/RandomHighDrLabels".
+              "/ctools/spl/RandomHighDrLabels".
        77  WS-RANDOM-FILE-ind   PIC X(33) VALUE
-              "/main/spl/RandomHighDrLabels.Ind".
+              "/ctools/spl/RandomHighDrLabels.Ind".
        77  WS-High-FILE         PIC X(33) VALUE
-              "/main/spl/DebtorHighLabel".
+              "/ctools/spl/DebtorHighLabel".
        77  WS-High-FILE-ind     PIC X(33) VALUE
-              "/main/spl/DebtorHighLabel.Ind".
+              "/ctools/spl/DebtorHighLabel.Ind".
        77  WS-RANDOM-WRITTEN    PIC X.
        77  WS-TOP               PIC X(5) VALUE " ".
        77  WS-NO-ACC            PIC 9(4) VALUE 0.

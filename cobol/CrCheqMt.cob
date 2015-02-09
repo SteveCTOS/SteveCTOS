@@ -353,7 +353,7 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            IF WS-PRINTERNUMBER (21) = 1
-               MOVE "/main/spl/CrChequCo" TO WS-PRINTER
+               MOVE "/ctools/spl/CrChequCo" TO WS-PRINTER
                MOVE WS-PRINTER TO ALPHA-RATE
                MOVE 20 TO SUB-1
                MOVE WS-CO-NUMBER TO AL-RATE (SUB-1)

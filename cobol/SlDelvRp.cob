@@ -37,9 +37,9 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(30) VALUE
-              "/main/spl/DelSchedule".
+              "/ctools/spl/DelSchedule".
        77  WS-RANDOM-FILE-ind   PIC X(30) VALUE
-              "/main/spl/DelSchedule.Ind".
+              "/ctools/spl/DelSchedule.Ind".
        77  WS-AREA              PIC X VALUE " ".
        77  WS-RANDOM-WRITTEN    PIC X(2) VALUE " ".
        77  WS-DATE-ACCEPT       PIC X(10) VALUE " ".

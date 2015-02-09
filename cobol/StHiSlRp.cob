@@ -46,13 +46,13 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(30) VALUE
-              "/main/spl/RandomHighSales".
+              "/ctools/spl/RandomHighSales".
        77  WS-RANDOM-FILE-ind   PIC X(30) VALUE
-              "/main/spl/RandomHighSales.Ind".
+              "/ctools/spl/RandomHighSales.Ind".
        77  WS-HIGH-FILE       PIC X(30) VALUE
-              "/main/spl/StockHighSales".
+              "/ctools/spl/StockHighSales".
        77  WS-HIGH-FILE-ind   PIC X(30) VALUE
-              "/main/spl/StockHighSales.Ind".
+              "/ctools/spl/StockHighSales.Ind".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  WS-ACCEPT            PIC X VALUE " ".
        77  LINE-CNT             PIC 9(3) VALUE 66.

@@ -41,9 +41,9 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(30) VALUE
-              "/main/spl/RandomInvCheck".
+              "/ctools/spl/RandomInvCheck".
        77  WS-RANDOM-FILE-ind   PIC X(30) VALUE
-              "/main/spl/RandomInvCheck.Ind".
+              "/ctools/spl/RandomInvCheck.Ind".
        77  WS-VATABLE           PIC S9(8)V99 VALUE 0.
        77  WS-ACCEPT            PIC XX VALUE " ".
        77  WS-YYACCEPT          PIC X(4) VALUE " ".

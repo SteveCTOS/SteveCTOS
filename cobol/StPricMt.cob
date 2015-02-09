@@ -10,16 +10,16 @@
           Copy "SelectStMaster".
           Copy "SelectStockLookup".
           Copy "SelectSlDaily".
-           SELECT PRICE-MASTER ASSIGN TO "/main/spl/Prices"
+           SELECT PRICE-MASTER ASSIGN TO "/ctools/spl/Prices"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS PRICE-KEY
                FILE STATUS IS WS-PRICE-STATUS.
-           SELECT PRICE-IMP-MASTER ASSIGN TO "/main/spl/PriceSequ"
+           SELECT PRICE-IMP-MASTER ASSIGN TO "/ctools/spl/PriceSequ"
                ORGANIZATION IS SEQUENTIAL
                FILE STATUS IS WS-STOCK-STATUS.
-           SELECT STOCK-IMP-MASTER ASSIGN TO "/main/spl/StockSequ"
+           SELECT STOCK-IMP-MASTER ASSIGN TO "/ctools/spl/StockSequ"
                ORGANIZATION IS SEQUENTIAL
                FILE STATUS IS WS-STOCK-STATUS.
       *
@@ -174,9 +174,9 @@
                GO TO GET-010.
        GET-012.
            MOVE 1210 TO POS
-           DISPLAY "I=IMPORT PRICE MUST BE /main/spl/PriceSequ" AT POS
+           DISPLAY "I=IMPORT PRICE MUST BE /ctools/spl/PriceSequ" AT POS
            MOVE 1310 TO POS
-           DISPLAY "S=LOOKUP TABLE MUST BE /main/spl/StockSequ" AT POS
+           DISPLAY "S=LOOKUP TABLE MUST BE /ctools/spl/StockSequ" AT POS
            MOVE 1110 TO POS.
            DISPLAY
            "I=IMPORT, U=UPDATE, B=I & U, W=BLANK Lookup, S=EXCEL" &

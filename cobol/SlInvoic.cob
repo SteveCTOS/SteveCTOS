@@ -719,7 +719,7 @@
        IM-650.
            PERFORM CDNVD-005
            ACCEPT WS-TIMES FROM TIME
-           MOVE "/main/spl/" To ALPHA-RATE
+           MOVE "/ctools/spl/" To ALPHA-RATE
            PERFORM CDNVD-015
            MOVE WS-TIMES TO DATA-RATE
            MOVE 1 TO SUB-2

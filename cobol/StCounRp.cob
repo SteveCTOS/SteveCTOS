@@ -32,9 +32,9 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-RANDOM-FILE       PIC X(30) VALUE
-              "/main/spl/RandomCount".
+              "/ctools/spl/RandomCount".
        77  WS-RANDOM-FILE-ind   PIC X(30) VALUE
-              "/main/spl/RandomCount.Ind".
+              "/ctools/spl/RandomCount.Ind".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  PAGE-CNT             PIC 9(3) VALUE 0.

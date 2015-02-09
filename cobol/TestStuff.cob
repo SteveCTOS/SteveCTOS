@@ -11,7 +11,7 @@
        01  W-STATUS               PIC 9(4) BINARY COMP.
        01  WS-PRINTER             PIC X(5) VALUE "MP140".
        01  WS-PRINT-FILE          PIC X(50) VALUE 
-                   "/main/spl/steve.prn".
+                   "/ctools/spl/steve.prn".
       *
        PROCEDURE DIVISION.
        000-Main.
