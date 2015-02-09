@@ -281,11 +281,11 @@
        OPEN-FILES SECTION.
        OPEN-010.
            MOVE "/ctools/lib/CoForms.Lib" TO F-FILENAME
-                                                      WS-FORMS-NAME.
-           MOVE 33                                  TO F-CBFILENAME
-                                                      WS-CBFORMS-NAME.
-           MOVE "MainCont"                          TO F-FORMNAME
-           MOVE 8                                   TO F-CBFORMNAME.
+                                             WS-FORMS-NAME.
+           MOVE 23                        TO F-CBFILENAME
+                                             WS-CBFORMS-NAME.
+           MOVE "MainCont"                TO F-FORMNAME
+           MOVE 8                         TO F-CBFORMNAME.
 
       * ORIGINAL FORMAT
       *     MOVE "[Win]<Program>CoForms.Lib" TO Ws-Forms-Name
