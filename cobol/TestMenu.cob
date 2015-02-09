@@ -158,12 +158,12 @@
            STOP RUN.
           
        OPEN-FILES SECTION.  
-           MOVE "/main/ctos/build/data/COFORMS.lib" TO F-FILENAME
-                                                      WS-FORMS-NAME.
-           MOVE 33                                  TO F-CBFILENAME
-                                                      WS-CBFORMS-NAME.
-           MOVE "MainCont"                          TO F-FORMNAME
-           MOVE 8                                   TO F-CBFORMNAME.
+           MOVE "/ctools/lib/CoForms.Lib" TO F-FILENAME
+                                             WS-FORMS-NAME.
+           MOVE 33                        TO F-CBFILENAME
+                                             WS-CBFORMS-NAME.
+           MOVE "MainCont"                TO F-FORMNAME
+           MOVE 8                         TO F-CBFORMNAME.
            COPY "OpenForms".
            EXIT.
            

@@ -55,7 +55,7 @@ file(APPEND ${takeon} "#-------------------\n")
 function (cobol_executable name)
   set (source ${CMAKE_CURRENT_SOURCE_DIR}/programs/${name}.cob)
   set (output ${CMAKE_CURRENT_BINARY_DIR}/programs/${name})
-  file(APPEND ${takeon} "${CMAKE_CURRENT_BINARY_DIR}/programs/${name}\n")
+  file(APPEND ${takeon} "submitp ${CMAKE_CURRENT_BINARY_DIR}/programs/${name} I/0A\n")
   add_custom_command (
     OUTPUT ${output} 
     DEPENDS ${source}

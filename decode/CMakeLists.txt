@@ -196,6 +196,7 @@ set (source
 )
 add_executable (submitp ${source})
 target_link_libraries (submitp ncurses)
+install (TARGETS submitp RUNTIME DESTINATION bin)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/text2pdf.c
