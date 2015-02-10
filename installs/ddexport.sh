@@ -10,3 +10,4 @@ export DB_HOME='/ctools/lock'
 export TMP='/tmp'
 export COBC_LIBRARY_PATH=/usr/local/lib:$COBC_LIBRARY_PATH
 export COB_LIBRARY_PATH=/usr/local/lib:/ctools/bin:$COB_LIBRARY_PATH
+umask 0002
