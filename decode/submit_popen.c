@@ -5,6 +5,10 @@
 #include <ncurses.h>
 #include <ctype.h>
 
+#define MAX_FILTER_SIZE   16
+#define MAX_NO_FIELDS     80
+#define B20CODES          "B20CODES"
+
 #define DEBUG_LOGGING_ON
 #ifndef DEBUG_LOGGING_ON
   #define LOG(x)
@@ -24,8 +28,21 @@
   #define LOG(x) _log_(x);
 #endif
 
+typedef struct _Field_
+{
+  unsigned char code;
+  unsigned char filter[MAX_FILTER_SIZE];
+} _Field_;
+
+static _Field_ _field_[MAX_NO_FIELDS];
+static int _no_fields_;
+
 const char *_errors_[] =
 { "All Cool"
+, "B20CODES environment variable missing"
+, "B20CODES file cannot be opened"
+, "B20CODES file invalid signature"
+, "B20CODES file invalid data"
 , "Missing program codes to submit"
 , "Program is not executable"
 , "Program is not executing"
@@ -35,6 +52,10 @@ const char *_errors_[] =
 
 enum
 { ERC_OK
+, ERC_B20CODES_ENVVAR_MISSING
+, ERC_B20CODES_FILE_CANNOT_BE_OPENED
+, ERC_B20CODES_INVALID_SIGNATURE
+, ERC_B20CODES_INVALID_DATA
 , ERC_MISSING_PROGRAM_CODES
 , ERC_PROGRAM_NOT_EXECUTABLE
 , ERC_PROGRAM_NOT_EXECUTING
@@ -49,6 +70,49 @@ static char* _format_(char* work, int len, const char *fmt, ...)
   vsnprintf(work, len+1, fmt, args);
   va_end(args);
   return work;
+}
+
+static void _load_fields_(int *erc)
+{
+  if (*erc != 0) return;  
+  char *TERM;
+  char signature[sizeof(B20CODES)];
+  unsigned char code;
+  unsigned char filter[MAX_FILTER_SIZE];
+  int size;
+  TERM = getenv(B20CODES);
+  if (TERM == 0)
+  {
+    *erc = ERC_B20CODES_ENVVAR_MISSING;
+    return;
+  }
+  FILE* codefile = fopen(TERM, "rb");
+  if (codefile == 0)
+  {
+    *erc = ERC_B20CODES_FILE_CANNOT_BE_OPENED;
+    return;
+  }
+  fread(signature, sizeof(B20CODES), 1, codefile);
+  if (strcmp(signature, B20CODES) != 0)
+  {
+    *erc = ERC_B20CODES_INVALID_SIGNATURE;
+    return;
+  }
+  while (_no_fields_ < MAX_NO_FIELDS)
+  {
+    size = fread(&code, 1, 1, codefile);
+    if (size == 0)
+      return;
+    size = fread(filter, 1, MAX_FILTER_SIZE, codefile);
+    if (size != MAX_FILTER_SIZE)
+    {
+      *erc = ERC_B20CODES_INVALID_DATA;
+      return;
+    }
+    _field_[_no_fields_].code = code;
+    memcpy(_field_[_no_fields_].filter, filter, MAX_FILTER_SIZE);
+    _no_fields_++;
+  }
 }
 
 static int _show_(int erc)
@@ -85,7 +149,22 @@ static char _putcode_(int* erc, const char* p, FILE *proc)
   else 
     work[1] = (work[1] - 'a') + 10;  
   code = (unsigned char) (work[0] * 16 + work[1]);
-  _putc_(code, proc);
+  int i,j;
+  for (i=0; i<_no_fields_; i++)
+  {
+    if (_field_[i].code == code)
+    {
+      unsigned char *filter = _field_[i].filter;
+      for (j = 0; j < MAX_FILTER_SIZE; j++)
+      {
+        if (filter[j] == 0)
+         break;
+        _putc_(filter[j], proc);
+      }
+      sleep(2);
+      break;
+    }
+  }
 }
 
 static int _already_started_;
@@ -175,6 +254,7 @@ int main(int argc, char *argv[])
   int erc = 0;
   if (argc < 3)
     return(ERC_MISSING_PROGRAM_CODES);
+  _load_fields_(&erc);
   _submit_(&erc, argv[1], argv[2]);
   return _show_(erc);
 }
