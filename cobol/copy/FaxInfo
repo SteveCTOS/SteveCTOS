@@ -24,5 +24,5 @@
        01  WS-FAX-CHECK.
            03  WS-F-C            PIC X OCCURS 60.
        01  WS-FAX-SEND.
-           03  WS-FAX-10CHAR     PIC X(10).
-           03  WS-FAX-REST       PIC X(25).
+           03  WS-FAX-12CHAR     PIC X(12).
+           03  WS-FAX-REST       PIC X(23).

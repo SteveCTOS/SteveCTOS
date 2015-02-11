@@ -66,10 +66,10 @@ set (module_list
   BmAnalCh  BmKitCop  BmKitsIq  BmKitsMt  BmKitsRp  BmKtAnRp BmKtChMt BmKtItIq
   BmKtLiRp  BmKtQyMt  BmNewItm
 
-  #/main/ctos/source/cobol/copy/SelectStOrders:5: Error: 'WS-OUTORD-STATUS' undefined
+  #/ctools/dev/source/cobol/copy/SelectStOrders:5: Error: 'WS-OUTORD-STATUS' undefined
   # BmKitMfg BmKtMfIq BmKtMfLy 
   
-  #/main/ctos/source/cobol/copy/SelectSlRegister:6: Error: 'WS-INCR-STATUS' undefined
+  #/ctools/dev/source/cobol/copy/SelectSlRegister:6: Error: 'WS-INCR-STATUS' undefined
   # BmKtRgRp 
 
   CbBankTr CbCAMSAl  CbCAMSMt  CbGlPost  CbMaLyIq  CbMastIq  CbMastMt
@@ -82,12 +82,12 @@ set (module_list
   CrNoChMt  CrPayDMt  CrPaymnt  CrPaymRp  CrPerEnd  CrReFrAl  CrRemiEM CrRemiIq
   CrRemiMt  CrRemiRp  CrReTrMt  CrTrans
 
-  #/main/ctos/source/cobol/CrJrnIq.cob: In paragraph 'RDPREV-005':
-  #/main/ctos/source/cobol/CrJrnIq.cob:510: Error: syntax error, unexpected PREVIOUS
+  #/ctools/dev/source/cobol/CrJrnIq.cob: In paragraph 'RDPREV-005':
+  #/ctools/dev/source/cobol/CrJrnIq.cob:510: Error: syntax error, unexpected PREVIOUS
   # CrJrnIq
 
-  #/main/ctos/source/cobol/CrTranIq.cob: In paragraph 'RDPREV-005':
-  #/main/ctos/source/cobol/CrTranIq.cob:484: Error: syntax error, unexpected PREVIOUS
+  #/ctools/dev/source/cobol/CrTranIq.cob: In paragraph 'RDPREV-005':
+  #/ctools/dev/source/cobol/CrTranIq.cob:484: Error: syntax error, unexpected PREVIOUS
   # CrTranIq 
 
   DrAcStIq  DrAcStRp  DrAdjuIq  DrAdSlAc  DrAgeARp  DrAgeTmp  DrAgeTRp
@@ -115,8 +115,8 @@ set (module_list
   SlRgChMt SlSBChMt SlSaleRp SlSManRp SlSoByMt SlSoByRp SlSpecRp SlSRepMt
   SlTermMt
 
-  #/main/ctos/source/cobol/SlPsPuMt.cob:12: Error: Redefinition of 'PULLER-MASTER'
-  #/main/ctos/source/cobol/copy/SelectCoPullers:1: Error: 'PULLER-MASTER' previously defined here 
+  #/ctools/dev/source/cobol/SlPsPuMt.cob:12: Error: Redefinition of 'PULLER-MASTER'
+  #/ctools/dev/source/cobol/copy/SelectCoPullers:1: Error: 'PULLER-MASTER' previously defined here 
   # SlPsPuMt 
 
   StAlteIq  StAlteMt  StAlteRp  StAnalRp  StAnOhRp  StAveLst  StBinNRp  StBoAcIq

@@ -240,10 +240,10 @@
            03  WS-FIL-Y         PIC X.
            03  WS-QUOTE-YY      PIC 99.
        01  WSF-MAIL-QUOTE.
-           03  WSF-Q-FIL        PIC X(13) VALUE "/main/equote/".
+           03  WSF-Q-FIL        PIC X(15) VALUE "/ctools/fax/".
            03  WSF-QUOTE        PIC X(7).
        01  WS-SP-PRINT.
-           03  WS-1ST-9CHAR     PIC X(9).
+           03  WS-1ST-11CHAR     PIC X(11).
            03  WS-REST          PIC X(20).
       *ZoomBox Parameters     
        01  AttrArray          Pic x(2240).
@@ -2956,8 +2956,8 @@
               DISPLAY "SENDING QUOTE BY FAX...........         " AT POS
            ELSE
               DISPLAY "WRITING QUOTE TO <Fx> DIRECTORY...      " AT POS.
-           MOVE "/main/fx/"  TO WS-1ST-9CHAR
-           MOVE "/main/fax/" TO WS-FAX-10CHAR
+           MOVE "/ctools/fx/"  TO WS-1ST-11CHAR
+           MOVE "/ctools/fax/" TO WS-FAX-12CHAR
            PERFORM CHECK-QUOTE-REF.
            IF WS-ANSWER = "Y"
                MOVE "2" TO WS-ANSWER.

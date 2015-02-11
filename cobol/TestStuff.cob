@@ -19,8 +19,8 @@
           DISPLAY "USERNAME: " W-USERNAME.
           
       *    MOVE "lp -d" WS-PRINTER &
-      *      "/main/ctos/source/cobol/TestStuff.cob" TO W-PRINTCOMMAND.
-      *    MOVE "/main/ctos/source/cobol/TestStuff.cob" TO
+      *      "/ctools/dev/source/cobol/TestStuff.cob" TO W-PRINTCOMMAND.
+      *    MOVE "/ctools/dev/source/cobol/TestStuff.cob" TO
 
           MOVE "lp -d "       TO W-PRINTCOM1A
           MOVE WS-PRINTER     TO W-PRINTCOM1

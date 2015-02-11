@@ -126,8 +126,8 @@
        01  WS-REFNO-CHECK.
            03  WS-RF-C          PIC X OCCURS 25.
        01  WS-SP-PRINT.
-           03  WS-1ST-13CHAR    PIC X(13).
-           03  WS-REST          PIC X(25).
+           03  WS-1ST-15CHAR    PIC X(15).
+           03  WS-REST          PIC X(23).
        01  WS-TYPES.
            03  FILLER           PIC X(7) VALUE "Invoice".
            03  FILLER           PIC X(7) VALUE "Payment".
@@ -670,12 +670,12 @@
       ********************************************
       *OLD SECTION FOR FAXING OF MURATA FAXES.   *
       ********************************************
-           MOVE WS-REFNO        TO WS-REF.
-           MOVE "/main/Debtor/" TO WS-1ST-13CHAR.
-           MOVE WS-REFERENCE    TO WS-REST.
-           MOVE WS-SP-PRINT     TO WS-PRINTER.
+           MOVE WS-REFNO          TO WS-REF.
+           MOVE "/ctools/debtor/" TO WS-1ST-15CHAR.
+         5 MOVE WS-REFERENCE      TO WS-REST.
+         3 MOVE WS-SP-PRINT       TO WS-PRINTER.
            PERFORM PRINT-ROUTINE.
-           MOVE "/main/fax/"    TO WS-FAX-10CHAR.
+           MOVE "/ctools/fax/"    TO WS-FAX-12CHAR.
            PERFORM CHECK-FAX-NUMBER.
            IF SIGN-FOUND = 1
                GO TO RDM-010.

@@ -235,7 +235,7 @@
            03  WS-FIL-Y         PIC X.
            03  WS-QUOTE-YY      PIC 99.
        01  WS-SP-PRINT.
-           03  WS-1ST-9CHAR     PIC X(9).
+           03  WS-1ST-11CHAR    PIC X(11).
            03  WS-REST          PIC X(20).
        01  WS-NAMEANDADDRESS.
            03  WS-NAME          PIC X(40) VALUE " ".
@@ -2318,8 +2318,8 @@
               DISPLAY "SENDING QUOTE BY FAX...........         " AT POS
            ELSE
               DISPLAY "WRITING QUOTE TO <Fx> DIRECTORY...      " AT POS.
-           MOVE "/main/fx/"  TO WS-1ST-9CHAR
-           MOVE "/main/fax/" TO WS-FAX-10CHAR
+           MOVE "/ctools/fx/"  TO WS-1ST-11CHAR
+           MOVE "/ctools/fax/" TO WS-FAX-12CHAR
            PERFORM CHECK-QUOTE-REF.
            IF WS-ANSWER = "Y"
                MOVE "2" TO WS-ANSWER.
