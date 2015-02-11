@@ -149,6 +149,11 @@ static char _putcode_(int* erc, const char* p, FILE *proc)
   else 
     work[1] = (work[1] - 'a') + 10;  
   code = (unsigned char) (work[0] * 16 + work[1]);
+  if (_no_fields_ == 0)
+  {
+    _putc_(code, proc);
+    return;
+  }
   int i,j;
   for (i=0; i<_no_fields_; i++)
   {
@@ -254,7 +259,14 @@ int main(int argc, char *argv[])
   int erc = 0;
   if (argc < 3)
     return(ERC_MISSING_PROGRAM_CODES);
-  _load_fields_(&erc);
-  _submit_(&erc, argv[1], argv[2]);
+  const char* program = argv[1];
+  const char* codes = argv[2];
+  if (codes[0] == '!')
+  {
+    codes++;
+    if (codes[0] != '!')
+      _load_fields_(&erc);
+  }
+  _submit_(&erc, program, codes);
   return _show_(erc);
 }
