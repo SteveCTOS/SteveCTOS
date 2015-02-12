@@ -672,8 +672,8 @@
       ********************************************
            MOVE WS-REFNO          TO WS-REF.
            MOVE "/ctools/debtor/" TO WS-1ST-15CHAR.
-         5 MOVE WS-REFERENCE      TO WS-REST.
-         3 MOVE WS-SP-PRINT       TO WS-PRINTER.
+           MOVE WS-REFERENCE      TO WS-REST.
+           MOVE WS-SP-PRINT       TO WS-PRINTER.
            PERFORM PRINT-ROUTINE.
            MOVE "/ctools/fax/"    TO WS-FAX-12CHAR.
            PERFORM CHECK-FAX-NUMBER.
