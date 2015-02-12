@@ -50,6 +50,7 @@ set (source
 )
 
 add_executable (ctos_decode ${source})
+install (TARGETS ctos_decode RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 set (source 
   ${CMAKE_CURRENT_SOURCE_DIR}/archive.c
@@ -59,6 +60,7 @@ set (source
 )
 
 add_executable (ctos_archive ${source})
+install (TARGETS ctos_archive RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 set (frp_list
   BAUPMENU  BM1MENU   CB1MENU   CONTMENU  CR1MENU   CR2MENU   CR3MENU
@@ -143,7 +145,7 @@ add_custom_target (ctos_compile ALL
   SOURCES ${frp_source}
 )
 
-install (FILES ${libfile} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install (FILES ${libfile} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib  PERMISSIONS GROUP_WRITE)
 
 set (source 
   ${CMAKE_CURRENT_SOURCE_DIR}/b20forms.c
@@ -162,6 +164,7 @@ set (source
 )
 add_executable (ctos_b20codes ${source})
 target_link_libraries (ctos_b20codes ncurses)
+install (TARGETS ctos_b20codes RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 include_directories(${CTOS_BINARY_DIR}/c)
 set (source
@@ -182,28 +185,28 @@ set (source
 )
 add_executable (Record ${source})
 target_link_libraries (Record)
-install (TARGETS Record RUNTIME DESTINATION bin)
+install (TARGETS Record RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/submit.c
 )
 add_executable (Submit ${source})
 target_link_libraries (Submit)
-install (TARGETS Submit RUNTIME DESTINATION bin)
+install (TARGETS Submit RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/submit_popen.c
 )
 add_executable (submitp ${source})
 target_link_libraries (submitp ncurses)
-install (TARGETS submitp RUNTIME DESTINATION bin)
+install (TARGETS submitp RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/text2pdf.c
 )
 add_executable (text2pdf ${source})
 target_link_libraries (text2pdf)
-install (TARGETS text2pdf RUNTIME DESTINATION bin)
+install (TARGETS text2pdf RUNTIME DESTINATION bin PERMISSIONS GROUP_EXECUTE)
 
 set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/header.cpp
