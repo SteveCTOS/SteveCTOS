@@ -24,7 +24,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
      left of the screen.
  
   2. From a terminal install the following using apt-get
-    > sudo apt-get install git g++ cmake open-cobol
+    - sudo apt-get install git g++ cmake open-cobol
 
   3. Using Software Manager install
     
@@ -34,13 +34,14 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - doublecmd gtk 
 
   4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
-     : sudo mkdir /ctools
-     : sudo chown ctools:ctools
-     : mkdir /ctools/dev
-     : cd /ctools/dev
-     : git clone https://<user>:<password>@bitbucket.org/VincentRisi/ctos4ctools source
-     : mkdir build
-     : cd build
-     : cmake ../source
-     : make install
+
+     - sudo mkdir /ctools
+     - sudo chown ctools:ctools
+     - mkdir /ctools/dev
+     - cd /ctools/dev
+     - git clone https://<user>:<password>@bitbucket.org/VincentRisi/ctos4ctools source
+     - mkdir build
+     - cd build
+     - cmake ../source
+     - make install
 
