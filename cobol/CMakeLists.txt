@@ -9,7 +9,7 @@ function (cobol_executable name)
   add_custom_command (
     OUTPUT ${output}
     DEPENDS ${source} ${COBOL_BINARY}/cobcalls.o
-    COMMAND cobc -g -ftrace -I ${COBOL_BINARY} -I ${COBOL_SOURCE} -I ${COBOL_SOURCE}/copy 
+    COMMAND cobc -g -I ${COBOL_BINARY} -I ${COBOL_SOURCE} -I ${COBOL_SOURCE}/copy 
                  -I ${COBOL_SOURCE}/fd -x ${source} -l rt ${COBOL_BINARY}/cobcalls.o 
                  -L ${CMAKE_BINARY_DIR}/lib -l b20forms
   )
@@ -26,7 +26,7 @@ function (cobol_module name)
   add_custom_command (
     OUTPUT ${output}
     DEPENDS ${source} ${COBOL_BINARY}/cobcalls.o
-    COMMAND cobc -g -ftrace -I ${COBOL_BINARY} -I ${COBOL_SOURCE} -I ${COBOL_SOURCE}/copy 
+    COMMAND cobc -g -I ${COBOL_BINARY} -I ${COBOL_SOURCE} -I ${COBOL_SOURCE}/copy 
                  -I ${COBOL_SOURCE}/fd -m ${source} -l rt ${COBOL_BINARY}/cobcalls.o 
                  -L ${CMAKE_BINARY_DIR}/lib -l b20forms
   )
