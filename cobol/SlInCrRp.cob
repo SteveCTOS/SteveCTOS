@@ -236,10 +236,10 @@
            03  P-CONT-PAGE      PIC 9.
            03  FILLER           PIC X(63) VALUE " ".
        01  WS-EMAIL-INVOICE.
-           03  WS-EI-FIL        PIC X(13) VALUE "/main/einvoc/".
+           03  WS-EI-FIL        PIC X(15) VALUE "/ctools/einvoc/".
            03  WS-EINVOICE      PIC X(6).
        01  WS-EMAIL-CREDIT.
-           03  WS-EC-FIL        PIC X(13) VALUE "/main/ecredt/".
+           03  WS-EC-FIL        PIC X(15) VALUE "/ctools/ecredt/".
            03  WS-ECREDIT       PIC X(6).
        01 WS-FST-LINE.
           05  WS-DELIM-F             PIC  X(2).

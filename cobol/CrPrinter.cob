@@ -23,8 +23,8 @@
            03  WS-PRNT-ST1      PIC 99.
            03  WS-PRNT-ST2      PIC 99.
        01  WS-OWN-PRINT-FILE.
-           03  WS-OWN-DIR       PIC X(9) VALUE "/main/cr/".
-           03  WS-OWN-FILE-NAME PIC X(16) VALUE " ".
+           03  WS-OWN-DIR       PIC X(11) VALUE "/ctools/cr/".
+           03  WS-OWN-FILE-NAME PIC X(14) VALUE " ".
        01  PRINT-LINE.
             03  FILLER             PIC X(11).
             03  W-SUB1             PIC Z9.

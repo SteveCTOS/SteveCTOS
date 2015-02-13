@@ -23,8 +23,7 @@ set (atg_source
 
 source_group("CocoR Files"    REGULAR_EXPRESSION ".*[.](atg|frame)$" )
 
-message (STATUS "${COCO} ${CMAKE_CURRENT_SOURCE_DIR}/ctosio.atg -o ${CMAKE_CURRENT_BINARY_DIR}")
-
+##message (STATUS "${COCO} ${CMAKE_CURRENT_SOURCE_DIR}/ctosio.atg -o ${CMAKE_CURRENT_BINARY_DIR}")
 add_custom_command (
   OUTPUT  ${generated}
   COMMAND ${COCO} ${CMAKE_CURRENT_SOURCE_DIR}/ctosio.atg -o ${CMAKE_CURRENT_BINARY_DIR}
@@ -50,6 +49,7 @@ set (source
 )
 
 add_executable (ctos_decode ${source})
+install (TARGETS ctos_decode RUNTIME DESTINATION bin)
 
 set (source 
   ${CMAKE_CURRENT_SOURCE_DIR}/archive.c
@@ -59,6 +59,7 @@ set (source
 )
 
 add_executable (ctos_archive ${source})
+install (TARGETS ctos_archive RUNTIME DESTINATION bin)
 
 set (frp_list
   BAUPMENU  BM1MENU   CB1MENU   CONTMENU  CR1MENU   CR2MENU   CR3MENU
@@ -143,7 +144,7 @@ add_custom_target (ctos_compile ALL
   SOURCES ${frp_source}
 )
 
-install (FILES ${libfile} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install (FILES ${libfile} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib )
 
 set (source 
   ${CMAKE_CURRENT_SOURCE_DIR}/b20forms.c
@@ -162,6 +163,7 @@ set (source
 )
 add_executable (ctos_b20codes ${source})
 target_link_libraries (ctos_b20codes ncurses)
+install (TARGETS ctos_b20codes RUNTIME DESTINATION bin)
 
 include_directories(${CTOS_BINARY_DIR}/c)
 set (source

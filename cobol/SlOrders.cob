@@ -658,7 +658,7 @@
               ADD 1              TO INCR-COPY-NUMBER.
           MOVE INCR-COPY-NUMBER TO P-PRINTNUMBER.
            
-          MOVE "/main/ps  /"     TO ALPHA-RATE
+          MOVE "/ctools/ps/"     TO ALPHA-RATE
           MOVE WS-CO-NUMBER      TO WS-COMPANY-DIGITS
           MOVE WS-CO-DIG1        TO AL-RATE (9)
           MOVE WS-CO-DIG2        TO AL-RATE (10).

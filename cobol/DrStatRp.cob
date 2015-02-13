@@ -57,7 +57,7 @@
        77  WS-EMAIL-NUMBER      PIC X(50) VALUE " ".
        88  WS-LAST-DAY          VALUES ARE "01" THRU "31".
        01  WS-EMAIL-STATEMENT.
-           03  WS-ES-FIL        PIC X(13) VALUE "/main/estate/".
+           03  WS-ES-FIL        PIC X(15) VALUE "/ctools/estate/".
            03  WS-EStatement    PIC X(7).
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.

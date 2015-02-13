@@ -59,7 +59,7 @@
        01  WS-ORDER-CHECK.
            03  WS-O-C           PIC X OCCURS 25.
        01  WS-SP-PRINT.
-           03  WS-1ST-9CHAR     PIC X(9).
+           03  WS-1ST-11CHAR    PIC X(11).
            03  WS-REST          PIC X(20).
        01  STORE-DEL.
            03  WS-DEL-OCCUR OCCURS 10.
@@ -200,7 +200,7 @@
            03  JOB-NUM         PIC X(4) VALUE " ".
            03  FILLER          PIC X(65) VALUE " ".
        01  WS-EMAIL-PORDER.
-           03  WS-EP-FIL        PIC X(13) VALUE "/main/epordr/".
+           03  WS-EP-FIL        PIC X(15) VALUE "/ctools/epordr/".
            03  WS-EPORDER       PIC X(7).
        01 WS-FST-LINE.
           05  WS-DELIM-F             PIC  X(2).
@@ -353,8 +353,8 @@
                MOVE "[QFax]" TO WS-PRINTER
                GO TO CONTROL-017.
            MOVE "S"          TO WS-FAX-Y-N.
-           MOVE "/main/fx/"  TO WS-1ST-9CHAR.
-           MOVE "/main/fax/" TO WS-FAX-10CHAR.
+           MOVE "/ctools/fx/"  TO WS-1ST-11CHAR.
+           MOVE "/ctools/fax/" TO WS-FAX-12CHAR.
            PERFORM CHECK-ORDER.
            PERFORM ERROR-020.
        CONTROL-017.

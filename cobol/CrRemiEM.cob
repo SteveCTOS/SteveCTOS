@@ -98,7 +98,7 @@
        01  WS-MONTH-DESC REDEFINES WS-MONTH-DESCRIPTIONS.
            03  WS-MM-DESC      PIC X(10) OCCURS 12.
        01 WS-EMAIL-REMIT.
-           03  WS-ER-FIL        PIC X(13) VALUE "/main/eremit/".
+           03  WS-ER-FIL        PIC X(15) VALUE "/ctools/eremit/".
            03  WS-EREMIT        PIC X(4).
            03  WS-ER-FIL2       PIC X(2) VALUE "Co".
            03  WS-ECOMPANY      PIC 99.

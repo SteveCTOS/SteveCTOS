@@ -965,7 +965,7 @@
            MOVE 2710 TO POS
            DISPLAY "WRITING DOCUBASE RECORD....." AT POS.
            MOVE " " TO WS-DOCUFILE ALPHA-RATE DATA-RATE.
-           MOVE "/main/ps  /"    TO ALPHA-RATE
+           MOVE "/ctools/ps/"    TO ALPHA-RATE
            MOVE WS-CO-NUMBER     TO WS-COMPANY-DIGITS
            MOVE WS-CO-DIG1       TO AL-RATE (9)
            MOVE WS-CO-DIG2       TO AL-RATE (10).
