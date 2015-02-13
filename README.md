@@ -6,7 +6,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
 
 * Quick summary
 
-  It hold the current sources for the port from COBOL application CTOS to running as GNUCobol applications on LINUX.
+  It hold the current sources for the port from COBOL application CTOS to running as GNUCobol (aka OpenCobol) application hosted on LINUX.
 
 * Version
  
@@ -16,20 +16,30 @@ This repository is in bitbucket being used for free and as such it has a maximum
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Installing the Server
+  
+  1. Install Linux Mint Cinnamon (17.1 - current latest) making the main user ctools.
+     From Update Manager install all the outstanding updates. This is shown by the 
+     installing updates having an exclamation ! in the shield next to clock in the bottom
+     left of the screen.
+ 
+  2. From a terminal install the following using apt-get
+     sudo apt-get install git g++ cmake open-cobol
 
-### Contribution guidelines ###
+  3. Using Software Manager install
+     putty
+     openssh  
+     sublime text
+     doublecmd gtk 
 
-* Writing tests
-* Code review
-* Other guidelines
+  4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
+     sudo mkdir /ctools
+     sudo chown ctools:ctools
+     mkdir /ctools/dev
+     cd /ctools/dev
+     git clone https://<user>:<password>@bitbucket.org/VincentRisi/ctos4ctools source
+     mkdir build
+     cd build
+     cmake ../source
+     make install
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
