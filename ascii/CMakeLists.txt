@@ -55,7 +55,7 @@ file(APPEND ${takeon} "#-------------------\n")
 function (cobol_executable name)
   set (source ${CMAKE_CURRENT_SOURCE_DIR}/programs/${name}.cob)
   set (output ${CMAKE_CURRENT_BINARY_DIR}/programs/${name})
-  file(APPEND ${takeon} "submitp ${CMAKE_CURRENT_BINARY_DIR}/programs/${name} I/0A\n")
+  file(APPEND ${takeon} "COB_SYNC=n submitp ${CMAKE_CURRENT_BINARY_DIR}/programs/${name} I/0A\n")
   add_custom_command (
     OUTPUT ${output} 
     DEPENDS ${source}
@@ -90,3 +90,5 @@ foreach(name ${source_list})
 endforeach ()
 
 file(APPEND ${takeon} "#-------------------\n")
+
+file (INSTALL ${takeon}  DESTINATION /ctools/bin  FILE_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ)
