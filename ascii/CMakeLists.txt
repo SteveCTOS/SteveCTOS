@@ -3,7 +3,7 @@
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/programs)
 set (takeon ${CMAKE_CURRENT_BINARY_DIR}/programs/takeon.sh)
 file(WRITE  ${takeon} "if [ \"$2\" = \"\" ]\nthen\n")
-file(APPEND ${takeon} "  DATACO2=\"data\"\n")
+file(APPEND ${takeon} "  DATACO2=\"data01\"\n")
 file(APPEND ${takeon} "else\n")
 file(APPEND ${takeon} "  DATACO2=$2\n")
 file(APPEND ${takeon} "fi\n")
@@ -27,7 +27,6 @@ set (bdb_list
   StTrans StTransLy
   )
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
 foreach (name ${bdb_list})
   file(APPEND ${takeon} "export DD_${name}=${CMAKE_INSTALL_PREFIX}/$DATACO1/${name}\n")
 endforeach()  
