@@ -63,9 +63,14 @@ if result == 0:
       result = result[1..high(result)]  
     return result
 
+  type
+    SSeq  = seq[string]  
+    SSSeq = seq[StringSeq]
+      
+
   var
-    tags = array[0..0, string]
-    data = array[0..0, string] 
+    tags = SSeq
+    data = SSSeq 
 
   proc readfile(filename) =
     var
@@ -76,6 +81,7 @@ if result == 0:
       lineno = 0
       pageno = 0
       infile = newFileStream(filename, "rt")  
+    if infile == nil: quit("Cannot open the file " & filename)  
     defer: close(infile)
     while readline(infile, line) == true:
       if ord(line[0]) == 0xb4:
@@ -89,7 +95,7 @@ if result == 0:
           inc(notags)
         else:
           if lineno == 0:
-            data.add([string]) 
+            data.add(SSeq) 
           data[pageno].add(cleanup(line)) 
           inc(lineno)
           if lineno == notags: 
