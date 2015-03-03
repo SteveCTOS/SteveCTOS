@@ -1,4 +1,4 @@
-import parseopt2, os, streams
+import parseopt2, os, streams, queues
 
 var
   filename = ""
@@ -45,58 +45,66 @@ proc getArgs(): int =
     writeHelp()
   return result
 
-var result = getArgs() 
-if result == 0:  
-  var (fpath, fnode, fext) = splitFile(filename)
- 
-  proc cleanup(line: string) : string =
-    var 
-      result = ""
-      i = 0
-      ch : char
-    while i < line.len:
-      ch = line[i]
-      if ord(ch) >= 32 and ord(ch) < 128:
-        result = result & ch
-      inc(i)  
-    if result.len > 0 and result[0] == ' ':
-      result = result[1..high(result)]  
-    return result
+var (fpath, fnode, fext) = splitFile(filename)
 
+proc cleanup(line: string) : string =
+  var 
+    result = ""
+    i = 0
+    ch : char
+  while i < line.len:
+    ch = line[i]
+    if ord(ch) >= 32 and ord(ch) < 128:
+      result = result & ch
+    inc(i)  
+  if result.len > 0 and result[0] == ' ':
+    result = result[1..high(result)]  
+  return result
+
+type
+  Page = object
+    data: Queue[string](32)
+
+var
+  tags  = initQueue[string](32)
+  pages = initQueue[Page](24)
+
+proc initPage : Page
+  result = Page(data = initQueue[string](32))
+
+proc readFOHFile(filename) =
   var
-    tags = array[0..0, string]
-    data = array[0..0, string] 
+    line   = ""
+    first  = true
+    skip   = false
+    notags = 0
+    lineno = 0
+    pageno = 0
+    infile = newFileStream(filename, fmRead) 
+  open(infilenim c )   
+  defer: close(infile)
+  while readline(infile, line) == true:
+    var cl = cleanup(line)
+    if ord(line[0]) == 0xb4:
+      if first == true:
+        skip = true
+        first = false
+      else:
+        skip = false  
+      if skip == true:
+        tags.add(cl)
+      else:
+        if lineno == 0:
+          var page = initPage()
+          pages.add(page)
+        page.data.add(cl) 
+        if page.data.len == tags.len: 
+          lineno = 0
 
-  proc readfile(filename) =
-    var
-      line = ""
-      first = true
-      skip = false
-      notags = 0
-      lineno = 0
-      pageno = 0
-      infile = newFileStream(filename, "rt")  
-    defer: close(infile)
-    while readline(infile, line) == true:
-      if ord(line[0]) == 0xb4:
-        if first == true:
-          skip = true
-          first = false
-        else:
-          skip = false  
-        if skip == true:
-          tags.add(cleanup(line))  
-          inc(notags)
-        else:
-          if lineno == 0:
-            data.add([string]) 
-          data[pageno].add(cleanup(line)) 
-          inc(lineno)
-          if lineno == notags: 
-            lineno = 0
-            inc(pageno) 
-
-  readfile(filename)            
+var result = getArgs() 
+if result != 0:
+  quit("Result not zero " & result)  
+readFOHFile(filename)            
 
 # 
 # def to_xml():
