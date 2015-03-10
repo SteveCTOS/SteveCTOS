@@ -63,17 +63,14 @@ proc cleanup(line: string) : string =
 
 type
   Page = object
-    data: seq[string]
+    data: Queue[string]
 
-var
-  tags = seq[string]
-  data = seq[Page] 
+var 
+  tags = initQueue[string](32)
+  pages = initQueue[Page](32)
 
-proc addlist[T](data: seq[T], rec: T, index: ref int, delta: int) =
-  if index mod delta == 0:
-    realloc(data, sizeof(rec) * index+delta)
-  data[index] = rec
-  inc(index)   
+proc addPage : Page =  
+  result = Page(data : initQueue[string](32))
 
 proc readFOHFile(filename) =
   var
@@ -94,15 +91,17 @@ proc readFOHFile(filename) =
       else:
         skip = false  
       if skip == true:
-        addlist(tags, cleanup(line), notags, 32)
+        tags.add(cleanup(line))
       else:
         if lineno == 0:
-          var page : Page
-          addlist(data, page, pageno, 32) 
-        addlist(data[pageno-1].data, cleanup(line), lineno, 32) 
-        if lineno == notags: 
+          var page = addPage()
+          pages.add(page)
+        page.data.add(cleanup(line)  
+        inc(lineno)  
+        if lineno == tags.len: 
           lineno = 0
 
+echo("getargs")
 var result = getArgs() 
 if result != 0:
   quit("Result not zero " & result)  
