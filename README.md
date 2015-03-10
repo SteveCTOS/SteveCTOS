@@ -36,7 +36,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
   4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
 
      - sudo mkdir /ctools
-     - sudo chown ctools:ctools
+     - sudo chown ctools:ctools /ctools
      - mkdir /ctools/dev
      - cd /ctools/dev
      - git clone https://<user>:<password>@bitbucket.org/VincentRisi/ctos4ctools source
@@ -44,4 +44,3 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - cd build
      - cmake ../source
      - make install
-

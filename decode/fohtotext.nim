@@ -1,4 +1,4 @@
-import parseopt2, os, streams
+import parseopt2, os, streams, queues
 
 var
   filename = ""
@@ -63,14 +63,14 @@ proc cleanup(line: string) : string =
 
 type
   Page = object
-    data: Queue[string]
+    data: Queue[string](32)
 
-var 
-  tags = initQueue[string](32)
-  pages = initQueue[Page](32)
+var
+  tags  = initQueue[string](32)
+  pages = initQueue[Page](24)
 
-proc addPage : Page =  
-  result = Page(data : initQueue[string](32))
+proc initPage : Page
+  result = Page(data = initQueue[string](32))
 
 proc readFOHFile(filename) =
   var
@@ -84,6 +84,7 @@ proc readFOHFile(filename) =
   open(infilenim c )   
   defer: close(infile)
   while readline(infile, line) == true:
+    var cl = cleanup(line)
     if ord(line[0]) == 0xb4:
       if first == true:
         skip = true
@@ -91,14 +92,13 @@ proc readFOHFile(filename) =
       else:
         skip = false  
       if skip == true:
-        tags.add(cleanup(line))
+        tags.add(cl)
       else:
         if lineno == 0:
-          var page = addPage()
+          var page = initPage()
           pages.add(page)
-        page.data.add(cleanup(line)  
-        inc(lineno)  
-        if lineno == tags.len: 
+        page.data.add(cl) 
+        if page.data.len == tags.len: 
           lineno = 0
 
 echo("getargs")
