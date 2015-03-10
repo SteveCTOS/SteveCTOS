@@ -7,7 +7,7 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT STOCK-MASTER ASSIGN TO "[WIN]<DATA>STMASTER"
+           SELECT STOCK-MASTER ASSIGN TO "StMaster"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
@@ -15,13 +15,13 @@
                ALTERNATE RECORD KEY IS ST-ALT-KEY WITH DUPLICATES
                ALTERNATE RECORD KEY IS ST-SUPPLIER WITH DUPLICATES
                FILE STATUS IS WS-STOCK-STATUS.
-           SELECT STOCK-ASCII ASSIGN TO "[WIN]<ASCII>STMASTERASCII"
+           SELECT STOCK-ASCII ASSIGN TO "StMasterASCII"
                FILE STATUS IS WS-STOCK-STATUS.
       *
         DATA DIVISION.
         FILE SECTION.
-           COPY "/main/ctos/source/cobol/fd/ChlfdStock".
-           COPY CHLFDSTOCKASCII.
+           COPY ChlfdStock.
+           COPY ChlfdStockASCII.
       *
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
@@ -61,7 +61,11 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN I-O STOCK-MASTER.
+           IF WS-ACCEPT = "I"
+              OPEN OUTPUT STOCK-MASTER
+           ELSE
+              OPEN I-O STOCK-MASTER.
+              
            IF WS-ACCEPT = "E"
                MOVE " " TO ST-STOCKNUMBER
               START STOCK-MASTER KEY NOT < ST-KEY.
@@ -86,8 +90,8 @@
 
            MOVE STOCK-RECORD    TO ASCII-RECORD.
         BE-010.
-           WRITE ASCII-RECORD
-                 INVALID KEY
+      *     WRITE ASCII-RECORD
+      *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
              DISPLAY WS-STAT2

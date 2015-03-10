@@ -16,8 +16,7 @@
                              CBTRANS-LY-ALT-KEY WITH DUPLICATES
                ALTERNATE RECORD KEY IS CBTRANS-LY-PERIOD WITH DUPLICATES
                FILE STATUS IS WS-CBTRANS-LY-STATUS.
-           SELECT CBTRANS-LY-ASCII ASSIGN TO 
-                           "CbTransLyASCII"
+           SELECT CBTRANS-LY-ASCII ASSIGN TO "CbTransLyASCII"
                FILE STATUS IS WS-CBTRANS-LY-STATUS.
       *
         DATA DIVISION.
@@ -28,11 +27,11 @@
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(4) VALUE 0.
            01  WS-CBTRANS-LY-STATUS.
-               03  WS-STAT1  PIC 9.
-               03  WS-STAT2  PIC 9.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -64,6 +63,16 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT CBTRANS-LY-FILE.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+      *     IF WS-STAT1 = 61
+      *        CLOSE CBTRANS-LY-FILE
+      *        OPEN I-O CBTRANS-LY-FILE
+      *        MOVE WS-STAT1 TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE.
+
            IF WS-ACCEPT = "E"
               MOVE 0 TO CBTRANS-LY-KEY
               START CBTRANS-LY-FILE KEY NOT < CBTRANS-LY-KEY.
@@ -72,6 +81,9 @@
               OPEN EXTEND CBTRANS-LY-ASCII
            ELSE
               OPEN INPUT CBTRANS-LY-ASCII.
+              
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
       *
@@ -92,7 +104,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
              GO TO BE-005.
         BE-EXIT.
@@ -104,7 +115,9 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-MESSAGE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-REC    TO CBTRANS-LY-REC.
         BI-010.
@@ -112,7 +125,6 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -122,6 +134,9 @@
         C-000.
            CLOSE CBTRANS-LY-FILE
                  CBTRANS-LY-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+           COPY "ErrorMessage".
       * END-OF-JOB.

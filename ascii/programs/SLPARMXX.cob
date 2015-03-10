@@ -19,8 +19,8 @@
       *
         DATA DIVISION.
         FILE SECTION.
-           COPY CHLFDPARAM.
-           COPY CHLFDPARAMASCII.
+           COPY ChlfdParam.
+           COPY ChlfdParamASCII.
       *
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
@@ -85,8 +85,8 @@
 
            MOVE PARAMETER-REC    TO ASCII-REC.
         BE-010.
-           WRITE ASCII-REC
-                 INVALID KEY
+      *     WRITE ASCII-REC
+      *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
              DISPLAY WS-STAT2

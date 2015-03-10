@@ -14,7 +14,7 @@
                RECORD KEY IS PTY-KEY
                FILE STATUS IS WS-COMPANY-STATUS.
            SELECT COMPANY-ASCII ASSIGN TO
-                            "CoCompanyASCII"
+                      "CoCompanyASCII"
                FILE STATUS IS WS-COMPANY-STATUS.
       *
         DATA DIVISION.
@@ -25,11 +25,11 @@
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
-           77  WS-MESSAGE    PIC X(79) VALUE " ".
+           77  WS-COUNT      PIC 9(4) VALUE 0.
            77  POS           PIC 9(4) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-COMPANY-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -38,7 +38,7 @@
            IF WS-ACCEPT = "E"
                PERFORM B-EXPORT
            ELSE
-                PERFORM B-IMPORT.
+               PERFORM B-IMPORT.
           PERFORM C-END.
            STOP RUN.
         CONTROL-000.
@@ -56,15 +56,15 @@
            IF WS-ACCEPT NOT = "E" AND NOT = "I"
               GO TO A-001.
               
-           MOVE WS-ACCEPT TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.      
-              
         A-AC-EXIT.
            EXIT.
       *
         A-INIT SECTION.
         A-000.
-           OPEN OUTPUT COMPANY-MENU.
+           OPEN I-O COMPANY-MENU.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
       *     MOVE " " TO PTY-KEY.
       *     START COMPANY-MENU KEY NOT < PTY-KEY
       *           INVALID KEY
@@ -75,6 +75,9 @@
               OPEN EXTEND COMPANY-ASCII
            ELSE
               OPEN INPUT COMPANY-ASCII.
+
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
       *
@@ -95,7 +98,6 @@
       *           INVALID KEY
       *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
       *       DISPLAY WS-STAT1
-      *       DISPLAY WS-STAT2
       *       STOP RUN.
       *     GO TO BE-005.
        BE-EXIT.
@@ -107,24 +109,23 @@
                AT END 
              GO TO BI-EXIT.
                
-           MOVE ASCII-NAME TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+           DISPLAY ASCII-NUMBER AT 1510
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
-      *     MOVE ASCII-RECORD    TO COMPANY-RECORD.
-           
            MOVE ASCII-NUMBER      TO PTY-NUMBER
            MOVE ASCII-NAME        TO PTY-CO-NAME
            MOVE ASCII-VOL         TO PTY-VOL-DIR.
         BI-010.
            WRITE COMPANY-RECORD
                  INVALID KEY
-             DISPLAY "INVALID WRITE FOR ISAM FILE..."
-             DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             MOVE "INVALID WRITE FOR ISAM FILE..." TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             MOVE WS-STAT1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             CLOSE COMPANY-MENU
+                   COMPANY-ASCII
              STOP RUN.
-             
-           MOVE "WRITE DONE, GOING TO BI-005" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
              
            GO TO BI-005.
         BI-EXIT.
@@ -134,6 +135,8 @@
         C-000.
            CLOSE COMPANY-MENU
                  COMPANY-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
            COPY "ErrorMessage".

@@ -26,10 +26,10 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-MESSAGE    PIC X(79) VALUE " ".     
+           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".     
            01  WS-PRINTERS-STATUS.
-               03  WS-STAT1  PIC 9.
-               03  WS-STAT2  PIC 9.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -60,7 +60,7 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN OUTPUT PRINTER-MASTER.
+           OPEN I-O PRINTER-MASTER.
 
            MOVE WS-PRINTERS-STATUS TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -71,9 +71,6 @@
               OPEN INPUT PRINTER-ASCII.
 
            MOVE WS-PRINTERS-STATUS TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-           
-           MOVE "FILES OPENED" TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
@@ -92,7 +89,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
            GO TO BE-005.
         BE-EXIT.
@@ -100,23 +96,37 @@
       *
         B-IMPORT SECTION.
         BI-005.
-           READ PRINTER-ASCII NEXT
+           READ PRINTER-ASCII NEXT 
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-RECORD AT 1505.
+           ADD 1 TO WS-COUNT.
+           DISPLAY WS-COUNT AT 2510.
 
-           MOVE ASCII-MESSAGE TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+           MOVE ASCII-NUMBER              TO PRNT-NUMBER
+           MOVE ASCII-NAME                TO PRNT-NAME
+           MOVE ASCII-TYPE                TO PRNT-TYPE
+           MOVE ASCII-DESC                TO PRNT-DESC
+           MOVE ASCII-PROMPT-PAPER        TO PRNT-PROMPT-PAPER
+           MOVE ASCII-COMP                TO PRNT-COMP
+           MOVE ASCII-BOLD                TO PRNT-BOLD
+           MOVE ASCII-UNBOLD              TO PRNT-UNBOLD
+           MOVE ASCII-NORMAL              TO PRNT-NORMAL
+           MOVE ASCII-EIGHT               TO PRNT-EIGHT
+           MOVE ASCII-ELEVEN              TO PRNT-EIGHT
+           MOVE ASCII-FOUR                TO PRNT-FOUR.
 
-           MOVE ASCII-RECORD    TO PRINTER-REC.
+           CALL "C$SLEEP" USING 2.
+
         BI-010.
            WRITE PRINTER-REC
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              CALL "C$SLEEP" USING 3
+             CLOSE PRINTER-MASTER
+                   PRINTER-ASCII
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -126,6 +136,8 @@
         C-000.
            CLOSE PRINTER-MASTER
                  PRINTER-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
         COPY "ErrorMessage".

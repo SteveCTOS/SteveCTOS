@@ -28,11 +28,9 @@
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(4) VALUE 0.
-           77  WS-MESSAGE    PIC X(79) VALUE " ".
-           
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-CBMAST-STATUS.
-               03  WS-STAT1  PIC 9.
-               03  WS-STAT2  PIC 9.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -65,7 +63,7 @@
         A-000.
            OPEN OUTPUT CB-LY-MASTER.
            
-           MOVE WS-CBMAST-STATUS TO WS-MESSAGE
+           MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
            IF WS-ACCEPT = "E"
@@ -77,7 +75,7 @@
            ELSE
               OPEN INPUT CB-LY-ASCII.
 
-           MOVE WS-CBMAST-STATUS TO WS-MESSAGE
+           MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
@@ -99,7 +97,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
              GO TO BE-005.
         BE-EXIT.
@@ -111,7 +108,9 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-MESSAGE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-RECORD    TO CB-LY-RECORD.
         BI-010.
@@ -119,7 +118,6 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -129,6 +127,8 @@
         C-000.
            CLOSE CB-LY-MASTER
                  CB-LY-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
         COPY "ErrorMessage".

@@ -29,10 +29,9 @@
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(4) VALUE 0.
-           77 WS-MESSAGE     PIC X(79) VALUE " ".
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-TOOLKITS-STATUS.
-               03  WS-STAT1  PIC 9.
-               03  WS-STAT2  PIC 9.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -63,7 +62,7 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN OUTPUT TOOLKITS.
+           OPEN I-O TOOLKITS.
       *     IF WS-ACCEPT = "E"
       *        MOVE " " TO TO-TOOLKIT-NUMBER
       *        START TOOLKITS KEY NOT < TO-KEY.
@@ -100,14 +99,10 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             MOVE "WRITE ERROR" TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE.
 
-            MOVE "WRITE ERROR" TO WS-MESSAGE
-            PERFORM ERROR-MESSAGE.
-
-             STOP RUN.
-      *     IF WS-COUNT < 500
-             GO TO BE-005.
+            GO TO BE-005.
         BE-EXIT.
            EXIT.
       *
@@ -117,7 +112,9 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-MESSAGE AT 1505.
+           ADD 1 TO WS-COUNT.
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-REC    TO TOOL-REC.
         BI-010.
@@ -125,7 +122,6 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -135,6 +131,8 @@
         C-000.
            CLOSE TOOLKITS
                  TOOLKITS-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
         Copy "ErrorMessage".

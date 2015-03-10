@@ -28,9 +28,9 @@
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-CBTRANS-STATUS.
-               03  WS-STAT1  PIC 9.
-               03  WS-STAT2  PIC 9.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -62,6 +62,10 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT CBTRANS-FILE.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
               MOVE 0 TO CBTRANS-KEY
               START CBTRANS-FILE KEY NOT < CBTRANS-KEY.
@@ -70,6 +74,9 @@
               OPEN EXTEND CBTRANS-ASCII
            ELSE
               OPEN INPUT CBTRANS-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
       *
@@ -90,7 +97,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
              GO TO BE-005.
         BE-EXIT.
@@ -102,7 +108,9 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-MESSAGE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-REC    TO CBTRANS-REC.
         BI-010.
@@ -110,7 +118,6 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -119,7 +126,11 @@
         C-END SECTION.
         C-000.
            CLOSE CBTRANS-FILE
-                 CBTRANS-ASCII.
+           CLOSE CBTRANS-ASCII.
+           
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

@@ -25,10 +25,10 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            77  WS-COUNT      PIC 9(4) VALUE 0.
            01  WS-CRALIAS-STATUS.
-               03  WS-STAT1  PIC 9.
-               03  WS-STAT2  PIC 9.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -59,7 +59,11 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN OUTPUT CRALIAS-MASTER.
+           OPEN I-O CRALIAS-MASTER.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+
            IF WS-ACCEPT = "E"
               MOVE 0 TO CRAL-ALIAS
               START CRALIAS-MASTER KEY NOT < CRAL-KEY.
@@ -68,6 +72,9 @@
               OPEN EXTEND CRALIAS-ASCII
            ELSE
               OPEN INPUT CRALIAS-ASCII.
+
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
       *
@@ -88,7 +95,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
              GO TO BE-005.
         BE-EXIT.
@@ -100,7 +106,9 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-MESSAGE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-RECORD    TO CRALIAS-RECORD.
         BI-010.
@@ -108,7 +116,9 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE CRALIAS-MASTER
+                   CRALIAS-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -118,6 +128,9 @@
         C-000.
            CLOSE CRALIAS-MASTER
                  CRALIAS-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+           COPY "ErrorMessage".
       * END-OF-JOB.

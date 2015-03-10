@@ -27,9 +27,9 @@
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-PULLERS-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -60,7 +60,11 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN OUTPUT PULLER-MASTER.
+           OPEN I-O PULLER-MASTER.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
                MOVE " " TO PU-KEY
                START PULLER-MASTER KEY NOT < PU-KEY.
@@ -69,6 +73,10 @@
               OPEN EXTEND PULLER-ASCII
            ELSE
               OPEN INPUT PULLER-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
         A-EXIT.
            EXIT.
       *
@@ -89,7 +97,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
 
            GO TO BE-005.
@@ -102,15 +109,21 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE.
+           DISPLAY ASCII-NAME AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
-           MOVE ASCII-REC    TO PULLER-REC.
+           MOVE ASCII-INITIAL          TO PU-INITIAL
+           MOVE ASCII-NAME             TO PU-NAME.
+
         BI-010.
            WRITE PULLER-REC
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE PULLER-MASTER
+                   PULLER-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -120,6 +133,9 @@
         C-000.
            CLOSE PULLER-MASTER
                  PULLER-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

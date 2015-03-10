@@ -14,7 +14,7 @@
                RECORD KEY IS DATA-KEY
                FILE STATUS IS WS-DATA-STATUS.
            SELECT DATA-ASCII ASSIGN TO 
-                         "CoDataNameASCII"
+                      "CoDataNameASCII"
                FILE STATUS IS WS-DATA-STATUS.
       *
         DATA DIVISION.
@@ -33,8 +33,9 @@
        77  SUB-30                PIC 9(4) VALUE 0.
        77  SUB-35                PIC 9(4) VALUE 0.
        77  POS                   PIC 9(4) VALUE 0.
+       77  WS-COUNT              PIC 9(4) VALUE 0.
        77  WS-DATA-NAME          PIC X(60) VALUE "CoDataName".
-       77  WS-MESSAGE            PIC X(70) VALUE " ".
+       77  WS-MESSAGE            PIC X(60) VALUE " ".
        77  WS-DIS-MSG            PIC Z9.
        77  W-ERC                 BINARY-SHORT VALUE 0.
        77  W-DELAY               BINARY-SHORT VALUE 50.
@@ -108,17 +109,24 @@
         A-INIT SECTION.
         A-000.
            IF WS-ACCEPT = "I"
-              OPEN OUTPUT DATA-FILE.
+              OPEN I-O DATA-FILE.
+           
+           MOVE WS-DATA-STATUS TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+              
            IF WS-ACCEPT = "T"
               OPEN INPUT DATA-FILE
               MOVE 0 TO DATA-KEY
               START DATA-FILE KEY NOT < DATA-KEY
-              GO TO A-EXIT.
+              GO TO A-010.
 
            IF WS-ACCEPT = "E"
               OPEN EXTEND DATA-ASCII
            ELSE
               OPEN INPUT DATA-ASCII.
+        A-010.
+           MOVE WS-DATA-STATUS TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         A-EXIT.
            EXIT.
       *
@@ -136,7 +144,6 @@
       *           INVALID KEY
       *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
       *       DISPLAY WS-STAT1
-      *       DISPLAY WS-STAT2
       *       STOP RUN.
       *     GO TO BE-005.
         BE-EXIT.
@@ -149,8 +156,9 @@
              GO TO BI-EXIT.
                
                
-           MOVE ASCII-MESSAGE TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+           DISPLAY ASCII-MESSAGE AT 1510
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
             MOVE ASCII-NUMBER    TO DATA-NUMBER.
             MOVE ASCII-MESSAGE   TO DATA-NAME.
@@ -159,6 +167,8 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-DATA-STATUS
+             CLOSE DATA-FILE
+                   DATA-ASCII
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -186,6 +196,8 @@
         C-000.
            CLOSE DATA-FILE
                  DATA-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
            COPY "ErrorMessage".
