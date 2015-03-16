@@ -22,8 +22,7 @@
                ALTERNATE RECORD KEY IS 
                                STTR-LY-ACCOUNT-NUMBER WITH DUPLICATES
                FILE STATUS IS WS-STTR-LY-STATUS.
-           SELECT STOCK-TRANSLY-ASCII ASSIGN TO
-                           "StTransLyASCII"
+           SELECT STOCK-TRANSLY-ASCII ASSIGN TO "StTransLyASCII"
                FILE STATUS IS WS-STTR-LY-STATUS.
       *
         DATA DIVISION.
@@ -35,13 +34,13 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-CHECK-ST.
                03  WS-CHECK-1    PIC X.
                03  WS-CHECK-BAL  PIC X(14).
            01  WS-STTR-LY-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -73,6 +72,10 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT STOCK-TRANSLY-FILE.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
                MOVE 0 TO STTR-LY-KEY
               START STOCK-TRANSLY-FILE KEY NOT < STTR-LY-KEY.
@@ -81,6 +84,15 @@
               OPEN EXTEND STOCK-TRANSLY-ASCII
            ELSE
               OPEN INPUT STOCK-TRANSLY-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -101,7 +113,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
 
            GO TO BE-005.
@@ -114,21 +125,28 @@
                AT END 
              GO TO BI-EXIT.
                
-      *     DISPLAY ASCII-MESSAGE.
-               
-           DISPLAY ASCII-KEY.
+           DISPLAY ASCII-KEY AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
            
-           MOVE ASCII-KEY            TO STTR-LY-KEY.
-           MOVE ASCII-ST-KEY         TO STTR-LY-ST-KEY WS-CHECK-ST
-           MOVE ASCII-AC-KEY         TO STTR-LY-AC-KEY
-           MOVE ASCII-INV-NO         TO STTR-LY-INV-NO
-           MOVE ASCII-DATE           TO STTR-LY-DATE
-           MOVE ASCII-COMPLETE       TO STTR-LY-COMPLETE.
+           MOVE ASCII-KEY             TO STTR-LY-KEY.
+           MOVE ASCII-ST-COMPLETE     TO STTR-LY-ST-COMPLETE
+           MOVE ASCII-STOCK-NUMBER    TO STTR-LY-STOCK-NUMBER
+                                              WS-CHECK-ST
+           MOVE ASCII-DATE            TO STTR-LY-ST-DATE
+           
+           MOVE ASCII-AC-COMPLETE     TO STTR-LY-AC-COMPLETE
+           MOVE ASCII-ACCOUNT-NUMBER  TO STTR-LY-ACCOUNT-NUMBER
+           MOVE ASCII-DATE            TO STTR-LY-AC-DATE
+           
+           MOVE ASCII-INV-NO          TO STTR-LY-INV-NO
+           MOVE ASCII-DATE            TO STTR-LY-DATE
+           MOVE ASCII-COMPLETE        TO STTR-LY-COMPLETE.
            
            IF WS-CHECK-1 = "*"
-               MOVE ASCII-BALANCE    TO COMMENT-LY-FIELDS
+               MOVE ASCII-BALANCE     TO COMMENT-LY-FIELDS
            ELSE 
-               MOVE ASCII-BALANCE    TO DATA-LY-FIELDS.
+               MOVE ASCII-BALANCE     TO DATA-LY-FIELDS.
            
 
        *    MOVE ASCII-REC    TO STOCK-TRANSLY-REC.
@@ -137,7 +155,9 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE STOCK-TRANSLY-FILE
+                   STOCK-TRANSLY-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -147,6 +167,9 @@
         C-000.
            CLOSE STOCK-TRANSLY-FILE
                  STOCK-TRANSLY-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

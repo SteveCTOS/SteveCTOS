@@ -1,5 +1,5 @@
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. GLTRANXX.
+        PROGRAM-ID. GLTRLYXX.
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
@@ -16,8 +16,7 @@
                ALTERNATE RECORD KEY IS 
                                  GLTRANS-LY-ACC-DATE WITH DUPLICATES
                FILE STATUS IS WS-GLTRANS-LY-STATUS.
-           SELECT GLTRANS-LY-ASCII ASSIGN TO 
-                    "GlTransLyASCII"
+           SELECT GLTRANS-LY-ASCII ASSIGN TO "GlTransLyASCII"
                FILE STATUS IS WS-GLTRANS-LY-STATUS.
       *
         DATA DIVISION.
@@ -29,10 +28,10 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-GLTRANS-LY-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -64,6 +63,10 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT GLTRANS-LY-FILE.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
                MOVE " " TO GLTRANS-LY-KEY
               START GLTRANS-LY-FILE KEY NOT < GLTRANS-LY-KEY.
@@ -72,6 +75,15 @@
               OPEN EXTEND GLTRANS-LY-ASCII
            ELSE
               OPEN INPUT GLTRANS-LY-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -92,7 +104,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
              GO TO BE-005.
         BE-EXIT.
@@ -104,8 +115,9 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-REFERENCE
-
+           DISPLAY ASCII-REFERENCE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-REFERENCE       TO GLTRANS-LY-REFERENCE.
            MOVE ASCII-TRANS           TO GLTRANS-LY-TRANS.
@@ -120,7 +132,9 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE GLTRANS-LY-FILE
+                   GLTRANS-LY-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -130,6 +144,9 @@
         C-000.
            CLOSE GLTRANS-LY-FILE
                  GLTRANS-LY-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

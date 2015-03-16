@@ -55,9 +55,8 @@
            03  AL-RATE           PIC X OCCURS 60.
        01  DATA-RATE.
            03  DAT-RATE          PIC X OCCURS 60.
-       01  WS-MENU-STATUS        PIC 99.
-       01  WS-PRINT-STATUS       PIC 99.
-       01  WS-DATA-STATUS        PIC 99.
+       01  WS-DATA-STATUS.
+           03  WS-STAT1          PIC 99.
        01  W-READ-KEY.
            03  WS-PA-KEY         PIC X OCCURS 11.
        01  F-FORMS.
@@ -109,7 +108,7 @@
         A-INIT SECTION.
         A-000.
            IF WS-ACCEPT = "I"
-              OPEN I-O DATA-FILE.
+              OPEN OUTPUT DATA-FILE.
            
            MOVE WS-DATA-STATUS TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -127,6 +126,12 @@
         A-010.
            MOVE WS-DATA-STATUS TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
+           
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *

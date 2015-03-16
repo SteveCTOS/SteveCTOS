@@ -1,5 +1,5 @@
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. CbMaOlXX.
+        PROGRAM-ID. CRMAOLXX.
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
@@ -7,29 +7,28 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT CREDITOROLD-MASTER ASSIGN TO "[WIN]<DATA>CRMASTEROLD"
+           SELECT CREDITOROLD-MASTER ASSIGN TO "CrMasterOld"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS CROLD-KEY
                FILE STATUS IS WS-CROLD-STATUS.
-           SELECT CREDITOROLD-ASCII ASSIGN TO 
-                      "WIN]<ASCII>CRMASTEROLDASCII"
+           SELECT CREDITOROLD-ASCII ASSIGN TO "CrMasterOldASCII"
                FILE STATUS IS WS-CROLD-STATUS.
       *
         DATA DIVISION.
         FILE SECTION.
-           COPY CHLFDCREDITOROLD.
-           COPY CHLFDCREDITOROLDASCII.
+           COPY ChlfdCreditorOld.
+           COPY ChlfdCreditorOldASCII.
       *
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-CROLD-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -60,7 +59,11 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN I-O CREDITOROLD-MASTER.
+           OPEN OUTPUT CREDITOROLD-MASTER.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
               MOVE " " TO CROLD-KEY
               START CREDITOROLD-MASTER KEY NOT < CROLD-KEY.
@@ -69,6 +72,15 @@
               OPEN EXTEND CREDITOROLD-ASCII
            ELSE
               OPEN INPUT CREDITOROLD-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -85,11 +97,10 @@
 
            MOVE CREDITOROLD-RECORD    TO ASCII-RECORD.
         BE-010.
-           WRITE ASCII-RECORD
-                 INVALID KEY
+      *     WRITE ASCII-RECORD
+      *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
              GO TO BE-005.
         BE-EXIT.
@@ -109,7 +120,9 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE CREDITOROLD-MASTER
+                   CREDITOROLD-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -119,6 +132,9 @@
         C-000.
            CLOSE CREDITOROLD-MASTER
                  CREDITOROLD-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

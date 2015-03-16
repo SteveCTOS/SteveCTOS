@@ -15,15 +15,17 @@ file(APPEND ${takeon} "fi\n")
 file(APPEND ${takeon} "#-------------------\n")
 
 set (bdb_list
-  BmMaster CbMaster CbMasterLy CbTrans CbTransLy CoCashSales CoCompany
-  CoDataName CoDataNamex CoFaxParam CoMenu CoPrinters CoPrintersRemote3
-  CoPrintersRemote7 CoPrintersRemote8 CoPullBy CoPullers CoStaffInOut CrAlias
-  CrCAMSTrans CrCurrency CrFBCTrans CrJrn CrMaster CrMasterOld CrRemittance
-  CrRemitTrans CrTrans DrContact DrDeliver DrMaster DrMasterOld DrTrans GlJrn
-  GlMaster GlMasterLy GlParameter SlDailyEx  SlDistTot SlInvRev SlMaster
-  SlParameter SlRegister SlRegLy SlSbRep SlSoldBy SlSpecials StAlternative
-  StBranchCat StCatalogue StChanges StDiscAcc StImports StMaster StNewPrices
-  StockLookup StOrderGen StOrders StReceipt StReceiptLy StReceiptsLy StSpecPr
+  BmMaster 
+  CbMaster CbMasterLy CbTrans CbTransLy 
+  CoCashSales CoCompany CoDataName CoFaxParam CoMenu CoPrinters CoPrintersRemote3
+  CoPrintersRemote7 CoPrintersRemote8 CoPullBy CoPullers CoStaffInOut 
+  CrAlias CrCamsTrans CrCurrency CrFBCTrans CrJrn CrMaster CrMasterOld CrRemittance
+  CrRemitTrans CrTrans 
+  DrContact DrDeliver DrMaster DrMasterOld DrTrans
+  GlJrn GlMaster GlMasterLy GlParameter GlTrans GlTransLy
+  SlDailyEx  SlDistTot SlInvRev SlMaster SlParameter SlRegister SlRegLy SlSbRep SlSoldBy SlSpecials
+  StAlternative StBranchCat StCatalogue StChanges StDiscAcc StImports StMaster StNewPrices
+  StockLookup StOrderGen StOrders StReceipt StReceiptLy StSpecPr
   StTrans StTransLy
   )
 
@@ -33,16 +35,17 @@ endforeach()
 file(APPEND ${takeon} "#-------------------\n")
 
 set (data_list
-  BmMasterASCII CbMasterASCII CbMasterLyASCII CbTransASCII CbTransLyASCII
-  CoCompanyASCII CoDataNameASCII CoMenuASCII CoPrintersASCII CoPullByASCII
-  CoPullersASCII CoStaffInOutASCII CrAliasASCII CrCamsTransASCII CrJrnASCII
-  CrMasterASCII CrRemittanceASCII CrRemitTransASCII CrTransASCII
+  BmMasterASCII 
+  CbMasterASCII CbMasterLyASCII CbTransASCII CbTransLyASCII
+  CoCashSales CoCompanyASCII CoDataNameASCII CoFaxParamASCII CoMenuASCII CoPrintersASCII CoPrintersRemote3ASCII
+  CoPrintersRemote7ASCII CoPrintersRemote8ASCII CoPullByASCII CoPullersASCII CoStaffInOutASCII
+  CrAliasASCII CrCamsTransASCII CrCurrencyASCII CrFBCTransASCII CrJrnASCII CrMasterASCII  CrMasterOldASCII CrRemittanceASCII
+  CrRemitTransASCII CrTransASCII
   DrContactASCII DrDeliverASCII DrMasterASCII DrMasterOldASCII DrTransASCII
-  GlJrnASCII GlMasterASCII GlMasterLyASCII GlParameterASCII GlTransASCII
-  GlTransLyASCII SlDistTotASCII SlMasterASCII SlRegisterASCII SlRegLyASCII
-  SlSbRepASCII SlSoldByASCII StAlternativeASCII StBranchCatASCII
-  StCatalogueASCII StDiscAccASCII StImportsASCII StMasterASCII
-  StockLookupASCII StOrdersASCII StReceiptASCII StReceiptLyASCII StSpecPrASCII
+  GlJrnASCII GlMasterASCII GlMasterLyASCII GlParameterASCII GlTransASCII GlTransLyASCII
+  SlDailyExASCII SlDistTotASCII SlInvRevASCII SlMasterASCII SlParameterASCII SlRegisterASCII SlRegLyASCII SlSbRepASCII SlSoldByASCII SlSpecialsASCII
+  StAlternativeASCII StBranchCatASCII StCatalogueASCII StChangesASCII StDiscAccASCII StImportsASCII StMasterASCII StNewPricesASCII
+  StockLookupASCII StOrderGenASCII StOrdersASCII StReceiptASCII StReceiptLyASCII StSpecPrASCII
   StTransASCII StTransLyASCII
   )
 
@@ -67,13 +70,15 @@ function (cobol_executable name)
 endfunction()
 
 set (source_list
-  BMMASTXX CBMALYXX CBMASTXX CBTRANXX CBTRLYXX COCOMPXX CODATAXX COMENUXX 
-  COPRINXX COPUBYXX COPULLXX COSTFFXX CRALIAXX CRCATRXX CRJRNLXX CRMASTXX
-  CRREMIXX CRTRANXX DRCONTXX DRDELVXX DRMAOLXX DRMASTXX DRTRANXX GLJRNLXX
-  GLMALYXX GLMASTXX GLPARMXX GLTRANXX GLTRLYXX SLDISTXX SLMASTXX SLREGIXX
-  SLRELYXX SLSBRPXX SLSOBYXX STALTEXX STBRNCXX STCATAXX STDISCXX STIMPOXX
-  STLOOKXX STORDEXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX SLPARMXX
-  STMASTXX CRRETRXX
+  BMMASTXX 
+  CBMALYXX CBMASTXX CBTRANXX CBTRLYXX 
+  COCOMPXX CODATAXX COMENUXX COPRINXX COPUBYXX COPULLXX COSTFFXX 
+  CRALIAXX CRCATRXX CRCURRXX CRJRNLXX CRMASTXX CRMAOLXX CRREMIXX CRRETRXX CRTRANXX
+  DRCONTXX DRDELVXX DRMAOLXX DRMASTXX DRTRANXX 
+  GLJRNLXX GLMALYXX GLMASTXX GLPARMXX GLTRANXX GLTRLYXX 
+  SLDISTXX SLMASTXX SLPARMXX SLREGIXX SLRELYXX SLSBRPXX SLSOBYXX 
+  STALTEXX STBRNCXX STCATAXX STDISCXX STIMPOXX STLOOKXX STMASTXX 
+  STORDEXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX
 )
 
 #CRMAOLXX  Error: CHLFDCREDITOROLD, CHLFDCREDITOROLDASCII: No such file or directory

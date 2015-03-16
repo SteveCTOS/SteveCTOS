@@ -13,8 +13,7 @@
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS PRNT-KEY
                FILE STATUS IS WS-PRINTERS-STATUS.
-           SELECT PRINTER-ASCII ASSIGN TO 
-                        "CoPrintersASCII"
+           SELECT PRINTER-ASCII ASSIGN TO "CoPrintersASCII"
                FILE STATUS IS WS-PRINTERS-STATUS.
       *
         DATA DIVISION.
@@ -60,7 +59,7 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN I-O PRINTER-MASTER.
+           OPEN OUTPUT PRINTER-MASTER.
 
            MOVE WS-PRINTERS-STATUS TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -72,6 +71,12 @@
 
            MOVE WS-PRINTERS-STATUS TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
+
+           IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -117,14 +122,14 @@
            MOVE ASCII-ELEVEN              TO PRNT-EIGHT
            MOVE ASCII-FOUR                TO PRNT-FOUR.
 
-           CALL "C$SLEEP" USING 2.
+           CALL "C$SLEEP" USING 1.
 
         BI-010.
            WRITE PRINTER-REC
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             CALL "C$SLEEP" USING 3
+             CALL "C$SLEEP" USING 5
              CLOSE PRINTER-MASTER
                    PRINTER-ASCII
              STOP RUN.

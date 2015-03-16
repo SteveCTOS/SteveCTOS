@@ -13,11 +13,12 @@
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS CRTR-KEY
                ALTERNATE RECORD KEY IS CRTR-PERIOD WITH DUPLICATES
-               ALTERNATE RECORD KEY IS CRTR-ACC-NUMBER WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR-ACC-DATE WITH DUPLICATES
                ALTERNATE RECORD KEY IS CRTR-REFERENCE WITH DUPLICATES
                ALTERNATE RECORD KEY IS CRTR-INV-NO WITH DUPLICATES
                ALTERNATE RECORD KEY IS CRTR-DNOTE-NO WITH DUPLICATES
                FILE STATUS IS WS-CRTR-STATUS.
+               
            SELECT CRTR-ASCII ASSIGN TO "CrTransASCII"
                FILE STATUS IS WS-CRTR-STATUS.
       *
@@ -30,7 +31,7 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
            77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-CRTR-STATUS.
                03  WS-STAT1  PIC 99.
@@ -81,6 +82,11 @@
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -112,11 +118,26 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-MESSAGE AT 1505
+           DISPLAY ASCII-DATE AT 1505
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510
 
-           MOVE ASCII-REC    TO CRTR-REC.
+           MOVE ASCII-TYPE            TO CRTR-TYPE
+           MOVE ASCII-TRANS           TO CRTR-TRANS
+           MOVE ASCII-FUTURE          TO CRTR-FUTURE
+           MOVE ASCII-NO              TO CRTR-NO
+           MOVE ASCII-ACC-NUMBER      TO CRTR-ACC-NUMBER
+           MOVE ASCII-DATE            TO CRTR-DATE
+           MOVE ASCII-REFERENCE       TO CRTR-REFERENCE
+           MOVE ASCII-INV-NO          TO CRTR-INV-NO
+           MOVE ASCII-DNOTE-NO        TO CRTR-DNOTE-NO
+           MOVE ASCII-DUE-DATE        TO CRTR-DUE-DATE
+           MOVE ASCII-LOC-AMT         TO CRTR-LOC-AMT
+           MOVE ASCII-VAT-AMT         TO CRTR-VAT-AMT
+           MOVE ASCII-UNAPPLIED-AMT   TO CRTR-UNAPPLIED-AMT
+           MOVE ASCII-FOR-AMT         TO CRTR-FOR-AMT
+           MOVE ASCII-EXCHANGE        TO CRTR-EXCHANGE
+           MOVE ASCII-SETT-DISC       TO CRTR-SETT-DISC.
         BI-010.
            WRITE CRTR-REC
                  INVALID KEY

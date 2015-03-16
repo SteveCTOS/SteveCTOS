@@ -15,8 +15,7 @@
                ALTERNATE RECORD KEY IS
                       TO-COMPONENT-NUMBER WITH DUPLICATES
                FILE STATUS IS WS-TOOLKITS-STATUS.
-           SELECT TOOLKITS-ASCII ASSIGN TO 
-                           "BmMasterASCII"
+           SELECT TOOLKITS-ASCII ASSIGN TO "BmMasterASCII"
                FILE STATUS IS WS-TOOLKITS-STATUS.
       *
         DATA DIVISION.
@@ -28,7 +27,7 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
            77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-TOOLKITS-STATUS.
                03  WS-STAT1  PIC 99.
@@ -62,12 +61,12 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN I-O TOOLKITS.
+           OPEN OUTPUT TOOLKITS.
       *     IF WS-ACCEPT = "E"
       *        MOVE " " TO TO-TOOLKIT-NUMBER
       *        START TOOLKITS KEY NOT < TO-KEY.
               
-            MOVE WS-TOOLKITS-STATUS TO WS-MESSAGE
+            MOVE WS-STAT1 TO WS-MESSAGE
             PERFORM ERROR-MESSAGE.
             
            IF WS-ACCEPT = "E"
@@ -75,8 +74,14 @@
            ELSE
               OPEN INPUT TOOLKITS-ASCII.
 
-            MOVE WS-TOOLKITS-STATUS TO WS-MESSAGE
+            MOVE WS-STAT1 TO WS-MESSAGE
             PERFORM ERROR-MESSAGE.
+            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -122,6 +127,9 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
+             CLOSE TOOLKITS
+                   TOOLKITS-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.

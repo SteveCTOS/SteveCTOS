@@ -36,10 +36,10 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-REGISTER-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -71,6 +71,10 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT INCR-REGISTER.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
                MOVE 0 TO INCR-KEY
               START INCR-REGISTER KEY NOT < INCR-KEY.
@@ -79,6 +83,15 @@
               OPEN EXTEND INCR-ASCII
            ELSE
               OPEN INPUT INCR-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -99,9 +112,8 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
-      *     IF WS-COUNT < 500
+
              GO TO BE-005.
         BE-EXIT.
            EXIT.
@@ -111,16 +123,21 @@
            READ INCR-ASCII NEXT
                AT END 
              GO TO BI-EXIT.
-               
-           DISPLAY ASCII-MESSAGE.
 
-           MOVE ASCII-REC    TO INCR-REC.
+           MOVE ASCII-REC  TO INCR-REC.
+           
+           DISPLAY INCR-INVOICE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
+
         BI-010.
            WRITE INCR-REC
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE INCR-REGISTER
+                   INCR-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -130,6 +147,9 @@
         C-000.
            CLOSE INCR-REGISTER
                  INCR-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

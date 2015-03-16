@@ -60,7 +60,7 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN I-O PULLER-MASTER.
+           OPEN OUTPUT PULLER-MASTER.
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -77,6 +77,11 @@
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -123,7 +128,7 @@
              DISPLAY WS-STAT1
              CLOSE PULLER-MASTER
                    PULLER-ASCII
-             CALL "C$SLEEP" USING 3
+             CALL "C$SLEEP" USING 5
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.

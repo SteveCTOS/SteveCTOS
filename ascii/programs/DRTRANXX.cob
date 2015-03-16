@@ -14,8 +14,7 @@
                RECORD KEY IS DRTR-KEY
                ALTERNATE RECORD KEY IS DRTR-ACC-KEY WITH DUPLICATES
                FILE STATUS IS WS-DEBTOR-TRANS-STATUS.
-           SELECT DEBTOR-TRANS-ASCII ASSIGN TO
-                      "DrTransASCII"
+           SELECT DEBTOR-TRANS-ASCII ASSIGN TO "DrTransASCII"
                FILE STATUS IS WS-DEBTOR-TRANS-STATUS.
       *
         DATA DIVISION.
@@ -27,10 +26,10 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-DEBTOR-TRANS-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -62,6 +61,10 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT DEBTOR-TRANS-FILE.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
                MOVE 0 TO DRTR-KEY
               START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY.
@@ -70,6 +73,15 @@
               OPEN EXTEND DEBTOR-TRANS-ASCII
            ELSE
               OPEN INPUT DEBTOR-TRANS-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -90,7 +102,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
       *     IF WS-COUNT < 500
              GO TO BE-005.
@@ -102,8 +113,10 @@
            READ DEBTOR-TRANS-ASCII NEXT
                AT END 
              GO TO BI-EXIT.
-               
-           DISPLAY ASCII-DATE.
+
+           DISPLAY ASCII-DATE AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
 
            MOVE ASCII-TYPE                TO DRTR-TYPE.
            MOVE ASCII-TRANSACTION-NUMBER  TO DRTR-TRANSACTION-NUMBER.
@@ -119,7 +132,9 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
+             CLOSE DEBTOR-TRANS-FILE
+                   DEBTOR-TRANS-ASCII
+             CALL "C$SLEEP" USING 3
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -129,6 +144,9 @@
         C-000.
            CLOSE DEBTOR-TRANS-FILE
                  DEBTOR-TRANS-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.

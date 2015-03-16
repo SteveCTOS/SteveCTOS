@@ -77,6 +77,12 @@
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
+            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -118,6 +124,8 @@
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
+             CLOSE CBTRANS-FILE
+                   CBTRANS-ASCII
              STOP RUN.
            GO TO BI-005.
         BI-EXIT.
@@ -126,7 +134,7 @@
         C-END SECTION.
         C-000.
            CLOSE CBTRANS-FILE
-           CLOSE CBTRANS-ASCII.
+                 CBTRANS-ASCII.
            
            MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.

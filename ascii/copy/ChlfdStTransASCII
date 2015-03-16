@@ -1,6 +1,5 @@
        FD  STOCK-TRANS-ASCII.
        01  ASCII-REC.
-      *   02  ASCII-MESSAGE               PIC X(53).
          02  ASCII-KEY.
            03  ASCII-TYPE                 PIC 99.
            03  ASCII-REFERENCE1           PIC 9(6).
@@ -16,3 +15,15 @@
          02  ASCII-COMPLETE               PIC X.
 
          02  ASCII-BALANCE               PIC X(100).
+
+      *
+      * REF1 : INVOICE/CREDIT/QUOTE/P-SLIP/BM NUMBER.
+      * STTR-COMPLETE: N=USED FOR ORDERS NOT INVOICED,
+      *                Y=DELETE AT MONTH END,
+      *                B=INVOICED, NOT COMPLETE (BACKORDER).
+      *                L=LINE COMPLETE, BUT ORDER NOT COMPLETE OR
+      *                  FINAL PRINT OF ORDER NOT DONE.
+      *TRANS: 1=INVOICE, 2=BLANK ,3=REPAIRS,  4=ORDER/PICKING SLIP,
+      *       5=BLANK ,  6=CREDIT,7=TOOLKITS, 8=QUOTE,
+      *       9=BLANK.
+      *

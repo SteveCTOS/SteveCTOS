@@ -14,8 +14,7 @@
                RECORD KEY IS CR-KEY
                ALTERNATE RECORD KEY IS CR-NAME WITH DUPLICATES
                FILE STATUS IS WS-CR-STATUS.
-           SELECT CREDITOR-ASCII ASSIGN TO 
-                              "CrMasterASCII"
+           SELECT CREDITOR-ASCII ASSIGN TO "CrMasterASCII"
                FILE STATUS IS WS-CR-STATUS.
       *
         DATA DIVISION.
@@ -77,7 +76,12 @@
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
-           
+            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *

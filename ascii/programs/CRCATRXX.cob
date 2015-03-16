@@ -7,15 +7,13 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT CR-CAMS-TRANS-FILE ASSIGN TO 
-                               "CrCamsTrans"
+           SELECT CR-CAMS-TRANS-FILE ASSIGN TO "CrCamsTrans"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS CR-CAMS-TRANS-KEY
                FILE STATUS IS WS-CR-CAMS-TRANS-STATUS.
-           SELECT CR-CAMS-TRANS-ASCII ASSIGN TO 
-                     "CrCamsTransASCII"
+           SELECT CR-CAMS-TRANS-ASCII ASSIGN TO "CrCamsTransASCII"
                FILE STATUS IS WS-CR-CAMS-TRANS-STATUS.
       *
         DATA DIVISION.
@@ -28,7 +26,7 @@
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
            77  WS-MESSAGE    PIC X(60) VALUE " ".
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
            01  WS-CR-CAMS-TRANS-STATUS.
                03  WS-STAT1  PIC 99.
       *
@@ -77,7 +75,12 @@
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
-           
+            
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -123,6 +126,7 @@
                    CR-CAMS-TRANS-ASCII
              CALL "C$SLEEP" USING 3
              STOP RUN.
+
            GO TO BI-005.
         BI-EXIT.
            EXIT.

@@ -59,7 +59,7 @@
       *
         A-INIT SECTION.
         A-000.
-           OPEN I-O PULL-BY.
+           OPEN OUTPUT PULL-BY.
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -75,7 +75,13 @@
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
-           
+
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
+          
         A-EXIT.
            EXIT.
       *

@@ -7,9 +7,11 @@
          02  STTR-ST-KEY.
            03  STTR-ST-COMPLETE          PIC X.
            03  STTR-STOCK-NUMBER         PIC X(15).
+           03  STTR-ST-DATE              PIC 9(8).
          02  STTR-AC-KEY.
            03  STTR-AC-COMPLETE          PIC X.
            03  STTR-ACCOUNT-NUMBER       PIC 9(7).
+           03  STTR-AC-DATE              PIC 9(8).
          02  STTR-INV-NO                 PIC 9(6).
          02  STTR-DATE                   PIC 9(8).
          02  STTR-COMPLETE               PIC X.

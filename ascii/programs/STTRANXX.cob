@@ -22,8 +22,7 @@
                ALTERNATE RECORD KEY IS 
                                STTR-ACCOUNT-NUMBER WITH DUPLICATES
                      FILE STATUS IS WS-STTR-STATUS.
-           SELECT STOCK-TRANS-ASCII ASSIGN TO
-                       "StTransASCII"
+           SELECT STOCK-TRANS-ASCII ASSIGN TO "StTransASCII"
                FILE STATUS IS WS-STTR-STATUS.
       *
         DATA DIVISION.
@@ -35,13 +34,13 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            77  WS-ACCEPT     PIC X VALUE " ".
            77  POS           PIC 9(4) VALUE 0.
-           77  WS-COUNT      PIC 9(4) VALUE 0.
+           77  WS-COUNT      PIC 9(6) VALUE 0.
+           77  WS-MESSAGE    PIC X(60) VALUE " ".
            01  WS-CHECK-ST.
                03  WS-CHECK-1    PIC X.
                03  WS-CHECK-BAL  PIC X(14).
            01  WS-STTR-STATUS.
-               03  WS-STAT1  PIC X.
-               03  WS-STAT2  PIC X.     
+               03  WS-STAT1  PIC 99.
       *
         PROCEDURE DIVISION.
         CONTROL-PARAGRAPH SECTION.
@@ -73,6 +72,10 @@
         A-INIT SECTION.
         A-000.
            OPEN OUTPUT STOCK-TRANS-FILE.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            IF WS-ACCEPT = "E"
                MOVE 0 TO STTR-KEY
               START STOCK-TRANS-FILE KEY NOT < STTR-KEY.
@@ -81,6 +84,15 @@
               OPEN EXTEND STOCK-TRANS-ASCII
            ELSE
               OPEN INPUT STOCK-TRANS-ASCII.
+           
+           MOVE WS-STAT1 TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+            IF WS-STAT1 NOT = 0
+               MOVE "EXCLUDING IMPORT FOR THIS COMPANY" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM C-END
+               STOP RUN.
         A-EXIT.
            EXIT.
       *
@@ -101,7 +113,6 @@
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2
              STOP RUN.
 
            GO TO BE-005.
@@ -114,29 +125,40 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-KEY.
+           DISPLAY ASCII-KEY AT 1505
+           ADD 1 TO WS-COUNT
+           DISPLAY WS-COUNT AT 2510.
            
-           MOVE ASCII-KEY            TO STTR-KEY.
-           MOVE ASCII-ST-KEY         TO STTR-ST-KEY WS-CHECK-ST
-           MOVE ASCII-AC-KEY         TO STTR-AC-KEY
-           MOVE ASCII-INV-NO         TO STTR-INV-NO
-           MOVE ASCII-DATE           TO STTR-DATE
-           MOVE ASCII-COMPLETE       TO STTR-COMPLETE.
+           MOVE ASCII-KEY             TO STTR-KEY.
+           MOVE ASCII-ST-COMPLETE     TO STTR-ST-COMPLETE
+           MOVE ASCII-STOCK-NUMBER    TO STTR-STOCK-NUMBER
+                                           WS-CHECK-ST
+           MOVE ASCII-DATE            TO STTR-ST-DATE
+           
+           MOVE ASCII-AC-COMPLETE     TO STTR-AC-COMPLETE
+           MOVE ASCII-AC-KEY          TO STTR-ACCOUNT-NUMBER
+           MOVE ASCII-DATE            TO STTR-AC-DATE
+           
+           MOVE ASCII-INV-NO          TO STTR-INV-NO
+           MOVE ASCII-DATE            TO STTR-DATE
+           MOVE ASCII-COMPLETE        TO STTR-COMPLETE.
            
            IF WS-CHECK-1 = "*"
-               MOVE ASCII-BALANCE    TO COMMENT-FIELDS
+               MOVE ASCII-BALANCE     TO COMMENT-FIELDS
            ELSE 
-               MOVE ASCII-BALANCE    TO DATA-FIELDS.
-           
-      *    MOVE ASCII-REC    TO STOCK-TRANS-REC.
+               MOVE ASCII-BALANCE     TO DATA-FIELDS.
         BI-010.
            WRITE STOCK-TRANS-REC
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             DISPLAY WS-STAT2.
-             
-      *       STOP RUN.
+             CLOSE STOCK-TRANS-FILE
+                   STOCK-TRANS-ASCII
+             CALL "C$SLEEP" USING 3
+             STOP RUN.
+      
+            MOVE SPACES TO STOCK-TRANS-REC.
+      
            GO TO BI-005.
         BI-EXIT.
            EXIT.
@@ -145,6 +167,9 @@
         C-000.
            CLOSE STOCK-TRANS-FILE
                  STOCK-TRANS-ASCII.
+           MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
         C-EXIT.
            EXIT.
+        COPY "ErrorMessage".
       * END-OF-JOB.
