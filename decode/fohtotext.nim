@@ -101,6 +101,7 @@ proc readFOHFile(filename) =
         if page.data.len == tags.len: 
           lineno = 0
 
+echo("getargs")
 var result = getArgs() 
 if result != 0:
   quit("Result not zero " & result)  

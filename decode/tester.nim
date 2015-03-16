@@ -1,22 +1,24 @@
-import strutils
+import strutils, queues
 
 #echo "fred $2$1$2 $3" % ["dog", "horse", "3"]
 
 type
   Page = object
-    data: seq[string]
+    data: Queue[string]
 
-var
-  tags: ref seq[string]
-  data: ref seq[Page]
-  nopages: int = 0
-  notags: int = 0
+var 
+  tags = initQueue[string](32)
+  pages = initQueue[Page](32)
 
-proc addlist[T](data: ref seq[T], rec: T, index: ref int, delta: int = 32) =
-  if index mod delta == 0:
-    realloc(data, sizeof(rec) * index+delta)
-  data[index] = rec
-  inc(index)   
-  
-var x = "ts"
-addlist[string](tags, x, notags)
+proc addPage : Page =  
+  result = Page(data : initQueue[string](32))
+
+var x: string = "ts"
+tags.add(x)
+tags.add("raspberry pi")
+echo tags.len
+var 
+  pageno = pages.len
+  page = addPage()
+pages.add(page)
+page.data.add("ffff")
