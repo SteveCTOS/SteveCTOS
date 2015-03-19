@@ -261,11 +261,7 @@
                MOVE "NO CASH SALE FILE TO OPEN, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-COCASHSALE TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               EXIT PROGRAM.
+               GO TO OPEN-065.
            IF WS-CASHSALE-ST1 NOT = 0
                MOVE "CASH SALE FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
@@ -275,6 +271,12 @@
                MOVE WS-COCASHSALE TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-060.
+            GO TO OPEN-070.
+        OPEN-065.
+           OPEN OUTPUT CASH-SALE.
+           CLOSE CASH-SALE.
+           EXIT PROGRAM.
+        OPEN-070.
            MOVE Ws-Co-Name TO CO-NAME.
            PERFORM ERROR-020.
        OPEN-999.

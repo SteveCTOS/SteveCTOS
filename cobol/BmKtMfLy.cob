@@ -90,9 +90,9 @@
        01  WS-TOOLKIT-STATUS.
            03  WS-KIT-ST1     PIC 99.
       *     03  WS-KIT-ST2     PIC X.
-       01  WS-OUT-STATUS.
-           03  WS-OUT-ST1        PIC 99.
-      *     03  WS-OUT-ST2        PIC X.
+       01  WS-OUTORD-STATUS.
+           03  WS-OUTORD-ST1        PIC 99.
+      *     03  WS-OUTORD-ST2        PIC X.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -1213,8 +1213,8 @@
               GO TO OPEN-017.
        OPEN-018.
            OPEN I-O OUTSTANDING-ORDERS.
-           IF WS-OUT-ST1 NOT = 0 
-              MOVE 0 TO WS-OUT-ST1
+           IF WS-OUTORD-ST1 NOT = 0 
+              MOVE 0 TO WS-OUTORD-ST1
               MOVE "SUPPLIERS FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

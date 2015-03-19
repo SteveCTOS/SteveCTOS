@@ -1,5 +1,5 @@
-       FD  Cash-Sale.
-       01  CashSale-REC.
+       FD  CASH-SALE.
+       01  CASHSALE-REC.
            03  CS-KEY.
                05  CS-INVOICE            PIC 9(6).
            03  CS-INITIAL                PIC XX.

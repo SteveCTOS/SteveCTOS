@@ -481,7 +481,7 @@
              DISPLAY WS-MESSAGE AT POS.
        RDPREV-005. 
              READ CREDITOR-MASTER PREVIOUS
-                 AT END PREVIOUS SENTENCE.
+                 AT END NEXT SENTENCE.
              IF WS-CREDITOR-ST1 = 0
                  GO TO RDPREV-999
              ELSE

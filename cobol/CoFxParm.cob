@@ -27,7 +27,6 @@
        77  Ws-End               PIC X VALUE " ".
        01  WS-Fax-STATUS.
            03  WS-Fax-ST1     PIC 99.
-      *     03  WS-Fax-ST2     PIC 9(2) COMP-X.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -189,7 +188,7 @@
        DDR-010.
             DELETE FAX-PARAMETER
                INVALID KEY NEXT SENTENCE.
-            IF WS-FAX-ST1 NOT = "0"
+            IF WS-FAX-ST1 NOT = 0
                MOVE " " TO WS-FAX-ST1
                GO TO DDR-010.
        DDR-999.
@@ -223,32 +222,36 @@
                 MOVE "FAX RECORD BUSY ON WRITE, BE PATIENT"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                MOVE WS-FAX-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
                 GO TO RDR-010.
        RDR-999.
             EXIT.
       *
-       READ-Fax SECTION.
+       READ-FAX SECTION.
        RD-000.
-           MOVE 0       TO WS-Fax-ST1.
-           MOVE Fax-PaKey TO Ws-FaxNumber.
-           START Fax-Parameter KEY NOT < Fax-PaKey.
+           MOVE 0       TO WS-FAX-ST1.
+           MOVE FAX-PAKEY TO WS-FAXNUMBER.
+           START FAX-PARAMETER KEY NOT < FAX-PAKEY.
         RD-010.
-           READ Fax-Parameter WITH LOCK
+           READ FAX-PARAMETER WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-           IF WS-Fax-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-Fax-ST1
+           IF WS-FAX-ST1 = 23 OR 35 OR 49
+                MOVE 0 TO WS-FAX-ST1
                 PERFORM CLEAR-FORM
-                MOVE "Y" TO NEW-FaxNO
-                MOVE Ws-FaxNumber TO Fax-PaKey
+                MOVE "Y" TO NEW-FAXNO
+                MOVE WS-FAXNUMBER TO FAX-PAKEY
                 GO TO RD-999.
-           IF WS-Fax-ST1 NOT = 0
-                MOVE 0 TO WS-Fax-ST1
-                MOVE "Fax Busy ON READ, Press 'ESC' To Retry"
+           IF WS-FAX-ST1 NOT = 0
+                MOVE 0 TO WS-FAX-ST1
+                MOVE "FAX BUSY ON READ, PRESS 'ESC' TO RETRY"
                   TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                MOVE WS-FAX-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
                 GO TO RD-010.
-           MOVE "N" TO NEW-FaxNO.
-           MOVE Fax-PaKey TO Ws-Fax-Save.
+           MOVE "N" TO NEW-FAXNO.
+           MOVE FAX-PAKEY TO WS-FAX-SAVE.
        RD-999.
              EXIT.
       *
@@ -300,7 +303,10 @@
       *
        OPEN-FILES SECTION.
        OPEN-055.
+           OPEN I-O FAX-PARAMETER.
+           IF WS-FAX-ST1 = 35
            OPEN OUTPUT FAX-PARAMETER.
+           
            IF WS-FAX-ST1 NOT = 0
                MOVE "FAXPARAMETER BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE

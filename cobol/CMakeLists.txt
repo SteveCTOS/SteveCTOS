@@ -79,10 +79,10 @@ set (cashbook_list
 set (creditors_list 
   CrAdjuIq  CrAgeARp  CrAgeTmp  CrAgeTRp  CrAliaRp  CrAlias   CrCAMSCt  CrCAMSDl
   CrCAMSIq  CrCAMSMt  CrCheqMt  CrCheqRp  CrCurrMt  CrFBCMt   CrFBCPRp  CrFBCRp
-  CrFBCTrs  CrInCrMt  CrInCrRp  CrJnAnRp  CrJrnMt   CrLablRp  CrLaPuRp  CrMasOld
+  CrFBCTrs  CrInCrMt  CrInCrRp  CrJnAnRp  CrJrnIq   CrJrnMt   CrLablRp  CrLaPuRp  CrMasOld
   CrMaster  CrMastIq  CrMastMt  CrMastRp  CrNameIq  CrNamOld  CrNmFxRp
   CrNoChMt  CrPayDMt  CrPaymnt  CrPaymRp  CrPerEnd  CrReFrAl  CrRemiEM CrRemiIq
-  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrJrnIq   CrTranIq  CrPrinter
+  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  CrPrinter
 
   #/ctools/dev/source/cobol/CrJrnIq.cob: In paragraph 'RDPREV-005':
   #/ctools/dev/source/cobol/CrJrnIq.cob:510: Error: syntax error, unexpected PREVIOUS
@@ -118,10 +118,10 @@ set (sales_list
   SlInOrLy SlInRgRp SlInStIq SlInStLy SlIRegLy SlInvoic SlInvRev SlIRegIq
   SlIRegMt SlMastMt SlMastIq SlMastRp SlOrChMt SlOrChRp SlOrFiRp SlOrRgRp
   SlOrSuRp SlOrders SlPackRp SlParmMt SlPerEnd SlPOrdRp SlPoShLy SlPoShIq
-  SlPSlpIq SlPuByMt SlPuByRp SlQuAcIq SlQuRgRp SlQuote  SlQuStIq
+  SlPSlpIq SlPsPuMt SlPuByMt SlPuByRp SlQuAcIq SlQuRgRp SlQuote  SlQuStIq
   SlRgAcRp SlRgName SlRgNaIq SlRgNaMy SlRgNaLy SlRgLyMt SlRgChLy SlRgAcLy
   SlRgChMt SlSBChMt SlSaleRp SlSManRp SlSoByMt SlSoByRp SlSpecRp SlSRepMt
-  SlTermMt SlPsPuMt
+  SlTermMt
 
   #/ctools/dev/source/cobol/SlPsPuMt.cob:12: Error: Redefinition of 'PULLER-MASTER'
   #/ctools/dev/source/cobol/copy/SelectCoPullers:1: Error: 'PULLER-MASTER' previously defined here 

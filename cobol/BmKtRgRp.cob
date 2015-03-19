@@ -32,9 +32,9 @@
        77  WS-ACCEPT            PIC XX VALUE " ".
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
-       01  WS-REGISTER-STATUS.
-           03  WS-REGISTER-ST1    PIC 99.
-      *     03  WS-REGISTER-ST2    PIC X.
+       01  WS-INCR-STATUS.
+           03  WS-INCR-ST1    PIC 99.
+      *     03  WS-INCR-ST2    PIC X.
        01  WS-STTRANS-STATUS.
            03  WS-BO-ST1        PIC 99.
       *     03  WS-BO-ST2        PIC X.
@@ -197,12 +197,12 @@
            MOVE 0 TO INCR-INVOICE.
            START INCR-REGISTER KEY NOT < INCR-KEY
               INVALID KEY NEXT SENTENCE.
-           IF WS-REGISTER-ST1 NOT = 0
+           IF WS-INCR-ST1 NOT = 0
               GO TO PR-999.
        PR-005.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-REGISTER-ST1 = 10
+           IF WS-INCR-ST1 = 10
               GO TO PR-999.
            IF INCR-TRANS NOT = 7
               GO TO PR-999.
@@ -297,8 +297,8 @@
        OPEN-FILES SECTION.
        OPEN-021.
            OPEN I-O INCR-REGISTER.
-           IF WS-REGISTER-ST1 NOT = 0
-              MOVE 0 TO WS-REGISTER-ST1
+           IF WS-INCR-ST1 NOT = 0
+              MOVE 0 TO WS-INCR-ST1
               MOVE "REGISTER BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

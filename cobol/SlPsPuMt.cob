@@ -9,12 +9,6 @@
         FILE-CONTROL.
           Copy "SelectSlRegister".
           Copy "SelectCoPullers".
-           SELECT PULLER-MASTER ASSIGN TO Ws-CoPull
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-PULLERS-STATUS
-               RECORD KEY IS PU-KEY.
       *
        DATA DIVISION.
        FILE SECTION.

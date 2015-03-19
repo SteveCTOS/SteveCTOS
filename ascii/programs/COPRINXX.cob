@@ -122,7 +122,7 @@
            MOVE ASCII-ELEVEN              TO PRNT-EIGHT
            MOVE ASCII-FOUR                TO PRNT-FOUR.
 
-           CALL "C$SLEEP" USING 1.
+      *     CALL "C$SLEEP" USING 1.
 
         BI-010.
            WRITE PRINTER-REC

@@ -94,31 +94,22 @@
            03  WS-DESC2          PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC 9(2) COMP-X.
        01  WS-STKRECEIPT-STATUS.
            03  WS-STKRECEIPT-ST1     PIC 99.
-      *     03  WS-STKRECEIPT-ST2     PIC X.
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
        01  WS-TOOLKIT-STATUS.
            03  WS-KIT-ST1     PIC 99.
-      *     03  WS-KIT-ST2     PIC X.
-       01  WS-OUT-STATUS.
-           03  WS-OUT-ST1        PIC 99.
-      *     03  WS-OUT-ST2        PIC X.
+       01  WS-OUTORD-STATUS.
+           03  WS-OUTORD-ST1        PIC 99.
        01  WS-Spl-STATUS.
            03  WS-Spl-ST1       PIC 99.
-      *     03  WS-Spl-ST2       PIC 9(2) COMP-X.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -2830,7 +2821,7 @@
        RSQ-005.
             WRITE OUT-ORDER-REC
                INVALID KEY NEXT SENTENCE.
-            IF WS-OUT-ST1 NOT = 0
+            IF WS-OUTORD-ST1 NOT = 0
                MOVE "SUPPLIERS FILE NOT WRITTEN, 'ESC' TO PROCEED"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
@@ -2846,8 +2837,8 @@
             MOVE WS-KIT-SAVE TO OO-STOCK-NUMBER.
             START OUTSTANDING-ORDERS KEY NOT < OO-KEY
                INVALID KEY NEXT SENTENCE.
-            IF WS-OUT-ST1 NOT = 0
-               MOVE 88 TO WS-OUT-ST1
+            IF WS-OUTORD-ST1 NOT = 0
+               MOVE 88 TO WS-OUTORD-ST1
                MOVE "SUPPLIER ORDER FILE BAD START, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -2855,13 +2846,13 @@
        DSO-002.
             READ OUTSTANDING-ORDERS WITH LOCK
                INVALID KEY NEXT SENTENCE.
-            IF WS-OUT-ST1 = 23 OR 35 OR 49
+            IF WS-OUTORD-ST1 = 23 OR 35 OR 49
       *         MOVE "SUPPLIER ORDER FILE DOES'NT EXIST, CANCEL TO EXIT"
       *         TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO DSO-999.
-            IF WS-OUT-ST1 NOT = 0
-               MOVE 0 TO WS-OUT-ST1
+            IF WS-OUTORD-ST1 NOT = 0
+               MOVE 0 TO WS-OUTORD-ST1
                MOVE "SUPPLIER ORDERS BUSY ON READ-LOCK, 'ESC' TO RE-TRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -2869,7 +2860,7 @@
        DSO-005.
             DELETE OUTSTANDING-ORDERS
                INVALID KEY NEXT SENTENCE.
-            IF WS-OUT-ST1 NOT = 0
+            IF WS-OUTORD-ST1 NOT = 0
                MOVE "SUPPLIER ORDER NOT DELETED, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
@@ -2884,7 +2875,7 @@
        UPSO-002.
             READ OUTSTANDING-ORDERS WITH LOCK
                INVALID KEY NEXT SENTENCE.
-            IF WS-OUT-ST1 = 23 OR 35 OR 49
+            IF WS-OUTORD-ST1 = 23 OR 35 OR 49
       *         MOVE "SUPPLIER ORDER FILE DOES'NT EXIST, CANCEL TO EXIT"
       *         TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
@@ -2893,8 +2884,8 @@
       *         MOVE WS-KIT-SAVE TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO UPSO-999.
-            IF WS-OUT-ST1 NOT = 0
-               MOVE 0 TO WS-OUT-ST1
+            IF WS-OUTORD-ST1 NOT = 0
+               MOVE 0 TO WS-OUTORD-ST1
                MOVE "SUPPLIER ORDERS BUSY ON READ-LOCK, 'ESC' TO RE-TRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -2903,7 +2894,7 @@
        UPSO-005.
             REWRITE OUT-ORDER-REC
                INVALID KEY NEXT SENTENCE.
-            IF WS-OUT-ST1 NOT = 0
+            IF WS-OUTORD-ST1 NOT = 0
                MOVE "SUPPLIER ORDER NOT RE-WRITTEN, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
@@ -3658,8 +3649,8 @@
               GO TO OPEN-017.
        OPEN-018.
            OPEN I-O OUTSTANDING-ORDERS.
-           IF WS-OUT-ST1 NOT = 0 
-              MOVE 0 TO WS-OUT-ST1
+           IF WS-OUTORD-ST1 NOT = 0 
+              MOVE 0 TO WS-OUTORD-ST1
               MOVE "SUPPLIERS FILE BUSY, BE PATIENT!" TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-018.

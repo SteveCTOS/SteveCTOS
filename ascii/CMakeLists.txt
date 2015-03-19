@@ -17,9 +17,9 @@ file(APPEND ${takeon} "#-------------------\n")
 set (bdb_list
   BmMaster 
   CbMaster CbMasterLy CbTrans CbTransLy 
-  CoCashSales CoCompany CoDataName CoFaxParam CoMenu CoPrinters CoPrintersRemote3
-  CoPrintersRemote7 CoPrintersRemote8 CoPullBy CoPullers CoStaffInOut 
-  CrAlias CrCamsTrans CrCurrency CrFBCTrans CrJrn CrMaster CrMasterOld CrRemittance
+  CoCashSales CoCompany CoDataName CoFaxParam CoMenu CoPrinters CoPrintersRemote1
+  CoPrintersRemote3  CoPrintersRemote7 CoPrintersRemote8 CoPullBy CoPullers CoStaffInOut 
+  CrAlias CrCamsTrans CrCheques CrCurrency CrFBCHeader CrFBCTrans CrJrn CrMaster CrMasterOld CrRemittance
   CrRemitTrans CrTrans 
   DrContact DrDeliver DrMaster DrMasterOld DrTrans
   GlJrn GlMaster GlMasterLy GlParameter GlTrans GlTransLy
@@ -37,9 +37,9 @@ file(APPEND ${takeon} "#-------------------\n")
 set (data_list
   BmMasterASCII 
   CbMasterASCII CbMasterLyASCII CbTransASCII CbTransLyASCII
-  CoCashSales CoCompanyASCII CoDataNameASCII CoFaxParamASCII CoMenuASCII CoPrintersASCII CoPrintersRemote3ASCII
+  CoCashSalesASCII CoCompanyASCII CoDataNameASCII CoFaxParamASCII CoMenuASCII CoPrintersASCII CoPrintersRemote1ASCII CoPrintersRemote3ASCII
   CoPrintersRemote7ASCII CoPrintersRemote8ASCII CoPullByASCII CoPullersASCII CoStaffInOutASCII
-  CrAliasASCII CrCamsTransASCII CrCurrencyASCII CrFBCTransASCII CrJrnASCII CrMasterASCII  CrMasterOldASCII CrRemittanceASCII
+  CrAliasASCII CrCamsTransASCII  CrChequesASCII CrCurrencyASCII  CrFBCHeaderASCII CrFBCTransASCII CrJrnASCII CrMasterASCII  CrMasterOldASCII CrRemittanceASCII
   CrRemitTransASCII CrTransASCII
   DrContactASCII DrDeliverASCII DrMasterASCII DrMasterOldASCII DrTransASCII
   GlJrnASCII GlMasterASCII GlMasterLyASCII GlParameterASCII GlTransASCII GlTransLyASCII
@@ -72,24 +72,14 @@ endfunction()
 set (source_list
   BMMASTXX 
   CBMALYXX CBMASTXX CBTRANXX CBTRLYXX 
-  COCOMPXX CODATAXX COMENUXX COPRINXX COPUBYXX COPULLXX COSTFFXX 
-  CRALIAXX CRCATRXX CRCURRXX CRJRNLXX CRMASTXX CRMAOLXX CRREMIXX CRRETRXX CRTRANXX
+  COCASHXX COCOMPXX CODATAXX COFXPAXX COMENUXX COPRINXX COPRIN1X COPRIN3X COPRIN7X COPRIN8X COPUBYXX COPULLXX COSTFFXX 
+  CRALIAXX CRCATRXX CRCHEQXX CRCURRXX CRFBCHXX CRFBCTXX CRJRNLXX CRMASTXX CRMAOLXX CRREMIXX CRRETRXX CRTRANXX
   DRCONTXX DRDELVXX DRMAOLXX DRMASTXX DRTRANXX 
   GLJRNLXX GLMALYXX GLMASTXX GLPARMXX GLTRANXX GLTRLYXX 
-  SLDISTXX SLMASTXX SLPARMXX SLREGIXX SLRELYXX SLSBRPXX SLSOBYXX 
+  SLDAYEXX SLDISTXX SLINVRXX SLMASTXX SLPARMXX SLREGIXX SLRELYXX SLSBRPXX SLSPECXX SLSOBYXX 
   STALTEXX STBRNCXX STCATAXX STDISCXX STIMPOXX STLOOKXX STMASTXX 
   STORDEXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX
 )
-
-#CRMAOLXX  Error: CHLFDCREDITOROLD, CHLFDCREDITOROLDASCII: No such file or directory
-#CRRETRXX  In paragraph 'BE-010':
-#          95: Error: syntax error, unexpected $undefined
-#SLPARMXX  22: Error: CHLFDPARAM: No such file or directory
-#          23: Error: CHLFDPARAMASCII: No such file or directory  
-    
-#STMASTXX  In paragraph 'BE-010'
-#          89: Error: INVALID KEY clause invalid with this file type
-#stockxx   27: Error: ChlfdStockASCII: No such file or directory
 
 foreach(name ${source_list})
   cobol_executable(${name})

@@ -23,8 +23,8 @@
            03  WS-PRNT-ST1      PIC 99.
       *     03  WS-PRNT-ST2      PIC 99.
        01  WS-OWN-PRINT-FILE.
-           03  WS-OWN-DIR       PIC X(10) VALUE "/ctools/spl/".
-           03  WS-OWN-FILE-NAME PIC X(15) VALUE " ".
+           03  WS-OWN-DIR       PIC X(12) VALUE "/ctools/spl/".
+           03  WS-OWN-FILE-NAME PIC X(13) VALUE " ".
        01  PRINT-LINE.
             03  FILLER             PIC X(11).
             03  W-SUB1             PIC Z9.
