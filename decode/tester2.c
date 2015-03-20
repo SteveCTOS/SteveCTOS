@@ -4,7 +4,7 @@
 #include <ctype.h>
  
 static int (*foo)(int, int);
-. 
+ 
 int main(int argc, char *argv[])
 {
   int fred(int a, int b) {return a + b;}
