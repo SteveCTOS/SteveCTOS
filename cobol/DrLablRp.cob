@@ -41,13 +41,13 @@
        01  PRINT-REC               PIC X(132).
       *
        WORKING-STORAGE SECTION.
-       77  WS-RANDOM-FILE       PIC X(33) VALUE
+       77  WS-RANDOM-FILE       PIC X(35) VALUE
               "/ctools/spl/RandomHighDrLabels".
-       77  WS-RANDOM-FILE-ind   PIC X(33) VALUE
+       77  WS-RANDOM-FILE-ind   PIC X(35) VALUE
               "/ctools/spl/RandomHighDrLabels.Ind".
-       77  WS-High-FILE         PIC X(33) VALUE
+       77  WS-High-FILE         PIC X(35) VALUE
               "/ctools/spl/DebtorHighLabel".
-       77  WS-High-FILE-ind     PIC X(33) VALUE
+       77  WS-High-FILE-ind     PIC X(35) VALUE
               "/ctools/spl/DebtorHighLabel.Ind".
        77  WS-RANDOM-WRITTEN    PIC X.
        77  WS-TOP               PIC X(5) VALUE " ".

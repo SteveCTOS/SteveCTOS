@@ -43,13 +43,13 @@
            03  FILLER           PIC X(255).
       *
        WORKING-STORAGE SECTION.
-       77  WS-RANDOM-FILE       PIC X(33) VALUE
+       77  WS-RANDOM-FILE       PIC X(35) VALUE
               "/ctools/spl/RandomHighAccSales".
-       77  WS-RANDOM-FILE-ind   PIC X(33) VALUE
+       77  WS-RANDOM-FILE-ind   PIC X(35) VALUE
               "/ctools/spl/RandomHighAccSales.Ind".
-       77  WS-High-FILE         PIC X(33) VALUE
+       77  WS-High-FILE         PIC X(35) VALUE
               "/ctools/spl/CreditHighSales".
-       77  WS-High-FILE-ind     PIC X(33) VALUE
+       77  WS-High-FILE-ind     PIC X(35) VALUE
               "/ctools/spl/CreditHighSales.Ind".
        77  WS-XFAX-MAN3000      PIC X VALUE " ".
        77  WS-ONLY-VALID        PIC X VALUE " ".

@@ -45,13 +45,13 @@
            03  FILLER           PIC X(250).
       *
        WORKING-STORAGE SECTION.
-       77  WS-RANDOM-FILE       PIC X(30) VALUE
+       77  WS-RANDOM-FILE       PIC X(35) VALUE
               "/ctools/spl/RandomPriceCost".
-       77  WS-RANDOM-FILE-ind   PIC X(30) VALUE
+       77  WS-RANDOM-FILE-ind   PIC X(35) VALUE
               "/ctools/spl/RandomPriceCost.Ind".
-       77  WS-HIGH-FILE       PIC X(30) VALUE
+       77  WS-HIGH-FILE       PIC X(35) VALUE
               "/ctools/spl/StockPriceCost".
-       77  WS-HIGH-FILE-ind   PIC X(30) VALUE
+       77  WS-HIGH-FILE-ind   PIC X(35) VALUE
               "/ctools/spl/StockPriceCost.Ind".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  LINE-CNT             PIC 9(3) VALUE 66.
