@@ -45,7 +45,7 @@
        A-ACCEPT SECTION.
        A-001.
            MOVE 0810 TO POS.
-           DISPLAY "** SLDAYLYEX EXPORT / IMPORT OF DATA **" AT POS
+           DISPLAY "** SL-DAILYEX EXPORT / IMPORT OF DATA **" AT POS
            MOVE 1010 TO POS
            DISPLAY "ENTER E=EXPORT TO ASCII, I=IMPORT FROM ASCII: [ ]"
               AT POS

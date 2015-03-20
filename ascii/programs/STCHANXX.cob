@@ -95,9 +95,9 @@
            
            ADD 1 TO WS-COUNT.
 
-           MOVE STOCKCHANGE-RECORD    TO ASCII-REC.
+           MOVE STOCKCHANGE-RECORD    TO ASCII-RECORD.
         BE-010.
-      *     WRITE ASCII-REC
+      *     WRITE ASCII-RECORD
       *           INVALID KEY
              DISPLAY "INVALID WRITE FOR ASCII FILE...."
              DISPLAY WS-STAT1
@@ -117,7 +117,7 @@
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
 
-           MOVE ASCII-REC    TO STOCKCHANGE-RECORD.
+           MOVE ASCII-RECORD    TO STOCKCHANGE-RECORD.
         BI-010.
            WRITE STOCKCHANGE-RECORD
                  INVALID KEY
