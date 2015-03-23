@@ -63,12 +63,6 @@ set (menu_list
 set (billofmaterial_list 
   BmAnalCh  BmKitCop  BmKitsIq  BmKitsMt  BmKitsRp  BmKtAnRp  BmKtChMt  BmKtItIq
   BmKtLiRp  BmKtQyMt  BmNewItm  BmKitMfg  BmKtMfIq  BmKtMfLy  BmKtRgRp
-
-  #/ctools/dev/source/cobol/copy/SelectStOrders:5: Error: 'WS-OUTORD-STATUS' undefined
-  # BmKitMfg BmKtMfIq BmKtMfLy 
-  
-  #/ctools/dev/source/cobol/copy/SelectSlRegister:6: Error: 'WS-INCR-STATUS' undefined
-  # BmKtRgRp 
 )
 
 set (cashbook_list 
@@ -83,14 +77,6 @@ set (creditors_list
   CrMaster  CrMastIq  CrMastMt  CrMastRp  CrNameIq  CrNamOld  CrNmFxRp
   CrNoChMt  CrPayDMt  CrPaymnt  CrPaymRp  CrPerEnd  CrReFrAl  CrRemiEM CrRemiIq
   CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  CrPrinter
-
-  #/ctools/dev/source/cobol/CrJrnIq.cob: In paragraph 'RDPREV-005':
-  #/ctools/dev/source/cobol/CrJrnIq.cob:510: Error: syntax error, unexpected PREVIOUS
-  # CrJrnIq
-
-  #/ctools/dev/source/cobol/CrTranIq.cob: In paragraph 'RDPREV-005':
-  #/ctools/dev/source/cobol/CrTranIq.cob:484: Error: syntax error, unexpected PREVIOUS
-  # CrTranIq 
 )
 
 set (debtors_list 
@@ -122,10 +108,6 @@ set (sales_list
   SlRgAcRp SlRgName SlRgNaIq SlRgNaMy SlRgNaLy SlRgLyMt SlRgChLy SlRgAcLy
   SlRgChMt SlSBChMt SlSaleRp SlSManRp SlSoByMt SlSoByRp SlSpecRp SlSRepMt
   SlTermMt
-
-  #/ctools/dev/source/cobol/SlPsPuMt.cob:12: Error: Redefinition of 'PULLER-MASTER'
-  #/ctools/dev/source/cobol/copy/SelectCoPullers:1: Error: 'PULLER-MASTER' previously defined here 
-  # SlPsPuMt 
 )
 
 set (stock_list 

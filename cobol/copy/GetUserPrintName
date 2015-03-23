@@ -9,7 +9,7 @@
             MOVE "/ctools/spl/" TO ALPHA-RATE
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
             MOVE WS-USERNAME TO DATA-RATE.
-            MOVE 11 TO SUB-45
+            MOVE 13 TO SUB-45
             MOVE 1 TO SUB-46.
        GUPN-007.
             IF DAT-RATE (SUB-46) = " "

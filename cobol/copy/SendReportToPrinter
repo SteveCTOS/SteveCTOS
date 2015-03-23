@@ -14,7 +14,8 @@
              RETURNING W-STATUS
              END-CALL.
          
-       *   DISPLAY "STATUS of CALL: " W-STATUS AT 2810
+       *   DISPLAY "STATUS of CALL: " AT 2810
+       *   DISPLAY W-STATUS AT 2825
        *   ACCEPT W-ENTER AT 2910.
         SRTP-999.
             EXIT.
