@@ -29,8 +29,8 @@
             03  FILLER             PIC X(11).
             03  W-SUB1             PIC Z9.
             03  FILLER             PIC X(2).
-            03  W-PRINTER          PIC X(12).
-            03  FILLER             PIC X(3).
+            03  W-PRINTER          PIC X(25).
+            03  FILLER             PIC X(1).
             03  W-LOCATION         PIC X(20).
             03  FILLER             PIC X(2).
        Copy "WsDateInfo".
@@ -50,9 +50,9 @@
            DISPLAY
            "You Must Select Which Printer You Want to Print To.        "
                   AT POS.
-           Move 728 to pos
-           Display "Option  Queue Name     Location" At Pos
-           MOVE 721 TO POS
+           Move 718 to pos
+           Display "Option  Queue Name                Location" At Pos
+           MOVE 711 TO POS
            MOVE 1 TO SUB-1.
        CONT-010.
            IF WS-PRINTERNAME (SUB-1) = " "

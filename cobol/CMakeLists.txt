@@ -47,7 +47,7 @@ endforeach()
 
 set (company_list 
   CoCsParm  CoFxParm  Company   ContMenu  CoPrinter  CoPrntMt  CoPuByMt CoQuParm
-  CoRpParm  CoStffIq  CoStffMt  DataName  MenuPass   PassWrds
+  CoRpParm  CoStffIq  CoStffMt  DataName  MenuPass   PassWrds  CrPrinter  DrPrinter
 )
 
 set (menu_list 
@@ -75,7 +75,7 @@ set (creditors_list
   CrFBCTrs  CrInCrMt  CrInCrRp  CrJnAnRp  CrJrnIq   CrJrnMt   CrLablRp  CrLaPuRp  CrMasOld
   CrMaster  CrMastIq  CrMastMt  CrMastRp  CrNameIq  CrNamOld  CrNmFxRp
   CrNoChMt  CrPayDMt  CrPaymnt  CrPaymRp  CrPerEnd  CrReFrAl  CrRemiEM CrRemiIq
-  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  CrPrinter
+  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  
 )
 
 set (debtors_list 
@@ -85,7 +85,7 @@ set (debtors_list
   DrInteMt  DrLablRp  DrLaSoRp  DrMailRp  DrMasOld  DrMasSMt  DrMaster
   DrMastIq  DrMastMt  DrMastRp  DrNameIq  DrNamOld  DrNmFxRp  DrNoChMt
   DrNumber  DrPaymnt  DrPrAcRp  DrRepRst  DrSaCoMt  DrSaCoRp  DrSaMxRp 
-  DrStatRp  DrTrans   DrPrinter
+  DrStatRp  DrTrans   
 )
 
 set (general_list 
@@ -127,27 +127,27 @@ set (stock_list
 foreach (name ${company_list})
   cobol_module(${name})
 endforeach()
-#foreach (name ${menu_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${billofmaterial_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${cashbook_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${creditors_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${debtors_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${general_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${sales_list})
-#  cobol_module(${name})
-#endforeach()
-#foreach (name ${stock_list})
-#  cobol_module(${name})
-#endforeach()
+foreach (name ${menu_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${billofmaterial_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${cashbook_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${creditors_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${debtors_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${general_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${sales_list})
+  cobol_module(${name})
+endforeach()
+foreach (name ${stock_list})
+  cobol_module(${name})
+endforeach()
