@@ -92,8 +92,8 @@
             PERFORM ERROR-MESSAGE.
        WORPF-010.
             MOVE WS-ACCEPT    TO DATA-RATE.
-            MOVE DAT-RATE (1) TO AL-RATE (30).
-            MOVE DAT-RATE (2) TO AL-RATE (31).
+            MOVE DAT-RATE (1) TO AL-RATE (32).
+            MOVE DAT-RATE (2) TO AL-RATE (33).
             
             MOVE ALPHA-RATE TO WS-COPRINTERSREMOTE.
 

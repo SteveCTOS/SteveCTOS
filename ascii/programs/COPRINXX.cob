@@ -122,14 +122,14 @@
            MOVE ASCII-ELEVEN              TO PRNT-EIGHT
            MOVE ASCII-FOUR                TO PRNT-FOUR.
 
-      *     CALL "C$SLEEP" USING 1.
+           CALL "C$SLEEP" USING 1.
 
         BI-010.
            WRITE PRINTER-REC
                  INVALID KEY
              DISPLAY "INVALID WRITE FOR ISAM FILE..."
              DISPLAY WS-STAT1
-             CALL "C$SLEEP" USING 5
+             CALL "C$SLEEP" USING 3
              CLOSE PRINTER-MASTER
                    PRINTER-ASCII
              STOP RUN.

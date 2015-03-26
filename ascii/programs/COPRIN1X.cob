@@ -14,6 +14,7 @@
                RECORD KEY IS PRNT-KEY
                FILE STATUS IS WS-PRINTERS-STATUS.
            SELECT PRINTER-ASCII ASSIGN TO "CoPrintersRemote1ASCII"
+               ORGANIZATION IS SEQUENTIAL
                FILE STATUS IS WS-PRINTERS-STATUS.
       *
         DATA DIVISION.
@@ -77,6 +78,8 @@
                PERFORM ERROR-MESSAGE
                PERFORM C-END
                STOP RUN.
+           
+      *     MOVE 01 TO ASCII-NUMBER.
         A-EXIT.
            EXIT.
       *
@@ -122,7 +125,7 @@
            MOVE ASCII-ELEVEN              TO PRNT-EIGHT
            MOVE ASCII-FOUR                TO PRNT-FOUR.
 
-      *     CALL "C$SLEEP" USING 1.
+           CALL "C$SLEEP" USING 1.
 
         BI-010.
            WRITE PRINTER-REC

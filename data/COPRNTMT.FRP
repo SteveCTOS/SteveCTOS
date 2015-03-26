@@ -44,7 +44,7 @@ List of values:
 
 
 Field name: NAME                                             
-Row: 5    Column: 39   Width: 12                             
+Row: 5    Column: 39   Width: 20                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   

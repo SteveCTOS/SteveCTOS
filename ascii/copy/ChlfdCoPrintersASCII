@@ -14,4 +14,4 @@
               05  ASCII-EIGHT            PIC X(4).
               05  ASCII-ELEVEN           PIC X(4).
               05  ASCII-FOUR             PIC X(4).
-              05  FILLER                 PIC X(26).
+              05  FILLER                 PIC X(39).

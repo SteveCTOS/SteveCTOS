@@ -15,7 +15,7 @@ file(APPEND ${takeon} "fi\n")
 file(APPEND ${takeon} "#-------------------\n")
 
 set (bdb_list
-  BmMaster 
+  BmMaster
   CbMaster CbMasterLy CbTrans CbTransLy 
   CoCashSales CoCompany CoDataName CoFaxParam CoMenu CoPrinters CoPrintersRemote1
   CoPrintersRemote3  CoPrintersRemote7 CoPrintersRemote8 CoPullBy CoPullers CoStaffInOut 
