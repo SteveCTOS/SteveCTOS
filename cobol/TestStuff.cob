@@ -1,5 +1,9 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TestStuff.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01  W-USERNAME               PIC X(30) VALUE SPACES.
@@ -33,12 +37,17 @@
        01  WS-PRINTER               PIC X(5) VALUE "MP140".
        01  WS-PRINT-FILE            PIC X(50) VALUE 
                                            "/ctools/spl/steve.ttt".
+       01  WS-COMMAND-LINE          PIC X(256).                                    
       *
        PROCEDURE DIVISION.
        000-Main.
       * printing routine only for test purposes......
           ACCEPT W-USERNAME FROM ENVIRONMENT "USERNAME".
+          MOVE 'STEVE' TO W-USERNAME.
           DISPLAY "USERNAME: " W-USERNAME.
+          MOVE CONCATENATE('invoice01 ', TRIM(W-USERNAME)) 
+            TO WS-COMMAND-LINE.
+          DISPLAY WS-COMMAND-LINE.  
           
           ACCEPT W-ENTER.
           GO TO 050-MAIN.
