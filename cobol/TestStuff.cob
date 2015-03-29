@@ -14,13 +14,13 @@
            03  W-PDF-PRINTCOM2      PIC X(50) VALUE SPACES.
        01  W-PYTHONCOMMAND.
            03  W-PYTHONCOM1A        PIC X(7) VALUE SPACES.
-           03  W-PYTHONCOM1B        PIC X(13) VALUE SPACES.
-           03  W-PYTHONCOM1         PIC X(50) VALUE SPACES.
-           03  W-PYTHONCOM2         PIC X(50) VALUE SPACES.
+           03  W-PYTHONCOM1B        PIC X(28) VALUE SPACES.
+           03  W-PYTHONCOM1         PIC X(38) VALUE SPACES.
+           03  W-PYTHONCOM2         PIC X(36) VALUE SPACES.
        01  W-TEXT2PDFCOMMAND.
            03  W-TEXT2PDFCOM1A      PIC X(12) VALUE SPACES.
-           03  W-TEXT2PDFCOM1       PIC X(37) VALUE SPACES.
-           03  W-TEXT2PDFCOM2       PIC X(57) VALUE SPACES.
+           03  W-TEXT2PDFCOM1       PIC X(39) VALUE SPACES.
+           03  W-TEXT2PDFCOM2       PIC X(59) VALUE SPACES.
        01  W-PDFTKCOMMAND.
            03  W-PDFTKCOM1A         PIC X(15) VALUE SPACES.
            03  W-PDFTKCOM1          PIC X(33) VALUE SPACES.
@@ -41,12 +41,12 @@
           DISPLAY "USERNAME: " W-USERNAME.
           
           ACCEPT W-ENTER.
-          GO TO 010-MAIN.
+          GO TO 050-MAIN.
       *****************************************************************
       * printing routine - sends disk file to printer....
       *    MOVE "lp -d" WS-PRINTER &
-      *      "/ctools/dev/source/cobol/TestStuff.cob" TO W-PRINTCOMMAND.
-      *    MOVE "/ctools/dev/source/cobol/TestStuff.cob" TO
+      *      "/ctools/dev/source/cobol/TestStuff.cob"    TO W-PRINTCOM1
+      *    MOVE "/ctools/dev/source/cobol/TestStuff.cob" TO W-PRINTCOM2
       *****************************************************************
 
           MOVE "lp -d "       TO W-PRINTCOM1A
@@ -70,11 +70,13 @@
           DISPLAY "PYTHON COMMAND: "
           ACCEPT W-ENTER.
 
-          MOVE "python "       TO W-PYTHONCOM1A
-          MOVE "fohtotext.py"  TO W-PYTHONCOM1B
-          MOVE "-r invoice -T /ctools/spl/s.temp0.txt"  TO W-PYTHONCOM1
-          MOVE " /ctools/spl/InPrintCo01"               TO W-PYTHONCOM2
+          MOVE "python "                                TO W-PYTHONCOM1A
+          MOVE "./fohtotext.py W-USERNAME "            TO W-PYTHONCOM1B
+          MOVE "-r invoice -T /ctools/spl/$1.temp0.txt" 
+                                                         TO W-PYTHONCOM1
+          MOVE " /ctools/spl/$1InPrintCo01"              TO W-PYTHONCOM2
                               
+          DISPLAY W-PYTHONCOMMAND
            CALL "SYSTEM" USING W-PYTHONCOMMAND
                RETURNING W-STATUS
                END-CALL.
@@ -83,11 +85,12 @@
 
           DISPLAY "TEXT2PDF COMMAND: "
           ACCEPT W-ENTER.
-          MOVE "./text2pdf "                          TO W-TEXT2PDFCOM1A
-          MOVE "/ctools/spl/.temp0.txt -fCourier-Bold" TO W-TEXT2PDFCOM1
+          MOVE "./text2pdf W-USERNAME "              TO W-TEXT2PDFCOM1A
+          MOVE "/ctools/spl/$1.temp0.txt -fCourier-Bold" 
+                                                     TO W-TEXT2PDFCOM1
           MOVE 
-            " -t8 -s10 -x842 -y595 -c135 -l48 > /ctools/spl/.temp1.pdf"
-                                                       TO W-TEXT2PDFCOM2
+          " -t8 -s10 -x842 -y595 -c135 -l48 > /ctools/spl/$1.temp1.pdf"
+                                                     TO W-TEXT2PDFCOM2
                               
           DISPLAY W-TEXT2PDFCOMMAND
            CALL "SYSTEM" USING W-TEXT2PDFCOMMAND
@@ -111,11 +114,11 @@
                END-CALL.
           DISPLAY "STATUS of PDFTK CALL: " W-STATUS.
           ACCEPT W-ENTER.
-
+          STOP RUN.
        030-Main.
           DISPLAY "PDFTK 2nd COMMAND: "
           ACCEPT W-ENTER.
-          MOVE "./pdftk "                             TO W-PDFTK2COM1A
+          MOVE "./pdftk W-USERNAME"                     TO W-PDFTK2COM1A
           MOVE "/ctools/spl/.temp2.pdf cat 1-endwest" TO W-PDFTK2COM1
           MOVE " output /ctools/spl/InPrintCo01.pdf"  TO W-PDFTK2COM2
                               
@@ -142,6 +145,7 @@
                RETURNING W-STATUS
                END-CALL.
                
+       045-Main.
           DISPLAY "STATUS of CALL: " W-STATUS.
           ACCEPT W-ENTER.
           STOP RUN.
@@ -157,12 +161,12 @@
       *    pdftk /ctools/spl/.temp2.pdf cat 1-endwest 
       *                         output /ctools/spl/InPrintCo01.pdf
       *#
-      *#--- add any extra commands here - perhap cups printing
+      *#--- add any extra commands here - perhapS cups printing
       *#--- or sendfax via hylaFAX
       *****************************************************************
        050-MAIN.
       *vinces version as per email - but can't get it to work.....
-        MOVE "/ctools/spl/invoice01 /ctools/spl/InPrintCo01" 	
+        MOVE CONCATENATE('invoice01 ', W-USERNAME) 	
                          TO W-PDF-COMMAND.
         CALL "SYSTEM" USING W-PDF-COMMAND
                    RETURNING W-STATUS.
