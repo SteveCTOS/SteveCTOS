@@ -45,8 +45,9 @@
           ACCEPT W-USERNAME FROM ENVIRONMENT "USERNAME".
           MOVE 'STEVE' TO W-USERNAME.
           DISPLAY "USERNAME: " W-USERNAME.
-          MOVE CONCATENATE('invoice01 ', TRIM(W-USERNAME)) 
+          MOVE CONCATENATE('text2pdf ', TRIM(W-USERNAME), ' > fred.log') 
             TO WS-COMMAND-LINE.
+          CALL "SYSTEM" USING WS-COMMAND-LINE.  
           DISPLAY WS-COMMAND-LINE.  
           
           ACCEPT W-ENTER.
