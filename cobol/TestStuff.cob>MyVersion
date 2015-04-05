@@ -1,9 +1,14 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TestStuff.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01  W-USERNAME               PIC X(30) VALUE SPACES.
        01  W-ENTER                  PIC X.
+       01  W-COMP                   PIC 99.
        01  W-PRINTCOMMAND.
            03  W-PRINTCOM1A         PIC X(6) VALUE SPACES.
            03  W-PRINTCOM1          PIC X(95) VALUE SPACES.
@@ -33,12 +38,24 @@
        01  WS-PRINTER               PIC X(5) VALUE "MP140".
        01  WS-PRINT-FILE            PIC X(50) VALUE 
                                            "/ctools/spl/steve.ttt".
+       01  WS-COMMAND-LINE          PIC X(256).                                    
       *
        PROCEDURE DIVISION.
        000-Main.
       * printing routine only for test purposes......
+       
           ACCEPT W-USERNAME FROM ENVIRONMENT "USERNAME".
           DISPLAY "USERNAME: " W-USERNAME.
+<<<<<<< HEAD
+      *    MOVE CONCATENATE('invoice01 ', TRIM(W-USERNAME)) 
+      *      TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.  
+=======
+          MOVE CONCATENATE('text2pdf ', TRIM(W-USERNAME), ' > fred.log') 
+            TO WS-COMMAND-LINE.
+          CALL "SYSTEM" USING WS-COMMAND-LINE.  
+          DISPLAY WS-COMMAND-LINE.  
+>>>>>>> 11e15e6c30e84a27826a0f2c70531aa112eaf018
           
           ACCEPT W-ENTER.
           GO TO 050-MAIN.
@@ -152,9 +169,6 @@
 
       ****************************************************************
       * invoice01 routine
-      *  "python ./fohtotext.py -r invoice -T /ctools/spl/$1.temp0.txt 
-      *                          /ctools/spl/$1InPrintCo01"
-      *
       *    text2pdf /ctools/spl/.temp0.txt -fCourier-Bold 
       *         -t8 -s10 -x842 -y595 -c135 -l48 > /ctools/spl/.temp1.pdf
       *
@@ -167,11 +181,19 @@
       *#--- add any extra commands here - perhapS cups printing
       *#--- or sendfax via hylaFAX
       *****************************************************************
-      *vinces version as per email - but can't get it to work.....
        050-MAIN.
-        MOVE CONCATENATE ('invoice01 ', W-USERNAME) 	
-                         TO W-PDF-COMMAND.
-        CALL "SYSTEM" USING W-PDF-COMMAND
-                   RETURNING W-STATUS.
+      *vinces version as per email - but can't get it to work.....
+          MOVE 99 TO W-COMP.
+          MOVE 
+          CONCATENATE('./PrintInvoice ', TRIM(W-USERNAME), ' '(W-COMP)) 
+            TO WS-COMMAND-LINE.
+          DISPLAY WS-COMMAND-LINE.  
+           
+          ACCEPT W-ENTER.
+      *     MOVE CONCATENATE('./invoice01 ', TRIM(W-USERNAME)) 
+      *                     TO W-PDF-COMMAND.
+      *    DISPLAY W-PDF-COMMAND. 
+          CALL "SYSTEM" USING WS-COMMAND-LINE
+                    RETURNING W-STATUS.
         999-MAIN.
            STOP RUN.
