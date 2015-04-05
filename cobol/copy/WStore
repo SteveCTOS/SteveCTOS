@@ -40,7 +40,7 @@
            03  W-NULL-LEN               PIC 9(4) COMP VALUE 750.
            03  W-RESTART                PIC X(4) VALUE X"02FFFFFF".
            03  W-RESTARTLENGTH          PIC 9(4) COMP VALUE 4.
-           03  W-FILENAME               PIC X(21).
+           03  W-FILENAME               PIC X(100).
            03  FILLER                   PIC X VALUE SPACE.
            03  W-SPOOLST2               PIC X(7).
            03  W-SPOOLST.

@@ -133,11 +133,11 @@
            MOVE ASCII-ST-COMPLETE     TO STTR-ST-COMPLETE
            MOVE ASCII-STOCK-NUMBER    TO STTR-STOCK-NUMBER
                                            WS-CHECK-ST
-           MOVE ASCII-DATE            TO STTR-ST-DATE
+           MOVE ASCII-DATE            TO STTR-ST-DATE.
            
            MOVE ASCII-AC-COMPLETE     TO STTR-AC-COMPLETE
-           MOVE ASCII-AC-KEY          TO STTR-ACCOUNT-NUMBER
-           MOVE ASCII-DATE            TO STTR-AC-DATE
+           MOVE ASCII-ACCOUNT-NUMBER  TO STTR-ACCOUNT-NUMBER
+           MOVE ASCII-DATE            TO STTR-AC-DATE.
            
            MOVE ASCII-INV-NO          TO STTR-INV-NO
            MOVE ASCII-DATE            TO STTR-DATE
@@ -158,8 +158,8 @@
              STOP RUN.
       
             MOVE SPACES TO STOCK-TRANS-REC.
-      
-           GO TO BI-005.
+            
+            GO TO BI-005.
         BI-EXIT.
            EXIT.
       *    

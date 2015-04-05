@@ -75,17 +75,17 @@ def to_xml():
  
 rules = {} # tag supplies starting line and starting column zero based
 rules['invoice'] = {}
-rules['invoice']['SuppLine01'] = (0, 87)
+rules['invoice']['SuppLine01'] = (0, 52)
 rules['invoice']['SuppLine02'] = (1,  0)
 rules['invoice']['TermLine01'] = (14, 0)
 rules['invoice']['BodyLine01'] = (18, 0)
 rules['invoice']['TotlLine01'] = (40, 0)
 rules['creditnote'] = {}
-rules['creditnote']['SuppLine01'] = (0, 87)
+rules['creditnote']['SuppLine01'] = (0, 52)
 rules['creditnote']['SuppLine02'] = (1,  0)
 rules['creditnote']['TermLine01'] = (14, 0)
 rules['creditnote']['BodyLine01'] = (18, 0)
-rules['creditnote']['TotlLine01'] = (40, 0)
+rules['creditnote']['TotlLine01'] = (39, 0)
 rules['statement'] = {}
 rules['statement']['SuppLine01'] = (0,  2)
 rules['statement']['DebtLine01'] = (10, 2)

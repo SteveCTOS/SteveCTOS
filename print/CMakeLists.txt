@@ -2,9 +2,12 @@ project (ctools_print)
 
 set (copy_list
   fohtotext.py
-  creditnote01
-  invoice01
-  statement01
+  PrintCredit
+  PrintInvoice
+  PrintStatement
+#  creditnote01
+#  invoice01
+#  statement01
 )
 
 foreach (name ${copy_list})

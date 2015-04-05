@@ -1961,10 +1961,12 @@
        OPEN-000.
             OPEN I-O STOCK-TRANS-FILE.
             IF WS-STTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-STTRANS-ST1
                MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME

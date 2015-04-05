@@ -147,9 +147,6 @@
                MOVE ASCII-BALANCE     TO COMMENT-LY-FIELDS
            ELSE 
                MOVE ASCII-BALANCE     TO DATA-LY-FIELDS.
-           
-
-       *    MOVE ASCII-REC    TO STOCK-TRANSLY-REC.
         BI-010.
            WRITE STOCK-TRANSLY-REC
                  INVALID KEY
@@ -159,6 +156,7 @@
                    STOCK-TRANSLY-ASCII
              CALL "C$SLEEP" USING 3
              STOP RUN.
+               
            GO TO BI-005.
         BI-EXIT.
            EXIT.

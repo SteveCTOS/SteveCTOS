@@ -1,6 +1,6 @@
 python fohtotext.py -r statement -T .temp0.txt DrLaserCo01
 ./text2pdf .temp0.txt -fCourier-Bold -x595 -y842 -l66 -c88 -V27 -H41 > .temp1.pdf
-pdftk .temp1.pdf background statement.pdf output DrLaserCo01.pdf
+pdftk .temp1.pdf background /ctools/dev/source/print/statement.pdf output DrLaserCo01.pdf
 #--- the following pdftk cats the first statement to a single
 #--- this is basically for testing faxes with only one statement
 pdftk DrLaserCo01.pdf cat 1-1 output single.pdf

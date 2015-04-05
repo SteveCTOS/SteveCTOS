@@ -8,6 +8,7 @@
        WORKING-STORAGE SECTION.
        01  W-USERNAME               PIC X(30) VALUE SPACES.
        01  W-ENTER                  PIC X.
+       01  W-COMP                   PIC 99.
        01  W-PRINTCOMMAND.
            03  W-PRINTCOM1A         PIC X(6) VALUE SPACES.
            03  W-PRINTCOM1          PIC X(95) VALUE SPACES.
@@ -42,12 +43,12 @@
        PROCEDURE DIVISION.
        000-Main.
       * printing routine only for test purposes......
+       
           ACCEPT W-USERNAME FROM ENVIRONMENT "USERNAME".
-          MOVE 'STEVE' TO W-USERNAME.
           DISPLAY "USERNAME: " W-USERNAME.
-          MOVE CONCATENATE('invoice01 ', TRIM(W-USERNAME)) 
-            TO WS-COMMAND-LINE.
-          DISPLAY WS-COMMAND-LINE.  
+      *    MOVE CONCATENATE('invoice01 ', TRIM(W-USERNAME)) 
+      *      TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.  
           
           ACCEPT W-ENTER.
           GO TO 050-MAIN.
@@ -175,9 +176,17 @@
       *****************************************************************
        050-MAIN.
       *vinces version as per email - but can't get it to work.....
-        MOVE CONCATENATE('invoice01 ', W-USERNAME) 	
-                         TO W-PDF-COMMAND.
-        CALL "SYSTEM" USING W-PDF-COMMAND
-                   RETURNING W-STATUS.
+          MOVE 99 TO W-COMP.
+          MOVE 
+          CONCATENATE('./PrintInvoice ', TRIM(W-USERNAME), ' '(W-COMP)) 
+            TO WS-COMMAND-LINE.
+          DISPLAY WS-COMMAND-LINE.  
+           
+          ACCEPT W-ENTER.
+      *     MOVE CONCATENATE('./invoice01 ', TRIM(W-USERNAME)) 
+      *                     TO W-PDF-COMMAND.
+      *    DISPLAY W-PDF-COMMAND. 
+          CALL "SYSTEM" USING WS-COMMAND-LINE
+                    RETURNING W-STATUS.
         999-MAIN.
            STOP RUN.

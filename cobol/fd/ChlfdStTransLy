@@ -7,9 +7,11 @@
          02  STTR-LY-ST-KEY.
            03  STTR-LY-ST-COMPLETE          PIC X.
            03  STTR-LY-STOCK-NUMBER         PIC X(15).
+           03  STTR-LY-ST-DATE              PIC 9(8).
          02  STTR-LY-AC-KEY.
            03  STTR-LY-AC-COMPLETE          PIC X.
            03  STTR-LY-ACCOUNT-NUMBER       PIC 9(7).
+           03  STTR-LY-AC-DATE              PIC 9(8).
          02  STTR-LY-INV-NO                 PIC 9(6).
          02  STTR-LY-DATE                   PIC 9(8).
          02  STTR-LY-COMPLETE               PIC X.
@@ -34,7 +36,7 @@
            03  COM-LY-PRICE                PIC X(9).
            03  COM-LY-COST                 PIC X(9).
            03  COM-LY-DISC                 PIC X(5).
-           03  COM-LY-FILLER               PIC X(39).
+           03  COM-LY-FILLER               PIC X(35).
       *
       * REF1 : INVOICE/CREDIT/QUOTE/P-SLIP/BM NUMBER.
       * STTR-LY-COMPLETE: N=USED FOR ORDERS NOT INVOICED,

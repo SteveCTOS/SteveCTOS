@@ -3,7 +3,7 @@
        GUPN-005.
             IF WS-PRINTERSELECTED = 0 OR = 88
                 GO TO GUPN-999.
-            ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+      *      ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
        GUPN-006.
             MOVE SPACES TO ALPHA-RATE DATA-RATE.
             MOVE "/ctools/spl/" TO ALPHA-RATE
