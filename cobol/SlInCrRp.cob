@@ -339,13 +339,13 @@
        01  LASERPL-ADDLINE.
            03  PLADD-CHAR        PIC X(2) VALUE " ".
            03  FILLER            PIC X(11) VALUE " ".
-           03  PL-PHONE          PIC X(31) VALUE " ".
+           03  PL-PHONE          PIC X(28) VALUE " ".
            03  PL-ADD1           PIC Z(6)9.99. 
            03  FILLER            PIC X(16) VALUE " ".
            03  PL-ADD2           PIC Z(6)9.99.
            03  FILLER            PIC X(17) VALUE " ".
            03  PL-ADD3           PIC Z(6)9.99.
-           03  FILLER            PIC X(12) VALUE " ".
+           03  FILLER            PIC X(15) VALUE " ".
            03  PL-CURRENCY       PIC X(5) VALUE " ".
            03  PL-ADD4           PIC Z(6)9.99.
            03  PLADD-CHAR2       PIC X(1) VALUE " ".
@@ -458,9 +458,6 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO CONT-035.
-                
-      *     MOVE "LASER FILE NOW OPENED" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
                 
            IF WS-INVCRED = "D"
                GO TO CONT-036.
@@ -1213,7 +1210,7 @@
            WRITE LASER-REC FROM LASER-PLINE1.
            
            MOVE " "       TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
+           MOVE "¶"       TO PL2-CHAR
            MOVE PA-ADD2   TO SUPPL-ADD
            WRITE LASER-REC FROM LASER-PLINE2.
            
@@ -1334,7 +1331,7 @@
               GO TO LP-030.
            IF SUB-2 > 20
                MOVE 1 TO SUB-2
-               ADD 1 TO WS-PAGE
+               ADD 1  TO WS-PAGE
                GO TO LP-010.
            IF SUB-1 > 300
                GO TO LP-030.

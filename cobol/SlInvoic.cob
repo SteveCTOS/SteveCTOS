@@ -3,6 +3,8 @@
        AUTHOR.  CHRISTENSEN.
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
           CRT STATUS IS W-CRTSTATUS.
        SOURCE-COMPUTER. B20.
@@ -133,6 +135,7 @@
        77  WS-BODY-LINE         PIC ZZ9.
        77  WS-IMM-PR            PIC X VALUE " ".
        77  WS-MUST-PRINT        PIC X VALUE " ".
+       77  WS-TYPE-OF-DOCUMENT  PIC 9.
        77  WS-PAGE              PIC 99 VALUE 0.
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "DrNameIq".
        77  WS-STOCK-INQUIRY     PIC X(8) VALUE "StMastIq".
@@ -496,18 +499,20 @@
           05  WS-DELIM-O             PIC  X.
           05  WS-DATA-O              PIC  X(99).
        01  LASER-PCREDITLINE.
-           03  PLCR-CHAR        PIC X(2).
-           03  FILLER           PIC X(1) VALUE " ".
-           03  PL-NAME          PIC X(54).
+           03  PLCR-CHAR1       PIC X(2).
+           03  FILLER           PIC X(2) VALUE " ".
+           03  PL-TYPE          PIC X(22) VALUE " ".
+           03  FILLER           PIC X(14) VALUE " ".
+           03  PL-NAME          PIC X(98).
+           03  PLCR-CHAR2       PIC X.
        01  LASER-PLINE1.
            03  PL1-CHAR         PIC X(2) VALUE " ".
-           03  FILLER           PIC X(11) VALUE " ".
-           03  PL-GSTNO         PIC X(18) VALUE " ".
+           03  FILLER           PIC X(6) VALUE " ".
+           03  PL-GSTNO         PIC X(23) VALUE " ".
            03  PL-ACCNO         PIC X(7).
-           03  FILLER           PIC X(18) VALUE " ".
-           03  PL-TYPE          PIC X(20) VALUE " ".
-           03  FILLER           PIC X(13) VALUE " ".
-           03  PL-ADDNAME       PIC X(54).
+           03  FILLER           PIC X(51) VALUE " ".
+           03  PL-ADDNAME       PIC X(45).
+           03  PL1-2            PIC X(1) VALUE " ".
        01  LASER-PLINE2.
            03  PL2-CHAR         PIC X(2) VALUE " ".
            03  FILLER           PIC X(3) VALUE " ".
@@ -579,13 +584,14 @@
        01  LASERPL-ADDLINE.
            03  PLADD-CHAR        PIC X(2) VALUE " ".
            03  FILLER            PIC X(11) VALUE " ".
-           03  PL-PHONE          PIC X(30) VALUE " ".
+           03  PL-PHONE          PIC X(27) VALUE " ".
            03  PL-ADD1           PIC Z(7)9.99. 
            03  FILLER            PIC X(15) VALUE " ".
            03  PL-ADD2           PIC Z(7)9.99.
            03  FILLER            PIC X(16) VALUE " ".
            03  PL-ADD3           PIC Z(7)9.99.
-           03  FILLER            PIC X(16) VALUE " ".
+           03  FILLER            PIC X(13) VALUE " ".
+           03  PL-CURRENCY       PIC X(5) VALUE " ".
            03  PL-ADD4           PIC Z(7)9.99.
        01  PL-CONTINUED.
            03  PLCONT-CHAR     PIC X(2) VALUE " ".
@@ -693,6 +699,8 @@
                MOVE WS-PRINTERCHARS (SUB-1) TO WS-PRINT-CHARS
                GO TO IM-999.
            IF WS-IMM-PR = "H"
+            IF WS-PRINTERNUMBER (SUB-1) = 15
+               MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER
                MOVE 3 TO WS-PROG-TYPE
                GO TO IM-999.
            IF SUB-1 < 11
@@ -730,382 +738,59 @@
        IM-999.
            EXIT.
       *
-       QUES-PULL-CASH SECTION.
-       QPC-005.
-           IF WS-QUES-PRINT-PULLERS = "N"
-               GO TO QPC-500.
-           PERFORM CLEAR-010.
-        QPC-006.
-            OPEN I-O PULLER-MASTER.
-            IF WS-PU-ST1 NOT = 0
-               MOVE 0 TO WS-PU-ST1
-               MOVE "PULLBY FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO QPC-006.
-       QPC-010.
-           OPEN I-O PULL-BY.
-           IF Ws-PullBy-ST1 NOT = 0
-              MOVE 0 TO WS-PullBy-St1
-              MOVE "PULLBY ERROR ON OPEN, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO QPC-010.
-           MOVE " " TO PB-INITIAL.
-       QPC-015.
-           MOVE INCR-PULLBY TO PB-INITIAL.
-           MOVE 2910 TO POS
-           DISPLAY
-           "ENTER THE INITIALS OF THE PERSON THAT PULLED THE STOCK [  ]"
-             AT POS
-           ADD 56 TO POS
-           ACCEPT PB-INITIAL AT POS
-           IF PB-INITIAL = "  "
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO QPC-015.
-           MOVE PB-INITIAL TO PU-INITIAL INCR-PULLBY
-           PERFORM READ-PULLERS.
-           IF WS-PU-ST1 = 23 OR 35 OR 49
-              MOVE "PLEASE ENTER AN INITIAL FOR A CURRENT STORES PULLER"
-              TO WS-MESSAGE
-              PERFORM ERROR-000
-              GO TO QPC-015.
+       WORK-OUT-PRINT-FILE-NAME SECTION.
+       WOPFN-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
            
-           MOVE WS-INVOICE      TO PB-INVOICE
-           MOVE Ws-InvoiceDate  TO PB-INV-DATE
-           MOVE SUB-20          TO PB-LINE-CNT
-           SUBTRACT 1         FROM PB-LINE-CNT
-           MOVE WS-INVOICETOTAL TO PB-SALE-AMOUNT.
-       QPC-020.
-           WRITE PULLBY-REC
-              INVALID KEY NEXT SENTENCE.
-           IF Ws-PullBy-ST1 NOT = 0
-               MOVE "PULLBY RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
-           CLOSE PULL-BY
-                 PULLER-MASTER.
-       QPC-500.
-           PERFORM ERROR-020.
-           PERFORM ERROR1-020.
-           IF WS-QUES-CASH-SALES = "N"
-               GO TO QPC-900.
-           PERFORM CLEAR-010.
-       QPC-505.
-           MOVE " " TO WS-DIS
-           MOVE 3010 TO POS
-           DISPLAY
-           "IS THIS A CASH TRANSACTION, ENTER Y OR N : [ ]" AT POS
-           ADD 44 TO POS
-           ACCEPT WS-DIS AT POS.
-           IF WS-DIS NOT = "N" AND NOT = "Y"
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO QPC-505.
-           IF WS-DIS = "N"
-              GO TO QPC-900.
-           PERFORM ERROR-020.
-           IF WS-CASHSALE-ST1 = 88
-              GO TO QPC-515.
-      *************************************************************
-      *ST1=8; CASH-SALE OPEN, SO WE DON'T OPEN AGAIN IF UP-ARROW  *
-      *       FROM QPC-515 INCASE OPERATOR CHANGES MIND ON YES/NO *
-      *************************************************************
-       QPC-510.
-           OPEN I-O Cash-Sale.
-           IF Ws-CashSale-ST1 NOT = 0
-              MOVE 0 TO Ws-CashSale-St1
-              MOVE "CashSale ERROR ON OPEN, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO QPC-510.
-           MOVE " " TO WS-CASH-ACCEPT.
-           MOVE 88 TO WS-CASHSALE-ST1.
-       QPC-515.
-           MOVE 2910 TO POS
-           DISPLAY
-           "ENTER THE AMOUNT PAID BY CASH : [         ]" AT POS
-           ADD 33 TO POS
-           MOVE WS-INVOICETOTAL TO F-EDNAMEFIELDAMOUNT
-           MOVE F-EDNAMEFIELDAMOUNT TO WS-CASH-ACCEPT CDA-DATA
-           DISPLAY F-EDNAMEFIELDAMOUNT AT POS.
+      *     MOVE "IN WOPFN-001." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-005.
+           MOVE "/ctools/spl/" TO ALPHA-RATE.
+           MOVE WS-USERNAME    TO DATA-RATE.
+           MOVE 13 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOPFN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-010.
+       WOPFN-020.
+      *     MOVE "IN WOPFN-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
 
-      *     MOVE ' '       TO CDA-DATA.
-           MOVE 9         TO CDA-DATALEN.
-           MOVE 26        TO CDA-ROW.
-           MOVE 42        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-CASH-ACCEPT.
+           MOVE SPACES      TO DATA-RATE
+           MOVE "InPrintCo" TO DATA-RATE
+           MOVE 1           TO SUB-2.
+       WOPFN-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-025.
+       WOPFN-030.
+           MOVE SPACES TO DATA-RATE.
+           MOVE WS-CO-NUMBER TO DATA-RATE.
+           MOVE 1  TO SUB-2.
 
-      *     ACCEPT WS-CASH-ACCEPT AT POS.
-           IF W-ESCAPE-KEY = 4
-              GO TO QPC-505.
-           MOVE WS-CASH-ACCEPT TO ALPHA-RATE
-           PERFORM DECIMALISE-RATE
-           MOVE NUMERIC-RATE TO CS-SALE-AMOUNT F-EDNAMEFIELDAMOUNT
-           MOVE 2943 TO POS
-           DISPLAY F-EDNAMEFIELDAMOUNT AT POS.
-           IF SIGN-FOUND = 1
-              GO TO QPC-515.
-           IF CS-SALE-AMOUNT = 0
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO QPC-515.
-       QPC-517.
-           MOVE 3010 TO POS
-           DISPLAY "IS THE AMOUNT ENTERED CORRECT : [ ]" AT POS
-           ADD 33 TO POS
-           ACCEPT WS-DIS AT POS.
-           IF WS-DIS NOT = "Y" AND NOT = "N"
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO QPC-517.
-           IF WS-DIS = "N"
-              GO TO QPC-515.
-           MOVE WS-INVOICE        TO CS-INVOICE
-           MOVE WS-ACCOUNT-NUMBER TO CS-ACCOUNT
-           MOVE WS-INVOICEDATE    TO CS-INV-DATE
-           MOVE WS-SOLD-BY        TO CS-INITIAL.
-       QPC-520.
-           WRITE CASHSALE-REC
-              INVALID KEY NEXT SENTENCE.
-           IF WS-CASHSALE-ST1 NOT = 0
-               MOVE
-                "CASHSALE RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
-           CLOSE CASH-SALE.
-       QPC-900.
-           PERFORM ERROR-020.
-           PERFORM ERROR1-020.
-           IF WS-IMM-PR NOT = "S" AND NOT = "H"
-               GO TO QPC-999.
-       QPC-910.
-           MOVE " " TO WS-DIS
-           MOVE 3010 TO POS
-           DISPLAY
-           "DO YOU WISH TO PRINT A PACKING LABEL, ENTER Y OR N : [ ]"
-            AT POS
-           ADD 54 TO POS
-           ACCEPT WS-DIS AT POS.
-           IF WS-DIS NOT = "N" AND NOT = "Y"
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO QPC-910.
-           PERFORM ERROR1-020
-           PERFORM ERROR-020.
-       QPC-999.
-           EXIT.
-      *
-       PRINT-LABEL SECTION.
-       PL-001.
-           Move 5 To Ws-PrinterNumber (21).
-           Move 4 To Ws-PrinterType (21).
-           Copy "PrinterSpecial".
-       PL-002.
-           MOVE "  " TO WS-SOLD-BY.
-           MOVE 2920 TO POS.
-           DISPLAY "IN PRINTING PARCEL LABELS," AT POS
-           MOVE 3010 TO POS
-           DISPLAY
-           "HOW MANY COPIES DO YOU WANT TO PRINT : [  ]" AT POS
-           ADD 40 TO POS
-           ACCEPT WS-SOLD-BY AT POS.
-           IF WS-SOLDBY = " "
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO PL-002.
-            MOVE WS-SOLD-BY TO ALPHA-RATE.
-            PERFORM DECIMALISE-RATE.
-            MOVE NUMERIC-RATE TO WS-COPIES
-                                 F-EDNAMEFIELDANAL.
-            DISPLAY F-EDNAMEFIELDANAL AT POS.
-            IF NUMERIC-RATE > 1
-               MOVE 2910 TO POS
-               DISPLAY "ARE YOU SURE YOU WANT SO MANY COPIES? [ ]"
-               AT POS
-               ADD 39 TO POS
-               ACCEPT WS-DIS AT POS.
-            IF WS-COPIES = 1
-               GO TO PL-003.
-            IF WS-COPIES < 1
-               GO TO PL-002.
-            IF WS-DIS = "Y"
-               GO TO PL-003
-            ELSE
-               GO TO PL-002.
-       PL-003.
-           MOVE "  " TO WS-SOLD-BY.
-           MOVE 3010 TO POS
-           DISPLAY
-           "HOW MANY PARCELS ARE THERE TO PRINT FOR: [  ]" AT POS
-           ADD 42 TO POS
-           ACCEPT WS-SOLD-BY AT POS.
-           IF WS-SOLDBY = " "
-              DISPLAY " " AT 3079 WITH BELL
-              GO TO PL-003.
-            MOVE WS-SOLD-BY TO ALPHA-RATE.
-            PERFORM DECIMALISE-RATE.
-            MOVE NUMERIC-RATE TO WS-PARCEL
-                                 F-EDNAMEFIELDANAL.
-            DISPLAY F-EDNAMEFIELDANAL AT POS.
-            IF WS-PARCEL = 1
-               GO TO PL-005.
-            IF WS-PARCEL < 1
-               GO TO PL-003.
-            IF WS-PARCEL > 1
-               MOVE 2910 TO POS
-               DISPLAY "ARE YOU SURE YOU WANT SO MANY PARCELS? [ ]"
-               AT POS
-               ADD 40 TO POS
-               ACCEPT WS-DIS AT POS.
-            IF WS-DIS = "Y"
-               GO TO PL-005
-            ELSE
-               GO TO PL-003.
-       PL-005.
-           PERFORM ERROR-020
-           MOVE 3010 TO POS
-           DISPLAY "LABELS BEING PRINTED, PLEASE BE PATIENT...." AT POS
-           MOVE 0  TO WS-COPIES-PRINTED
-                      WS-PARCEL-PRINTED.
-           CALL "C$SLEEP" USING 2.
-      *          MOVE 10 TO  W-DELAY.
-       PL-012.
-           PERFORM GET-USER-PRINT-NAME.
-           OPEN OUTPUT PRINT-FILE.
-           MOVE WS-PRINT-COMP   TO PRINT-REC
-           WRITE PRINT-REC.
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE INCR-NAME       TO PL2-REST
-           MOVE WS-PRINT-BOLD   TO PL2-DIG1
-           WRITE PRINT-REC FROM PARCEL2.
-           MOVE WS-PRINT-NORMAL TO PRINT-REC
-           WRITE PRINT-REC.
+      *     MOVE "IN WOPFN-030." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-035.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-035.
+           MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
+           
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
 
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE INCR-DEL1       TO PL2-REST
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE INCR-DEL2       TO PL2-REST
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE INCR-DEL3       TO PL2-REST
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           WRITE PRINT-REC
-           WRITE PRINT-REC.
-
-           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
-           MOVE "ORDER     #:"  TO PL2-DESC
-           MOVE INCR-PORDER     TO PL2-ADD
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
-           MOVE "INVOICE   #:"  TO PL2-DESC
-           MOVE INCR-INVOICE    TO PL2-ADD
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
-           MOVE "INTERNAL  #:"  TO PL2-DESC
-           MOVE INCR-BO-INV-NO  TO PL2-ADD
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC.
-
-           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
-           MOVE "DELIVERY   :"  TO PL2-DESC
-           MOVE INCR-DELIVERY   TO PL2-ADD
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
-           MOVE "CONTACT    :"  TO PL2-DESC
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           MOVE INCR-CONTACT    TO PL2-ADD
-           WRITE PRINT-REC FROM PARCEL2
-           MOVE " "             TO PARCEL2 PRINT-REC
-           ADD 1                TO WS-PARCEL-PRINTED
-           MOVE WS-PRINT-BOLD     TO PCL-REST-DIG1
-           MOVE "PARCEL    #:"    TO PCL-DESC
-           MOVE WS-PARCEL-PRINTED TO PCL-NO1
-           MOVE WS-PARCEL         TO PCL-NO2
-           MOVE WS-PRINT-UNBOLD   TO PCL-DIG2
-           WRITE PRINT-REC FROM PARCEL-LINE
-           MOVE " "               TO PRINT-REC
-           SUBTRACT 1 FROM WS-PARCEL-PRINTED
-           WRITE PRINT-REC
-           WRITE PRINT-REC
-      *     MOVE WS-PRINT-BOLD   TO PL2-DIG1
-      *     MOVE WS-COMMENT      TO PL2-REST
-      *     WRITE PRINT-REC FROM PARCEL2.
-
-           MOVE " "             TO PARCEL2 PRINT-REC
-           WRITE PRINT-REC
-           MOVE "SUPPLIED BY:"  TO PL2-DESC
-           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
-           WRITE PRINT-REC FROM PARCEL2.
-
-           MOVE " "             TO PARCEL2 PRINT-REC
-           WRITE PRINT-REC
-           CLOSE PRINT-FILE.
-           PERFORM SEND-REPORT-TO-PRINTER.
-
-           CALL "C$SLEEP" USING 1.
-      *           CALL "&DELAY" USING W-ERROR W-DELAY.
-
-           ADD 1 TO WS-PARCEL-PRINTED.
-           IF WS-PARCEL-PRINTED NOT = WS-PARCEL
-               GO TO PL-012
-           ELSE
-               ADD 1 TO WS-COPIES-PRINTED
-               MOVE 0 TO WS-PARCEL-PRINTED.
-
-           IF WS-COPIES NOT = WS-COPIES-PRINTED
-               GO TO PL-012.
-           IF WS-IMM-PR = "B"
-               GO TO PL-999.
-           IF WS-IMM-PR = "H"
-               MOVE 3 TO WS-PROG-TYPE
-               GO TO PL-999.
-           MOVE 1 TO SUB-1.
-       PL-900.
-           IF WS-IMM-PR = "C"
-            IF WS-PRINTERNUMBER (SUB-1) = 7
-               MOVE WS-PRINTERNAME (SUB-1) TO WS-PRINTER
-               MOVE WS-PRINTERCHARS (SUB-1) TO WS-PRINT-CHARS
-               GO TO PL-999.
-           IF WS-IMM-PR = "S"
-            IF WS-PRINTERNUMBER (SUB-1) = 4
-               MOVE WS-PRINTERNAME (SUB-1) TO WS-PRINTER
-               MOVE WS-PRINTERCHARS (SUB-1) TO WS-PRINT-CHARS
-               GO TO PL-999.
-           IF SUB-1 < 11
-             ADD 1 TO SUB-1
-             GO TO PL-900.
-           MOVE "CAN'T FIND A PRINTERNUMBER, PRN PARAMETER NOT SET UP."
-            TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-       PL-999.
-           EXIT.
-      *
-       READ-PULLERS SECTION.
-       RPULL-000.
-           START PULLER-MASTER KEY NOT < PU-KEY.
-       RPULL-010.
-           READ PULLER-MASTER
-                 INVALID KEY NEXT SENTENCE.
-           IF WS-PU-ST1 = 23 OR 35 OR 49
-                GO TO RPULL-999.
-           IF WS-PU-ST1 NOT = 0
-                MOVE 0 TO WS-PU-ST1
-                MOVE "PULLER RECORD BUSY ON READ, 'ESC' TO RETRY"
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPULL-010.
-           MOVE PU-INITIAL TO PB-INITIAL.
-       RPULL-999.
-             EXIT.
+      *     MOVE W-FILENAME TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-999.
+            EXIT.
       *
        PRINT-INVOICE SECTION.
        PR-000.
@@ -1117,7 +802,6 @@
            IF WS-INVREV-ST1 NOT = 0
               MOVE 0 TO WS-INVREV-ST1
                 GO TO PR-002.
-      *          GO TO PR-001.
        PR-0015.
            READ INV-REV NEXT WITH LOCK
               AT END NEXT SENTENCE.
@@ -1162,11 +846,13 @@
                GO TO PR-050. 
            
            IF WS-IMM-PR = "H"
-              PERFORM IM-600
-              PERFORM IM-650
-              PERFORM GET-USER-PRINT-NAME
+      *        PERFORM IM-600
+      *        PERFORM IM-650
+      *        PERFORM GET-USER-PRINT-NAME
+              PERFORM WORK-OUT-PRINT-FILE-NAME
               OPEN OUTPUT LASER-PRINT
               PERFORM ZL1-LASER-HEADINGS
+              MOVE 1 TO WS-TYPE-OF-DOCUMENT
               PERFORM LASER-PRINT-INVOICE
       *        PERFORM A995-QUEUE-FSD
               GO TO PR-050.
@@ -1424,11 +1110,23 @@
                WRITE LASER-REC
                WRITE LASER-REC.
                
-            MOVE "´"         TO LASER-REC
-            WRITE LASER-REC.
-               
+      *      MOVE "´"         TO LASER-REC
+      *      WRITE LASER-REC.
+
+  
            MOVE " "     TO LASER-REC
-           MOVE "¶"     TO PLCR-CHAR
+           MOVE "´¶"    TO PLCR-CHAR1
+           IF WS-TYPE-OF-DOCUMENT = 1
+              MOVE "      TAX INVOICE     " TO PL-TYPE
+              GO TO LP-011.
+           IF WS-TYPE-OF-DOCUMENT = 2
+              MOVE "SUPPLIER DELIVERY NOTE" TO PL-TYPE
+              GO TO LP-011.
+           IF WS-TYPE-OF-DOCUMENT = 3
+              MOVE "CUSTOMER DELIVERY NOTE" TO PL-TYPE.
+       LP-011.
+           MOVE " "     TO LASER-REC
+           MOVE "¶"     TO PL2-CHAR
            MOVE PA-NAME TO PL-NAME.
            WRITE LASER-REC FROM LASER-PCREDITLINE.
            MOVE " "     TO LASER-REC.
@@ -1536,7 +1234,7 @@
                GO TO LR-030.
            IF SUB-2 > 20
                MOVE 1 TO SUB-2
-               ADD 1 TO WS-PAGE
+               ADD 1  TO WS-PAGE
                GO TO LR-010.
            IF SUB-1 > 200
               GO TO LR-030.
@@ -1611,12 +1309,45 @@
            MOVE WS-POSTADDON     TO PL-ADD1
            MOVE WS-MISCADDON     TO PL-ADD2
            MOVE WS-SUBTOTAL      TO PL-ADD3
+           MOVE "ZAR"            TO PL-CURRENCY
            MOVE WS-INVOICETOTAL  TO PL-ADD4
            WRITE LASER-REC        FROM LASERPL-ADDLINE.
        LR-036.
+           
+      * TO DETERMINE WHAT HEADING FOR THE DOCUMENT TO PRINT SEE BELOW:
+      * WS-PROG-TYPE: 1=INVOICE ONLY
+      *               2=D/NOTES ONLY
+      *               3=INVOICE & D/NOTES
+      *               4=CREDIT NOTES
+      
+      *PRINT INVOICE ONLY
+           IF WS-PROG-TYPE = 1
+               GO TO LR-900.
+               
+      *PRINT DELIVERY NOTES ONLY
+           IF WS-PROG-TYPE = 2
+            IF WS-TYPE-OF-DOCUMENT = 2
+               MOVE 3 TO WS-TYPE-OF-DOCUMENT
+               GO TO LR-005.
+               
+           IF WS-PROG-TYPE = 2
+            IF WS-TYPE-OF-DOCUMENT = 3
+               GO TO LR-900.
+               
+      *PRINT INVOICE & DELIVERY NOTES
+           IF WS-PROG-TYPE = 3
+            IF WS-TYPE-OF-DOCUMENT < 3
+               ADD 1 TO WS-TYPE-OF-DOCUMENT
+               GO TO LR-005.
+           IF WS-PROG-TYPE = 2 OR = 3
+            IF WS-TYPE-OF-DOCUMENT = 3
+               GO TO LR-900.
+       LR-900.
            MOVE " " TO LASERPL-ADDLINE LASER-REC.
            CLOSE LASER-PRINT.
-           PERFORM SEND-REPORT-TO-PRINTER.
+           
+           PERFORM SETUP-INVOICE-FOR-PDF
+      *     PERFORM SEND-REPORT-TO-PRINTER.
 
            MOVE 2958 TO POS
            DISPLAY WS-MESSAGE AT POS.
@@ -1641,7 +1372,7 @@
              MOVE "* INVOICE ENTRY - COUNTER PRINTING **" 
                  TO WS-HEADING-DISPLAY.
             IF WS-IMM-PR = "H"
-             MOVE "* INVOICE ENTRY - HP LASER PRINTING *" 
+             MOVE "* INVOICE ENTRY - PDF LASER PRINTING *" 
                  TO WS-HEADING-DISPLAY.
             IF WS-IMM-PR = "S"
              MOVE "* INVOICE ENTRY - STORES PRINTING **"
@@ -1837,14 +1568,16 @@
              MOVE
             "CREDIT LIMIT AND THE PASSWORD ENTERED IN INCORRECT."
              TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-
-             UNLOCK INCR-REGISTER
-             PERFORM CLEAR-SCREEN
-             PERFORM ERROR1-020
-             PERFORM ERROR-020
-             PERFORM DISPLAY-FORM
-             GO TO GET-010.
+                PERFORM ERROR-MESSAGE
+                PERFORM CLEAR-SCREEN
+                PERFORM ERROR1-020
+                PERFORM ERROR-020
+                PERFORM DISPLAY-FORM
+             IF WS-INCR-ST1 = 51
+                UNLOCK INCR-REGISTER
+                GO TO GET-010
+             ELSE
+                GO TO GET-010.
 
            IF WS-PASSWORD-VALID = "Y"
             IF WS-LIMIT-EXCEP-WRITE = "N"
@@ -1868,24 +1601,29 @@
                MOVE "GOODS CANNOT BE SUPPLIED ON THIS ACCOUNT."
                TO WS-MESSAGE
                PERFORM ERROR1-MESSAGE
-
-             UNLOCK INCR-REGISTER
-             PERFORM CLEAR-SCREEN
-             PERFORM ERROR1-020
-             PERFORM ERROR-020
-             PERFORM DISPLAY-FORM
+               PERFORM CLEAR-SCREEN
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               PERFORM DISPLAY-FORM
+             IF WS-INCR-ST1 = 51
+               UNLOCK INCR-REGISTER
+               GO TO GET-010
+             ELSE
                GO TO GET-010.
+             
            IF DR-SUPPLY-Y-N = "S"
                 MOVE
                "THIS ACCOUNT HAS BEEN SUSPENDED, CHECK WITH A/C'S DEPT."
                 TO WS-MESSAGE
                 PERFORM ERROR1-MESSAGE
-
-             UNLOCK INCR-REGISTER
-             PERFORM CLEAR-SCREEN
-             PERFORM ERROR1-020
-             PERFORM ERROR-020
-             PERFORM DISPLAY-FORM
+                PERFORM CLEAR-SCREEN
+                PERFORM ERROR1-020
+                PERFORM ERROR-020
+                PERFORM DISPLAY-FORM
+             IF WS-INCR-ST1 = 51
+                UNLOCK INCR-REGISTER
+                GO TO GET-010
+             ELSE
                 GO TO GET-010.
             MOVE " " TO INCR-AREA.
        GET-012.
@@ -2171,18 +1909,24 @@
               MOVE 3010 TO POS
               DISPLAY WS-MESSAGE AT POS
               PERFORM DISPLAY-FORM
-              UNLOCK INCR-REGISTER
-            GO TO GET-010.
+             IF WS-INCR-ST1 = 51
+               UNLOCK INCR-REGISTER
+               GO TO GET-010
+             ELSE
+               GO TO GET-010.
            IF WS-NEWORDER = "P"
              MOVE "THE ORDER IS IN THE STORE READY FOR PULLING, DON'T"
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "CREATE A 2nd SLIP BEFORE THE ORIGINAL IS RETURNED."
              TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             PERFORM ERROR1-020
-             UNLOCK INCR-REGISTER
-             GO TO GET-010.
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+             IF WS-INCR-ST1 = 51
+               UNLOCK INCR-REGISTER
+               GO TO GET-010
+             ELSE
+               GO TO GET-010.
            IF WS-NEWORDER = "C"
                MOVE "THIS ORDER HAS BEEN INVOICED AND IS COMPLETE."
                TO WS-MESSAGE
@@ -2195,7 +1939,10 @@
                MOVE WS-DAILY-MESSAGE       TO WS-MESSAGE
                PERFORM ERROR1-MESSAGE
                PERFORM ERROR-020
+             IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
+               GO TO GET-010
+             ELSE
                GO TO GET-010.
        GET-115.
             IF Ws-Sold-By NOT = "  "
@@ -2410,13 +2157,16 @@
              MOVE
             "CREDIT LIMIT AND THE PASSWORD ENTERED IS INCORRECT."
              TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             UNLOCK INCR-REGISTER
-             PERFORM CLEAR-SCREEN
-             PERFORM ERROR1-020
-             PERFORM ERROR-020
-             PERFORM DISPLAY-FORM
-             GO TO GET-010.
+                PERFORM ERROR-MESSAGE
+                PERFORM CLEAR-SCREEN
+                PERFORM ERROR1-020
+                PERFORM ERROR-020
+                PERFORM DISPLAY-FORM
+             IF WS-INCR-ST1 = 51
+                UNLOCK INCR-REGISTER
+                GO TO GET-010
+             ELSE
+                GO TO GET-010.
       ****************************************************************
       *SECTION TO CHECK IF THE NEW ORDER TO BE INVOICED WILL PUSH THE*
       *ACCOUNT OVER THE CREDIT LIMIT.                                *
@@ -2450,12 +2200,15 @@
             "THE CREDIT LIMIT, AND THE PASSWORD ENTERED IS INCORRECT."
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             UNLOCK INCR-REGISTER
              PERFORM CLEAR-SCREEN
              PERFORM ERROR1-020
              PERFORM ERROR-020
              PERFORM DISPLAY-FORM
-             GO TO GET-010.
+             IF WS-INCR-ST1 = 51
+                UNLOCK INCR-REGISTER
+                GO TO GET-010
+             ELSE
+                GO TO GET-010.
 
            IF WS-PASSWORD-VALID = "Y"
             IF WS-LIMIT-EXCEP-WRITE = "N"
@@ -4257,7 +4010,8 @@
                MOVE INCR-INVOICE TO WS-INVOICE
                GO TO CRS-999.
        CRS-900.
-           UNLOCK INCR-REGISTER.
+             IF WS-INCR-ST1 = 51
+               UNLOCK INCR-REGISTER.
        CRS-999.
            EXIT.
       *
@@ -6191,6 +5945,383 @@
        R-STDISC-999.
              EXIT.
       *
+       QUES-PULL-CASH SECTION.
+       QPC-005.
+           IF WS-QUES-PRINT-PULLERS = "N"
+               GO TO QPC-500.
+           PERFORM CLEAR-010.
+        QPC-006.
+            OPEN I-O PULLER-MASTER.
+            IF WS-PU-ST1 NOT = 0
+               MOVE 0 TO WS-PU-ST1
+               MOVE "PULLBY FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO QPC-006.
+       QPC-010.
+           OPEN I-O PULL-BY.
+           IF Ws-PullBy-ST1 NOT = 0
+              MOVE 0 TO WS-PullBy-St1
+              MOVE "PULLBY ERROR ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO QPC-010.
+           MOVE " " TO PB-INITIAL.
+       QPC-015.
+           MOVE INCR-PULLBY TO PB-INITIAL.
+           MOVE 2910 TO POS
+           DISPLAY
+           "ENTER THE INITIALS OF THE PERSON THAT PULLED THE STOCK [  ]"
+             AT POS
+           ADD 56 TO POS
+           ACCEPT PB-INITIAL AT POS
+           IF PB-INITIAL = "  "
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO QPC-015.
+           MOVE PB-INITIAL TO PU-INITIAL INCR-PULLBY
+           PERFORM READ-PULLERS.
+           IF WS-PU-ST1 = 23 OR 35 OR 49
+              MOVE "PLEASE ENTER AN INITIAL FOR A CURRENT STORES PULLER"
+              TO WS-MESSAGE
+              PERFORM ERROR-000
+              GO TO QPC-015.
+           
+           MOVE WS-INVOICE      TO PB-INVOICE
+           MOVE Ws-InvoiceDate  TO PB-INV-DATE
+           MOVE SUB-20          TO PB-LINE-CNT
+           SUBTRACT 1         FROM PB-LINE-CNT
+           MOVE WS-INVOICETOTAL TO PB-SALE-AMOUNT.
+       QPC-020.
+           WRITE PULLBY-REC
+              INVALID KEY NEXT SENTENCE.
+           IF Ws-PullBy-ST1 NOT = 0
+               MOVE "PULLBY RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE.
+           CLOSE PULL-BY
+                 PULLER-MASTER.
+       QPC-500.
+           PERFORM ERROR-020.
+           PERFORM ERROR1-020.
+           IF WS-QUES-CASH-SALES = "N"
+               GO TO QPC-900.
+           PERFORM CLEAR-010.
+       QPC-505.
+           MOVE " " TO WS-DIS
+           MOVE 3010 TO POS
+           DISPLAY
+           "IS THIS A CASH TRANSACTION, ENTER Y OR N : [ ]" AT POS
+           ADD 44 TO POS
+           ACCEPT WS-DIS AT POS.
+           IF WS-DIS NOT = "N" AND NOT = "Y"
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO QPC-505.
+           IF WS-DIS = "N"
+              GO TO QPC-900.
+           PERFORM ERROR-020.
+           IF WS-CASHSALE-ST1 = 88
+              GO TO QPC-515.
+      *************************************************************
+      *ST1=8; CASH-SALE OPEN, SO WE DON'T OPEN AGAIN IF UP-ARROW  *
+      *       FROM QPC-515 INCASE OPERATOR CHANGES MIND ON YES/NO *
+      *************************************************************
+       QPC-510.
+           OPEN I-O Cash-Sale.
+           IF Ws-CashSale-ST1 NOT = 0
+              MOVE 0 TO Ws-CashSale-St1
+              MOVE "CashSale ERROR ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO QPC-510.
+           MOVE " " TO WS-CASH-ACCEPT.
+           MOVE 88 TO WS-CASHSALE-ST1.
+       QPC-515.
+           MOVE 2910 TO POS
+           DISPLAY
+           "ENTER THE AMOUNT PAID BY CASH : [         ]" AT POS
+           ADD 33 TO POS
+           MOVE WS-INVOICETOTAL TO F-EDNAMEFIELDAMOUNT
+           MOVE F-EDNAMEFIELDAMOUNT TO WS-CASH-ACCEPT CDA-DATA
+           DISPLAY F-EDNAMEFIELDAMOUNT AT POS.
+
+      *     MOVE ' '       TO CDA-DATA.
+           MOVE 9         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 42        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-CASH-ACCEPT.
+
+      *     ACCEPT WS-CASH-ACCEPT AT POS.
+           IF W-ESCAPE-KEY = 4
+              GO TO QPC-505.
+           MOVE WS-CASH-ACCEPT TO ALPHA-RATE
+           PERFORM DECIMALISE-RATE
+           MOVE NUMERIC-RATE TO CS-SALE-AMOUNT F-EDNAMEFIELDAMOUNT
+           MOVE 2943 TO POS
+           DISPLAY F-EDNAMEFIELDAMOUNT AT POS.
+           IF SIGN-FOUND = 1
+              GO TO QPC-515.
+           IF CS-SALE-AMOUNT = 0
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO QPC-515.
+       QPC-517.
+           MOVE 3010 TO POS
+           DISPLAY "IS THE AMOUNT ENTERED CORRECT : [ ]" AT POS
+           ADD 33 TO POS
+           ACCEPT WS-DIS AT POS.
+           IF WS-DIS NOT = "Y" AND NOT = "N"
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO QPC-517.
+           IF WS-DIS = "N"
+              GO TO QPC-515.
+           MOVE WS-INVOICE        TO CS-INVOICE
+           MOVE WS-ACCOUNT-NUMBER TO CS-ACCOUNT
+           MOVE WS-INVOICEDATE    TO CS-INV-DATE
+           MOVE WS-SOLD-BY        TO CS-INITIAL.
+       QPC-520.
+           WRITE CASHSALE-REC
+              INVALID KEY NEXT SENTENCE.
+           IF WS-CASHSALE-ST1 NOT = 0
+               MOVE
+                "CASHSALE RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE.
+           CLOSE CASH-SALE.
+       QPC-900.
+           PERFORM ERROR-020.
+           PERFORM ERROR1-020.
+           IF WS-IMM-PR NOT = "S" AND NOT = "H"
+               GO TO QPC-999.
+       QPC-910.
+           MOVE " " TO WS-DIS
+           MOVE 3010 TO POS
+           DISPLAY
+           "DO YOU WISH TO PRINT A PACKING LABEL, ENTER Y OR N : [ ]"
+            AT POS
+           ADD 54 TO POS
+           ACCEPT WS-DIS AT POS.
+           IF WS-DIS NOT = "N" AND NOT = "Y"
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO QPC-910.
+           PERFORM ERROR1-020
+           PERFORM ERROR-020.
+       QPC-999.
+           EXIT.
+      *
+       PRINT-LABEL SECTION.
+       PL-001.
+           Move 5 To Ws-PrinterNumber (21).
+           Move 4 To Ws-PrinterType (21).
+           Copy "PrinterSpecial".
+       PL-002.
+           MOVE "  " TO WS-SOLD-BY.
+           MOVE 2920 TO POS.
+           DISPLAY "IN PRINTING PARCEL LABELS," AT POS
+           MOVE 3010 TO POS
+           DISPLAY
+           "HOW MANY COPIES DO YOU WANT TO PRINT : [  ]" AT POS
+           ADD 40 TO POS
+           ACCEPT WS-SOLD-BY AT POS.
+           IF WS-SOLDBY = " "
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO PL-002.
+            MOVE WS-SOLD-BY TO ALPHA-RATE.
+            PERFORM DECIMALISE-RATE.
+            MOVE NUMERIC-RATE TO WS-COPIES
+                                 F-EDNAMEFIELDANAL.
+            DISPLAY F-EDNAMEFIELDANAL AT POS.
+            IF NUMERIC-RATE > 1
+               MOVE 2910 TO POS
+               DISPLAY "ARE YOU SURE YOU WANT SO MANY COPIES? [ ]"
+               AT POS
+               ADD 39 TO POS
+               ACCEPT WS-DIS AT POS.
+            IF WS-COPIES = 1
+               GO TO PL-003.
+            IF WS-COPIES < 1
+               GO TO PL-002.
+            IF WS-DIS = "Y"
+               GO TO PL-003
+            ELSE
+               GO TO PL-002.
+       PL-003.
+           MOVE "  " TO WS-SOLD-BY.
+           MOVE 3010 TO POS
+           DISPLAY
+           "HOW MANY PARCELS ARE THERE TO PRINT FOR: [  ]" AT POS
+           ADD 42 TO POS
+           ACCEPT WS-SOLD-BY AT POS.
+           IF WS-SOLDBY = " "
+              DISPLAY " " AT 3079 WITH BELL
+              GO TO PL-003.
+            MOVE WS-SOLD-BY TO ALPHA-RATE.
+            PERFORM DECIMALISE-RATE.
+            MOVE NUMERIC-RATE TO WS-PARCEL
+                                 F-EDNAMEFIELDANAL.
+            DISPLAY F-EDNAMEFIELDANAL AT POS.
+            IF WS-PARCEL = 1
+               GO TO PL-005.
+            IF WS-PARCEL < 1
+               GO TO PL-003.
+            IF WS-PARCEL > 1
+               MOVE 2910 TO POS
+               DISPLAY "ARE YOU SURE YOU WANT SO MANY PARCELS? [ ]"
+               AT POS
+               ADD 40 TO POS
+               ACCEPT WS-DIS AT POS.
+            IF WS-DIS = "Y"
+               GO TO PL-005
+            ELSE
+               GO TO PL-003.
+       PL-005.
+           PERFORM ERROR-020
+           MOVE 3010 TO POS
+           DISPLAY "LABELS BEING PRINTED, PLEASE BE PATIENT...." AT POS
+           MOVE 0  TO WS-COPIES-PRINTED
+                      WS-PARCEL-PRINTED.
+           CALL "C$SLEEP" USING 1.
+      *          MOVE 10 TO  W-DELAY.
+       PL-012.
+           PERFORM GET-USER-PRINT-NAME.
+           OPEN OUTPUT PRINT-FILE.
+           MOVE WS-PRINT-COMP   TO PRINT-REC
+           WRITE PRINT-REC.
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE INCR-NAME       TO PL2-REST
+           MOVE WS-PRINT-BOLD   TO PL2-DIG1
+           WRITE PRINT-REC FROM PARCEL2.
+           MOVE WS-PRINT-NORMAL TO PRINT-REC
+           WRITE PRINT-REC.
+
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE INCR-DEL1       TO PL2-REST
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE INCR-DEL2       TO PL2-REST
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE INCR-DEL3       TO PL2-REST
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           WRITE PRINT-REC
+           WRITE PRINT-REC.
+
+           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
+           MOVE "ORDER     #:"  TO PL2-DESC
+           MOVE INCR-PORDER     TO PL2-ADD
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
+           MOVE "INVOICE   #:"  TO PL2-DESC
+           MOVE INCR-INVOICE    TO PL2-ADD
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
+           MOVE "INTERNAL  #:"  TO PL2-DESC
+           MOVE INCR-BO-INV-NO  TO PL2-ADD
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC.
+
+           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
+           MOVE "DELIVERY   :"  TO PL2-DESC
+           MOVE INCR-DELIVERY   TO PL2-ADD
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           MOVE WS-PRINT-BOLD   TO PL2-REST-DIG1
+           MOVE "CONTACT    :"  TO PL2-DESC
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           MOVE INCR-CONTACT    TO PL2-ADD
+           WRITE PRINT-REC FROM PARCEL2
+           MOVE " "             TO PARCEL2 PRINT-REC
+           ADD 1                TO WS-PARCEL-PRINTED
+           MOVE WS-PRINT-BOLD     TO PCL-REST-DIG1
+           MOVE "PARCEL    #:"    TO PCL-DESC
+           MOVE WS-PARCEL-PRINTED TO PCL-NO1
+           MOVE WS-PARCEL         TO PCL-NO2
+           MOVE WS-PRINT-UNBOLD   TO PCL-DIG2
+           WRITE PRINT-REC FROM PARCEL-LINE
+           MOVE " "               TO PRINT-REC
+           SUBTRACT 1 FROM WS-PARCEL-PRINTED
+           WRITE PRINT-REC
+           WRITE PRINT-REC
+      *     MOVE WS-PRINT-BOLD   TO PL2-DIG1
+      *     MOVE WS-COMMENT      TO PL2-REST
+      *     WRITE PRINT-REC FROM PARCEL2.
+
+           MOVE " "             TO PARCEL2 PRINT-REC
+           WRITE PRINT-REC
+           MOVE "SUPPLIED BY:"  TO PL2-DESC
+           MOVE WS-PRINT-UNBOLD TO PL2-DIG2
+           WRITE PRINT-REC FROM PARCEL2.
+
+           MOVE " "             TO PARCEL2 PRINT-REC
+           WRITE PRINT-REC
+           CLOSE PRINT-FILE.
+           PERFORM SEND-REPORT-TO-PRINTER.
+
+           CALL "C$SLEEP" USING 1.
+      *           CALL "&DELAY" USING W-ERROR W-DELAY.
+
+           ADD 1 TO WS-PARCEL-PRINTED.
+           IF WS-PARCEL-PRINTED NOT = WS-PARCEL
+               GO TO PL-012
+           ELSE
+               ADD 1 TO WS-COPIES-PRINTED
+               MOVE 0 TO WS-PARCEL-PRINTED.
+
+           IF WS-COPIES NOT = WS-COPIES-PRINTED
+               GO TO PL-012.
+           IF WS-IMM-PR = "B"
+               GO TO PL-999.
+           IF WS-IMM-PR = "H"
+               MOVE 3 TO WS-PROG-TYPE
+               GO TO PL-999.
+           MOVE 1 TO SUB-1.
+       PL-900.
+           IF WS-IMM-PR = "C"
+            IF WS-PRINTERNUMBER (SUB-1) = 7
+               MOVE WS-PRINTERNAME (SUB-1) TO WS-PRINTER
+               MOVE WS-PRINTERCHARS (SUB-1) TO WS-PRINT-CHARS
+               GO TO PL-999.
+           IF WS-IMM-PR = "S"
+            IF WS-PRINTERNUMBER (SUB-1) = 4
+               MOVE WS-PRINTERNAME (SUB-1) TO WS-PRINTER
+               MOVE WS-PRINTERCHARS (SUB-1) TO WS-PRINT-CHARS
+               GO TO PL-999.
+           IF SUB-1 < 11
+             ADD 1 TO SUB-1
+             GO TO PL-900.
+           MOVE "CAN'T FIND A PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+            TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       PL-999.
+           EXIT.
+      *
+       READ-PULLERS SECTION.
+       RPULL-000.
+           START PULLER-MASTER KEY NOT < PU-KEY.
+       RPULL-010.
+           READ PULLER-MASTER
+                 INVALID KEY NEXT SENTENCE.
+           IF WS-PU-ST1 = 23 OR 35 OR 49
+                GO TO RPULL-999.
+           IF WS-PU-ST1 NOT = 0
+                MOVE 0 TO WS-PU-ST1
+                MOVE "PULLER RECORD BUSY ON READ, 'ESC' TO RETRY"
+                  TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO RPULL-010.
+           MOVE PU-INITIAL TO PB-INITIAL.
+       RPULL-999.
+             EXIT.
+      *
        CHECK-NORMAL-DISCOUNT SECTION.
        CDS-005.
            IF DR-DISCOUNT-CODE = " " OR = "0"
@@ -6427,6 +6558,7 @@
        Copy "GetSystemY2KDate".
        Copy "GetReportY2KDate".
        Copy "GetUserPrintName".
+       Copy "SetupInvoiceForPDF".
        Copy "SendReportToPrinter".
        Copy "GetUserMailName".
        Copy "ZoomBox".

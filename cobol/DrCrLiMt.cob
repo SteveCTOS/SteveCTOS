@@ -2616,15 +2616,14 @@
               MOVE WS-pbValue             TO WS-DAILY-2ND
               MOVE "DATE & TIME CHANGED:" TO WS-DAILY-3RD
               MOVE pbRet                  TO WS-REPORT-DATE-STRIP
-              
-              MOVE WS-REPORT-DATE-STRIP TO WS-MESSAGE
-              PERFORM  ERROR-MESSAGE
               MOVE WS-STRIP2              TO WS-DAILY-4TH
               PERFORM WRITE-DAILY.
               
-              MOVE WS-STRIP2 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+      *        MOVE WS-REPORT-DATE-STRIP TO WS-MESSAGE
+      *        PERFORM  ERROR-MESSAGE
               
+      *        MOVE WS-STRIP2 TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE.
        PREP-999.
            EXIT.
       *

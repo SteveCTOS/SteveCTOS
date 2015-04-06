@@ -1,7 +1,7 @@
       *
        ERROR-MESSAGE SECTION.
        ERROR-000.
-      *      PERFORM CENTRE-MESSAGE-INFO.
+            PERFORM CENTRE-MESSAGE-INFO.
              
              MOVE 3001 TO POS.
              DISPLAY "                                      " AT POS.
