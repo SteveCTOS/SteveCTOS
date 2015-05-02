@@ -19,15 +19,15 @@
       *
        CENTRE-MESSAGE-INFO SECTION.
        CMI-000.
-             MOVE SPACES TO ALPHA-RATE DATA-RATE.
-             MOVE WS-MESSAGE TO ALPHA-RATE.
+             MOVE SPACES TO MESSAGE-RATE MES-DATA-RATE.
+             MOVE WS-MESSAGE TO MESSAGE-RATE.
              MOVE 79 TO SUB-30
              MOVE 0  TO SUB-35.
        CMI-010.
              IF SUB-30 < 1
                 MOVE 1 TO SUB-30
                 GO TO  CMI-050.
-             IF AL-RATE (SUB-30) = " "
+             IF MES-AL-RATE (SUB-30) = " "
                 SUBTRACT 1 FROM SUB-30
                 ADD 1 TO SUB-35
                 GO TO CMI-010.
@@ -37,12 +37,12 @@
              MOVE 1     TO SUB-30
              MOVE SUB-5 TO SUB-3.
        CMI-035.
-             MOVE AL-RATE (SUB-30) TO DAT-RATE (SUB-3)
+             MOVE MES-AL-RATE (SUB-30) TO MES-DAT-RATE (SUB-3)
              IF SUB-3 < 79
                  ADD 1 TO SUB-30 SUB-3
                  GO TO CMI-035.
        CMI-050.
-             MOVE DATA-RATE TO WS-MESSAGE.
+             MOVE MES-DATA-RATE TO WS-MESSAGE.
        CMI-999.
              EXIT.
       *

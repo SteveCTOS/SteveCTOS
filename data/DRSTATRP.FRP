@@ -16,11 +16,11 @@
       *           Print In Long Paper Format      : _                  *       
       *           Is This a Month/Year End Print  : _                  *       
       *           Enter Printer Type Option       : _                  *       
-      *                 1=Dot Matrix Printer                           *       
-      *             {H} 2=Both EMail & Printed Statements              *       
-      *             {P} 3=Create EMail Statements Only                 *       
-      *                 4=Print Acc's with NO EMail Address            *       
-      *                 5=EMail Individual Once Off Statements         *       
+      *              1=Print to Dot Matrix Printer - (OLD Style)       *       
+      *          {H} 2=Print Both eMail & NO eMail Statements          *       
+      *          {P} 3=Print Acc's with eMail Address Only             *       
+      *          { } 4=Print Acc's with NO eMail Address Only          *       
+      *              5=eMail Individual Once Off Statements - NO Print *       
       ******************************************************************       
                                                                                
                                                                                

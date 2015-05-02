@@ -3,6 +3,10 @@
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -56,24 +60,20 @@
        77  WS-TERMOFSALE        PIC X(11) VALUE " ".
        77  WS-EMAIL-NUMBER      PIC X(50) VALUE " ".
        88  WS-LAST-DAY          VALUES ARE "01" THRU "31".
+       01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-EMAIL-STATEMENT.
            03  WS-ES-FIL        PIC X(15) VALUE "/ctools/estate/".
            03  WS-EStatement    PIC X(7).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1    PIC 99.
-      *     03  WS-DRTRANS-ST2    PIC 9(2) COMP-X.
+           03  WS-DRTRANS-ST1      PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1    PIC 99.
-      *     03  WS-SLPARAMETER-ST2    PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1    PIC 99.
-      *     03  WS-DAILY-ST2    PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SPOOL-STATUS.
-           03  WS-SPOOL-ST1    PIC 99.
-      *     03  WS-SPOOL-ST2    PIC X.
+           03  WS-SPOOL-ST1        PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -171,7 +171,8 @@
            03  FILLER              PIC X(75) VALUE " ".
            03  P7-BAL-ERROR        PIC X(3).
            03  P7-AMOUNT-TO-PAYLHS PIC Z(6)9.99-.
-           03  FILLER              PIC X(17) VALUE " ".
+           03  FILLER              PIC X(14) VALUE " ".
+           03  P7-BAL-ERROR1       PIC X(3).
            03  P7-AMOUNT-TO-PAYRHS PIC Z(6)9.99-.
            03  FILLER              PIC X(11) VALUE " ".
        01  PLINE8.
@@ -202,14 +203,17 @@
            03  PL1-CHAR         PIC X(2) VALUE " ".
            03  PL1-SPECIAL.
               04  PL1-NAME      PIC X(62).
-              04  PL1-TEL       PIC X(24).
+              04  PL1-FAX.
+                05  FILLER      PIC X VALUE " ".
+                05  PL1-TEL     PIC X(23).
            03  PL1-END-CHAR     PIC X.
        01  LASER-PLINE2.
            03  PL2-CHAR         PIC X(2) VALUE " ".
            03  PL2-NAME         PIC X(52) VALUE " ".
            03  PL2-ACCOUNT      PIC X(14).
            03  PL2-DATE         PIC X(13).
-           03  PL2-PAGE         PIC Z(3)9.
+           03  PL2-PAGE         PIC ZZZZ.
+      *     03  PL2-PAGE         PIC Z(3)9.
            03  FILLER           PIC X(3) VALUE " ".
            03  PL2-END-CHAR     PIC X.
        01  LASER-PLINE3.
@@ -301,7 +305,9 @@
               MOVE 12 TO WS-LP-MM
               SUBTRACT 1 FROM WS-LP-YY.
        CONT-010.
-           Perform CDNVD-005
+      * NEXT LINE USED TO ZERO SUB-1 AND MOVE SPACES TO ALPHA-RATE
+           Perform CDNVD-005.
+           
            IF WS-PRINTER-TYPE = 1
                MOVE "/ctools/spl/DrStateCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = 2
@@ -316,6 +322,8 @@
                                            W-FILENAME
                GO TO CONT-030.
                
+      *NEXT LINE USED TO CHECK THE VALUE OF SUB-1 WHICH IS THE NAME
+      * LENGTH PLUS 1 POS SO WE CAN ADD THE COMPANY NUMBER TO THE NAME
            Perform CDNVD-015
 
            MOVE WS-CO-NUMBER TO WS-COMPANY-DIGITS
@@ -323,13 +331,16 @@
            ADD 1 TO SUB-1
            MOVE WS-CO-DIG2   TO AL-RATE (SUB-1).
            
-      *     Move Ws-Co-Number to Al-Rate (Sub-1)
-           Move Alpha-Rate To Ws-Printer
-                              W-SpoolerFileSpec
-                              W-FileName.
-           Move Sub-1 To W-CbSpoolerFileSpec.
+           Move Alpha-Rate To Ws-Printer.
+      *                        W-SpoolerFileSpec
+      *                        W-FileName.
+      *     Move Sub-1 To W-CbSpoolerFileSpec.
        CONT-030.
-           PERFORM GET-USER-PRINT-NAME.
+      *     PERFORM GET-USER-PRINT-NAME.
+           IF WS-IMM-PRINT = "Y"
+            IF WS-PRINTER-TYPE NOT = "1"
+              PERFORM WORK-OUT-PRINT-FILE-NAME.
+              
            OPEN OUTPUT PRINT-FILE.
            IF WS-SPOOL-ST1 NOT = 0
                MOVE "PRINT FILE OPEN ELSE WHERE, 'ESC' TO RETRY."
@@ -337,8 +348,8 @@
                PERFORM ERROR-MESSAGE
                GO TO CONT-030.
            IF WS-PRINTER-TYPE = 1
-              MOVE WTELL-PAUSE TO PRINT-REC
-              WRITE PRINT-REC
+      *        MOVE WTELL-PAUSE TO PRINT-REC
+      *        WRITE PRINT-REC
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC BEFORE PAGE
               PERFORM PRINT-STATEMENT
@@ -351,14 +362,14 @@
            IF WS-PRINTER-TYPE = 1
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC BEFORE PAGE
-               MOVE W-NULL TO PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               MOVE WTELL-PAUSE TO PRINT-REC
-               WRITE PRINT-REC
+      *        MOVE W-NULL TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE WTELL-PAUSE TO PRINT-REC
+      *         WRITE PRINT-REC
                MOVE " " TO PRINT-REC.
            CLOSE PRINT-FILE.
            CLOSE DEBTOR-MASTER
@@ -383,6 +394,83 @@
            EXIT PROGRAM.
        CONT-999.
            EXIT.
+      *
+       WORK-OUT-PRINT-FILE-NAME SECTION.
+       WOPFN-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+      *     
+      *     MOVE "IN WOPFN-001." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-005.
+           MOVE "/ctools/spl/" TO ALPHA-RATE.
+           MOVE WS-USERNAME    TO DATA-RATE.
+           MOVE 13 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOPFN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-010.
+       WOPFN-020.
+
+      *     MOVE DATA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *
+      *     MOVE ALPHA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     MOVE "IN WOPFN-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      
+           MOVE SPACES TO DATA-RATE.
+           IF WS-PRINTER-TYPE = 1
+               MOVE "DrStateCo" To DATA-Rate.
+           IF WS-PRINTER-TYPE = 2
+               MOVE "DrLaserCo" To DATA-Rate.
+           IF WS-PRINTER-TYPE = 3
+               MOVE "DrEMailCo" To DATA-Rate.
+           IF WS-PRINTER-TYPE = 4
+               MOVE "DrNoMalCo" To DATA-Rate.
+               
+      *     MOVE 10 TO SUB-2.
+      *     MOVE WS-CO-NUMBER TO WS-COMPANY-DIGITS
+      *     MOVE WS-CO-DIG1   TO DAT-RATE (SUB-2)
+      *     ADD 1 TO SUB-2
+      *     MOVE WS-CO-DIG2   TO DAT-RATE (SUB-2).
+           MOVE 1            TO SUB-2.
+
+      *     MOVE DATA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *
+       WOPFN-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-025.
+       WOPFN-030.
+           MOVE SPACES TO DATA-RATE.
+           MOVE WS-CO-NUMBER TO DATA-RATE.
+           MOVE 1 TO SUB-2.
+
+      *     MOVE "IN WOPFN-030." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-035.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-035.
+           MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
+           
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *
+      *     MOVE W-FILENAME TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-999.
+            EXIT.
       *
        GET-DATA SECTION.
        GET-000.
@@ -815,8 +903,10 @@
                                 P7-AMOUNT-TO-PAYRHS.
            IF DR-BALANCE NOT = WS-WORKTOTAL
                MOVE "***"                TO P7-BAL-ERROR
+                                            P7-BAL-ERROR1
            ELSE
-               MOVE "   "                TO P7-BAL-ERROR.
+               MOVE "ZAR"                TO P7-BAL-ERROR
+                                            P7-BAL-ERROR1.
                                 
            WRITE PRINT-REC FROM PLINE7 AFTER 2
            MOVE " " TO PRINT-REC
@@ -870,7 +960,7 @@
        PRL-005.
            IF DRTR-ACCOUNT-NUMBER > WS-ACCNOEND
               MOVE " " TO PRINT-REC
-              WRITE PRINT-REC AFTER 1
+      *        WRITE PRINT-REC AFTER 1
               GO TO PRL-999.
             MOVE DRTR-ACCOUNT-NUMBER TO DR-ACCOUNT-NUMBER.
             
@@ -982,11 +1072,11 @@
                 MOVE "³"      TO PL1-END-CHAR.
             MOVE "¶"          TO PL1-CHAR
             MOVE PA-NAME      TO PL1-NAME
-            MOVE PA-FAX       TO PL1-TEL
+            MOVE PA-FAX       TO PL1-FAX
             WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
             
             MOVE PA-ADD1      TO PL1-NAME
-            MOVE " "          TO PL1-TEL
+            MOVE " "          TO PL1-FAX
             WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
             
             MOVE PA-ADD2      TO PL1-NAME
@@ -1231,7 +1321,7 @@
            IF DR-BALANCE NOT = WS-WORKTOTAL
                MOVE "***"                TO PL7-BAL-ERROR
            ELSE
-               MOVE "   "                TO PL7-BAL-ERROR.
+               MOVE "ZAR"                TO PL7-BAL-ERROR.
            WRITE PRINT-REC FROM LASER-PLINE7 AFTER 1
            ADD 1 TO L-CNT.
            
@@ -1344,56 +1434,82 @@
               PERFORM ERROR-020.
        RUAC-999.
            EXIT.
-     *
+      *
+       CHECK-PRINTER-NAME SECTION.
+       CPN-001.
+           MOVE 1 TO SUB-1.
+       CPN-005.
+           IF WS-PRINTER-TYPE = "1"
+            IF WS-PRINTERNUMBER (SUB-1) = 10
+               MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER-SAVE
+               MOVE WS-PRINTERCHARS (SUB-1) TO WS-PRINT-CHARS
+               GO TO CPN-999.
+           IF WS-PRINTER-TYPE = "2" OR = "3" OR = "4"
+            IF WS-PRINTERNUMBER (SUB-1) = 15
+               MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER-SAVE
+               GO TO CPN-999.
+           IF SUB-1 < 11
+             ADD 1 TO SUB-1
+             GO TO CPN-005.
+       CPN-999.
+           EXIT.
+      *
        CHECK-SPOOLER SECTION.
        CP-000.
+          PERFORM CHECK-PRINTER-NAME.
            IF WS-PRINTER-TYPE = "1"
-              PERFORM QUEUE-PRINT-FILE
-           ELSE
-              PERFORM A995-QUEUE-FSD
+               PERFORM SEND-REPORT-TO-PRINTER
+               GO TO CP-999.
+      *         PERFORM QUEUE-PRINT-FILE
+      *     ELSE
+      *        PERFORM A995-QUEUE-FSD
+      *        GO TO CP-999.
+      *     MOVE SPACE TO W-SPOOLST
+      *     MOVE SPACE TO W-SPOOLST2
+      *     PERFORM CHECK-FOR-PAUSE.
+      *     IF WS-LONG-FORMAT = "Y"
+      *        GO TO CP-005.
+      * LASER FORMAT PRINT OUT TO PRINTER NUMBER 15 ONLY
+           IF WS-PRINTER-TYPE = "2" OR = "3"
+              PERFORM SETUP-STATEMENT-FOR-PDF
               GO TO CP-999.
-           MOVE SPACE TO W-SPOOLST
-           MOVE SPACE TO W-SPOOLST2
-           PERFORM CHECK-FOR-PAUSE.
-           IF WS-LONG-FORMAT = "Y"
-              GO TO CP-005.
-           IF WS-PRINTER-TYPE = "2" OR = "3" OR = "4"
-              PERFORM SEND-REPORT-TO-PRINTER
-              GO TO CP-005.
+           IF WS-PRINTER-TYPE = "4"
+              PERFORM SETUP-STATEMENT-NOMAIL-FOR-PDF
+              GO TO CP-999.
 
-           MOVE " Load The 'STATEMENT' Paper, Switch the printer"
-               TO WS-MESSAGE.
-           MOVE "   To '6' & Switch It Off & On, Press 'ESC'"
-               TO WS-MESSAGE1.
-           PERFORM ERROR1-MESSAGE.
+      *     MOVE " Load The 'STATEMENT' Paper, Switch the printer"
+      *         TO WS-MESSAGE.
+      *     MOVE "   To '6' & Switch It Off & On, Press 'ESC'"
+      *         TO WS-MESSAGE1.
+      *     PERFORM ERROR1-MESSAGE.
 
        CP-005.
-           IF WS-PRINTER-TYPE = "1"
-              PERFORM SEND-CONTROL-CHAR.
-           MOVE " Printing of statements in progress ..........."
-               TO WS-MESSAGE
-           MOVE 3010 TO POS
-           DISPLAY WS-MESSAGE AT POS.
+      *     IF WS-PRINTER-TYPE = "1"
+      *        PERFORM SEND-CONTROL-CHAR.
+      *     MOVE " Printing of statements in progress ..........."
+      *         TO WS-MESSAGE
+      *     MOVE 3010 TO POS
+      *     DISPLAY WS-MESSAGE AT POS.
       *
-      * PRINTING COMPLETE
+      * PRINTING COMPLETE 
       *
-           IF WS-PRINTER-TYPE NOT = "1"
-                 GO TO CP-999.
-
-           PERFORM CHECK-PAUSE-PRINT
-           IF WS-LONG-FORMAT = "Y"
-              PERFORM CHECK-PAUSE-010
-              PERFORM CHECK-PAUSE-010
-              PERFORM CHECK-PAUSE-010
-              GO TO CP-900.
-           PERFORM ERROR-020
-           MOVE "Load Normal Paper, Switch The Printer To '7',"
-               TO WS-MESSAGE
-           MOVE "   & Switch It Off & On,  Press 'ESC' TO Continue."
-               TO WS-MESSAGE1
-           PERFORM ERROR1-MESSAGE.
+      *     IF WS-PRINTER-TYPE NOT = "1"
+      *           GO TO CP-999.
+      *
+      *     PERFORM CHECK-PAUSE-PRINT
+      *     IF WS-LONG-FORMAT = "Y"
+      *        PERFORM CHECK-PAUSE-010
+      *        PERFORM CHECK-PAUSE-010
+      *        PERFORM CHECK-PAUSE-010
+      *        GO TO CP-900.
+      *     PERFORM ERROR-020
+      *     MOVE "Load Normal Paper, Switch The Printer To '7',"
+      *         TO WS-MESSAGE
+      *     MOVE "   & Switch It Off & On,  Press 'ESC' TO Continue."
+      *         TO WS-MESSAGE1
+      *     PERFORM ERROR1-MESSAGE.
        CP-900.
-           PERFORM SEND-CONTROL-CHAR.
+      *     PERFORM SEND-CONTROL-CHAR.
        CP-999.
            EXIT.
       *
@@ -1610,6 +1726,8 @@
        Copy "GetSystemY2KDate".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
+       Copy "SetupStatementForPDF".
+       Copy "SetupStatementNoMailForPDF".
       ******************
       *Mandatory Copies*
       ******************

@@ -1011,14 +1011,14 @@
            MOVE " "              TO P-COMMENTLINE
            MOVE WS-COMMENTLINE   TO P-BO-MESSAGE
            MOVE WS-SPEC-COMMENT  TO P-REST-OF-LINE
-           WRITE PRINT-REC        FROM P-COMMENTLINE
+           WRITE PRINT-REC     FROM P-COMMENTLINE
            MOVE " "              TO P-COMMENTLINE.
 
            MOVE WS-CONTACT      TO P-BO-MESSAGE
            MOVE WS-PRINT-BOLD   TO P-DIG1
            MOVE PA-COMMENT      TO P-COMM
            MOVE WS-PRINT-UNBOLD TO P-DIG2
-           WRITE PRINT-REC       FROM P-COMMENTLINE.
+           WRITE PRINT-REC    FROM P-COMMENTLINE.
 
            MOVE " " TO P-ADDLINE P-COMMENTLINE PRINT-REC
            MOVE INCR-PULLBY      TO P-PULLBY
@@ -1026,14 +1026,14 @@
            MOVE WS-ADDONFREIGHT  TO P-ADD1
            MOVE WS-HANDADDON     TO P-ADD2
            MOVE WS-TAXAMT        TO P-ADD3
-           WRITE PRINT-REC        FROM P-ADDLINE
+           WRITE PRINT-REC     FROM P-ADDLINE
            MOVE " "              TO P-ADDLINE PRINT-REC.
 
            MOVE WS-POSTADDON     TO P-ADD1
            MOVE WS-MISCADDON     TO P-ADD2
            MOVE WS-SUBTOTAL      TO P-ADD3
            MOVE WS-INVOICETOTAL  TO P-ADD4
-           WRITE PRINT-REC        FROM P-ADDLINE
+           WRITE PRINT-REC     FROM P-ADDLINE
            MOVE " "              TO P-ADDLINE PRINT-REC.
        PR-036.
            WRITE PRINT-REC.
@@ -1345,9 +1345,7 @@
        LR-900.
            MOVE " " TO LASERPL-ADDLINE LASER-REC.
            CLOSE LASER-PRINT.
-           
            PERFORM SETUP-INVOICE-FOR-PDF
-      *     PERFORM SEND-REPORT-TO-PRINTER.
 
            MOVE 2958 TO POS
            DISPLAY WS-MESSAGE AT POS.
