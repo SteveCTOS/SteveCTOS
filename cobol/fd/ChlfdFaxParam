@@ -5,9 +5,10 @@
            03  Fax-PaNumber     Pic 9.
            03  Fax-PaName       Pic X(25).
       ***********************************************************
-      *Fax-PaName = MURATA, CTOS FAX-SLICE OR X-FAX             *
+      *Fax-PaName = MURATA, CTOS FAX-SLICE ,XQS-FAX OR HYLAFAX  *
       ***********************************************************
-      *Fax-PaNumber: 1=FAX SLICE (OLD STYLE)                    *
-      *              2=MURATA INTERFACE                         *
-      *              3=X-FAX                                    *
+      *Fax-PaNumber: 1=FAX SLICE (OLD STYLE) CTOS               *
+      *              2=MURATA INTERFACE      CTOS               *
+      *              3=XQSFAX                CTOS               *
+      *              4=HYLAFAX               LINUX              *
       ***********************************************************

@@ -14,7 +14,9 @@
        GRYD-999.
            EXIT.
       *
-      *
+      ***************************
+      *CTOS VERSION - ORIGINAL  *
+      ***************************
       * GET-REPORT-Y2K-DATE SECTION.
       * GRYD-001.
       *     CALL "&GETDATETIME" USING Erc

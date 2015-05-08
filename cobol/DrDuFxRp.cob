@@ -70,20 +70,15 @@
            03  WS-ACC-MESSAGE    PIC X(53).
            03  WS-ACC-NUMBER     PIC X(7).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC X.
+           03  WS-DRTRANS-ST1      PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-SPL-STATUS.
-           03  WS-SPL-ST1     PIC 99.
-      *     03  WS-SPL-ST2     PIC 9(2) COMP-X.
+           03  WS-SPL-ST1          PIC 99.
        01  WS-Fax-STATUS.
-           03  WS-Fax-ST1     PIC 99.
-      *     03  WS-Fax-ST2     PIC 9(2) COMP-X.
+           03  WS-Fax-ST1          PIC 99.
        01  WS-XQS-FAX.
            03  WS-XQS-BEG       PIC X(9) VALUE "(:(FaxTo=".
            03  WS-XQS-END       PIC X(3) VALUE "):)".
@@ -138,7 +133,7 @@
            03  FILLER           PIC X(7) VALUE "Interst".
            03  FILLER           PIC X(7) VALUE "Discnt".
            03  FILLER           PIC X(7) VALUE "B-Debt".
-           03  FILLER           PIC X(7) VALUE "Ch Ref".
+           03  FILLER           PIC X(7) VALUE "Chq Ref".
        01  WS-TYPES-RED REDEFINES WS-TYPES.
            03  WS-TYPE-DESC     PIC X(7) OCCURS 10.
        01  HEAD1.
@@ -193,7 +188,6 @@
            03  TRANS-60DAY      PIC Z(5)9.99-.
            03  FILLER           PIC X(1) VALUE " ".
            03  TRANS-90DAY      PIC Z(5)9.99-.
-      *     03  FILLER           PIC X(1) VALUE " ".
            03  TRANS-120DAY     PIC Z(5)9.99-.
        01  PORDER-LINE.
            03  FILLER           PIC X(8) VALUE " ".
@@ -216,7 +210,6 @@
            03  TOT-60DAY        PIC Z(5)9.99-.
            03  FILLER           PIC X(1) VALUE " ".
            03  TOT-90DAY        PIC Z(5)9.99-.
-      *     03  FILLER           PIC X(1) VALUE " ".
            03  TOT-120DAY       PIC Z(5)9.99-.
        01  DR-CLERK-LINE.
            03  FILLER           PIC X(16) VALUE "PLEASE CONTACT:".
@@ -643,6 +636,7 @@
       *      IF SIGN-FOUND = 1
       *         GO TO RDM-010
       *      ELSE
+      * FAX-PANUMBER = 3 MEANS XQS CTOS FAX
            IF Fax-PaNumber = 3
             IF WS-BAD-FAX = "Y"
                PERFORM REMOVE-ZERO-IN-REFERENCE
@@ -664,6 +658,31 @@
                PERFORM REMOVE-ZERO-IN-REFERENCE
                PERFORM ENTER-XQS-DETAILS
                PERFORM PRINT-XQS-ROUTINE
+               GO TO RDM-030
+             ELSE
+               GO TO RDM-010.
+      * FAX-PANUMBER = 4 MEANS HYLAFAX IN LINUX
+           IF Fax-PaNumber = 4
+            IF WS-BAD-FAX = "Y"
+               PERFORM REMOVE-ZERO-IN-REFERENCE
+               PERFORM ENTER-XQS-DETAILS
+               PERFORM PRINT-HYLA-ROUTINE
+               GO TO RDM-030.
+           IF Fax-PaNumber = 4
+            IF WS-BAD-FAX = "B"
+             IF SIGN-FOUND = 1
+               PERFORM REMOVE-ZERO-IN-REFERENCE
+               PERFORM ENTER-XQS-DETAILS
+               PERFORM PRINT-HYLA-ROUTINE
+               GO TO RDM-030
+             ELSE
+               GO TO RDM-010.
+           IF Fax-PaNumber = 4
+            IF WS-BAD-FAX = "N"
+             IF SIGN-FOUND NOT = 1
+               PERFORM REMOVE-ZERO-IN-REFERENCE
+               PERFORM ENTER-XQS-DETAILS
+               PERFORM PRINT-HYLA-ROUTINE
                GO TO RDM-030
              ELSE
                GO TO RDM-010.
@@ -859,10 +878,12 @@
       *
        PRINT-XQS-ROUTINE SECTION.
        PRXQS-000.
-      * NEEDS CHANGING FO RTHE LINUX FAX SERVER - TO DO LATER.
+      * NEEDS CHANGING FOR THE LINUX FAX SERVER - TO DO LATER.
            IF Fax-PaNumber = 3
             IF WS-AUTO-FAX = "Y"
-               MOVE "[QFax]" TO WS-PRINTER.
+               PERFORM GET-FILE-NAME-FROM-REFERENCE
+               MOVE WS-XQS-COMMENT
+      *         MOVE "[QFax]" TO WS-PRINTER.
            OPEN OUTPUT PRINT-FILE.
            IF WS-SPL-ST1 NOT = 0
                CLOSE PRINT-FILE
@@ -923,8 +944,8 @@
       * CHANGED ON 18/12/2002.                                         *
       * USING DEL-DATE INSTEAD OF INVOICE DATE AS CUSTOMERS HAVE GOTTEN*
       * PISSED OFF BY FAXES FOR GOODS THEY NEVER RECEIVED IN THAT MONTH*
-      *  DR-DEL-DATE = 0 MEANS GOODS NOT YET FLAGGED AS DELIVERED      *
-      *  THEREFORE OMIT FROM THE PRINT.                                *
+      * DR-DEL-DATE = 0 MEANS GOODS NOT YET FLAGGED AS DELIVERED       *
+      * THEREFORE OMIT FROM THE PRINT.                                 *
       *                                                                *
       * CHANGED 31/12/2008                                             *
       * ADDED IN I-INVOICE DATE, D-DEL DATE                            *
@@ -1007,6 +1028,177 @@
        PRXQS-900.
            CLOSE PRINT-FILE.
        PRXQS-999.
+           EXIT.
+      *
+       GET-FILE-NAME-FROM-REFERENCE SECTION.
+       GFNFR-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       GFNFR-005.
+           MOVE "/ctools/fax/" TO ALPHA-RATE
+           MOVE WS-XQS-COMMENT TO DATA-RATE
+           MOVE 1  TO SUB-2 
+           MOVE 13 TO SUB-1.
+       GFNFR-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1 SUB-2.
+           IF DAT-RATE (SUB-2) > " "
+              GO TO GFNFR-010.
+
+           MOVE ALPHA-RATE TO WS-XQS-COMMENT.
+       GFNFR-999.
+           EXIT.
+      *
+       PRINT-HYLAFAX-ROUTINE SECTION.
+       PRHYLA-000.
+           IF Fax-PaNumber = 4
+            IF WS-AUTO-FAX = "Y"
+               PERFORM GET-FILE-NAME-FROM-REFERENCE
+               MOVE WS-XQS-COMMENT
+      *         MOVE "[QFax]" TO WS-PRINTER.
+           OPEN OUTPUT PRINT-FILE.
+           IF WS-SPL-ST1 NOT = 0
+               CLOSE PRINT-FILE
+               MOVE "SPOOLER STATUS NOT = 0, 'ESC' TO RE-TRY"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO PRHYLA-000.
+           IF Fax-PaNumber = 3
+            IF WS-AUTO-FAX = "Y"
+               WRITE PRINT-REC FROM WS-XQS-LINE (1)
+               WRITE PRINT-REC FROM WS-XQS-LINE (2)
+               WRITE PRINT-REC FROM WS-XQS-LINE (3)
+               WRITE PRINT-REC FROM WS-XQS-LINE (4)
+             IF WS-NOTIFY = "Y"
+               WRITE PRINT-REC FROM WS-XQS-LINE (5).
+           MOVE DR-ACCOUNT-NUMBER TO DRTR-ACC-KEY.
+           START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
+               INVALID KEY NEXT SENTENCE.
+       PRHYLA-002.
+           READ DEBTOR-TRANS-FILE NEXT
+               AT END NEXT SENTENCE.
+           IF WS-DRTRANS-ST1 = 10
+               PERFORM SUBTOTALS
+               GO TO PRHYLA-900.
+           IF WS-DRTRANS-ST1 NOT = 0
+               MOVE 0 TO WS-DRTRANS-ST1
+               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO PRHYLA-002.
+           IF DRTR-AMT-OUTSTANDING = 0
+               GO TO PRHYLA-002.
+           IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
+               GO TO PRHYLA-010.
+           PERFORM SUBTOTALS.
+           GO TO PRHYLA-900.
+       PRHYLA-010.
+           IF LINE-CNT = 999
+              PERFORM PRINT-HEADINGS.
+           IF PAGE-CNT = 1
+            IF LINE-CNT > 45
+              ADD 1 TO PAGE-CNT
+              WRITE PRINT-REC FROM HEAD5 AFTER PAGE
+              MOVE " " TO PRINT-REC
+              WRITE PRINT-REC AFTER 1
+              MOVE 2 TO LINE-CNT
+              GO TO PRHYLA-020.
+           IF LINE-CNT > 57
+            IF LINE-CNT < 100
+              ADD 1 TO PAGE-CNT
+              WRITE PRINT-REC FROM HEAD5 AFTER PAGE
+              MOVE " " TO PRINT-REC
+              WRITE PRINT-REC AFTER 1
+              MOVE 2 TO LINE-CNT
+              GO TO PRHYLA-020.
+       PRHYLA-020.
+      ******************************************************************
+      * CHANGED ON 18/12/2002.                                         *
+      * USING DEL-DATE INSTEAD OF INVOICE DATE AS CUSTOMERS HAVE GOTTEN*
+      * PISSED OFF BY FAXES FOR GOODS THEY NEVER RECEIVED IN THAT MONTH*
+      * DR-DEL-DATE = 0 MEANS GOODS NOT YET FLAGGED AS DELIVERED       *
+      * THEREFORE OMIT FROM THE PRINT.                                 *
+      *                                                                *
+      * CHANGED 31/12/2008                                             *
+      * ADDED IN I-INVOICE DATE, D-DEL DATE                            *
+      * DONE SO THAT ACCOUNTS LADIES CAN USE THIS METHOD OF SENDING    *
+      * FAXES ON THE FLY INSTEAD OF JUST IN THE MAIN BATCH RUN.        *
+      ******************************************************************
+           IF WS-BY-DATE = "D"
+            IF DRTR-DEL-DATE = 0
+               GO TO PRHYLA-002.
+           MOVE WS-TYPE-DESC (DRTR-TYPE) TO TRANS-TYPE.
+           MOVE DRTR-REFERENCE1          TO TRANS-PO.
+           MOVE DRTR-REFERENCE2          TO TRANS-REFNO.
+           MOVE DRTR-REFERENCE2          TO TRANS-REFNO.
+           IF WS-BY-DATE = "D"
+               MOVE DRTR-DEL-DATE        TO WS-AGE-DATE
+                                         SPLIT-DATE
+           ELSE
+               MOVE DRTR-DATE            TO WS-AGE-DATE
+                                         SPLIT-DATE.
+                                         
+           PERFORM CONVERT-DATE-FORMAT.
+           MOVE DISPLAY-DATE             TO TRANS-DATE.
+           MOVE WS-SAVE-DATE TO WS-DATE.
+           IF WS-AGE-YY NOT = WS-YY
+               COMPUTE WS-MM = (((WS-YY - WS-AGE-YY) * 12)
+                                   + WS-MM).
+           SUBTRACT WS-AGE-MM FROM WS-MM.
+           MOVE DRTR-AMT-OUTSTANDING TO WS-AMT-OF-INVOICE.
+           IF DRTR-TYPE = 2 OR = 5 OR = 6 OR = 8 OR = 9
+               COMPUTE WS-AMT-OF-INVOICE = WS-AMT-OF-INVOICE * -1. 
+
+           IF WS-PERIOD = 1
+            IF WS-MM = 0
+               ADD WS-AMT-OF-INVOICE TO WS-TOT-CURRENT
+                                        WS-GRTOT-CURRENT
+                                        WS-TOT-BALANCE
+                                        WS-GRTOT-BALANCE
+               MOVE WS-AMT-OF-INVOICE TO TRANS-CURRENT
+               GO TO PRHYLA-030.
+           IF WS-PERIOD = 1 OR = 2
+            IF WS-MM = 1
+               ADD WS-AMT-OF-INVOICE TO WS-TOT-30DAY
+                                        WS-GRTOT-30DAY
+                                        WS-TOT-BALANCE
+                                        WS-GRTOT-BALANCE
+               MOVE WS-AMT-OF-INVOICE TO TRANS-30DAY
+               GO TO PRHYLA-030.
+           IF WS-PERIOD = 1 OR = 2 OR = 3
+            IF WS-MM = 2
+               ADD WS-AMT-OF-INVOICE TO WS-TOT-60DAY
+                                        WS-GRTOT-60DAY
+                                        WS-TOT-BALANCE
+                                        WS-GRTOT-BALANCE
+               MOVE WS-AMT-OF-INVOICE TO TRANS-60DAY
+               GO TO PRHYLA-030.
+           IF WS-PERIOD = 1 OR = 2 OR = 3 OR = 4
+            IF WS-MM = 3
+               ADD WS-AMT-OF-INVOICE TO WS-TOT-90DAY
+                                        WS-GRTOT-90DAY
+                                        WS-TOT-BALANCE
+                                        WS-GRTOT-BALANCE
+               MOVE WS-AMT-OF-INVOICE TO TRANS-90DAY
+               GO TO PRHYLA-030.
+           IF WS-PERIOD = 1 OR = 2 OR = 3 OR = 4 OR = 5
+            IF WS-MM > 3
+               ADD WS-AMT-OF-INVOICE TO WS-TOT-120DAY
+                                        WS-GRTOT-120DAY
+                                        WS-TOT-BALANCE
+                                        WS-GRTOT-BALANCE
+               MOVE WS-AMT-OF-INVOICE TO TRANS-120DAY
+               GO TO PRHYLA-030.
+           GO TO PRHYLA-002.
+       PRHYLA-030.
+           WRITE PRINT-REC FROM TRANS-LINE AFTER 1
+           MOVE " " TO PRINT-REC TRANS-LINE
+           WRITE PRINT-REC FROM PORDER-LINE AFTER 1
+           MOVE " " TO PRINT-REC
+           ADD 2 TO LINE-CNT
+           GO TO PRHYLA-002.
+       PRHYLA-900.
+           CLOSE PRINT-FILE.
+       PRHYLA-999.
            EXIT.
       *
        SUBTOTALS SECTION.
@@ -1181,10 +1373,11 @@
            MOVE "(" TO AL-RATE (SUB-1).
            ADD 1    TO SUB-1.
            MOVE " "           TO WS-FAX-CHECK.
-           
-      * NEW SECTION FOR PUTTING FAXES IN THE QUEUE EVEN IF THE FAX
-      *   NUMBER HAS AN ERROR.  THIS WAY ALL FAXES WILL EITHER BE SENT
-      *   BY XFAX OR MANUALLY
+      *****************************************************************
+      * NEW SECTION FOR PUTTING FAXES IN THE QUEUE EVEN IF THE FAX    *
+      * NUMBER HAS AN ERROR.  THIS WAY ALL FAXES WILL EITHER BE SENT  *
+      * BY XFAX OR MANUALLY                                           *
+      *****************************************************************
            IF SIGN-FOUND = 1
               MOVE SPACES        TO WS-FAX-CHECK
            ELSE
@@ -1231,7 +1424,7 @@
                        SUB-2
               GO TO XQS-019.
        XQS-021.
-           MOVE ALPHA-RATE          TO WS-XQS-LINE (1).
+           MOVE ALPHA-RATE    TO WS-XQS-LINE (1).
            MOVE " "   TO WS-FAX-CHECK ALPHA-RATE
            MOVE "(:(" TO ALPHA-RATE
            MOVE 4     TO SUB-1

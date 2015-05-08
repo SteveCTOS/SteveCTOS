@@ -107,6 +107,7 @@
        77  WS-START-POS         PIC 9 VALUE 0.
        77  PSW-SUB1             PIC S9(5) VALUE 0.
        77  PSW-SUB2             PIC S9(5) VALUE 0.
+       77  WS-GRV-NUMBER        PIC 9(6).
        77  WS-CREDITOR          PIC 9(7).
        77  WS-CREDITOR-ACCEPT   PIC X(7) VALUE " ".
        77  WS-CURRENTGLPER      PIC 99 VALUE 0.
@@ -2905,7 +2906,8 @@
            MOVE "INV/DNo:"         TO SO7-DEL-FIL
            MOVE WS-INVNO           TO SO7-DEL-VIA
            MOVE "GRV No:"          TO SO7-PO-FIL
-           MOVE WS-STTRANSNO       TO SO7-PO-NUM
+           MOVE WS-STTRANSNO       TO WS-GRV-NUMBER
+                                     SO7-PO-NUM
            WRITE PRINT-REC FROM SLIP-HEAD7 AFTER 1
            MOVE ALL "*"            TO SLIP-HEAD7
            WRITE PRINT-REC FROM SLIP-HEAD7 AFTER 1
@@ -3369,6 +3371,15 @@
        WCIT-005.
             MOVE X"0A" TO F-EXIT-CH.
             MOVE "                                    " TO F-NAMEFIELD.
+            
+            IF STRE-TRANSACTION-NUMBER = 4
+               MOVE "DNOTE"        TO F-FIELDNAME
+               MOVE 5              TO F-CBFIELDNAME
+               MOVE WS-G4RV-NUMBER TO F-NAMEFIELD
+               PERFORM USER-FILL-FIELD
+               MOVE 10             TO F-CBFIELDLENGTH
+               PERFORM WRITE-FIELD-ALPHA.
+            
             MOVE "DNOTE" TO F-FIELDNAME.
             MOVE 5       TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
