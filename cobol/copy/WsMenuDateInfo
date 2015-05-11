@@ -80,6 +80,10 @@
            03  AL-RATE          PIC X OCCURS 100.
        01  DATA-RATE.
            03  DAT-RATE         PIC X OCCURS 100.
+       01  MESSAGE-RATE.
+           03  MES-AL-RATE      PIC X OCCURS 100.
+       01  MES-DATA-RATE.
+           03  MES-DAT-RATE     PIC X OCCURS 100.
        01  NUM-RATE.
            03  NUMERIC-RATE     PIC S9(10)V9(5).
            03  FILLER REDEFINES NUMERIC-RATE.

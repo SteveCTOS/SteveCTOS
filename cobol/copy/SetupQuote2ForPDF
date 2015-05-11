@@ -1,6 +1,6 @@
       *
-       SETUP-QUOTE-FOR-PDF SECTION.
-       SUQFD-005.
+       SETUP-QUOTE2-FOR-PDF SECTION.
+       SUQ2FD-005.
           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
           
       *    MOVE WS-USERNAME TO WS-MESSAGE
@@ -8,13 +8,14 @@
           
       *    MOVE W-FILENAME TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
-       SUQFD-010.
+       SUQ2FD-010.
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED
           MOVE 
-          CONCATENATE('PrintQuote1 ', ' ', WS-CO-NUMBER, ' ',
-           TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER))
-               TO WS-COMMAND-LINE.
+          CONCATENATE('PrintQuote2 ',
+              WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE), ' ',
+                TRIM(WS-PRINTER)) TO WS-COMMAND-LINE.
+      *          TO WS-COMMAND-LINE.
       
       *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
@@ -27,7 +28,7 @@
       *    MOVE W-STATUS TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
       *    DISPLAY W-STATUS  AT 2810.
-       SUQFD-999.
+       SUQ2FD-999.
            EXIT.
       *     STOP RUN.
 

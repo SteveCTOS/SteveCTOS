@@ -1,17 +1,14 @@
       *
        GET-USER-MAIL-NAME SECTION.
        GUMN-005.
-            ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+      *     ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
             
-      *      MOVE "GETTING NEW USERNAME" TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
-            
-      *      ACCEPT WS-USERNAME FROM ENVIRONMENT "USERFULLNAME".
+            ACCEPT WS-USERNAME FROM ENVIRONMENT "USERFULLNAME".
             MOVE WS-USERNAME TO WS-pbValue.
             
       *      MOVE WS-USERNAME TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE.
-            
+      *      
        GUMN-999.
            EXIT.
       *

@@ -152,6 +152,8 @@
        77  WS-ACCEPT            PIC X VALUE " ".
        77  WSF-RR               PIC XXX VALUE " ".
        77  WS-PASSWORDSAVED     PIC X(10).
+       77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
        01  W-READ-KEY           PIC X.
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-STDESC.
@@ -628,7 +630,8 @@
            IF Fax-PaNumber = 4
             IF WS-ANSWER NOT = "1" AND NOT = "2"
                MOVE WS-QUOTEREF TO WS-QUOTE-REFERENCE
-               PERFORM REMOVE-SPACES-IN-FAX-NAME.
+               PERFORM REMOVE-SPACES-IN-FAX-NAME
+               MOVE WS-PRINTER TO WS-PRINTER-PAGE1.
                
            IF WS-ANSWER = "1" OR = "2"
                PERFORM GET-USER-PRINT-NAME.
@@ -853,6 +856,7 @@
               IF PAGE-CNT = 2
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
+                 MOVE WS-PRINTER TO WS-PRINTER-PAGE2
                  OPEN OUTPUT PRINT-FILE
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
@@ -1101,11 +1105,56 @@
            IF Fax-PaNumber NOT = 3 AND NOT = 4
             IF WS-ANSWER = "1" OR = "2"
                PERFORM SEND-REPORT-TO-PRINTER.
-               
-      *     IF Fax-PaNumber = 4
-      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "W"
-      *        PERFORM SETUP-QUOTE-FOR-PDF.
+
+      * In the PrintQuote1 shell script:
+      * #1 = WS-CO-NUMBER
+      * #2 = WS-PRINTER-SAVE (THE PRINTER NAME) E.G. MP140
+      * #3 = WS-REFERENCE-NUMBER E.G. Q90555.05.15-1
+
+           IF Fax-PaNumber = 4
+            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "W"
+             IF PAGE-CNT = 1
+                 PERFORM WORK-OUT-PDF-FILE-NAMES
+                 MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
+                 MOVE "MP140"            TO WS-PRINTER-SAVE
+                 PERFORM SETUP-QUOTE-FOR-PDF
+             ELSE
+                 PERFORM WORK-OUT-PDF-FILE-NAMES
+                 MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
+                 MOVE "MP140"            TO WS-PRINTER-SAVE
+                 PERFORM SETUP-QUOTE-FOR-PDF
+                 MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
+                 PERFORM SETUP-QUOTE2-FOR-PDF
+                 PERFORM SETUP-MERGE-QUOTE-FOR-PDF.
+              
        WR-999.
+           EXIT.
+      *
+       WORK-OUT-PDF-FILE-NAMES SECTION.
+       WOPFN-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+           MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 1  TO SUB-46.
+       WOPFN-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-010.
+           MOVE DATA-RATE TO WS-PRINTER-PAGE1.
+           
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE
+           MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 1  TO SUB-46.
+       WOPFN-015.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-015.
+           MOVE DATA-RATE        TO WS-PRINTER-PAGE2.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       WOPFN-999.
            EXIT.
       *
        WRITE-EMAIL-ROUTINE SECTION.
@@ -7195,6 +7244,8 @@
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
        Copy "SetupQuoteForPDF".
+       Copy "SetupQuote2ForPDF".
+       Copy "SetupMergeQuoteForPDF".
        Copy "ZoomBox".
       ******************
       *Mandatory Copies*
