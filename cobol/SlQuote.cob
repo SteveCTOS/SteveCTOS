@@ -1142,7 +1142,7 @@
            IF WS-PRINTERNUMBER (SUB-45) = 15
                MOVE WS-PRINTERNAME (SUB-45)  TO WS-PRINTER-SAVE
                GO TO FPTP-999.
-           IF SUB-1 < 25
+           IF SUB-45 < 25
              ADD 1 TO SUB-45
              GO TO FPTP-045.
            MOVE 

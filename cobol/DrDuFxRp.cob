@@ -3,6 +3,10 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+           CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -32,6 +36,7 @@
        77  WS-FOUND             PIC X VALUE " ".
        77  WS-NOTIFY            PIC X VALUE " ".
        77  WS-ENTERD            PIC X VALUE " ".
+       77  WS-ANSWER            PIC X VALUE " ".
        77  WS-RANGE1            PIC 9(7) VALUE 0.
        77  WS-RANGE2            PIC 9(7) VALUE 0.
        77  WS-PERIOD            PIC 9 VALUE 0.
@@ -66,6 +71,9 @@
        77  WS-SPEC-MESSAGE      PIC X(48) VALUE " ".
        77  WS-QUES-ACC-CONTACT  PIC X(15) VALUE " ".
        77  WS-QUES-ACC-PHONE    PIC X(15) VALUE " ".
+       77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
+       01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-ACCOUNT-COMMENT.
            03  WS-ACC-MESSAGE    PIC X(53).
            03  WS-ACC-NUMBER     PIC X(7).
@@ -102,6 +110,32 @@
                05  WS-XQS-SNAME  PIC X(25) VALUE " ".
                05  WS-XQS-ERROR  PIC X(8) VALUE "\NError=".
                05  WS-XQS-ENAME  PIC X(25) VALUE " ".
+       01  WS-HYLA-TO-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-TO-NAME    PIC X(25) VALUE " ".
+       01 WS-HYLA-FROM-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-FROM-NAME  PIC X(25) VALUE " ".
+           03  FILLER             PIC X(28) VALUE " ".
+           03  WS-HYLA-PAGE       PIC Z9 VALUE " ".
+       01  WS-HYLA-TYPE-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-TYPE       PIC X(30) VALUE "*OVERDUE A/C*".
+           03  WS-HYLA-DATE       PIC X(30) VALUE " ".
+       01  WS-HYLA-COMMENT-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03 WS-HYLA-COMM-DESC   PIC X(23) VALUE
+              "OUR OVERDUE FAX REF #: ".
+           03 WS-HYLA-COMMENT     PIC X(17) VALUE " ".
+       01  WS-HYLA-TYPE-LINE2.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-TYPE2      PIC X(30) VALUE "*OVERDUE A/C*".
+       01 WS-HYLA-FROM-LINE2.
+           03  FILLER             PIC X(4) VALUE " ".
+           03  WS-HYLA-PAGE2      PIC Z9 VALUE " ".
+       01  WS-FILE-NAME-FOR-FAX.
+           03  WS-FOLDER-NAME         PIC X(12) VALUE "/ctools/fax/".
+           03  WS-QUOTE-REFERENCE     PIC X(15) VALUE " ".
        01  WS-XQS-FAX-LINE-NAMES.
          02  WS-XQS-FAX-LINES OCCURS 5.
            03  WS-XQS-LINE     PIC X(100) VALUE " ".
@@ -263,17 +297,6 @@
        CONTROL-999.
            EXIT.
       *
-       END-OFF SECTION.
-       END-800.
-           CLOSE DEBTOR-TRANS-FILE
-                 DEBTOR-MASTER
-                 Fax-Parameter.
-       END-900.
-           EXIT PROGRAM.
-      *     STOP RUN.
-       END-999.
-           EXIT.
-      *
        GET-DATA SECTION.
        GET-030.
             MOVE "                        " TO F-NAMEFIELD
@@ -419,11 +442,12 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-PRINT-Y-N.
-            IF WS-PRINT-Y-N NOT = "Y" AND NOT = "N"
-               MOVE "YOU MUST ANSWER 'Y' OR 'N', PLEASE RE-ENTER"
+            IF WS-PRINT-Y-N NOT = "Y" AND NOT = "N" AND NOT = "P"
+               MOVE "YOU MUST ANSWER 'Y', 'N' OR 'P', PLEASE RE-ENTER"
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-105.
+            MOVE WS-PRINT-Y-N TO WS-ANSWER.
        GET-110.
             MOVE "                        " TO F-NAMEFIELD
             MOVE "BAD-FAX" TO F-FIELDNAME
@@ -627,7 +651,7 @@
       *************************************
       * NEW SECTION FOR XQS FAX UNIT.     *
       *************************************
-           IF Fax-PaNumber = 3
+           IF Fax-PaNumber = 3 OR = 4
                PERFORM CHECK-FAX-NUMBER.
       ********************************************************
       * REMOVED SO THAT ALL FAXES WILL BE SENT TO THE QUEUE  *
@@ -666,14 +690,14 @@
             IF WS-BAD-FAX = "Y"
                PERFORM REMOVE-ZERO-IN-REFERENCE
                PERFORM ENTER-XQS-DETAILS
-               PERFORM PRINT-HYLA-ROUTINE
+               PERFORM PRINT-XQS-ROUTINE
                GO TO RDM-030.
            IF Fax-PaNumber = 4
             IF WS-BAD-FAX = "B"
              IF SIGN-FOUND = 1
                PERFORM REMOVE-ZERO-IN-REFERENCE
                PERFORM ENTER-XQS-DETAILS
-               PERFORM PRINT-HYLA-ROUTINE
+               PERFORM PRINT-XQS-ROUTINE
                GO TO RDM-030
              ELSE
                GO TO RDM-010.
@@ -682,7 +706,7 @@
              IF SIGN-FOUND NOT = 1
                PERFORM REMOVE-ZERO-IN-REFERENCE
                PERFORM ENTER-XQS-DETAILS
-               PERFORM PRINT-HYLA-ROUTINE
+               PERFORM PRINT-XQS-ROUTINE
                GO TO RDM-030
              ELSE
                GO TO RDM-010.
@@ -876,14 +900,37 @@
        PR-999.
            EXIT.
       *
+       REMOVE-SPACES-IN-FAX-NAME SECTION.
+       RSIFN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           MOVE WS-FILE-NAME-FOR-FAX TO ALPHA-RATE
+           MOVE 1 TO SUB-45.
+       RSIFN-010.
+           IF AL-RATE (SUB-45) NOT = " "
+              ADD 1 TO SUB-45 
+              GO TO RSIFN-010.
+           MOVE "-" TO AL-RATE (SUB-45).
+           ADD 1 TO SUB-45.
+           IF PAGE-CNT = 1 
+              MOVE 1 TO AL-RATE (SUB-45)
+           ELSE 
+              MOVE 2 TO AL-RATE (SUB-45).
+           MOVE ALPHA-RATE TO WS-PRINTER.
+       RSIFN-999.
+           EXIT.
+      *
        PRINT-XQS-ROUTINE SECTION.
        PRXQS-000.
-      * NEEDS CHANGING FOR THE LINUX FAX SERVER - TO DO LATER.
+           MOVE 1 TO PAGE-CNT.
            IF Fax-PaNumber = 3
             IF WS-AUTO-FAX = "Y"
-               PERFORM GET-FILE-NAME-FROM-REFERENCE
-               MOVE WS-XQS-COMMENT
-      *         MOVE "[QFax]" TO WS-PRINTER.
+               MOVE "[QFax]" TO WS-PRINTER.
+               
+           IF Fax-PaNumber = 4
+               MOVE WS-HYLA-COMMENT TO WS-QUOTE-REFERENCE
+               PERFORM REMOVE-SPACES-IN-FAX-NAME
+               MOVE WS-PRINTER TO WS-PRINTER-PAGE1.
+               
            OPEN OUTPUT PRINT-FILE.
            IF WS-SPL-ST1 NOT = 0
                CLOSE PRINT-FILE
@@ -899,6 +946,29 @@
                WRITE PRINT-REC FROM WS-XQS-LINE (4)
              IF WS-NOTIFY = "Y"
                WRITE PRINT-REC FROM WS-XQS-LINE (5).
+               
+           IF Fax-PaNumber = 4
+               PERFORM GET-REPORT-Y2K-DATE
+               MOVE PBRET          TO WS-REPORT-DATE
+               MOVE WS-REPORT-DATE TO WS-HYLA-DATE
+               MOVE PAGE-CNT       TO WS-HYLA-PAGE
+               
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC AFTER 11
+               WRITE PRINT-REC FROM WS-HYLA-TO-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC FROM WS-HYLA-FROM-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC FROM WS-HYLA-COMMENT-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC.
+      *          WRITE PRINT-REC.
+               
            MOVE DR-ACCOUNT-NUMBER TO DRTR-ACC-KEY.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                INVALID KEY NEXT SENTENCE.
@@ -923,22 +993,77 @@
        PRXQS-010.
            IF LINE-CNT = 999
               PERFORM PRINT-HEADINGS.
-           IF PAGE-CNT = 1
-            IF LINE-CNT > 45
+           IF Fax-PaNumber = 3
+            IF PAGE-CNT = 1
+             IF LINE-CNT > 45
               ADD 1 TO PAGE-CNT
               WRITE PRINT-REC FROM HEAD5 AFTER PAGE
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               MOVE 2 TO LINE-CNT
               GO TO PRXQS-020.
-           IF LINE-CNT > 57
-            IF LINE-CNT < 100
+           IF Fax-PaNumber = 3
+            IF LINE-CNT > 57
+             IF LINE-CNT < 100
               ADD 1 TO PAGE-CNT
               WRITE PRINT-REC FROM HEAD5 AFTER PAGE
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               MOVE 2 TO LINE-CNT
               GO TO PRXQS-020.
+              
+           IF Fax-PaNumber = 4
+            IF PAGE-CNT = 1
+             IF LINE-CNT > 45
+              ADD 1 TO PAGE-CNT
+              IF PAGE-CNT = 2
+                 CLOSE PRINT-FILE
+                 PERFORM REMOVE-SPACES-IN-FAX-NAME
+                 MOVE WS-PRINTER TO WS-PRINTER-PAGE2
+                 OPEN OUTPUT PRINT-FILE
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT       TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+      *           PERFORM WR-003
+              ELSE
+                 MOVE " " TO PRINT-REC
+                 WRITE PRINT-REC BEFORE PAGE
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC.
+      *           PERFORM WR-003.
+      *        WRITE PRINT-REC FROM HEAD5 AFTER PAGE
+      *        MOVE " " TO PRINT-REC
+      *        WRITE PRINT-REC AFTER 1
+      *        MOVE 2 TO LINE-CNT
+      *        GO TO PRXQS-020.
+      *      IF Fax-PaNumber = 4
+      *      IF LINE-CNT > 57
+      *       IF LINE-CNT < 100
+      *        ADD 1 TO PAGE-CNT
+      *        WRITE PRINT-REC FROM HEAD5 AFTER PAGE
+      *        MOVE " " TO PRINT-REC
+      *        WRITE PRINT-REC AFTER 1
+      *        MOVE 2 TO LINE-CNT
+      *        GO TO PRXQS-020.
        PRXQS-020.
       ******************************************************************
       * CHANGED ON 18/12/2002.                                         *
@@ -1020,185 +1145,110 @@
            GO TO PRXQS-002.
        PRXQS-030.
            WRITE PRINT-REC FROM TRANS-LINE AFTER 1
-           MOVE " " TO PRINT-REC TRANS-LINE
+           MOVE SPACES TO PRINT-REC TRANS-LINE
            WRITE PRINT-REC FROM PORDER-LINE AFTER 1
-           MOVE " " TO PRINT-REC
+           MOVE SPACES TO PRINT-REC
            ADD 2 TO LINE-CNT
            GO TO PRXQS-002.
        PRXQS-900.
            CLOSE PRINT-FILE.
+
+           IF Fax-PaNumber = 4
+            IF WS-ANSWER = "P"
+             IF PAGE-CNT = 1
+             
+                MOVE "PAGE-CNT = 1 " TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+             
+                 PERFORM WORK-OUT-PDF-FILE-NAMES
+                 MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
+                 PERFORM FIND-PDF-TYPE-PRINTER
+                 
+                 MOVE WS-PRINTER TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRINTER TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM  ERROR1-020
+                 
+                 PERFORM SETUP-OVERDUE-FOR-PDF
+             ELSE
+             
+                MOVE "PAGE-CNT = 2 " TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+             
+                 PERFORM WORK-OUT-PDF-FILE-NAMES
+                 MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
+                 PERFORM FIND-PDF-TYPE-PRINTER
+                 
+                 MOVE WS-PRINTER TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM  ERROR1-020
+                 
+                 PERFORM SETUP-OVERDUE-FOR-PDF
+                 MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
+                 
+                 MOVE WS-PRINTER TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM  ERROR1-020
+                 
+                 PERFORM SETUP-OVERDUE2-FOR-PDF
+                 PERFORM SETUP-MERGE-OVERDUE-FOR-PDF.
+           
        PRXQS-999.
            EXIT.
       *
-       GET-FILE-NAME-FROM-REFERENCE SECTION.
-       GFNFR-001.
-           MOVE SPACES TO ALPHA-RATE DATA-RATE.
-       GFNFR-005.
-           MOVE "/ctools/fax/" TO ALPHA-RATE
-           MOVE WS-XQS-COMMENT TO DATA-RATE
-           MOVE 1  TO SUB-2 
-           MOVE 13 TO SUB-1.
-       GFNFR-010.
-           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1).
-           ADD 1 TO SUB-1 SUB-2.
-           IF DAT-RATE (SUB-2) > " "
-              GO TO GFNFR-010.
-
-           MOVE ALPHA-RATE TO WS-XQS-COMMENT.
-       GFNFR-999.
-           EXIT.
+       FIND-PDF-TYPE-PRINTER SECTION.
+       FPTP-040.
+           MOVE 1 TO SUB-45.
+       FPTP-045.
+           IF WS-PRINTERNAME (SUB-45) = " "
+              MOVE 
+           "NO PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO FPTP-999.
+           IF WS-PRINTERNUMBER (SUB-45) = 15
+               MOVE WS-PRINTERNAME (SUB-45)  TO WS-PRINTER-SAVE
+               GO TO FPTP-999.
+           IF SUB-45 < 25
+             ADD 1 TO SUB-45
+             GO TO FPTP-045.
+           MOVE 
+           "CAN'T FIND A PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+             TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       FPTP-999.
+            EXIT.           
       *
-       PRINT-HYLAFAX-ROUTINE SECTION.
-       PRHYLA-000.
-           IF Fax-PaNumber = 4
-            IF WS-AUTO-FAX = "Y"
-               PERFORM GET-FILE-NAME-FROM-REFERENCE
-               MOVE WS-XQS-COMMENT
-      *         MOVE "[QFax]" TO WS-PRINTER.
-           OPEN OUTPUT PRINT-FILE.
-           IF WS-SPL-ST1 NOT = 0
-               CLOSE PRINT-FILE
-               MOVE "SPOOLER STATUS NOT = 0, 'ESC' TO RE-TRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO PRHYLA-000.
-           IF Fax-PaNumber = 3
-            IF WS-AUTO-FAX = "Y"
-               WRITE PRINT-REC FROM WS-XQS-LINE (1)
-               WRITE PRINT-REC FROM WS-XQS-LINE (2)
-               WRITE PRINT-REC FROM WS-XQS-LINE (3)
-               WRITE PRINT-REC FROM WS-XQS-LINE (4)
-             IF WS-NOTIFY = "Y"
-               WRITE PRINT-REC FROM WS-XQS-LINE (5).
-           MOVE DR-ACCOUNT-NUMBER TO DRTR-ACC-KEY.
-           START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
-               INVALID KEY NEXT SENTENCE.
-       PRHYLA-002.
-           READ DEBTOR-TRANS-FILE NEXT
-               AT END NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 10
-               PERFORM SUBTOTALS
-               GO TO PRHYLA-900.
-           IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
-               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO PRHYLA-002.
-           IF DRTR-AMT-OUTSTANDING = 0
-               GO TO PRHYLA-002.
-           IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
-               GO TO PRHYLA-010.
-           PERFORM SUBTOTALS.
-           GO TO PRHYLA-900.
-       PRHYLA-010.
-           IF LINE-CNT = 999
-              PERFORM PRINT-HEADINGS.
-           IF PAGE-CNT = 1
-            IF LINE-CNT > 45
-              ADD 1 TO PAGE-CNT
-              WRITE PRINT-REC FROM HEAD5 AFTER PAGE
-              MOVE " " TO PRINT-REC
-              WRITE PRINT-REC AFTER 1
-              MOVE 2 TO LINE-CNT
-              GO TO PRHYLA-020.
-           IF LINE-CNT > 57
-            IF LINE-CNT < 100
-              ADD 1 TO PAGE-CNT
-              WRITE PRINT-REC FROM HEAD5 AFTER PAGE
-              MOVE " " TO PRINT-REC
-              WRITE PRINT-REC AFTER 1
-              MOVE 2 TO LINE-CNT
-              GO TO PRHYLA-020.
-       PRHYLA-020.
-      ******************************************************************
-      * CHANGED ON 18/12/2002.                                         *
-      * USING DEL-DATE INSTEAD OF INVOICE DATE AS CUSTOMERS HAVE GOTTEN*
-      * PISSED OFF BY FAXES FOR GOODS THEY NEVER RECEIVED IN THAT MONTH*
-      * DR-DEL-DATE = 0 MEANS GOODS NOT YET FLAGGED AS DELIVERED       *
-      * THEREFORE OMIT FROM THE PRINT.                                 *
-      *                                                                *
-      * CHANGED 31/12/2008                                             *
-      * ADDED IN I-INVOICE DATE, D-DEL DATE                            *
-      * DONE SO THAT ACCOUNTS LADIES CAN USE THIS METHOD OF SENDING    *
-      * FAXES ON THE FLY INSTEAD OF JUST IN THE MAIN BATCH RUN.        *
-      ******************************************************************
-           IF WS-BY-DATE = "D"
-            IF DRTR-DEL-DATE = 0
-               GO TO PRHYLA-002.
-           MOVE WS-TYPE-DESC (DRTR-TYPE) TO TRANS-TYPE.
-           MOVE DRTR-REFERENCE1          TO TRANS-PO.
-           MOVE DRTR-REFERENCE2          TO TRANS-REFNO.
-           MOVE DRTR-REFERENCE2          TO TRANS-REFNO.
-           IF WS-BY-DATE = "D"
-               MOVE DRTR-DEL-DATE        TO WS-AGE-DATE
-                                         SPLIT-DATE
-           ELSE
-               MOVE DRTR-DATE            TO WS-AGE-DATE
-                                         SPLIT-DATE.
-                                         
-           PERFORM CONVERT-DATE-FORMAT.
-           MOVE DISPLAY-DATE             TO TRANS-DATE.
-           MOVE WS-SAVE-DATE TO WS-DATE.
-           IF WS-AGE-YY NOT = WS-YY
-               COMPUTE WS-MM = (((WS-YY - WS-AGE-YY) * 12)
-                                   + WS-MM).
-           SUBTRACT WS-AGE-MM FROM WS-MM.
-           MOVE DRTR-AMT-OUTSTANDING TO WS-AMT-OF-INVOICE.
-           IF DRTR-TYPE = 2 OR = 5 OR = 6 OR = 8 OR = 9
-               COMPUTE WS-AMT-OF-INVOICE = WS-AMT-OF-INVOICE * -1. 
-
-           IF WS-PERIOD = 1
-            IF WS-MM = 0
-               ADD WS-AMT-OF-INVOICE TO WS-TOT-CURRENT
-                                        WS-GRTOT-CURRENT
-                                        WS-TOT-BALANCE
-                                        WS-GRTOT-BALANCE
-               MOVE WS-AMT-OF-INVOICE TO TRANS-CURRENT
-               GO TO PRHYLA-030.
-           IF WS-PERIOD = 1 OR = 2
-            IF WS-MM = 1
-               ADD WS-AMT-OF-INVOICE TO WS-TOT-30DAY
-                                        WS-GRTOT-30DAY
-                                        WS-TOT-BALANCE
-                                        WS-GRTOT-BALANCE
-               MOVE WS-AMT-OF-INVOICE TO TRANS-30DAY
-               GO TO PRHYLA-030.
-           IF WS-PERIOD = 1 OR = 2 OR = 3
-            IF WS-MM = 2
-               ADD WS-AMT-OF-INVOICE TO WS-TOT-60DAY
-                                        WS-GRTOT-60DAY
-                                        WS-TOT-BALANCE
-                                        WS-GRTOT-BALANCE
-               MOVE WS-AMT-OF-INVOICE TO TRANS-60DAY
-               GO TO PRHYLA-030.
-           IF WS-PERIOD = 1 OR = 2 OR = 3 OR = 4
-            IF WS-MM = 3
-               ADD WS-AMT-OF-INVOICE TO WS-TOT-90DAY
-                                        WS-GRTOT-90DAY
-                                        WS-TOT-BALANCE
-                                        WS-GRTOT-BALANCE
-               MOVE WS-AMT-OF-INVOICE TO TRANS-90DAY
-               GO TO PRHYLA-030.
-           IF WS-PERIOD = 1 OR = 2 OR = 3 OR = 4 OR = 5
-            IF WS-MM > 3
-               ADD WS-AMT-OF-INVOICE TO WS-TOT-120DAY
-                                        WS-GRTOT-120DAY
-                                        WS-TOT-BALANCE
-                                        WS-GRTOT-BALANCE
-               MOVE WS-AMT-OF-INVOICE TO TRANS-120DAY
-               GO TO PRHYLA-030.
-           GO TO PRHYLA-002.
-       PRHYLA-030.
-           WRITE PRINT-REC FROM TRANS-LINE AFTER 1
-           MOVE " " TO PRINT-REC TRANS-LINE
-           WRITE PRINT-REC FROM PORDER-LINE AFTER 1
-           MOVE " " TO PRINT-REC
-           ADD 2 TO LINE-CNT
-           GO TO PRHYLA-002.
-       PRHYLA-900.
-           CLOSE PRINT-FILE.
-       PRHYLA-999.
+       WORK-OUT-PDF-FILE-NAMES SECTION.
+       WOPFN-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+           MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 1  TO SUB-46.
+       WOPFN-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-010.
+           MOVE DATA-RATE TO WS-PRINTER-PAGE1.
+           
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE
+           MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 1  TO SUB-46.
+       WOPFN-015.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-015.
+           MOVE DATA-RATE        TO WS-PRINTER-PAGE2.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       WOPFN-999.
            EXIT.
       *
        SUBTOTALS SECTION.
@@ -1299,7 +1349,7 @@
            MOVE 1 TO PAGE-CNT
                      LINE-CNT.
        PH-010.
-           IF Fax-PaNumber = 3
+           IF Fax-PaNumber = 3 OR = 4
             IF WS-AUTO-FAX = "Y"
                GO TO PH-020.
            Move Ws-Print-Bold        To Comp-Dig1
@@ -1335,11 +1385,11 @@
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE      TO DEBT-PAID-DATE
            MOVE DR-BALANCE        TO DEBT-BALANCE
-           WRITE PRINT-REC FROM HEAD3 AFTER 2
+           WRITE PRINT-REC FROM HEAD3 AFTER 1
            WRITE PRINT-REC FROM HEAD3-1 AFTER 1
            WRITE PRINT-REC FROM HEAD3-2 AFTER 1
            WRITE PRINT-REC FROM HEAD5 AFTER 2
-           MOVE 5 TO LINE-CNT.
+           MOVE 4 TO LINE-CNT.
        PH-999.
            EXIT.
       *
@@ -1348,12 +1398,12 @@
            PERFORM GET-USER-MAIL-NAME.
            MOVE WS-pbValue TO WS-XQS-SNAME
                               WS-XQS-ENAME
-                              WS-XQS-FROM-NAME.
+                              WS-XQS-FROM-NAME WS-HYLA-FROM-NAME.
        XQS-001.
            MOVE " "              TO ALPHA-RATE WS-FAX-CHECK
            MOVE WS-XQS-BEG       TO ALPHA-RATE
            MOVE 10               TO SUB-1
-           MOVE "THE ACCOUNTANT" TO WS-FAX-CHECK
+           MOVE "THE ACCOUNTANT" TO WS-FAX-CHECK WS-HYLA-TO-NAME
            MOVE 40               TO SUB-2.
        XQS-002.
            IF WS-F-C (SUB-2) = " "
@@ -1459,7 +1509,7 @@
            MOVE " "                 TO WS-FAX-CHECK ALPHA-RATE
            MOVE WS-REFNO-CHECK      TO WS-XQS-COMMENT
            MOVE " "                 TO WS-FAX-CHECK
-           MOVE WS-XQS-COMMENT      TO WS-FAX-CHECK
+           MOVE WS-XQS-COMMENT      TO WS-FAX-CHECK WS-HYLA-COMMENT
            MOVE 1                   TO SUB-2.
            MOVE 1                   TO SUB-1.
        XQS-028.
@@ -1720,6 +1770,17 @@
        RINVQUES-999.
             EXIT.
       *
+       END-OFF SECTION.
+       END-800.
+           CLOSE DEBTOR-TRANS-FILE
+                 DEBTOR-MASTER
+                 Fax-Parameter.
+       END-900.
+           EXIT PROGRAM.
+      *     STOP RUN.
+       END-999.
+           EXIT.
+      *
        OPEN-DATA-FILES SECTION.
        OPEN-005.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -1811,6 +1872,9 @@
        Copy "PrintReportInfo".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
+       Copy "SetupDrOverdueForPDF".
+       Copy "SetupDrOverdue2ForPDF".
+       Copy "SetupMergeDrOverdueForPDF".
       ******************
       *Mandatory Copies*
       ******************

@@ -15,6 +15,7 @@
         *   Create A Delay Between Faxes       : _                    *         
         *   Notify Sender Of Fax Status        : _                    *         
         *   Print a HARD copy to a Printer     : _                    *         
+        *    (DotMatrix: Y or N, Or P=PDF Copy)                       *         
         *   Send ONLY faxes with a bad Phone # : _                    *         
         *    (B=Bad ONLY, Y=Both, N=No Bad Faxes)                     *         
         *   Send Internal Cash a/c's           : _                    *         
@@ -164,7 +165,7 @@ List of values:
 
 
 Field name: BAD-FAX                                          
-Row: 17   Column: 49   Width: 1                              
+Row: 18   Column: 49   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -179,7 +180,7 @@ List of values:
 
 
 Field name: CASHACC                                          
-Row: 19   Column: 49   Width: 1                              
+Row: 20   Column: 49   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -194,7 +195,7 @@ List of values:
 
 
 Field name: BY-DATE                                          
-Row: 21   Column: 49   Width: 1                              
+Row: 22   Column: 49   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   

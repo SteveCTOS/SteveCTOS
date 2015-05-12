@@ -9,6 +9,9 @@ set (copy_list
   PrintQuote1
   PrintQuote2
   PrintMergeQuote
+  PrintDrOverdue1
+  PrintDrOverdue2
+  PrintMergeDrOverdue
 #  creditnote01
 #  invoice01
 #  statement01
