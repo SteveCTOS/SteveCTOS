@@ -5,6 +5,10 @@ set (copy_list
   PrintCredit
   PrintInvoice
   PrintStatement
+  PrintStatementNoMail
+  PrintQuote1
+  PrintQuote2
+  PrintMergeQuote
 #  creditnote01
 #  invoice01
 #  statement01

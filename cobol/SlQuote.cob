@@ -848,7 +848,7 @@
               PERFORM WR-003.
            IF Fax-PaNumber = 4
             IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "W"
-             IF LINE-CNT > 60
+             IF LINE-CNT > 50
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
@@ -918,7 +918,7 @@
       *        PERFORM WR-003.
            IF Fax-PaNumber = 4
             IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "W"
-             IF LINE-CNT > 55
+             IF LINE-CNT > 45
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
@@ -1116,19 +1116,41 @@
              IF PAGE-CNT = 1
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
-                 MOVE "MP140"            TO WS-PRINTER-SAVE
+                 PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-QUOTE-FOR-PDF
              ELSE
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
-                 MOVE "MP140"            TO WS-PRINTER-SAVE
+                 PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-QUOTE-FOR-PDF
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-QUOTE2-FOR-PDF
                  PERFORM SETUP-MERGE-QUOTE-FOR-PDF.
-              
        WR-999.
            EXIT.
+      *
+       FIND-PDF-TYPE-PRINTER SECTION.
+       FPTP-040.
+           MOVE 1 TO SUB-45.
+       FPTP-045.
+           IF WS-PRINTERNAME (SUB-45) = " "
+              MOVE 
+           "NO PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO FPTP-999.
+           IF WS-PRINTERNUMBER (SUB-45) = 15
+               MOVE WS-PRINTERNAME (SUB-45)  TO WS-PRINTER-SAVE
+               GO TO FPTP-999.
+           IF SUB-1 < 25
+             ADD 1 TO SUB-45
+             GO TO FPTP-045.
+           MOVE 
+           "CAN'T FIND A PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+             TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       FPTP-999.
+            EXIT.           
       *
        WORK-OUT-PDF-FILE-NAMES SECTION.
        WOPFN-001.
@@ -2835,13 +2857,14 @@
                 AT POS.
             MOVE "Z" TO WS-ANSWER.
             MOVE 3010 TO POS.
-            DISPLAY "Enter Y=2, N=1, Z=Zero Copies [ ]" AT POS.
-            ADD 31 TO POS.
+            DISPLAY 
+            "Print: DotMatrix Y=2, N=1, Z=Zero. Or P=PDF: [ ]" AT POS.
+            ADD 46 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'Z'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 27        TO CDA-ROW.
-           MOVE 40        TO CDA-COL.
+           MOVE 55        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
@@ -2856,7 +2879,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO FINAL-ENTRY-055.
        FINAL-ENTRY-060.
-            IF WS-ANSWER NOT = "Y" AND NOT = "N"
+            IF WS-ANSWER NOT = "Y" AND NOT = "N" AND NOT = "P"
                      AND NOT = "S" AND NOT = "W" AND NOT = "Z"
                MOVE " " TO WS-ANSWER
                GO TO FINAL-ENTRY-055.
@@ -3131,12 +3154,16 @@
            PERFORM ERROR-020
            MOVE 2610 TO POS.
            DISPLAY WS-MESSAGE AT POS.
-           IF WS-AUTO-FAX  = "N" OR = "E"
+           IF WS-AUTO-FAX  = "E"
                  GO TO FINAL-ENTRY-950.
+           IF WS-AUTO-FAX  = "N"
+            IF WS-ANSWER = "P"
+                 GO TO FINAL-ENTRY-901.
            PERFORM CHECK-FAX-NUMBER.
        FINAL-ENTRY-900.
            IF WS-AUTO-FAX = "N" OR = "E"
                GO TO FINAL-ENTRY-950.
+       FINAL-ENTRY-901.
       **********************************
       *fax routine for XQS FAX SYSTEM **
       **********************************
@@ -3228,9 +3255,9 @@
               AT POS
               PERFORM WRITE-ROUTINE.
        FINAL-ENTRY-960.
-      **************************************
-      *COPY WRITTEN TO /equote/ SECTION   **
-      **************************************
+      *********************************************
+      *COPY WRITTEN TO /ctools/equote/ SECTION   **
+      *********************************************
            IF WS-AUTO-FAX NOT = "E" 
                GO TO GET-999.
                

@@ -1,8 +1,19 @@
-text2pdf /ctools/fax/$1Quote$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/fax/$1.temp1.pdf
+text2pdf /ctools/fax/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/fax/$1.temp1.pdf
 pdftk /ctools/fax/$1.temp1.pdf background /ctools/dev/source/print/$1QuoteOverlay1.pdf output /ctools/fax/$1Quote$3.pdf
 
-#If $4=01 lp -d $2 /ctools/spl/$1Quote$3.pdf
+if [ "$4"="01" ]
+  and
+ if [ "$6"="P" ]
+   then
+     lp -d $2 /ctools/fax/$1Quote$3.pdf
+fi
+ fi
 
+#If [ "$4"="01" ]
+# If [ "$5"="F" ]
+#  then
+# Sendfax /ctools/fax/#1Quote$3.pdf $7
+#fi
 
 #lp -d $2 $3
 #--- the following pdftk cats the first statement to a single file from two
@@ -16,9 +27,9 @@ pdftk /ctools/fax/$1.temp1.pdf background /ctools/dev/source/print/$1QuoteOverla
 #---$1 = The company number from 01 to 12     e.g. 07
 #---$2 = The Printername to print the file to e.g. MP140
 #---$3 = The Quote file name e.g. Q90555.05.15 specified in COBOL
-#---$4 = The page-cnt.  If page-cnt =1 then print, If =2 then don't
+#---$4 = The page-cnt.  If page-cnt =01 then print, If =02 OR HIGHER then don't
+#---$5 = WS-AUTO-FAX. IF = F then send by fax
+#---$6 = WS-ANSWER. If = P then print PDF.
+#---$7 = WS-fax-number.  Used ONLY if sending by fax.
 #--- add any extra commands here - perhaps cups printing
 #--- or sendfax via hylaFAX
-
-
-
