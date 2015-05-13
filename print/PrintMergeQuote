@@ -1,13 +1,14 @@
 pdftk /ctools/fax/$1Quote$3.pdf /ctools/fax/$1Quote$4.pdf cat output /ctools/fax/$1QuoteFinal$4.pdf 
 
-if [ "$5" not="01" ]
-  then
- if [ "$7"="P" ]
+if [ "$5" != "01" ] && [ "$7" = "P" ]
    then
      lp -d $2 /ctools/fax/$1QuoteFinal$4.pdf
-fi
  fi
 
+#If [ "$5" != "01" ] && [ "$6" = "F" ]
+#  then
+# Sendfax /ctools/fax/#1QuoteFinal$4.pdf $8
+#fi
 
 #FORMAT FOR PRINTING IS:
 #lp -d W-PRINTERNAME W-PRINTFILE

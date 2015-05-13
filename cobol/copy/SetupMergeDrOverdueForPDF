@@ -4,7 +4,7 @@
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED
           MOVE 
-          CONCATENATE('PrintMergeQuote ', ' ', WS-CO-NUMBER, ' ',
+          CONCATENATE('PrintMergeDrOverdue ', ' ', WS-CO-NUMBER, ' ',
            TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER-PAGE1), ' ', 
             TRIM(WS-PRINTER-PAGE2), ' ', 
             PAGE-CNT, ' ', WS-AUTO-FAX, ' ', WS-ANSWER, ' ',

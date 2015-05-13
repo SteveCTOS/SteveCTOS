@@ -64,7 +64,7 @@
        77  WS-BAD-FAX           PIC X VALUE " ".
        77  WS-CASH-ACC          PIC X VALUE " ".
        77  WS-BY-DATE           PIC X VALUE " ".
-       77  PAGE-CNT             PIC 9(3) VALUE 0.
+       77  PAGE-CNT             PIC 9(2) VALUE 0.
        77  LINE-CNT             PIC 9(3) VALUE 999.
        77  WS-REFNO             PIC 9(4) VALUE 0.
        77  WS-CONTACT           PIC X(20) VALUE " ".
@@ -661,38 +661,14 @@
       *         GO TO RDM-010
       *      ELSE
       * FAX-PANUMBER = 3 MEANS XQS CTOS FAX
-           IF Fax-PaNumber = 3
-            IF WS-BAD-FAX = "Y"
-               PERFORM REMOVE-ZERO-IN-REFERENCE
-               PERFORM ENTER-XQS-DETAILS
-               PERFORM PRINT-XQS-ROUTINE
-               GO TO RDM-030.
-           IF Fax-PaNumber = 3
-            IF WS-BAD-FAX = "B"
-             IF SIGN-FOUND = 1
-               PERFORM REMOVE-ZERO-IN-REFERENCE
-               PERFORM ENTER-XQS-DETAILS
-               PERFORM PRINT-XQS-ROUTINE
-               GO TO RDM-030
-             ELSE
-               GO TO RDM-010.
-           IF Fax-PaNumber = 3
-            IF WS-BAD-FAX = "N"
-             IF SIGN-FOUND NOT = 1
-               PERFORM REMOVE-ZERO-IN-REFERENCE
-               PERFORM ENTER-XQS-DETAILS
-               PERFORM PRINT-XQS-ROUTINE
-               GO TO RDM-030
-             ELSE
-               GO TO RDM-010.
       * FAX-PANUMBER = 4 MEANS HYLAFAX IN LINUX
-           IF Fax-PaNumber = 4
+           IF Fax-PaNumber = 3 OR = 4
             IF WS-BAD-FAX = "Y"
                PERFORM REMOVE-ZERO-IN-REFERENCE
                PERFORM ENTER-XQS-DETAILS
                PERFORM PRINT-XQS-ROUTINE
                GO TO RDM-030.
-           IF Fax-PaNumber = 4
+           IF Fax-PaNumber = 3 OR = 4
             IF WS-BAD-FAX = "B"
              IF SIGN-FOUND = 1
                PERFORM REMOVE-ZERO-IN-REFERENCE
@@ -701,7 +677,7 @@
                GO TO RDM-030
              ELSE
                GO TO RDM-010.
-           IF Fax-PaNumber = 4
+           IF Fax-PaNumber = 3 OR = 4
             IF WS-BAD-FAX = "N"
              IF SIGN-FOUND NOT = 1
                PERFORM REMOVE-ZERO-IN-REFERENCE
@@ -1014,7 +990,7 @@
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 1
-             IF LINE-CNT > 45
+             IF LINE-CNT > 40
               ADD 1 TO PAGE-CNT
               IF PAGE-CNT = 2
                  CLOSE PRINT-FILE
@@ -1156,48 +1132,18 @@
            IF Fax-PaNumber = 4
             IF WS-ANSWER = "P"
              IF PAGE-CNT = 1
-             
-                MOVE "PAGE-CNT = 1 " TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-             
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
-                 
-                 MOVE WS-PRINTER TO WS-MESSAGE
-                 PERFORM ERROR1-000
-                 MOVE WS-PRINTER TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 PERFORM  ERROR1-020
-                 
                  PERFORM SETUP-OVERDUE-FOR-PDF
              ELSE
-             
-                MOVE "PAGE-CNT = 2 " TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-             
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
-                 
-                 MOVE WS-PRINTER TO WS-MESSAGE
-                 PERFORM ERROR1-000
-                 MOVE WS-PRINTER-SAVE TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 PERFORM  ERROR1-020
-                 
                  PERFORM SETUP-OVERDUE-FOR-PDF
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
-                 
-                 MOVE WS-PRINTER TO WS-MESSAGE
-                 PERFORM ERROR1-000
-                 MOVE WS-PRINTER-SAVE TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 PERFORM  ERROR1-020
-                 
                  PERFORM SETUP-OVERDUE2-FOR-PDF
                  PERFORM SETUP-MERGE-OVERDUE-FOR-PDF.
-           
        PRXQS-999.
            EXIT.
       *

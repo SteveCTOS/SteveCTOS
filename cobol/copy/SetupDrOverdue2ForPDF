@@ -12,13 +12,13 @@
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED
           MOVE 
-          CONCATENATE('PrintQuote2 ', TRIM(WS-USERNAME), ' ',
+          CONCATENATE('PrintDrOverdue2 ', ' ',
               WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE), ' ',
                 TRIM(WS-PRINTER)) TO WS-COMMAND-LINE.
       *          TO WS-COMMAND-LINE.
       
-      *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
-      *    PERFORM ERROR-MESSAGE.
+          MOVE WS-COMMAND-LINE TO  WS-MESSAGE
+          PERFORM ERROR-MESSAGE.
 
       *     DISPLAY WS-COMMAND-LINE  AT 2810
       *     ACCEPT W-ENTER.

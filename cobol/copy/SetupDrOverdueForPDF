@@ -12,7 +12,7 @@
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED
           MOVE 
-          CONCATENATE('PrintQuote1 ', ' ', WS-CO-NUMBER, ' ',
+          CONCATENATE('PrintDrOverdue1 ', ' ', WS-CO-NUMBER, ' ',
            TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER), ' ', 
             PAGE-CNT, ' ', WS-AUTO-FAX, ' ', WS-ANSWER, ' ',
                WS-FAX-NUMBER)

@@ -1,16 +1,12 @@
 text2pdf /ctools/fax/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/fax/$1.temp1.pdf
 pdftk /ctools/fax/$1.temp1.pdf background /ctools/dev/source/print/$1QuoteOverlay1.pdf output /ctools/fax/$1Quote$3.pdf
 
-if [ "$4"="01" ]
-  then
- if [ "$6"="P" ]
+if [ "$4" = "01" ] && [ "$6" = "P" ]
    then
      lp -d $2 /ctools/fax/$1Quote$3.pdf
-fi
  fi
 
-#If [ "$4"="01" ]
-# If [ "$5"="F" ]
+#If [ "$4" = "01" ] && [ "$5" = "F" ]
 #  then
 # Sendfax /ctools/fax/#1Quote$3.pdf $7
 #fi
