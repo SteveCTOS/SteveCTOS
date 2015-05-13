@@ -3375,7 +3375,7 @@
             IF STRE-TRANSACTION-NUMBER = 4
                MOVE "DNOTE"        TO F-FIELDNAME
                MOVE 5              TO F-CBFIELDNAME
-               MOVE WS-G4RV-NUMBER TO F-NAMEFIELD
+               MOVE WS-GRV-NUMBER  TO F-NAMEFIELD
                PERFORM USER-FILL-FIELD
                MOVE 10             TO F-CBFIELDLENGTH
                PERFORM WRITE-FIELD-ALPHA.

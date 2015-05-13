@@ -12,6 +12,9 @@ set (copy_list
   PrintDrOverdue1
   PrintDrOverdue2
   PrintMergeDrOverdue
+  PrintPOrder1
+  PrintPOrder2
+  PrintMergePOrder
 #  creditnote01
 #  invoice01
 #  statement01

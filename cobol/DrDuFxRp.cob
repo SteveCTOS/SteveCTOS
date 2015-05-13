@@ -943,8 +943,7 @@
                WRITE PRINT-REC FROM WS-HYLA-COMMENT-LINE
                MOVE SPACES TO PRINT-REC
                WRITE PRINT-REC.
-      *          WRITE PRINT-REC.
-               
+              
            MOVE DR-ACCOUNT-NUMBER TO DRTR-ACC-KEY.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                INVALID KEY NEXT SENTENCE.
@@ -1168,7 +1167,7 @@
              TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
        FPTP-999.
-            EXIT.           
+            EXIT.
       *
        WORK-OUT-PDF-FILE-NAMES SECTION.
        WOPFN-001.
