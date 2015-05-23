@@ -696,7 +696,23 @@
             "Run Finished, Press <RETURN> to EXIT The Program.    "
              AT POS.
             ADD 50 TO POS.
-            ACCEPT WS-RANGE1 AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 60        TO CDA-ROW.
+           MOVE 24        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-RANGE1.
+
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO END-500
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO END-000.
+            
+      *      ACCEPT WS-RANGE1 AT POS.
        END-500.
             CLOSE STOCK-MASTER
                   INCR-REGISTER

@@ -52,6 +52,7 @@
        77  WS-PRINT-AMTS        PIC X VALUE " ".
        77  WS-SOLD-BY           PIC XX VALUE " ".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
+       77  WS-DOCPRINTED        PIC X VALUE " ".
        77  WS-DELIVERVIA        PIC X(20) VALUE " ".
        77  WS-TERMOFSALE        PIC X(11) VALUE " ".
        77  WS-BINNO             PIC X(6) VALUE " ".
@@ -1350,6 +1351,8 @@
            MOVE INCR-ADDLABOUR   TO WS-HANDADDON.
            MOVE INCR-ADDMISC     TO WS-MISCADDON.
        RIR-900.
+           IF WS-DOCPRINTED NOT = "Y"
+               MOVE "Y" TO WS-DOCPRINTED.
            MOVE "P" TO INCR-PRINTED.
            ADD 1    TO INCR-COPY-NUMBER.
            MOVE " " TO INCR-PULLBY
@@ -1383,6 +1386,8 @@
                GO TO RBM-999.
            PERFORM ERROR-020.
        RBM-900.
+           IF WS-DOCPRINTED NOT = "Y"
+               MOVE "Y" TO WS-DOCPRINTED.
            MOVE "N" TO INCR-PRINTED.
            ADD 1    TO INCR-COPY-NUMBER.
            MOVE " " TO INCR-PULLBY
@@ -1678,9 +1683,26 @@
            MOVE 2810 TO POS.
            DISPLAY "Press <RETURN> To Exit Program." AT POS.
            ADD 50 TO POS.
-           ACCEPT WS-TYPE AT POS.
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 60        TO CDA-ROW.
+           MOVE 24        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-TYPE
+
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO END-500
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO END-000.
+      *     ACCEPT WS-TYPE AT POS.
+       END-500.
            CLOSE PRINT-FILE.
-           PERFORM SEND-REPORT-TO-PRINTER.
+           IF WS-DOCPRINTED = "Y"
+               PERFORM SEND-REPORT-TO-PRINTER.
        END-900.
            CLOSE STOCK-TRANS-FILE
                  INCR-REGISTER

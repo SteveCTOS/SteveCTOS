@@ -44,7 +44,7 @@
            03  W-PRINTCOM1         PIC X(90) VALUE SPACES.
            03  W-PRINTCOM2         PIC X(100) VALUE SPACES.
        01  W-STATUS             PIC 9(4) BINARY COMP.
-       01  W-ENTER              PIC X.       
+       01  W-ENTER              PIC X.
        01  CTOS_DISPLAY_ACCEPT.
           78  CDA-BLACK   VALUE 0.
           78  CDA-RED     VALUE 1.

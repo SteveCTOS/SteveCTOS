@@ -60,9 +60,9 @@
        77  W-FRAME               BINARY-SHORT VALUE 0.
        77  W-LINE                BINARY-SHORT VALUE 0.
        77  WS-READS              BINARY-SHORT VALUE 0.
-       77  WS-ACCEPT             PIC X(20) VALUE " ".
+       77  WS-ACCEPT             PIC X(11) VALUE " ".
        01  F-FIELDNAME           PIC X(20).
-       01  W-ESCAPE-KEY          PIC X.
+      * 01  W-ESCAPE-KEY          PIC X.
        01  W-CRTSTATUS           PIC 9(4) VALUE 0.
        01  W-MESSAGE.
            03 FILLER             PIC X(15) VALUE " ".
@@ -75,8 +75,42 @@
        01  WS-MENU-STATUS        PIC 99.
        01  WS-PRINT-STATUS       PIC 99.
        01  WS-DATA-STATUS        PIC 99.
+       01  MESSAGE-RATE.
+           03  MES-AL-RATE      PIC X OCCURS 100.
+       01  MES-DATA-RATE.
+           03  MES-DAT-RATE     PIC X OCCURS 100.
        01  W-READ-KEY.
            03  WS-PA-KEY         PIC X OCCURS 11.
+       01  CTOS_DISPLAY_ACCEPT.
+          78  CDA-BLACK   VALUE 0.
+          78  CDA-RED     VALUE 1.
+          78  CDA-GREEN   VALUE 2.
+          78  CDA-YELLOW  VALUE 3.
+          78  CDA-BLUE    VALUE 4.
+          78  CDA-MAGENTA VALUE 5.
+          78  CDA-CYAN    VALUE 6.
+          78  CDA-WHITE   VALUE 7.
+          03  CDA-ERROR       BINARY-SHORT.
+          03  CDA-ROW         BINARY-SHORT.
+          03  CDA-COL         BINARY-SHORT.
+          03  CDA-DATA        PIC X(80).
+          03  CDA-DATALEN     BINARY-SHORT.
+          03  CDA-COLOR       BINARY-SHORT.
+          03  CDA-ATTR        PIC X.         
+          03  CDA-KEY         BINARY-CHAR.
+          03  CDA-FILTER      PIC X(10) VALUE
+              X"0A1B04010B070C1D1F00".
+      *          1 2 3 4 5 6 7 8 9  null terminated
+      *  1=RETURN, 2=GO, 3=FINISH, 4=UP, 5=DOWN, 6=CANCEL,
+      *  7=NEXT-PAGE, 8=F8, 9=F10
+       
+       01  W-DEFINE-ESCAPE.
+           05  W-ESCAPE-KEY     PIC 99 COMP-X.
+           05  W-ESCAPE-TABLE   PIC X(20) VALUE
+              X"0A1B04010B070C1D1F00".
+      *          1 2 3 4 5 6 7 8 9  null terminated
+      *  1=RETURN, 2=GO, 3=FINISH, 4=UP, 5=DOWN, 6=CANCEL,
+      *  7=NEXT-PAGE, 8=F8, 9=F10
        01  F-FORMS.
            03  F-ERROR1            BINARY-SHORT.
            03  F-ERROR5            BINARY-SHORT.
@@ -89,7 +123,6 @@
            03  F-EXIT-ICH          BINARY-SHORT.
            03  F-EXIT-CH           PIC X.
            03  FILLER              PIC X(13).
-
       *
        LINKAGE SECTION.
        Copy "ChlfdLinkage".
@@ -279,35 +312,51 @@
            MOVE 2945 TO POS
            MOVE 1 TO SUB-2.
        CP-550.
-      *     ACCEPT WS-ACCEPT AT POS WITH SECURE AUTO.
-      *     MOVE F-FIELDNAME TO W-READ-KEY.
-           PERFORM READ-MENU-KBD.
-           
-          IF W-ESCAPE-KEY = X"0E" OR = X"08"
-           IF SUB-2 > 1
-               MOVE " " TO WS-PA-KEY (SUB-2)
-               SUBTRACT 1 FROM SUB-2 POS
-               MOVE " " TO WS-PASSWORD-VALID WS-PA-KEY (SUB-2)
-               DISPLAY WS-PASSWORD-VALID AT POS
-               GO TO CP-550
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 11        TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 44        TO CDA-COL.
+           MOVE CDA-GREEN TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO W-READ-KEY.
+
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO CP-800
            ELSE
+               DISPLAY " " AT 3079 WITH BELL
                GO TO CP-550.
+      *     ACCEPT WS-ACCEPT AT POS.
+      *     MOVE F-FIELDNAME TO W-READ-KEY.
+      *     PERFORM READ-MENU-KBD.
+           
+      *    IF W-ESCAPE-KEY = X"0E" OR = X"08"
+      *     IF SUB-2 > 1
+      *         MOVE " " TO WS-PA-KEY (SUB-2)
+      *         SUBTRACT 1 FROM SUB-2 POS
+      *         MOVE " " TO WS-PASSWORD-VALID WS-PA-KEY (SUB-2)
+      *         DISPLAY WS-PASSWORD-VALID AT POS
+      *         GO TO CP-550
+      *     ELSE
+      *         GO TO CP-550.
       
-          IF W-CRTSTATUS = 0000
-           IF W-ESCAPE-KEY = " "
-               GO TO CP-800.
+      *    IF W-CRTSTATUS = 0000
+      *         MOVE WS-ACCEPT TO W-READ-KEY 
+      *     IF W-ESCAPE-KEY = " "
+      *         GO TO CP-800.
 
       *    DISPLAY W-CRTSTATUS AT 3120
 
-           IF W-ESCAPE-KEY = X"0A" OR = X"1B"
-               GO TO CP-800.
+      *     IF W-ESCAPE-KEY = X"0A" OR = X"1B"
+      *         GO TO CP-800.
             
-           MOVE W-ESCAPE-KEY TO WS-PA-KEY (SUB-2)
-           MOVE "#" TO WS-PASSWORD-VALID
-           DISPLAY WS-PASSWORD-VALID AT POS.
-           IF SUB-2 NOT > 10
-               ADD 1 TO SUB-2 POS
-               GO TO CP-550.
+      *     MOVE W-ESCAPE-KEY TO WS-PA-KEY (SUB-2)
+      *     MOVE "#" TO WS-PASSWORD-VALID
+      *     DISPLAY WS-PASSWORD-VALID AT POS.
+      *     IF SUB-2 NOT > 10
+      *         ADD 1 TO SUB-2 POS
+      *         GO TO CP-550.
        CP-800.
       *     MOVE W-READ-KEY TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -713,4 +762,5 @@
        Copy "ReadMenuKBD".
        Copy "ErrorMessage".
        Copy "Error1Message".
+       Copy "CTOSCobolAccept".
       * END-OF-JOB
