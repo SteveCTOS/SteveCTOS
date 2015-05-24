@@ -1,8 +1,8 @@
 #ifndef _statics_c_
 #define _statics_c_
 
-static void       _accept_edit_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, CHAR attr, int color, INT* key, CHAR* filter);
-static void       _accept_write_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, char attr, int color);
+static void       _accept_edit_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, CHAR attr, int color, INT* key, CHAR* filter, int secret);
+static void       _accept_write_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, char attr, int color, int secret);
 static void       _acquire_();
 static void       _attr_(WINDOW* win, char ch, int on);
 static void       _charout_(WINDOW* win, int row, int col, int ch, int pair);

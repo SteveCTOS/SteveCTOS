@@ -127,8 +127,10 @@ int main(int argc, char* argv[])
   ReadField(&erc, form, "TRANSDESC", 9, 0, cbret, 40, &cbret_len, &type);
   ReadAll(&erc, form, (CHAR*)&strelomt);
   CloseForm(&erc, form);
-  Display(&erc, 5, 12, title, strlen(title), 2, 'C');
-  Accept(&erc, 5, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter);
+  Display(&erc, 5, 12, title, strlen(title), 2, 'C', 0);
+  Accept(&erc, 5, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter, 0);
+  Display(&erc, 5, 12, title, strlen(title), 2, 'C', 1);
+  Accept(&erc, 5, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter, 1);
   endwin();
   CHAR buffer[256];
   INT ret;

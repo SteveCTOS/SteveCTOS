@@ -69,7 +69,7 @@ typedef struct b20_thread_data
   char title[MAX_TITLE + 1];
 } b20_thread_data;
 
-extern void Accept(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr, INT* key, CHAR* filter);
+extern void Accept(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr, INT* key, CHAR* filter, INT secret);
 extern void AnyChar(INT* erc, CHAR *ch);
 extern void AnyCode(INT* erc, CHAR *ch);
 extern void Clear();
@@ -78,7 +78,7 @@ extern void CloseForm(INT* erc, CHAR* form);
 extern void DateMailCo(CHAR* company_name, INT filenamelen);
 extern void Defaultfield(INT* erc, CHAR* form, CHAR* fieldname, INT fieldnamelen, INT index);
 extern void Defaultform(INT* erc, CHAR* form);
-extern void Display(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr);
+extern void Display(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr, INT secret);
 extern void Displayform(INT* erc, CHAR* form, INT frame, INT column, INT line);
 extern void GetFieldInfo(INT* erc, CHAR* form, CHAR* fieldname, INT fieldnamelen, FIELDINFO* fieldinfo, INT fieldinfomax); 
 extern void LockKbd(INT* erc);

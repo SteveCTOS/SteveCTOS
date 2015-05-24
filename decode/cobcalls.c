@@ -7,7 +7,14 @@ extern "C" {
 extern void ACCEPT(INT* erc, INT* row, INT* col, CHAR* data, CHAR* datalen, INT* color, CHAR* attr, CHAR* key, CHAR* filter)
 {
   INT _key;
-  Accept(erc, *row, *col, data, *datalen, *color, *attr, &_key, filter);
+  Accept(erc, *row, *col, data, *datalen, *color, *attr, &_key, filter, 0);
+  *key = (CHAR)_key;
+}
+
+extern void ACCEPTPWD(INT* erc, INT* row, INT* col, CHAR* data, CHAR* datalen, INT* color, CHAR* attr, CHAR* key, CHAR* filter)
+{
+  INT _key;
+  Accept(erc, *row, *col, data, *datalen, *color, *attr, &_key, filter, 1);
   *key = (CHAR)_key;
 }
 
@@ -75,7 +82,12 @@ extern void DEFAULTFORM(INT* erc, CHAR* form)
 
 extern void DISPLAY(INT* erc, INT* row, INT* col, CHAR* data, CHAR* datalen, INT* color, CHAR* attr)
 {
-  Display(erc, *row, *col, data, *datalen, *color, *attr);
+  Display(erc, *row, *col, data, *datalen, *color, *attr, 0);
+}
+
+extern void DISPLAYPWD(INT* erc, INT* row, INT* col, CHAR* data, CHAR* datalen, INT* color, CHAR* attr)
+{
+  Display(erc, *row, *col, data, *datalen, *color, *attr, 1);
 }
 
 extern void DISPLAYFORM(INT* erc, CHAR* form, INT *frame, INT *column, INT *line)

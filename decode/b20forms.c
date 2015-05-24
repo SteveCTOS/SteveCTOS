@@ -49,7 +49,7 @@
 #include "_accept_.c"
 #include "_utility_.c"
 
-void Accept(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr, INT *key, CHAR* filter)
+void Accept(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr, INT *key, CHAR* filter, INT secret)
 {
   *erc = ERC_OK; 
   ACQUIRE();
@@ -60,8 +60,7 @@ void Accept(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR
   char work[128];
   for (i=0; i<strlen((char*)filter); i++)
     sprintf(work+(i*2), "%02x", filter[i]);
-  _accept_edit_(erc, win, row, col, data, datalen, attr, color, key, filter);
-  //LOG(_format_(_log_buffer_, sizeof(_log_buffer_), "Accept: filter=%s->%d", work, *key));
+  _accept_edit_(erc, win, row, col, data, datalen, attr, color, key, filter, secret);
   refresh();
   RELEASE();
 }
@@ -198,14 +197,14 @@ void Defaultform(INT* erc, CHAR* form)
   goback: return;  
 }
 
-void Display(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr)
+void Display(INT* erc, INT row, INT col, CHAR* data, INT datalen, INT color, CHAR attr, INT secret)
 {
   *erc = ERC_OK; 
   ACQUIRE();
   if (_started_ == 0) 
     _start_screen_();
   WINDOW* win = _mainwin_;
-  _accept_write_(erc, win, row, col, data, datalen, attr, color);
+  _accept_write_(erc, win, row, col, data, datalen, attr, color, secret);
   RELEASE();
 }
 

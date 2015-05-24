@@ -1,7 +1,7 @@
 #ifndef _accept_c_
 #define _accept_c_
 
-static void _accept_write_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, char attr, int color)
+static void _accept_write_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, char attr, int color, int secret)
 {
   int i;
   for (i=0; i<datalen; i++)
@@ -9,6 +9,8 @@ static void _accept_write_(INT* erc, WINDOW* win, int row, int col, CHAR* data, 
     char ch = data[i];
     if (ch == 0)
       ch = ' ';
+    else if (secret == 1)
+      ch = '*';
     _attr_(win, attr, 1);
     _charout_(win, row, col+i, ch, color); 
     _attr_(win, attr, 0);
@@ -17,7 +19,7 @@ static void _accept_write_(INT* erc, WINDOW* win, int row, int col, CHAR* data, 
   refresh();
 }
 
-static void _accept_edit_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, CHAR attr, int color, INT* key, CHAR *filter)
+static void _accept_edit_(INT* erc, WINDOW* win, int row, int col, CHAR* data, INT datalen, CHAR attr, int color, INT* key, CHAR *filter, int secret)
 {
   int i, n, pos=0;
   CHAR code;
@@ -26,7 +28,7 @@ static void _accept_edit_(INT* erc, WINDOW* win, int row, int col, CHAR* data, I
   _curs_set_();
   while (1)
   {
-    _accept_write_(erc, win, row, col, data, datalen, attr, color);
+    _accept_write_(erc, win, row, col, data, datalen, attr, color, secret);
     if (*erc != 0) return;
     wmove(win, row, col+pos);  
     code = _get_code_(erc, win);
@@ -99,7 +101,7 @@ static void _accept_edit_(INT* erc, WINDOW* win, int row, int col, CHAR* data, I
     default:
       _rpad_(data, datalen);
       _show_title_(_topwin_);
-      _accept_write_(erc, win, row, col, data, datalen, attr, color);
+      _accept_write_(erc, win, row, col, data, datalen, attr, color, secret);
       char* p = strchr(filter, (int)code);
       if (p != 0)
         *key = (INT)((p - (char*)filter)+1);
