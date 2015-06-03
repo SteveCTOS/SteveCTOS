@@ -33,7 +33,6 @@
        77  WS-SAVE            PIC 99 VALUE 0.
        01  WS-MENU-STATUS.
            03  WS-MENU-ST1   PIC 99.
-      *     03  WS-MENU-ST2   PIC 9(2) COMP-X.
        01  HEAD1-LINE.
            03  FILLER         PIC X(5) VALUE "DATE:".
            03  H1-DATE        PIC X(10) VALUE " ".

@@ -19,8 +19,6 @@
        COPY "ChlfdCompany".
        WORKING-STORAGE SECTION.
        Copy "WsMenuDateInfo".
-      * 01  W-CRTSTATUS           PIC 9(4) value 0.
-      * 01  WS-ACCEPT            PIC XX VALUE "  ".
        01  POS-DIS.
            03  POS-DIS1         PIC 99.
            03  POS-DIS2         PIC 99.
@@ -248,9 +246,6 @@
            MOVE 2710 TO POS
            DISPLAY "                                      " AT POS.
            MOVE  1 TO SUB-1 F-INDEX.
-      *     MOVE  4 TO POS-DIS1
-      *     MOVE 15 TO POS-DIS2.
-      *     MOVE POS-DIS TO POS.
        RNC-910.
            MOVE "NUM"              TO F-FIELDNAME
            MOVE 3                  TO F-CBFIELDNAME
@@ -265,15 +260,9 @@
            PERFORM WRITE-FIELD-ALPHA.
            
            ADD  1  TO SUB-1 F-INDEX 
-      *     ADD  1  TO POS-DIS1
-      *     MOVE 15 TO POS-DIS2
-      *     MOVE POS-DIS TO POS.
            IF LIST-NAME (SUB-1) NOT = " "
                GO TO RNC-910.
        RNC-995.
-      *     MOVE "DISPLAYED ALL COMPANIES." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-       
            CLOSE COMPANY-MENU.
        RNC-999.
            EXIT.
@@ -287,7 +276,7 @@
            MOVE "MainCont"                TO F-FORMNAME
            MOVE 8                         TO F-CBFORMNAME.
 
-      * ORIGINAL FORMAT
+      * ORIGINAL FORMAT FOR CTOS
       *     MOVE "[Win]<Program>CoForms.Lib" TO Ws-Forms-Name
       *     MOVE Ws-Forms-Name               TO F-FILENAME.
       *     MOVE 25                          TO WS-cbForms-Name
@@ -309,10 +298,11 @@
        Copy "WriteFieldPty".
        Copy "DecimaliseRate".
        Copy "DisplayForm".
-       Copy "ReadMenuKBD".
+      * Copy "ReadMenuKBD".
        Copy "UserFillField".
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
        Copy "DisplayProgNum".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

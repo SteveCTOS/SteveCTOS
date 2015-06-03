@@ -3,8 +3,6 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -15,7 +13,6 @@
 
        WORKING-STORAGE SECTION.
        Copy "WsMenuDateInfo".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
 
        LINKAGE SECTION.
        Copy "ChlfdLinkage".
@@ -73,7 +70,9 @@
                 MOVE "Y"   TO WS-OVER-RIDE
             ELSE
                 MOVE "N"   TO WS-OVER-RIDE.
+                
          Perform Check-Password.
+      * below replace dby line above. Now all passwords held in mmemory
       *    Move "N" to Ws-1stRead.
       *    MOVE "PassWrds" TO WS-PROGRAM
       *    CALL WS-PROGRAM USING Ws-Linkage.
@@ -144,7 +143,7 @@
        END-999.
            EXIT.
       *
-       Copy "PassChck.Src".
+       Copy "PassChck.cob".
        Copy "ReadFieldAlpha".
        Copy "WriteFieldAlpha".
        Copy "DisplayForm".
@@ -152,5 +151,6 @@
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
        Copy "DisplayProgNum".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

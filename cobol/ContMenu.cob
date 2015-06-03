@@ -3,8 +3,6 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-           CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. LINUX.
         OBJECT-COMPUTER. LINUX.
         INPUT-OUTPUT SECTION.
@@ -15,15 +13,12 @@
       *
        WORKING-STORAGE SECTION.
        COPY "WsMenuDateInfo".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
 
        LINKAGE SECTION.
        COPY "ChlfdLinkage".
       *
        PROCEDURE DIVISION USING WS-LINKAGE.
        MAINLINE.
-      * SET ENVIRONMENT 'COB_SCREEN_EXCEPTIONS' TO 'Y'
-      * SET ENVIRONMENT 'COB_SCREEN_ESC' TO 'Y'.
 
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
@@ -34,11 +29,6 @@
            PERFORM DISPLAY-FORM.
            CALL "DATEMAILCO" USING WS-CO-NAME.
            CALL "SETSYSID"   USING WS-SERVER-REMOTE-NAME.
-      *     MOVE 110 TO POS
-      *     DISPLAY WS-SERVER-REMOTE-NAME AT POS.
-      *     PERFORM GET-DATA.
-      *     PERFORM CLEAR-SCREEN.
-      *     GO TO CONTROL-010.
       *
        GET-DATA SECTION.
        GET-010.
@@ -150,10 +140,13 @@
        END-999.
            EXIT.
       *      
-       COPY "PassChck.Src".
+       COPY "PassChck.cob".
        COPY "ReadFieldAlpha".
        COPY "WriteFieldAlpha".
        COPY "DisplayForm".
        COPY "UserFillField".
        COPY "MenuClearScreen".
        COPY "ErrorMessage".
+       Copy "CTOSCobolAccept".
+      *
+      * END-OF-JOB

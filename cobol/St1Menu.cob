@@ -16,6 +16,7 @@
        01  W-CRTSTATUS           PIC 9(4) value 0.
        LINKAGE SECTION.
        Copy "ChlfdLinkage".
+       
        Procedure Division Using Ws-Linkage.
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
@@ -118,7 +119,7 @@
        END-999.
            EXIT.
       *
-       Copy "PassChck.Src".
+       Copy "PassChck.cob".
        Copy "ReadFieldAlpha".
        Copy "WriteFieldAlpha".
        Copy "DisplayForm".
@@ -126,5 +127,6 @@
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
        Copy "DisplayProgNum".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

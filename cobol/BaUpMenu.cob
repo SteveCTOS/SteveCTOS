@@ -3,8 +3,6 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -24,7 +22,6 @@
        77  WS-QUES-PAUSE-BACKUP   PIC X VALUE " ".
        77  W-BACKUP-DELAY         PIC 9(4) COMP-X.
        Copy "WsMenuDateInfo".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
        01  WS-PARAMETER-STATUS.
            03  WS-PARAMETER-ST1     PIC X.
            03  WS-PARAMETER-ST2     PIC X.
@@ -161,7 +158,8 @@
            "The Backup Has Been Set On a 30 Min DELAY, You May leave."
             AT POS.
        
-           MOVE 18000 TO W-BACKUP-DELAY.
+           CALL "C$SLEEP" USING 1800.
+      *     MOVE 18000 TO W-BACKUP-DELAY.
       *     CALL "&DELAY" USING W-ERC
       *                         W-BACKUP-DELAY.
        CFBP-999.
@@ -215,7 +213,7 @@
        END-999.
             EXIT.
       *
-       Copy "PassChck.Src".
+       Copy "PassChck.cob".
        Copy "ReadFieldAlpha".
        Copy "WriteFieldAlpha".
        Copy "DisplayForm".
@@ -224,5 +222,6 @@
        Copy "ErrorMessage".
        Copy "DisplayProgNum".
        Copy "CheckMenuDataNames".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

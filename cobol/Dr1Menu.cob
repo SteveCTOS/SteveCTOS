@@ -3,8 +3,6 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -15,7 +13,6 @@
 
        WORKING-STORAGE SECTION.
        Copy "WsMenuDateInfo".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
        LINKAGE SECTION.
        Copy "ChlfdLinkage".
       *
@@ -32,6 +29,7 @@
        GET-DATA SECTION.
        GET-010.
             MOVE "                      " TO F-NAMEFIELD
+            MOVE " " TO F-EXIT-CH
             MOVE "SELECTION" TO F-FIELDNAME
             MOVE 9 TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
@@ -40,7 +38,7 @@
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"1B" AND NOT = X"1D"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO GET-010.
-            PERFORM ERROR-020
+      *      PERFORM ERROR-020
             MOVE 2 TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA.
             IF F-NAMEFIELD = " "
@@ -84,13 +82,13 @@
 
       *     CANCEL WS-PROGRAM.
            IF WS-ANSWER = "35"
-                MOVE "CoStffIq.Int" TO WS-PROGRAM.
+                MOVE "CoStffIq" TO WS-PROGRAM.
            IF WS-ANSWER = " 1"
-                MOVE "Dr2Menu" TO WS-PROGRAM.
+                MOVE "Dr2Menu"  TO WS-PROGRAM.
            IF WS-ANSWER = " 2"
-                MOVE "Dr3Menu" TO WS-PROGRAM.
+                MOVE "Dr3Menu"  TO WS-PROGRAM.
            IF WS-ANSWER = " 3"
-                MOVE "Dr4Menu" TO WS-PROGRAM.
+                MOVE "Dr4Menu"  TO WS-PROGRAM.
            CALL WS-PROGRAM USING Ws-Linkage.
            PERFORM CLEAR-SCREEN
            CANCEL WS-PROGRAM
@@ -117,12 +115,13 @@
        END-999.
            EXIT.
       *      
-       Copy "PassChck.Src".
+       Copy "PassChck.cob".
        Copy "ReadFieldAlpha".
        Copy "WriteFieldAlpha".
        Copy "DisplayForm".
        Copy "UserFillField".
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

@@ -38,32 +38,28 @@
               MOVE "Y" TO WS-PASSWORD-VALID
               GO TO CP-900.
        CP-500.
-           MOVE " " TO WS-PASSWORD-KEY.
-           MOVE 2725 TO POS
+           MOVE " " TO W-READ-KEY.
+           MOVE 2925 TO POS
            DISPLAY "Enter a PASSWORD :" AT POS
-           MOVE 2745 TO POS
+           MOVE 2945 TO POS
            MOVE 1 TO SUB-2.
        CP-550.
-           PERFORM READ-KBD.
-           IF W-ESCAPE-KEY = X"0E" OR = X"08"
-           IF SUB-2 > 1
-               MOVE " " TO WS-PA-KEY (SUB-2)
-               SUBTRACT 1 FROM SUB-2 POS
-               MOVE " " TO WS-PASSWORD-VALID WS-PA-KEY (SUB-2)
-               DISPLAY WS-PASSWORD-VALID AT POS
-               GO TO CP-550
+           MOVE ' '       TO CDA-DATA.
+           MOVE 11        TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 44        TO CDA-COL.
+           MOVE CDA-GREEN TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT-PWD.
+           MOVE CDA-DATA TO W-READ-KEY.
+
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO CP-800
            ELSE
-               GO TO CP-550.
-           IF W-ESCAPE-KEY = X"0A" OR = X"1B"
-               GO TO CP-800.
-           MOVE W-ESCAPE-KEY TO WS-PA-KEY (SUB-2)
-           MOVE "#" TO WS-PASSWORD-VALID
-           DISPLAY WS-PASSWORD-VALID AT POS.
-           IF SUB-2 NOT > 10
-               ADD 1 TO SUB-2 POS
+               DISPLAY " " AT 3079 WITH BELL
                GO TO CP-550.
        CP-800.
-           IF WS-PASSWORD-KEY = Ws-PasswordNeeded
+           IF W-READ-KEY = Ws-PasswordNeeded
               MOVE "Y" TO WS-PASSWORD-VALID
               GO TO CP-860.
            Move Ws-Option To Ws-OptionSave
@@ -73,7 +69,7 @@
            MOVE "N" TO WS-PASSWORD-VALID
            MOVE 1 TO SUB-2.
        CP-850.
-           IF WS-PASSWORD-KEY = Ws-Pa-Number (Sub-1 SUB-2)
+           IF W-READ-KEY = Ws-Pa-Number (Sub-1 SUB-2)
             IF Ws-Pa-Priority (Sub-1 SUB-2) NOT < Ws-PriorityNeeded
               MOVE "Y" TO WS-PASSWORD-VALID
               MOVE Ws-Pa-Priority (Sub-1 SUB-2) TO Ws-LastPriority
@@ -86,27 +82,27 @@
                MOVE 0   TO WS-LASTOPTION
                            WS-LASTPRIORITY
                MOVE " " TO WS-LASTPASSWORD
-                           WS-PASSWORD-KEY
+                           W-READ-KEY
            ELSE
                MOVE Ws-Option         TO WS-LASTOPTION
                MOVE Ws-OptionSave     TO WS-OPTION
-               MOVE WS-PASSWORD-KEY   TO WS-LASTPASSWORD.
+               MOVE W-READ-KEY        TO WS-LASTPASSWORD.
        CP-900.
            PERFORM ERROR-020.
-           MOVE 2710 TO POS
+           MOVE 2901 TO POS
            DISPLAY WS-MESSAGE AT POS.
        CP-999.
            EXIT.
       *
-        READ-KBD SECTION.
-        READ-KBD000.
-            CALL "&READKBD" USING F-ERROR1
-                                  W-ESCAPE-KEY.
-            IF F-ERROR1 NOT = 0
-                DISPLAY "READKBD ERROR"
-                DISPLAY F-ERROR1
-                STOP RUN.
-        READ-KBD999.
-             EXIT.
+      *  READ-KBD SECTION.
+      *  READ-KBD000.
+      *      CALL "READKBD" USING F-ERROR1
+      *                           W-ESCAPE-KEY.
+      *      IF F-ERROR1 NOT = 0
+      *          DISPLAY "READKBD ERROR"
+      *          DISPLAY F-ERROR1
+      *          STOP RUN.
+      *  READ-KBD999.
+      *       EXIT.
       *
       *END-OF-JOB

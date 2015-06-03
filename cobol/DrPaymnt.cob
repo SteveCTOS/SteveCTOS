@@ -73,7 +73,7 @@
        77  WS-PasswordSaved     Pic X(10).
        77  PSW-SUB1             PIC S9(5) VALUE 0.
        77  PSW-SUB2             PIC S9(5) VALUE 0.
-       01  W-READ-KEY           PIC X.
+       01  W-READ-KEY           PIC X(20).
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY         PIC X OCCURS 11.
        01  WS-BATCH.
@@ -141,7 +141,7 @@
                05  WS-DR-TRANSNO     PIC 9(6).
        01  WS-PRINTER-INFO.
            03  WS-PRN-FIL     PIC X(8) VALUE " ".
-           03  WS-PRN-NAME    PIC X(12) VALUE " ".
+           03  WS-PRN-NAME    PIC X(25) VALUE " ".
        01  CREDIT-REC.
            03  CR-APPLY      PIC X.
            03  CR-REFNUM     PIC 9(6).
@@ -494,7 +494,7 @@
        GET-001.
             MOVE "Printer:"   TO WS-PRN-FIL
             MOVE Ws-Printer   To WS-PRN-NAME
-            MOVE 0359 TO POS
+            MOVE 1125 TO POS
             DISPLAY WS-PRINTER-INFO AT POS.
         GET-010.
 
@@ -2793,6 +2793,7 @@
            PERFORM READ-FIELD-ALPHA
            MOVE F-NAMEFIELD TO WS-BATCH-REST.
            IF WS-BATCH-REST = " "
+            IF F-EXIT-CH NOT = X"04"
                MOVE "THE BATCH MUST HAVE A VALID NAME, RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -2886,28 +2887,35 @@
                GO TO OPEN-010.
            MOVE 0410 TO POS
            DISPLAY "*** DEBTOR PAYMENT ALLOCATION PROGRAM ***" AT POS
-           MOVE 0510 TO POS
-           DISPLAY "The Current Month Or Year On The Parameter File"
-            AT POS
-            MOVE 0610 TO POS
-           DISPLAY " " AT POS
-           MOVE 0710 TO POS
-           DISPLAY "Does Not Correspond With Todays Date!!!!" AT POS
-           MOVE 0810 TO POS
-           DISPLAY " " AT POS
-           MOVE 0910 TO POS
-           DISPLAY "Check The System Date, " AT POS
-           MOVE 1010 TO POS
-           DISPLAY " " AT POS
-           MOVE 1110 TO POS
-           DISPLAY "Or Else Run The Month-End Routine." AT POS.
-           MOVE 
-          "THERE IS A DATE INCONSISTANCY ON THE SYSTEM, 'ESC' TO EXIT"
-               TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
-           STOP 1
-           CLOSE PARAMETER-FILE.
-           EXIT PROGRAM.
+           MOVE 1010 TO POS.
+           DISPLAY "THE CURRENT MONTH OR YEAR ON THE PARAMETER FILE"
+               AT POS.
+           MOVE 1110 TO POS.
+           DISPLAY "    DOES NOT CORRESPOND WITH TODAYS DATE!!!!" AT POS
+           MOVE 1210 TO POS.
+           DISPLAY "         GO AND CHECK THE SYSTEM DATE, " AT POS
+           MOVE 1310 TO POS.
+           DISPLAY "   AS IT APPEARS YOU'RE IN THE WRONG MONTH." AT POS
+           MOVE 1610 TO POS.
+           DISPLAY "   PRESS 'GO' OR 'NEXT' TO END THE PROGRAM." AT POS.
+           
+           MOVE 3010 TO POS.
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 13        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+      *     MOVE CDA-DATA TO WS-IMM-PR.
+
+           IF W-ESCAPE-KEY = 1 OR = 2
+               CLOSE PARAMETER-FILE
+               EXIT PROGRAM
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO OPEN-005.
        OPEN-010.
            CLOSE PARAMETER-FILE.
        OPEN-011.

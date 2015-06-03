@@ -35,7 +35,6 @@
        77  WS-NAME              PIC X(25) VALUE " ".
        01  WS-DATA-STATUS.
            03  WS-DATA-ST1       PIC 99.
-      *     03  WS-DATA-ST2       PIC X.
        01  HEAD1-LINE.
            03  FILLER         PIC X(5) VALUE "DATE:".
            03  H1-DATE        PIC X(10) VALUE " ".

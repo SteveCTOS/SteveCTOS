@@ -3,8 +3,6 @@
        AUTHOR.  CHRISTENSEN.
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-          CRT STATUS IS W-CRTSTATUS.
        SOURCE-COMPUTER. B20.
        OBJECT-COMPUTER. B20.
        INPUT-OUTPUT SECTION.
@@ -161,47 +159,34 @@
        01  WTELL-PAUSE.
            03 WTELL-P1          PIC X(3) VALUE X"FF0305".
            03 WTELL-P2          PIC X(5) VALUE "HELLO".
-       01  W-READ-KEY           PIC X.
-       01  W-CRTSTATUS           PIC 9(4) value 0.
+       01  W-READ-KEY           PIC X(20).
        01  WS-STDESC.
            03  WS-DESC1          PIC X(20) VALUE " ".
            03  WS-DESC2          PIC X(20) VALUE " ".
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  WS-DRDEL-STATUS.
-           03  WS-DRDEL-ST1    PIC 99.
-      *     03  WS-DRDEL-ST2    PIC X.
+           03  WS-DRDEL-ST1       PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1        PIC 99.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
+           03  WS-SALES-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC 9(2) COMP-X.
+           03  WS-INCR-ST1        PIC 99.
        01  WS-SBREP-STATUS.
-           03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC X.
+           03  WS-SBREP-ST1       PIC 99.
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1   PIC 99.
-      *     03  WS-STDISC-ST2   PIC X.
+           03  WS-STDISC-ST1      PIC 99.
        01  WS-PRINT-STATUS.
-           03  WS-PRINT-ST1   PIC 99.
-      *     03  WS-PRINT-ST2   PIC 9(2) COMP-X.
+           03  WS-PRINT-ST1       PIC 99.
        01 WS-PRINT-MESSAGE.
            03  FILLER         PIC X(8) VALUE "STATUS:".
            03  WS-PM-ST1      PIC X(8) VALUE " ".
@@ -658,15 +643,16 @@
               ADD 1              TO INCR-COPY-NUMBER.
           MOVE INCR-COPY-NUMBER TO P-PRINTNUMBER.
            
-          MOVE "/ctools/ps/"     TO ALPHA-RATE
+          MOVE "/ctools/ps"      TO ALPHA-RATE
           MOVE WS-CO-NUMBER      TO WS-COMPANY-DIGITS
-          MOVE WS-CO-DIG1        TO AL-RATE (9)
-          MOVE WS-CO-DIG2        TO AL-RATE (10).
+          MOVE WS-CO-DIG1        TO AL-RATE (11)
+          MOVE WS-CO-DIG2        TO AL-RATE (12)
+          MOVE "/"               TO AL-RATE (13).
            
       *     MOVE WS-CO-NUMBER     TO AL-RATE (9)
           MOVE P-SLPRINT-RECORD TO DATA-RATE
           MOVE 1  TO SUB-1
-          MOVE 12 TO SUB-2.
+          MOVE 14 TO SUB-2.
        WDBS-002.
           IF DAT-RATE (SUB-1) = " "
               ADD 1 TO SUB-1
@@ -8134,19 +8120,31 @@
              IF WS-YY = PA-CURRENT-PER-YY
                GO TO OPEN-010.
        OPEN-005.
-           MOVE 3010 TO POS.
+           MOVE 0410 TO POS
+           DISPLAY "        *** ORDERS / P-SLIP PROGRAM ***" AT POS
+           MOVE 1010 TO POS.
            DISPLAY "THE CURRENT MONTH OR YEAR ON THE PARAMETER FILE"
                AT POS.
-           DISPLAY " "
-           DISPLAY "DOES NOT CORRESPOND WITH TODAYS DATE!!!!".
-           DISPLAY " ".
-           DISPLAY "GO AND CHECK THE SYSTEM DATE, ".
-           DISPLAY " ".
-           DISPLAY "AS IT APPEARS YOU'RE IN THE WRONG MONTH.".
-           DISPLAY " ".
-           DISPLAY "PRESS 'GO' OR 'NEXT' TO END THE PROGRAM".
+           MOVE 1110 TO POS.
+           DISPLAY "    DOES NOT CORRESPOND WITH TODAYS DATE!!!!" AT POS
+           MOVE 1210 TO POS.
+           DISPLAY "         GO AND CHECK THE SYSTEM DATE, " AT POS
+           MOVE 1310 TO POS.
+           DISPLAY "   AS IT APPEARS YOU'RE IN THE WRONG MONTH." AT POS
+           MOVE 1610 TO POS.
+           DISPLAY "   PRESS 'GO' OR 'NEXT' TO END THE PROGRAM." AT POS
            MOVE 3010 TO POS.
-           ACCEPT WS-IMM-PR AT POS.
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 13        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-IMM-PR.
+
+      *     ACCEPT WS-IMM-PR AT POS.
            IF W-ESCAPE-KEY = 1 OR = 2
                CLOSE PARAMETER-FILE
                EXIT PROGRAM
@@ -8259,6 +8257,7 @@
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
        Copy "ZoomBox".
+       Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*
       ******************

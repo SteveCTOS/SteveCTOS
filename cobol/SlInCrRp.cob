@@ -63,6 +63,9 @@
        77  WS-BO-QTY            PIC S9(5) VALUE 0.
        77  WS-TRANS-DISPLAY     PIC Z(5)9.
        77  WS-EMAIL-NUMBER      PIC X(50) VALUE " ".
+       77  PSW-SUB1             PIC S9(5)9.
+       77  PSW-SUB2             PIC S9(5)9.
+       01  W-READ-KEY           PIC X(20).
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1     PIC 99.
        01  WS-INCR-STATUS.
@@ -670,6 +673,19 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-INVCRED.
+            
+      * NEW SECTION CHECKING PSWD DO THAT GENERAL USERS CAN PRINT
+      * PRO-FORM INVOICES.  THIS ALLOWS US TO LOWER THE PSWD NEEDED
+      * ON THIS PROGRAM SO TAHT ONLY A SPECIALPSWD ALLOWS ONE TO
+      * PRINT INVOICES & C/NOTES.  01/01/2014
+            IF WS-INVCRED = "I" OR = "C"
+                MOVE X"55" TO F-EXIT-CH
+                PERFORM CHECK-PASSWORD
+             IF WS-PASSWORD-VALID = "N"
+                MOVE "INVALID PASSWORD, 'EASC' TO RETRY." TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO GET-000.
+      
             IF WS-INVCRED = "I" OR = "C"
                 GO TO GET-010.
             IF WS-INVCRED = "P"
@@ -2470,6 +2486,8 @@
        Copy "Z1EMailHeadings".
        Copy "GetSystemY2KDate".
        Copy "SetupInvoiceForPDF".
+       Copy "OrderPassword".
+       Copy "CTOSCobolAccept".
        Copy "SetupCreditForPDF".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".

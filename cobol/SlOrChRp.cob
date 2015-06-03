@@ -96,26 +96,19 @@
        77  WS-ORDER-NO          PIC 9(5) VALUE 0.
        01  WS-ORDER-NO-DIS      PIC Z(4)9.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
+           03  WS-STTRANS-ST1   PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-SBREP-STATUS.
            03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC X.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
        01  WS-NAMEANDADDRESS.
            03  WS-NAME          PIC X(40) VALUE " ".
            03  WS-ADD1          PIC X(25) VALUE " ".
@@ -966,14 +959,15 @@
            MOVE 2710 TO POS
            DISPLAY "WRITING DOCUBASE RECORD....." AT POS.
            MOVE " " TO WS-DOCUFILE ALPHA-RATE DATA-RATE.
-           MOVE "/ctools/ps/"    TO ALPHA-RATE
+           MOVE "/ctools/ps"     TO ALPHA-RATE
            MOVE WS-CO-NUMBER     TO WS-COMPANY-DIGITS
-           MOVE WS-CO-DIG1       TO AL-RATE (9)
-           MOVE WS-CO-DIG2       TO AL-RATE (10).
+           MOVE WS-CO-DIG1       TO AL-RATE (11)
+           MOVE WS-CO-DIG2       TO AL-RATE (12)
+           MOVE "/"              TO AL-RATE (13).
       *     MOVE WS-CO-NUMBER     TO AL-RATE (9)
            MOVE P-SLPRINT-RECORD TO DATA-RATE
            MOVE 1  TO SUB-1
-           MOVE 12 TO SUB-2.
+           MOVE 14 TO SUB-2.
        WDBS-002.
            IF DAT-RATE (SUB-1) = " "
               ADD 1 TO SUB-1
@@ -1686,8 +1680,8 @@
            
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 60        TO CDA-ROW.
-           MOVE 24        TO CDA-COL.
+           MOVE 25        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.

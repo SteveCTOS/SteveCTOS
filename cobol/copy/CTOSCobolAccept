@@ -30,6 +30,7 @@
                                CDA-FILTER.
            MOVE CDA-KEY TO W-ESCAPE-KEY.                    
            EXIT.
+           
        CTOS-ACCEPT-PWD SECTION.
            CALL 'ACCEPTPWD' USING CDA-ERROR
                                   CDA-ROW

@@ -3,8 +3,6 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-           CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. Linux.
         OBJECT-COMPUTER. Linux.
         INPUT-OUTPUT SECTION.
@@ -62,8 +60,6 @@
        77  WS-READS              BINARY-SHORT VALUE 0.
        77  WS-ACCEPT             PIC X(11) VALUE " ".
        01  F-FIELDNAME           PIC X(20).
-      * 01  W-ESCAPE-KEY          PIC X.
-       01  W-CRTSTATUS           PIC 9(4) VALUE 0.
        01  W-MESSAGE.
            03 FILLER             PIC X(15) VALUE " ".
            03 W-MESS1            PIC X(23) VALUE " ".
@@ -312,14 +308,13 @@
            MOVE 2945 TO POS
            MOVE 1 TO SUB-2.
        CP-550.
-
            MOVE ' '       TO CDA-DATA.
            MOVE 11        TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 44        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
+           PERFORM CTOS-ACCEPT-PWD.
            MOVE CDA-DATA TO W-READ-KEY.
 
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -327,39 +322,7 @@
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CP-550.
-      *     ACCEPT WS-ACCEPT AT POS.
-      *     MOVE F-FIELDNAME TO W-READ-KEY.
-      *     PERFORM READ-MENU-KBD.
-           
-      *    IF W-ESCAPE-KEY = X"0E" OR = X"08"
-      *     IF SUB-2 > 1
-      *         MOVE " " TO WS-PA-KEY (SUB-2)
-      *         SUBTRACT 1 FROM SUB-2 POS
-      *         MOVE " " TO WS-PASSWORD-VALID WS-PA-KEY (SUB-2)
-      *         DISPLAY WS-PASSWORD-VALID AT POS
-      *         GO TO CP-550
-      *     ELSE
-      *         GO TO CP-550.
-      
-      *    IF W-CRTSTATUS = 0000
-      *         MOVE WS-ACCEPT TO W-READ-KEY 
-      *     IF W-ESCAPE-KEY = " "
-      *         GO TO CP-800.
-
-      *    DISPLAY W-CRTSTATUS AT 3120
-
-      *     IF W-ESCAPE-KEY = X"0A" OR = X"1B"
-      *         GO TO CP-800.
-            
-      *     MOVE W-ESCAPE-KEY TO WS-PA-KEY (SUB-2)
-      *     MOVE "#" TO WS-PASSWORD-VALID
-      *     DISPLAY WS-PASSWORD-VALID AT POS.
-      *     IF SUB-2 NOT > 10
-      *         ADD 1 TO SUB-2 POS
-      *         GO TO CP-550.
        CP-800.
-      *     MOVE W-READ-KEY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
            IF W-READ-KEY = WS-PASSWORDNEEDED
               MOVE "Y" TO WS-PASSWORD-VALID
               GO TO CP-860.

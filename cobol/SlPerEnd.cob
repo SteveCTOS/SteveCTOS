@@ -68,7 +68,7 @@
        01  SPLIT-STOCK.
            03  SP-1STCHAR      PIC X.
            03  SP-REST         PIC X(14).
-       01  W-READ-KEY           PIC X.
+       01  W-READ-KEY           PIC X(20).
        01  SPLIT-TIME.
            03  SPLIT-HR         PIC 99.
            03  SPLIT-FIL1       PIC X.
@@ -87,8 +87,8 @@
        01  WS-ALT-KEY.
            03  WS-SUPPLIER      PIC X(5) VALUE " ".
            03  WS-INVOICENUM    PIC X(10) VALUE " ".
-       01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+      * 01  WS-PASSWORD-KEY.
+      *     03  WS-PA-KEY         PIC X OCCURS 11.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
                05  WS-GLHEADER     PIC X(2).
@@ -2802,7 +2802,7 @@
        Copy "EnterPeriodDates".
        Copy "GetSystemY2KDate".
        Copy "SlPerEndPassword".
-       Copy "ReadKBD".
+      * Copy "ReadKBD".
       ******************
       *Mandatory Copies*
       ******************

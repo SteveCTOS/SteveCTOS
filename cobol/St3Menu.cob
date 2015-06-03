@@ -3,8 +3,6 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
-        SPECIAL-NAMES.
-           CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -15,15 +13,10 @@
 
        WORKING-STORAGE SECTION.
        Copy "WsMenuDateInfo".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
        LINKAGE SECTION.
        Copy "ChlfdLinkage".
 
        Procedure Division Using Ws-Linkage.
-      * MAINLINE.
-      * SET ENVIRONMENT 'COB_SCREEN_EXCEPTIONS' TO 'Y'
-      * SET ENVIRONMENT 'COB_SCREEN_ESC' TO 'Y'.
-
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
           PERFORM OPEN-FILES
@@ -193,7 +186,7 @@
        END-999.
            EXIT.
       *
-       Copy "PassChck.Src".
+       Copy "PassChck.cob".
        Copy "ReadFieldAlpha".
        Copy "WriteFieldAlpha".
        Copy "DisplayForm".
@@ -201,5 +194,6 @@
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
        Copy "DisplayProgNum".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB
