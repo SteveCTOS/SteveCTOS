@@ -6,7 +6,7 @@
 *    *                1. Backup Data Files                                 *
 *    *                2. Restore Data Files                                *
 *    *                                                                     *
-*    *               {[QIC] TAPE}                                          *
+*    *               {USB DEVICE}                                          *
 *    *                3. Backup Data Files                                 *
 *    *                4. Restore Data Files                                *
 *    *                5. Backup Volume (Friday Backup)                     *

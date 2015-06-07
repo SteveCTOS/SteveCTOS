@@ -36,8 +36,7 @@
        77  WS-ANSWER5           PIC X VALUE " ".
        77  WS-QTY               PIC S9(6)V99 VALUE 0.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC X.
-           03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -169,6 +168,8 @@
                MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE 
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1

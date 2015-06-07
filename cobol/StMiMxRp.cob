@@ -15,12 +15,6 @@
          Copy "SelectSlParameter".
          Copy "SelectCoDataName".
          Copy "SelectCoCompany".
-      *     SELECT COMPANY-MENU ASSIGN TO "CoCompany"
-      *         ORGANIZATION IS INDEXED
-      *         LOCK MANUAL
-      *         ACCESS MODE IS DYNAMIC
-      *         FILE STATUS IS WS-MENU-STATUS
-      *         RECORD KEY IS PTY-KEY.
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                 ORGANIZATION IS LINE SEQUENTIAL.
       *

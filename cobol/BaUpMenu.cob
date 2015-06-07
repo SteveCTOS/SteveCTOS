@@ -3,6 +3,10 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -21,10 +25,17 @@
        WORKING-STORAGE SECTION.
        77  WS-QUES-PAUSE-BACKUP   PIC X VALUE " ".
        77  W-BACKUP-DELAY         PIC 9(4) COMP-X.
+       01  W-CRTSTATUS            PIC 9(4) value 0.
        Copy "WsMenuDateInfo".
        01  WS-PARAMETER-STATUS.
            03  WS-PARAMETER-ST1     PIC X.
            03  WS-PARAMETER-ST2     PIC X.
+       01  WS-COMMAND-LINE          PIC X(256).                                    
+       01  W-PRINTCOMMAND.
+           03  W-PRINTCOM1A        PIC X(6) VALUE SPACES.
+           03  W-PRINTCOM1         PIC X(90) VALUE SPACES.
+           03  W-PRINTCOM2         PIC X(100) VALUE SPACES.
+       01  W-STATUS             PIC 9(4) BINARY COMP.
        LINKAGE SECTION.
        Copy "ChlfdLinkage".
 
@@ -41,6 +52,10 @@
        GET-DATA SECTION.
        GET-005.
             MOVE 2 TO WS-MODE.
+            MOVE "         " TO F-NAMEFIELD
+            MOVE "SELECTION" TO F-FIELDNAME
+            MOVE 9           TO F-CBFIELDNAME
+            PERFORM WRITE-FIELD-ALPHA.
        GET-010.
             MOVE "                      " TO F-NAMEFIELD
             MOVE "SELECTION" TO F-FIELDNAME
@@ -103,14 +118,49 @@
             IF WS-ANSWER = " 2"
                 Move "Restore.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
+                
             IF WS-ANSWER = " 3"
-                Move "TapeBackup.Sub" TO Ws-Data-Name
-                PERFORM CHECK-FOR-BACKUP-PAUSE
-                PERFORM GET-100.
+                MOVE 
+              "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                MOVE 
+            "THE COMMAND PROMPT WILL BE DISPLAYED WHILE BACKUP HAPPENS."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE "Backup03 " TO WS-DATA-NAME 
+                PERFORM SETUP-BACKUP-FILES
+                MOVE 
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                GO TO GET-005.
+                
+      *      IF WS-ANSWER = " 3"
+      *          Move "TapeBackup.Sub" TO Ws-Data-Name
+      *          PERFORM CHECK-FOR-BACKUP-PAUSE
+      *          PERFORM GET-100.
             IF WS-ANSWER = " 4"
                 Move "TapeRestore.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
             IF WS-ANSWER = " 5"
+                MOVE 
+              "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                MOVE 
+            "THE COMMAND PROMPT WILL BE DISPLAYED WHILE BACKUP HAPPENS."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE "Backup05 " TO WS-DATA-NAME 
+                PERFORM SETUP-BACKUP-FILES
+                MOVE 
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                GO TO GET-005.
                 Move "TapeBackupVol.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
             IF WS-ANSWER = " 6"
@@ -119,6 +169,7 @@
             IF WS-ANSWER = " 7"
                 Move "TapeBackupMonth.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
+                
             IF WS-ANSWER = " 8"
                 Move "FormatFloppy.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
@@ -130,20 +181,6 @@
                 PERFORM GET-100.
        GET-100.
             Perform Check-Data-Names.
-      *      CALL "&OPENFILELL" USING F-ERROR1
-      *                               F-FH
-      *                               F-FILENAME
-      *                               F-CBFILENAME
-      *                               F-FILENAME
-      *                               F-INTEGERZERO
-      *                               F-OPENMODE.
-            IF F-ERROR1 NOT = 0
-                DISPLAY "ERROR IN SUBMIT FILE."
-                DISPLAY F-ERROR1
-                STOP RUN.
-      *      CALL "&SETSYSINMODE" USING WS-CTOS-ERROR
-      *                                 WS-MODE
-      *                                 F-FH.
             STOP RUN.
        GET-999.
             EXIT.
@@ -173,12 +210,12 @@
        RINVQUES-010.
             READ PARAMETER-FILE
                 INVALID KEY NEXT SENTENCE.
-            IF WS-PARAMETER-ST1 = "2"
+            IF WS-PARAMETER-ST1 = 35 or 47 or 51
                MOVE "N" TO WS-QUES-PAUSE-BACKUP
                GO TO RINVQUES-999.
-            IF WS-PARAMETER-ST1 NOT = "0"
-               MOVE " " TO WS-PARAMETER-ST1
-               MOVE "Parameter Busy RINVQUES, Press 'CANCEL' To Retry."
+            IF WS-PARAMETER-ST1 NOT = 0
+               MOVE 0 TO WS-PARAMETER-ST1
+               MOVE "Parameter Busy RINVQUES, Press 'Esc' To Retry."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RINVQUES-010.
@@ -187,12 +224,20 @@
        RINVQUES-999.
             EXIT.
       *
+       SETUP-BACKUP-FILES SECTION.
+       SUQFD-010.
+          MOVE WS-DATA-NAME  TO WS-COMMAND-LINE.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUQFD-999.
+           EXIT.
+      *
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O PARAMETER-FILE.
-           IF WS-PARAMETER-ST1 NOT = "0" 
-              MOVE " " TO WS-PARAMETER-ST1
-              MOVE "PARAMETER FILE BUSY, BE PATIENT!" TO WS-MESSAGE
+           IF WS-PARAMETER-ST1 NOT = 0 
+              MOVE 0 TO WS-PARAMETER-ST1
+              MOVE "PARAMETER FILE BUSY, 'Esc' TO RETRY." TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-000.
            PERFORM READ-INVQUES-FILE.
@@ -220,6 +265,7 @@
        Copy "UserFillField".
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "DisplayProgNum".
        Copy "CheckMenuDataNames".
        Copy "CTOSCobolAccept".

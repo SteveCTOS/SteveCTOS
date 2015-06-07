@@ -1286,6 +1286,10 @@
            MOVE WS-PRINT-NORMAL TO DB-REC
                WRITE DB-REC
                MOVE " " TO DB-REC.
+
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           PERFORM PRINT-REPORT-INFO.
            
            CLOSE DOCUBASE-PRINT.
            PERFORM ERROR1-020.
@@ -1675,13 +1679,13 @@
        END-000.
            MOVE " " TO WS-TYPE.
            MOVE 2810 TO POS.
-           DISPLAY "Press <RETURN> To Exit Program." AT POS.
+           DISPLAY "Press <RETURN> To Exit Program.           " AT POS.
            ADD 50 TO POS.
            
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 25        TO CDA-ROW.
-           MOVE 60        TO CDA-COL.
+           MOVE 50        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
@@ -1694,6 +1698,10 @@
                GO TO END-000.
       *     ACCEPT WS-TYPE AT POS.
        END-500.
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           PERFORM PRINT-REPORT-INFO.
+
            CLOSE PRINT-FILE.
            IF WS-DOCPRINTED = "Y"
                PERFORM SEND-REPORT-TO-PRINTER.

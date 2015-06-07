@@ -2,7 +2,22 @@ project (ctools_installs)
 
 file (MAKE_DIRECTORY
   /ctools/bin
+  /ctools/cb
+  /ctools/cbzip
+  /ctools/comp2007
+  /ctools/comp2008
+  /ctools/comp2009
+  /ctools/comp2010
+  /ctools/comp2011
+  /ctools/comp2012
+  /ctools/comp2013
+  /ctools/comp2014
+  /ctools/company
   /ctools/cr
+  /ctools/crzip
+  /ctools/csc
+  /ctools/ctj
+  /ctools/ctn
   /ctools/data01
   /ctools/data02
   /ctools/data03
@@ -17,18 +32,50 @@ file (MAKE_DIRECTORY
   /ctools/data12
   /ctools/debtor
   /ctools/dr
+  /ctools/drzip
   /ctools/ecredt
   /ctools/einvoc
   /ctools/epordr
+  /ctools/equote
   /ctools/eremit
   /ctools/estate
   /ctools/fax
-  /ctools/fx
+  /ctools/fnb
+  /ctools/fnbzip
+  /ctools/gl
+  /ctools/glzip
+  /ctools/grc
+  /ctools/hky
+  /ctools/image
+  /ctools/jsc
   /ctools/kbd
+  /ctools/krs
   /ctools/lib
   /ctools/lock
+  /ctools/orx
   /ctools/ps
+  /ctools/payslyp
+  /ctools/payzip
+  /ctools/ps01
+  /ctools/ps02
+  /ctools/ps03
+  /ctools/ps04
+  /ctools/ps05
+  /ctools/ps06
+  /ctools/ps07
+  /ctools/ps08
+  /ctools/ps09
+  /ctools/ps10
+  /ctools/ps11
+  /ctools/ps12
+  /ctools/qtm
+  /ctools/sfi
+  /ctools/sfj
   /ctools/spl
+  /ctools/stuff
+  /ctools/tax
+  /ctools/temp
+  /ctools/uif
   /home/ctools/.putty
   /home/ctools/.putty/sessions
   )
