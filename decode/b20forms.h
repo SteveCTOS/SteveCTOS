@@ -93,6 +93,7 @@ extern void UserFillField(INT* erc, CHAR* form, CHAR* fieldname, INT fieldnamele
 extern void WriteAll(INT* erc, CHAR* form, CHAR* block);
 extern void WriteField(INT* erc, CHAR* form, CHAR* fieldname, INT fieldnamelen, INT index, CHAR* data, INT datalen, TYPE* type);
 extern void WriteTo(INT* erc, CHAR* form, INT column, INT line, CHAR* data, INT datalen, INT color, CHAR attr);
+extern void ZoomBox(INT* erc);
 
 #ifdef __cplusplus
 };

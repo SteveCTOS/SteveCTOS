@@ -534,3 +534,27 @@ extern void WriteTo(INT* erc, CHAR* form, INT column, INT line, CHAR* data, INT 
   }
   RELEASE();
 }
+
+extern void ZoomBox(INT* erc)
+{
+  int status;
+  pid_t pid, wpid;
+  FILE* ofile = fopen("zoombox.dump", "wb");
+  int rc = putwin(_mainwin_, ofile);
+  fclose(ofile);
+  LOG(_format_(_log_buffer_, sizeof(_log_buffer_), "putwin rc:%d", rc));
+  pid = fork();
+  if (pid == 0)
+  {
+    *erc = 1;
+    return;
+  }
+  *erc = 0;
+  wpid = waitpid(pid, &status, 0);
+  FILE* ifile = fopen("zoombox.dump", "rb");
+  WINDOW* win = getwin(ifile);
+  wrefresh(win);
+  fclose(ifile);
+  wrefresh(_mainwin_);
+  redrawwin(_mainwin_);
+}

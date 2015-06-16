@@ -88,9 +88,11 @@ int main(int argc, char* argv[])
   INT erc, file, i, key, ch, state=0;
   char work[256];
   CHAR filename[] = "/ctools/dev/build/data/CoForms.Lib";
-  CHAR formname[] = "StReLoMt";
+  CHAR formname[]  = "StReLoMt";
+  CHAR form2name[] = "StDescIq";
   CHAR password[] = "";
   CHAR form[100];
+  CHAR form2[100];
   CHAR exitcode;
   CHAR title[] = "**WINGDING SPRINGER SLAPSTICK**";
   CHAR sysid[] = "FREDDY";
@@ -106,6 +108,7 @@ int main(int argc, char* argv[])
   SetSysId(sysid, strlen(sysid));
   OpenFile(&erc, &file, filename, (INT)strlen((char*)filename), password, 0, (INT)0x6D72);
   OpenForm(&erc, file, formname, (INT)strlen((char*)formname), form, 100);
+  OpenForm(&erc, file, form2name, (INT)strlen((char*)form2name), form2, 100);
   CloseFile(&erc, file);
   Displayform(&erc, form, 0, 1, 1);
   strncpy(strelomt.f_transcode,        "A",                    strelomt.f_transcode_len);
@@ -123,6 +126,15 @@ int main(int argc, char* argv[])
   strncpy(strelomt.f_description1, "DESCRIPTION ONE     ", strelomt.f_description1_len);
   strncpy(strelomt.f_description2, "DESCRIPTION TWO     ", strelomt.f_description2_len);
   WriteAll(&erc, form, (CHAR*)&strelomt);
+  exitcode = input_test(&erc, form);
+  ZoomBox(&erc);
+  if (erc != 0)
+  {
+    CloseForm(&erc, form);
+    Display(&erc, 25, 12, title, strlen(title), 2, 'C', 0);
+    Accept(&erc, 25, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter, 0);
+  	exit(0);
+  }
   exitcode = input_test(&erc, form);
   ReadField(&erc, form, "TRANSDESC", 9, 0, cbret, 40, &cbret_len, &type);
   ReadAll(&erc, form, (CHAR*)&strelomt);

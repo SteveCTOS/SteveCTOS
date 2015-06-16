@@ -161,6 +161,11 @@ extern void XE4()
   Clear();
 }
 
+extern void ZOOMBOX(INT* erc)
+{
+  ZoomBox(erc);
+}
+
 #ifdef __cplusplus
 };
 #endif
