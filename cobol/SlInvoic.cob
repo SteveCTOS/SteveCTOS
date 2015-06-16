@@ -1571,7 +1571,7 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
                 GO TO GET-010
              ELSE
@@ -1603,7 +1603,7 @@
                PERFORM ERROR1-020
                PERFORM ERROR-020
                PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
                GO TO GET-010
              ELSE
@@ -1618,7 +1618,7 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
                 GO TO GET-010
              ELSE
@@ -1907,7 +1907,7 @@
               MOVE 3010 TO POS
               DISPLAY WS-MESSAGE AT POS
               PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
                GO TO GET-010
              ELSE
@@ -1920,7 +1920,7 @@
              TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
                GO TO GET-010
              ELSE
@@ -1937,7 +1937,7 @@
                MOVE WS-DAILY-MESSAGE       TO WS-MESSAGE
                PERFORM ERROR1-MESSAGE
                PERFORM ERROR-020
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
                GO TO GET-010
              ELSE
@@ -2160,7 +2160,7 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
                 GO TO GET-010
              ELSE
@@ -2202,7 +2202,7 @@
              PERFORM ERROR1-020
              PERFORM ERROR-020
              PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
                 GO TO GET-010
              ELSE
@@ -4008,7 +4008,7 @@
                MOVE INCR-INVOICE TO WS-INVOICE
                GO TO CRS-999.
        CRS-900.
-             IF WS-INCR-ST1 = 51
+      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER.
        CRS-999.
            EXIT.
@@ -5693,9 +5693,9 @@
              MOVE 1 TO SUB-1.
              GO TO CI-010.
        CI-900.
-            IF WS-INCR-ST1 = 51
+      *      IF WS-INCR-ST1 = 51
                  UNLOCK INCR-REGISTER.
-            IF WS-STTRANS-ST1 = 51
+      *      IF WS-STTRANS-ST1 = 51
                  UNLOCK STOCK-TRANS-FILE.
        CI-950.
              PERFORM CLEAR-FIELDS.

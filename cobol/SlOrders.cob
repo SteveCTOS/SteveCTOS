@@ -47,7 +47,7 @@
            03  FILLER           PIC X(255).
       *
        WORKING-STORAGE SECTION.
-       77  WS-DOCUFILE          PIC X(20) VALUE " ".
+       77  WS-DOCUFILE          PIC X(25) VALUE " ".
        77  WS-ACCNO-X           PIC X(7) VALUE " ".
        77  WS-DISCOUNT-CODE     PIC X VALUE " ".
        77  WS-NEWORDER          PIC X VALUE " ".
@@ -1837,7 +1837,7 @@
       *
        GET-DATA SECTION.
        GET-010.
-            PERFORM CI-900.
+      *      PERFORM CI-900.
             MOVE "                        " TO F-NAMEFIELD.
             MOVE "N" TO WS-ZERODIS
                         WS-PASSWORD-VALID
@@ -2676,7 +2676,16 @@
               DISPLAY "DO YOU WISH TO SEE THE OLD ORDER, Y OR N:"
               AT POS.
             ADD 43 TO POS
-            ACCEPT WS-DIS AT POS.
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 53        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+
             IF W-ESCAPE-KEY = 1 OR 2
                GO TO GET-112
             ELSE
@@ -5412,7 +5421,7 @@
            READ INCR-REGISTER
                INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 = 23 OR 35 OR 49
-               UNLOCK INCR-REGISTER
+      *         UNLOCK INCR-REGISTER
                MOVE 88 TO WS-INCR-ST1
                GO TO CIOV-999.
            IF WS-INCR-ST1 NOT = 0
@@ -5544,7 +5553,8 @@
            MOVE "Y" TO WS-NEWORDER.
            MOVE 0   TO INCR-COPY-NUMBER.
        CRS-900.
-           UNLOCK INCR-REGISTER.
+      *     IF WS-INCR-ST1 = 51
+               UNLOCK INCR-REGISTER.
        CRS-999.
            EXIT.
       *
