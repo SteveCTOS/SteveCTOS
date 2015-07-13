@@ -23,10 +23,8 @@
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
        01  WS-CREDITOROLD-STATUS.
            03  WS-CREDITOROLD-ST1   PIC 99.
-      *     03  WS-CREDITOROLD-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -51,8 +49,8 @@
             MOVE "N" TO NEW-CREDITORNO
                         WS-END.
        GET-001.              
-            MOVE 0430 TO POS
-            DISPLAY "*** OLD / DELETED RECORDS ONLY ***" AT POS.
+            MOVE 0423 TO POS
+            DISPLAY "*OLD / DELETED RECORDS ONLY*" AT POS.
             MOVE 2910 TO POS
             DISPLAY 
            "PRESS <F10> TO RE-INSTATE THE CREDITOR & DELETE THIS FILE."

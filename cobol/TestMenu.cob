@@ -50,25 +50,25 @@
            05 N-CBFIELDNAME BINARY-CHAR.
            05 N-FIELDNAME    PIC X(40).
            05 N-OCCFIELDNAME BINARY-CHAR.
-       01  CTOS_DISPLAY_ACCEPT.
-          78  CDA-BLACK   VALUE 0.
-          78  CDA-RED     VALUE 1.
-          78  CDA-GREEN   VALUE 2.
-          78  CDA-YELLOW  VALUE 3.
-          78  CDA-BLUE    VALUE 4.
-          78  CDA-MAGENTA VALUE 5.
-          78  CDA-CYAN    VALUE 6.
-          78  CDA-WHITE   VALUE 7.
-          03  CDA-ERROR   BINARY-SHORT.
-          03  CDA-ROW     BINARY-SHORT.
-          03  CDA-COL     BINARY-SHORT.
-          03  CDA-DATA    PIC X(80).
-          03  CDA-DATALEN BINARY-SHORT.
-          03  CDA-COLOR   BINARY-SHORT.
-          03  CDA-ATTR    PIC X.         
-          03  CDA-KEY     BINARY-SHORT.
-          03  CDA-FILTER  PIC X(10) VALUE
-              X"0A1B04010B070C1D1F00".
+      * 01  CTOS_DISPLAY_ACCEPT.
+      *    78  CDA-BLACK   VALUE 0.
+      *    78  CDA-RED     VALUE 1.
+      *    78  CDA-GREEN   VALUE 2.
+      *    78  CDA-YELLOW  VALUE 3.
+      *    78  CDA-BLUE    VALUE 4.
+      *    78  CDA-MAGENTA VALUE 5.
+      *    78  CDA-CYAN    VALUE 6.
+      *    78  CDA-WHITE   VALUE 7.
+      *    03  CDA-ERROR   BINARY-SHORT.
+      *    03  CDA-ROW     BINARY-SHORT.
+      *    03  CDA-COL     BINARY-SHORT.
+      *    03  CDA-DATA    PIC X(80).
+      *    03  CDA-DATALEN BINARY-SHORT.
+      *    03  CDA-COLOR   BINARY-SHORT.
+      *    03  CDA-ATTR    PIC X.         
+      *    03  CDA-KEY     BINARY-SHORT.
+      *    03  CDA-FILTER  PIC X(10) VALUE
+      *        X"0A1B04010B070C1D1F00".
       *          1 2 3 4 5 6 7 8 9  null terminated
       *  1=RETURN, 2=GO, 3=FINISH, 4=UP, 5=DOWN, 6=CANCEL,
       *  7=NEXT-PAGE, 8=F8, 9=F10

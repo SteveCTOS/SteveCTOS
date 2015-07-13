@@ -2,39 +2,23 @@ Path
 Win
 Program
 
+
 Delete
-<CSC>*
+<6BR>*
+
 
 C/2 Run
 MainCont.Int
 
 -N +P
-8
-CSC-MONTH
-2
-3
-17
-
-
-
-3
-2
-21
-X
-<CSC>SL21
-
-
-
-
-
-
-
+6
+6BR-MONTH
 3
 4
 
 1
 X
-<CSC>SL1
+<6BR>SL1
 01
 
 
@@ -45,36 +29,23 @@ X
 
 2
 X
-<CSC>Sl2
+<6BR>Sl2
 
 
 4
 X
-<CSC>Sl4
+<6BR>Sl4
 
 
 5
 X
-<CSC>Sl5
-
-
-6
-X
-<CSC>Sl6
-
-Y
-
-6
-X
-<CSC>Sl6A
-
-N
+<6BR>Sl5
 
 
 
 7
 X
-<CSC>Sl7
+<6BR>Sl7
 Y
 
 
@@ -84,9 +55,7 @@ Y
 3
 22
 X
-<CSC>SLP22
-
-
+<6BR>SLP22
 
 
 3
@@ -100,10 +69,10 @@ E
 
 Path
 Win
-DataInd
+6BarInd
 
 I Reo
-<Data>CoMenu
+<6Bar>CoMenu
 CoMenu.Ind
 
 
@@ -117,7 +86,7 @@ CHAR:2.0.ANU.M
 Y
 
 I Reo
-<Data>CoDataName
+<6Bar>CoDataName
 CoDataName.Ind
 
 
@@ -131,7 +100,7 @@ CHAR:3.0.ANU.M
 Y
 
 I Reo
-<Data>CoCompany
+<6Bar>CoCompany
 CoCompany.Ind
 
 
@@ -145,7 +114,7 @@ CoCompany.Ind
 Y
 
 I Reo
-<Data>DrMaster
+<6Bar>DrMaster
 DrMaster.Ind
 
 
@@ -159,7 +128,7 @@ DrMaster.Ind
 Y
 
 I Reo
-<Data>DrTrans
+<6Bar>DrTrans
 DrTrans.Ind
 
 
@@ -173,7 +142,7 @@ DrTrans.Ind
 Y
 
 I Reo
-<Data>SlInvRev
+<6Bar>SlInvRev
 SlInvRev.Ind
 
 
@@ -187,7 +156,7 @@ CHAR:6.0.ANU.M
 Y
 
 I Reo
-<Data>SlDistTot
+<6Bar>SlDistTot
 SlDistTot.Ind
 
 
@@ -201,7 +170,7 @@ Char:1.0.ASU.M
 Y
 
 I Reo
-<Data>SlParameter
+<6Bar>SlParameter
 SlParameter.Ind
 
 
@@ -215,7 +184,7 @@ Char:2.0.ASU.M
 Y
 
 I Reo
-<Data>SlRegister
+<6Bar>SlRegister
 SlRegister.Ind
 
 
@@ -229,7 +198,7 @@ SlRegister.Ind
 Y
 
 I Reo
-<Data>SlMaster
+<6Bar>SlMaster
 SlMaster.Ind
 
 
@@ -243,7 +212,7 @@ Char:2.0.ASU.M
 Y
 
 I Reo
-<Data>SlSbRep
+<6Bar>SlSbRep
 SlSbRep.Ind
 
 
@@ -257,7 +226,7 @@ Char:1.0.ANU.M
 Y
 
 I Reo
-<Data>SlSoldBy
+<6Bar>SlSoldBy
 SlSoldBy.Ind
 
 
@@ -270,10 +239,37 @@ Char:8.0.ANU.M
 
 Y
 
+I Reo
+<6Bar>StOrders
+StOrders.Ind
+
+
+
+@[Win]<Temp>StOrders.Key
+6
+50
+80
+400
+
+Y
+
+I Reo
+<6Bar>StOrderGen
+StOrderGen.Ind
+
+
+
+CHAR:23.0.ANU.M
+6
+
+
+
+
+Y
 
 
 I Reo
-<Data>StMaster
+<6Bar>StMaster
 StMaster.Ind
 
 
@@ -287,7 +283,7 @@ StMaster.Ind
 Y
 
 I Reo
-<Data>StReceipt
+<6Bar>StReceipt
 StReceipt.Ind
 
 
@@ -302,7 +298,7 @@ Y
 
 
 I Reo
-<Data>StSpecPr
+<6Bar>StSpecPr
 StSpecPr.Ind
 
 
@@ -316,7 +312,7 @@ CHAR:15.0.ANU.M
 Y
 
 I Reo
-<Data>StTrans
+<6Bar>StTrans
 StTrans.Ind
 
 
@@ -332,76 +328,53 @@ Y
 Path
 Win
 Program
-
 C/2 Run
 MainCont.Int
 
 -N +P
-
-8
-CSC-MONTH
+6
+6BR-MONTH
 3
 4
 
-8
-X
-<CSC>SL8A
-50
-
-8
-X
-<CSC>SL8B
-51
-
 9
 X
-<CSC>SL9A
-1
-NN
-
-9
-X
-<CSC>SL9B
-2
-NN
-
-9
-X
-<CSC>SL9C
+<6BR>SL9C
 3
 NN
 
+
+
 10
 X
-<CSC>SL10
+<6BR>SL10
 
 
 
 
 11
 X
-<CSC>Sl11
+<6BR>Sl11
 01000019999999AD
-
-
 
 12
 X
-<CSC>SL12
+<6BR>SL12
 A
 ZZZZZ
 Y
 
 13
 X
-<CSC>SL13
+<6BR>SL13
 
 ZZZZZ
 Y
 
+
 14
 X
-<CSC>SL14
+<6BR>SL14
 A
 ZZZZZ
 Y
@@ -412,7 +385,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 N
@@ -424,76 +397,24 @@ N
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
-N
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+Y
 N
 Y
 2
 
-
-15
-0100001
-5555555
-B
-31
-A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
-N
-N
-Y
-3
-
-
-15
-0100001
-5555555
-B
-31
-A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
-N
-N
-Y
-4
-
-16
-X
-<CSC>SL16
-A
-Z
-PY
-
 17
 X
-<CSC>SL17A
+<6BR>SL17A
 A
 ZZZZZZ
 YY
 
 
 2
-15
-X
-<CSC>SL15
-
-Y
-Y
-
-17
-X
-<CSC>SL17B
-
-N
-
-17
-X
-<CSC>SL17C
-
-Y
-
 19
 X
-<CSC>SL19
+<6BR>SL19
 21
 
 
@@ -503,35 +424,33 @@ X
 2
 2
 X
-<CSC>ST2
+<6BR>ST2
 A
 ZZZZZZ
 OY
 
 16
 X
-<CSC>ST16
-
+<6BR>ST16
+/
 Z
 N
 
 
 26
 X
-<CSC>ST26
+<6BR>ST26
 A
 Z
 Y
 Y
-
-
 
 
 1
 2
 8
 X
-<CSC>DR8
+<6BR>DR8
 
 9999999
 A
@@ -542,9 +461,8 @@ A
 1
 16
 X
-<CSC>DR16
+<6BR>DR16
 XX
-
 
 
 
@@ -559,12 +477,24 @@ MYTRESPASS
 E
 
 
+Screen Setup
+
+Y
+
+
+Y
+
+100
+
+
+
+
 Path
 Win
-DataInd
+6BarInd
 
 I Reo
-<Data>DrMaster
+<6Bar>DrMaster
 DrMaster.Ind
 
 
@@ -577,22 +507,35 @@ DrMaster.Ind
 80
 Y
 
+I Reo
+<6Bar>DrContact
+DrContact.Ind
+
+
+
+@<Temp>DrCont.Key
+6
+
+
+
+
+Y
 
 Sort
-[Win]<Data>DrTrans
-[Win]<Data>Temp
+[Win]<6Bar>DrTrans
+[Win]<6Bar>Temp
 @[Win]<Temp>DrSort.Key
 
 [Win]<$>SortWorkFile1
 [Win]<$>SortWorkFile2
 
 Rename
-[Win]<Data>Temp
-[Win]<Data>DrTrans
+[Win]<6Bar>Temp
+[Win]<6Bar>DrTrans
 Y
 
 I Reo
-<Data>DrTrans
+<6Bar>DrTrans
 DrTrans.Ind
 
 
@@ -605,9 +548,8 @@ DrTrans.Ind
 
 Y
 
-Y
 I Reo
-<Data>CoMenu
+<6Bar>CoMenu
 CoMenu.Ind
 
 
@@ -621,7 +563,7 @@ CHAR:2.0.ANU.M
 Y
 
 I Reo
-<Data>CoDataName
+<6Bar>CoDataName
 CoDataName.Ind
 
 
@@ -635,7 +577,7 @@ CHAR:3.0.ANU.M
 Y
 
 I Reo
-<Data>CoCompany
+<6Bar>CoCompany
 CoCompany.Ind
 
 
@@ -649,7 +591,7 @@ CoCompany.Ind
 Y
 
 I Reo
-<Data>SlDistTot
+<6Bar>SlDistTot
 SlDistTot.Ind
 
 
@@ -663,7 +605,7 @@ Char:1.0.ASU.M
 Y
 
 I Reo
-<Data>SlInvRev
+<6Bar>SlInvRev
 SlInvRev.Ind
 
 
@@ -678,7 +620,7 @@ Y
 
 
 I Reo
-<Data>SlParameter
+<6Bar>SlParameter
 SlParameter.Ind
 
 
@@ -691,21 +633,21 @@ Char:2.0.ASU.M
 
 Y
 Sort
-[Win]<Data>StReceipt
-[Win]<Data>Temp
+[Win]<6Bar>StReceipt
+[Win]<6Bar>Temp
 @[Win]<Temp>StRecSort.Key
 
 [Win]<$>SortWorkFile1
 [Win]<$>SortWorkFile2
 
 Rename
-[Win]<Data>Temp
-[Win]<Data>StReceipt
+[Win]<6Bar>Temp
+[Win]<6Bar>StReceipt
 Y
 
 
 I Reo
-<Data>StReceipt
+<6Bar>StReceipt
 StReceipt.Ind
 
 
@@ -717,9 +659,23 @@ StReceipt.Ind
 500
 
 Y
+I Reo
+<6Bar>StReceiptLy
+StReceiptLy.Ind
+
+
+
+@[Win]<Temp>StRec.Key
+6
+100
+50
+500
+
+Y
+
 
 I Reo
-<Data>SlRegister
+<6Bar>SlRegister
 SlRegister.Ind
 
 
@@ -733,7 +689,7 @@ SlRegister.Ind
 Y
 
 I Reo
-<Data>SlMaster
+<6Bar>SlMaster
 SlMaster.Ind
 
 
@@ -747,7 +703,7 @@ Char:2.0.ASU.M
 Y
 
 I Reo
-<Data>SlSbRep
+<6Bar>SlSbRep
 SlSbRep.Ind
 
 
@@ -761,7 +717,7 @@ Char:1.0.ANU.M
 Y
 
 I Reo
-<Data>SlSoldBy
+<6Bar>SlSoldBy
 SlSoldBy.Ind
 
 
@@ -774,9 +730,50 @@ Char:8.0.ANU.M
 
 Y
 
+I Reo
+<6Bar>StImports
+StImports.Ind
+
+
+
+@[Win]<Temp>Import.Key
+6
+200
+150
+500
+
+Y
 
 I Reo
-<Data>StMaster
+<6Bar>StOrders
+StOrders.Ind
+
+
+
+@[Win]<Temp>StOrders.Key
+5
+50
+80
+400
+
+Y
+
+I Reo
+<6Bar>StOrderGen
+StOrderGen.Ind
+
+
+
+CHAR:23.0.ANU.M
+6
+
+
+
+
+Y
+
+I Reo
+<6Bar>StMaster
 StMaster.Ind
 
 
@@ -790,7 +787,7 @@ StMaster.Ind
 Y
 
 I Reo
-<Data>StSpecPr
+<6Bar>StSpecPr
 StSpecPr.Ind
 
 
@@ -804,19 +801,19 @@ CHAR:15.0.ANU.M
 Y
 
 Sort
-[Win]<Data>StTrans
-[Win]<Data>Temp
+[Win]<6Bar>StTrans
+[Win]<6Bar>Temp
 @[Win]<Temp>StTransSort.Key
 
 [Win]<$>SortWorkFile1
 [Win]<$>SortWorkFile2
 
 Rename
-[Win]<Data>Temp
-[Win]<Data>StTrans
+[Win]<6Bar>Temp
+[Win]<6Bar>StTrans
 Y
 I Reo
-<Data>StTrans
+<6Bar>StTrans
 StTrans.Ind
 
 
@@ -830,7 +827,7 @@ StTrans.Ind
 Y
 
 I Reo
-<Data>BmMaster
+<6Bar>BmMaster
 BmMaster.Ind
 
 
@@ -857,58 +854,41 @@ Y
 100
 
 
-Is rename
-<Data>SlSpecials
-<Spl>SlSpecOld
-
-Yes
-
 Path
 Win
-PS08
+PS06
+
 
 Append
-<PS08>*/*
-<CSC>SlP22
+<PS06>*
+<6BR>SlP22
 N
 
 Delete
-<PS08>*
+<PS06>*
 
 Path
 Win
 Program
 
 COPY
-<spl>DrStateCo08
-<CSC>DrStateCo08
+<spl>DrStateCo06
+<6BR>DrStateCo06
 Y
 
 COPY
-<spl>DrLaserCo08
-<CSC>DrLaserCo08
+<spl>DrLaserCo06
+<6BR>DrLaserCo06
 Y
 
 COPY
-<spl>DrNOMALCo08
-<CSC>DrNOMALCo08
-Y
-
-
-COPY
-<spl>DrEMAILCo08
-<CSC>DrEMAILCo08
-Y
-
-
-COPY
-<CSC>SL11
-<SPL>CSCDrAge
+<6BR>SL11
+<SPL>6BarDrAge
 Y
 
 Rename
-<Spl>DB*08
-<CSC>DB*08
+<Spl>DB*06
+<6BR>DB*06
 
 
 C/2 Run
@@ -916,36 +896,45 @@ MainCont.Int
 
 -N +P
 
-8
-CSC-MONTH
+6
+6BR-MONTH
 3
 4
 
 3
 X
-<CSC>Sl31
-1N
+<6BR>Sl3
+Y
 
-3
-X
-<CSC>Sl32
-2N
 
-3
+2
+17
 X
-<CSC>Sl3
+<SPL>SL
 
 Y
 
 E
 
+Screen Setup
+
+Y
+
+
+Y
+
+100
+
+
+
+
 Path
 Win
-DataInd
+6BarInd
 
 
 I Reo
-<Data>SlSpecials
+<6Bar>SlSpecials
 SlSpecials.Ind
 
 
@@ -957,76 +946,11 @@ Char:23.0.anu.m
 
 
 Y
-Path
-Win
-CSC
 
-Screen Setup
-
-Y
-
-
-Y
-
-100
-
-
-/z
-*
-Monthend8.Zip
-
-Delete
-DR* DB* Sl* St*
 
 Path
 Win
 Program
 
-Screen Setup
-
-Y
-
-
-Y
-
-100
-
-
-File
-<Data*>* <CDat*>*
-
-<Temp>TapeBackup.key
-
-1
-
-
-Sel Arch
-@<Temp>TapeBackup.key
-
-
-[Qic]
-Y
-Rest Archi
-[Qic]
-
-
-
-
-
-
-y
-[Win]<Spl>Backup.Lst
-
-**** MONTH-END BACKUP COMPLETE *****
-
-
-a n uMain
-[Win]<CSC>MonthEnd8.Zip
-
-[Win]<CSC>MonthEnd8.Zip
-
-
-
-
-***** CSC MONTH-END COMPLETE *****
+***** 6BAR MONTH-END DONE *****
 

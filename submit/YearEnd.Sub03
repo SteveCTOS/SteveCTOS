@@ -1,12 +1,12 @@
-Delete
-<ctn>*
-
 Path
 Win
 Program
 
+Delete
+<CTN>*
+
 C/2 Run
-MainCont.Int
+MainCont
 
 -N +P
 3
@@ -17,13 +17,13 @@ MONTHLY
 
 
 
+
 
 3
 2
 21
 X
 <CTN>SL21
-
 
 
 
@@ -69,12 +69,13 @@ X
 
 Y
 
-
 6
 X
 <CTN>Sl6A
 
 N
+
+
 
 
 7
@@ -86,13 +87,12 @@ Y
 
 
 
+
+
 3
 22
 X
 <CTN>SLP22
-
-
-
 
 
 3
@@ -387,6 +387,7 @@ StTrans.Ind
 60
 Y
 
+
 I Reo
 [Win]<Data>BmMaster
 BmMaster.Ind
@@ -406,12 +407,30 @@ Win
 Program
 
 C/2 Run
-MainCont.Int
+MainCont
 
 -N +P
 
 3
 MONTHLY
+1
+2
+14
+X
+<SPL>DR14A
+5000
+T
+S1
+
+14
+X
+<SPL>DR14B
+5000
+T
+S2
+
+
+
 3
 4
 
@@ -437,36 +456,43 @@ X
 2
 NN
 
-9
-X
-<CTN>SL9C
-3
-NN
-
 10
 X
 <CTN>SL10
 
 
-
 11
 X
-<CTN>Sl11
+<CTN>SL11
 01000019999999AD
 
 12
 X
-<CTN>SL12
+<CTN>SL12A
 A
+ZZZZZ
+Y
+
+12
+X
+<CTN>SL12B
+A
+ZZZZZ
+N
+
+13
+X
+<CTN>SL13A
+
 ZZZZZ
 Y
 
 13
 X
-<CTN>SL13
+<CTN>SL13B
 
 ZZZZZ
-Y
+N
 
 14
 X
@@ -481,7 +507,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
@@ -493,7 +519,7 @@ N
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -506,7 +532,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -519,7 +545,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 Y
 N
 Y
@@ -536,8 +562,8 @@ PY
 X
 <CTN>SL17A
 A
-ZZZZZZ
-YY
+ZZZZZ
+NY
 
 
 
@@ -577,6 +603,26 @@ Y
 Y
 
 
+28
+X
+<CTN>ST28A
+A
+ZZZZZ
+200
+RTN
+
+
+
+28
+X
+<CTN>ST28B
+A
+ZZZZZ
+200
+UTN
+
+
+
 
 
 1
@@ -590,6 +636,7 @@ A
 
 
 
+
 
 1
 16
@@ -599,6 +646,23 @@ XX
 
 
 
+1
+2
+
+14
+X
+<CTN>DR14A
+500
+TP
+
+
+14
+X
+<CTN>DR14B
+500
+TS
+
+
 3
 2
 17
@@ -614,23 +678,75 @@ X
 
 Y
 
-
 19
 X
 <CTN>SL19
 21
 
 
+
 
 4
 
-19
-MYTRESPASS
-
+18
+X
+<CTN>SL18A
+0
 
+18
+X
+<CTN>SL18B
+1
+
+18
+X
+<CTN>SL18C
+2
+
+18
+X
+<CTN>SL18D
+3
+
+18
+X
+<CTN>SL18E
+4
+
+18
+X
+<CTN>SL18F
+5
+
+18
+X
+<CTN>SL18G
+6
+
+18
+X
+<CTN>SL18H
+7
+
+18
+X
+<CTN>SL18I
+8
+
+
+
+18
+X
+<CTN>SL18J
+9
+
+19
+YYTRESPASS
+
 
 
 E
+
 
 Path
 Win
@@ -848,7 +964,20 @@ SlRegister.Ind
 
 @[Win]<Temp>Reg.Key
 6
-600
+500
+500
+5500
+60
+Y
+I Reo
+<Data>SlRegLY
+SlRegLY.Ind
+
+
+
+@[Win]<Temp>Reg.Key
+6
+500
 500
 5500
 60
@@ -963,6 +1092,19 @@ StTrans.Ind
 15000
 60
 Y
+I Reo
+<Data>StTransLY
+StTransLY.Ind
+
+
+
+@[Win]<Temp>StTrans.Key
+6
+1000
+1000
+15000
+60
+Y
 
 I Reo
 [Win]<Data>BmMaster
@@ -978,6 +1120,19 @@ BmMaster.Ind
 
 Y
 
+Is renam
+<Data>StReceiptLy
+<Data>StReceiptLY14
+[Win]<DataInd>StReceiptLY14.Ind
+Y
+
+Is renam
+<Data>StReceipt
+<Data>StReceiptLY
+[Win]<DataInd>StReceiptLY.Ind
+y
+
+
 Path
 Win
 Program
@@ -991,6 +1146,7 @@ Y
 
 100
 
+
 Is Delete
 <Data>SlSpecials
 Path
@@ -1007,13 +1163,13 @@ Append
 Delete
 <PS03>* <PS01>*
 
-COPY
-<SPL>DRSTATECO03
-<CTN>DRSTATECO03
+COPY 
+<SPL>DrStateCo03
+<CTN>DrStateCo03
 Y
 
-COPY
-<spl>DrLaserCo03
+COPY 
+<SPL>DrLaserCo03
 <CTN>DrLaserCo03
 Y
 
@@ -1028,16 +1184,13 @@ COPY
 <CTN>DrEMAILCo03
 Y
 
-
 Rename
 <Spl>DB*03
 <CTN>DB*03
 
-
 Path
 Win
 Program
-
 
 C/2 Run
 MainCont
@@ -1064,13 +1217,21 @@ X
 <CTN>Sl3
 
 Y
+
+
+
+2
+1
+25
+A
+ZZZZZ
+N
 E
 
 
 Path
 Win
 DataInd
-
 
 I Reo
 <Data>SlSpecials
@@ -1085,7 +1246,6 @@ Char:23.0.anu.m
 
 
 Y
-
 
 Screen Setup
 
@@ -1107,6 +1267,7 @@ MonthEnd3.Zip
 y
 
 
+
 Delete
 Sl* ct* st* dr* db*
 
@@ -1118,7 +1279,7 @@ File
 
 1
 
-Sel Arch
+Sel Arc
 @<Temp>TapeBackup.key
 
 
@@ -1137,7 +1298,7 @@ y
 [Win]<Spl>Backup.Lst
 
 
-**** MONTH-END BACKUP COMPLETE *****
+**** Year-END BACKUP COMPLETE *****
 
 
 
@@ -1148,5 +1309,5 @@ a n uMain
 
 
 
-**** CTN MONTH-END COMPLETE *****
+*** CTN YEAR-END COMPLETE *****
 

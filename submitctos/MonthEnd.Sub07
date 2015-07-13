@@ -2,26 +2,29 @@ Path
 Win
 Program
 
+
 Delete
-<CSC>*
+<SFJ>*
+
 
 C/2 Run
 MainCont.Int
 
 -N +P
-8
-CSC-MONTH
+7
+SFJ-MONTH
 2
 3
 17
-
 
 
 3
 2
 21
 X
-<CSC>SL21
+<SFJ>SL21
+
+
 
 
 
@@ -34,7 +37,7 @@ X
 
 1
 X
-<CSC>SL1
+<SFJ>SL1
 01
 
 
@@ -45,36 +48,36 @@ X
 
 2
 X
-<CSC>Sl2
+<SFJ>Sl2
 
 
 4
 X
-<CSC>Sl4
+<SFJ>Sl4
 
 
 5
 X
-<CSC>Sl5
+<SFJ>Sl5
 
 
 6
 X
-<CSC>Sl6
+<SFJ>Sl6
 
 Y
 
+
 6
 X
-<CSC>Sl6A
+<SFJ>Sl6A
 
 N
 
 
-
 7
 X
-<CSC>Sl7
+<SFJ>Sl7
 Y
 
 
@@ -84,9 +87,7 @@ Y
 3
 22
 X
-<CSC>SLP22
-
-
+<SFJ>SLP22
 
 
 3
@@ -270,6 +271,33 @@ Char:8.0.ANU.M
 
 Y
 
+I Reo
+<Data>StOrders
+StOrders.Ind
+
+
+
+@[Win]<Temp>StOrders.Key
+6
+50
+80
+400
+
+Y
+
+I Reo
+<Data>StOrderGen
+StOrderGen.Ind
+
+
+
+CHAR:23.0.ANU.M
+6
+
+
+
+
+Y
 
 
 I Reo
@@ -338,70 +366,84 @@ MainCont.Int
 
 -N +P
 
-8
-CSC-MONTH
+7
+SFJ-MONTH
 3
 4
 
 8
 X
-<CSC>SL8A
+<SFJ>SL8A
 50
 
 8
 X
-<CSC>SL8B
+<SFJ>SL8B
 51
+
+8
+X
+<SFJ>SL8C
+52
+
+8
+X
+<SFJ>SL8D
+53
+
+8
+X
+<SFJ>SL8E
+55
 
 9
 X
-<CSC>SL9A
+<SFJ>SL9A
 1
 NN
 
 9
 X
-<CSC>SL9B
+<SFJ>SL9B
 2
 NN
 
 9
 X
-<CSC>SL9C
+<SFJ>SL9C
 3
 NN
 
 10
 X
-<CSC>SL10
+<SFJ>SL10
 
 
 
 
 11
 X
-<CSC>Sl11
+<SFJ>Sl11
 01000019999999AD
-
 
 
 12
 X
-<CSC>SL12
+<SFJ>SL12
 A
 ZZZZZ
 Y
 
 13
 X
-<CSC>SL13
+<SFJ>SL13
 
 ZZZZZ
 Y
 
 14
 X
-<CSC>SL14
+<SFJ>SL14
 A
 ZZZZZ
 Y
@@ -412,7 +454,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 N
@@ -424,7 +466,7 @@ N
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 Y
@@ -437,7 +479,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 Y
@@ -450,7 +492,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 Y
@@ -458,14 +500,14 @@ Y
 
 16
 X
-<CSC>SL16
+<SFJ>SL16
 A
 Z
 PY
 
 17
 X
-<CSC>SL17A
+<SFJ>SL17A
 A
 ZZZZZZ
 YY
@@ -474,26 +516,30 @@ YY
 2
 15
 X
-<CSC>SL15
+<SFJ>SL15
 
 Y
 Y
+
+
 
 17
 X
-<CSC>SL17B
+<SFJ>SL17B
 
 N
 
+
 17
 X
-<CSC>SL17C
+<SFJ>SL17C
 
 Y
 
+
 19
 X
-<CSC>SL19
+<SFJ>SL19
 21
 
 
@@ -503,27 +549,26 @@ X
 2
 2
 X
-<CSC>ST2
+<SFJ>ST2
 A
 ZZZZZZ
 OY
 
 16
 X
-<CSC>ST16
-
+<SFJ>ST16
+/
 Z
 N
 
 
 26
 X
-<CSC>ST26
+<SFJ>ST26
 A
 Z
 Y
 Y
-
 
 
 
@@ -531,10 +576,12 @@ Y
 2
 8
 X
-<CSC>DR8
+<SFJ>DR8
 
 9999999
 A
+
+
 
 
 
@@ -542,9 +589,8 @@ A
 1
 16
 X
-<CSC>DR16
+<SFJ>DR16
 XX
-
 
 
 
@@ -577,6 +623,19 @@ DrMaster.Ind
 80
 Y
 
+I Reo
+<Data>DrContact
+DrContact.Ind
+
+
+
+@<Temp>DrCont.Key
+6
+
+
+
+
+Y
 
 Sort
 [Win]<Data>DrTrans
@@ -605,7 +664,7 @@ DrTrans.Ind
 
 Y
 
-Y
+
 I Reo
 <Data>CoMenu
 CoMenu.Ind
@@ -718,6 +777,7 @@ StReceipt.Ind
 
 Y
 
+
 I Reo
 <Data>SlRegister
 SlRegister.Ind
@@ -774,6 +834,47 @@ Char:8.0.ANU.M
 
 Y
 
+I Reo
+<Data>StImports
+StImports.Ind
+
+
+
+@[Win]<Temp>Import.Key
+6
+200
+150
+500
+
+Y
+
+I Reo
+<Data>StOrders
+StOrders.Ind
+
+
+
+@[Win]<Temp>StOrders.Key
+5
+50
+80
+400
+
+Y
+
+I Reo
+<Data>StOrderGen
+StOrderGen.Ind
+
+
+
+CHAR:23.0.ANU.M
+6
+
+
+
+
+Y
 
 I Reo
 <Data>StMaster
@@ -859,85 +960,118 @@ Y
 
 Is rename
 <Data>SlSpecials
-<Spl>SlSpecOld
-
-Yes
+<Spl>SlSpecOld
 
 Path
 Win
-PS08
+PS07
+
 
 Append
-<PS08>*/*
-<CSC>SlP22
+<PS07>*/*
+<SFJ>SlP22
 N
 
 Delete
-<PS08>*
+<PS07>*
+
+Path
+Win
+SFJ
+
+
+COPY
+<spl>DrStateCo07
+<SFJ>DrStateCo07
+Y
+
+COPY
+<spl>DrLaserCo07
+<SFJ>DrLaserCo07
+Y
+
+COPY
+<spl>DrNOMALCo07
+<SFJ>DrNOMALCo07
+Y
+
+
+COPY
+<spl>DrEMAILCo07
+<SFJ>DrEMAILCo07
+Y
+
+
+COPY
+<SFJ>SL11
+<SPL>SFJDrAge
+Y
+
+Rename
+<Spl>DB*07
+<SFJ>DB*07
+
 
 Path
 Win
 Program
 
-COPY
-<spl>DrStateCo08
-<CSC>DrStateCo08
-Y
-
-COPY
-<spl>DrLaserCo08
-<CSC>DrLaserCo08
-Y
-
-COPY
-<spl>DrNOMALCo08
-<CSC>DrNOMALCo08
-Y
-
-
-COPY
-<spl>DrEMAILCo08
-<CSC>DrEMAILCo08
-Y
-
-
-COPY
-<CSC>SL11
-<SPL>CSCDrAge
-Y
-
-Rename
-<Spl>DB*08
-<CSC>DB*08
-
-
 C/2 Run
 MainCont.Int
 
 -N +P
-
-8
-CSC-MONTH
+7
+SFJ-MONTH
 3
 4
 
 3
 X
-<CSC>Sl31
+<SFJ>Sl31
 1N
 
 3
 X
-<CSC>Sl32
+<SFJ>Sl32
 2N
 
 3
 X
-<CSC>Sl3
+<SFJ>Sl3
+
+Y
+
+
+2
+17
+X
+<SPL>SL
 
 Y
 
 E
+
+
+Screen Setup
+
+Y
+
+
+Y
+
+100
+
+
+Path
+Win
+SFJ
+
+/ZIP
+*
+MonthEnd7.Zip
+
+Delete
+sl* st* d*
 
 Path
 Win
@@ -957,30 +1091,11 @@ Char:23.0.anu.m
 
 
 Y
-Path
-Win
-CSC
-
-Screen Setup
-
-Y
-
-
-Y
-
-100
-
-
-/z
-*
-Monthend8.Zip
-
-Delete
-DR* DB* Sl* St*
 
 Path
 Win
 Program
+
 
 Screen Setup
 
@@ -993,7 +1108,7 @@ Y
 
 
 File
-<Data*>* <CDat*>*
+<Data*>*
 
 <Temp>TapeBackup.key
 
@@ -1006,6 +1121,8 @@ Sel Arch
 
 [Qic]
 Y
+
+
 Rest Archi
 [Qic]
 
@@ -1017,16 +1134,18 @@ Rest Archi
 y
 [Win]<Spl>Backup.Lst
 
+
 **** MONTH-END BACKUP COMPLETE *****
 
 
-a n uMain
-[Win]<CSC>MonthEnd8.Zip
 
-[Win]<CSC>MonthEnd8.Zip
+a n uMain
+[Win]<SFJ>MonthEnd7.Zip
+
+[Win]<SFJ>MonthEnd7.Zip
 
 
 
 
-***** CSC MONTH-END COMPLETE *****
+***** SFJ MONTH-END COMPLETE *****
 
