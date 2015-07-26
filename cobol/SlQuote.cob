@@ -156,6 +156,7 @@
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
        01  W-READ-KEY           PIC X.
        01  W-CRTSTATUS          PIC 9(4) value 0.
+       01  F-RC                 BINARY-SHORT VALUE 0.
        01  WS-STDESC.
            03  WS-DESC1         PIC X(20) VALUE " ".
            03  WS-DESC2         PIC X(20) VALUE " ".
@@ -2649,6 +2650,8 @@
             PERFORM SCROLL-PREVIOUS.
        GET-180.
             MOVE "N" TO WS-LINECHANGED.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020
             PERFORM FILL-BODY.
             IF WS-ABOVE-BODY = "1"
                 GO TO GET-150.
@@ -3283,9 +3286,13 @@
             MOVE 1 TO SUB-1 SUB-2 SUB-3.
        FILL-005.
             PERFORM ERROR-020.
+            MOVE 2610 TO POS
+            DISPLAY
+             "PRESS <ALT-z> TO ENTER ZOOMBOX TO DO A STOCK ENQUIRY."
+               AT POS.
             MOVE 2710 TO POS
             DISPLAY
-             "PRESS <ALT-G> TO ENTER A TOOLKIT LISTING INTO THE QUOTE."
+             "PRESS <ALT-g> TO ENTER A TOOLKIT LISTING INTO THE QUOTE."
                AT POS.
             MOVE 2810 TO POS
             DISPLAY
@@ -3342,12 +3349,33 @@
                 PERFORM SCROLL-NEXT
                 GO TO FILL-005.
   
-      *<CODE-Z> = GO INTO ZOOMBOX MODE
-           IF F-EXIT-CH = X"FA"
-                PERFORM ZB-005 THRU ZB-040
+      *<CODE-z> = GO INTO ZOOMBOX MODE - CTOS
+      *     IF F-EXIT-CH = X"FA"
+      *          PERFORM ZB-005 THRU ZB-040
+      *          CALL WS-STOCK-INQUIRY USING WS-LINKAGE
+      *          CANCEL WS-STOCK-INQUIRY
+      *          PERFORM ZB-050
+      *          GO TO FILL-005.
+      *<ALT-z> = GO INTO ZOOMBOX MODE - LINUX
+      * X"FA" = z  X"DA" = Z
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                PERFORM END-000
+                MOVE 1 TO F-RC
+                CALL "ZOOMBOX" USING F-RC
                 CALL WS-STOCK-INQUIRY USING WS-LINKAGE
-                CANCEL WS-STOCK-INQUIRY
-                PERFORM ZB-050
+      *          CANCEL WS-STOCK-INQUIRY
+                MOVE "before stop run" TO WS-MESSAGE 
+                PERFORM ERROR-MESSAGE
+                STOP RUN
+                MOVE "after stop run" TO WS-MESSAGE 
+                PERFORM ERROR-MESSAGE
+      *          MOVE F-RC TO WS-MESSAGE 
+      *          PERFORM ERROR-MESSAGE
+      *          CALL "ZOOMBOX" USING F-RC
+                PERFORM OPEN-011 THRU OPEN-020
+                MOVE "after open section" TO WS-MESSAGE 
+                PERFORM ERROR-MESSAGE
+                
                 GO TO FILL-005.
 
       *****************************************************************
@@ -5477,7 +5505,7 @@
                GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
                MOVE 0 TO WS-INCR-ST1
-               MOVE "REGISTER BUSY ON READ-LCOK, 'ESC' TO RETRY."
+               MOVE "REGISTER BUSY ON READ-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RIR-005.

@@ -529,6 +529,12 @@
               AT POS
               MOVE 2850 TO POS
               ACCEPT WS-ACCEPT AT POS.
+              
+            move "going to make read-call" to ws-message
+            perform error-message.
+
+            CALL "SYSTEM" USING "less /ctools/spl/sl6"
+            RETURNING W-STATUS.
        END-900.
            CLOSE DEBTOR-MASTER.
            EXIT PROGRAM.
