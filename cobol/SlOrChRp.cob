@@ -40,7 +40,7 @@
            03  DB-RECINV        PIC X(6).
       *
        WORKING-STORAGE SECTION.
-       77  WS-DOCUFILE          PIC X(20) VALUE " ".
+       77  WS-DOCUFILE          PIC X(25) VALUE " ".
        77  WS-CHANGE-SOLDBY     PIC X VALUE " ".
        77  WS-SALESMAN          PIC X(15) VALUE " ".
        77  WS-ACCOUNT-NUMBER    PIC 9(7) VALUE 0.

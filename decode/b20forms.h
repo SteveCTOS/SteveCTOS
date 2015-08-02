@@ -94,6 +94,10 @@ extern void WriteAll(INT* erc, CHAR* form, CHAR* block);
 extern void WriteField(INT* erc, CHAR* form, CHAR* fieldname, INT fieldnamelen, INT index, CHAR* data, INT datalen, TYPE* type);
 extern void WriteTo(INT* erc, CHAR* form, INT column, INT line, CHAR* data, INT datalen, INT color, CHAR attr);
 extern void ZoomBox(INT* erc);
+extern void Clone(INT* erc);
+extern void Exec(INT* erc, CHAR* command, INT commandlen);
+extern void SaveScreen();
+extern void RestoreScreen();
 
 #ifdef __cplusplus
 };

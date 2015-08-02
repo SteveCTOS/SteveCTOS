@@ -86,7 +86,7 @@
                MOVE ALPHA-RATE TO WS-ACC
             ELSE
                MOVE F-NAMEFIELD TO WS-SHORTNAME.
-            MOVE 0           TO F-EXIT-CH.
+      *      MOVE 0           TO F-EXIT-CH.
        GET-999.
             EXIT.
       *

@@ -71,6 +71,7 @@ static int             _started_;
 static int             _semaphore_;
 static int             _submit_chars_len_;
 static int             _submit_chars_index_;
+static int             _screensaved;
 static WINDOW*         _mainwin_;
 static WINDOW*         _topwin_;
 static pthread_t       _thread_;

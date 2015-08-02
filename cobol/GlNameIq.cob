@@ -25,7 +25,6 @@
            03  WS-TYPE          PIC X(44) VALUE " ".
        01  WS-GLMAST-STATUS.
            03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
        01  WS-GLACC.
            03  WS-SUBHEADER.
                05  WS-GLHEADER     PIC X(2).
@@ -85,7 +84,7 @@
                PERFORM WRITE-FIELD-ALPHA
             ELSE
                MOVE F-NAMEFIELD TO WS-SHORTNAME.
-            MOVE 0           TO F-EXIT-CH.
+      *     MOVE 0           TO F-EXIT-CH.
        GET-999.
            EXIT.
       *

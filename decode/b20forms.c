@@ -550,3 +550,54 @@ extern void ZoomBox(INT* erc)
   wrefresh(_mainwin_);
   redrawwin(_mainwin_);
 }
+
+extern void Clone(INT* erc)
+{
+  int status;
+  pid_t pid, wpid;
+  pid = fork();
+  if (pid == 0)
+  {
+    *erc = 1;
+    return;
+  }
+  *erc = 0;
+  wpid = waitpid(pid, &status, 0);
+  wrefresh(_mainwin_);
+  redrawwin(_mainwin_);
+}
+
+extern void Exec(INT* erc, CHAR* command, INT commandlen)
+{
+  int status;
+  if (commandlen >= 512)
+  {
+    *erc = 155;
+    return;
+  }
+  char work[512];
+  strncpy(work, command, commandlen);
+  work[commandlen] = 0;
+  *erc = system(command);
+  wrefresh(_mainwin_);
+  redrawwin(_mainwin_);
+}
+
+extern void SaveScreen()
+{
+  int n = mkdir("./tmp", 0664);
+  scr_dump("./tmp/.screendump");
+  _screensaved = 1;
+  wrefresh(_mainwin_);
+  redrawwin(_mainwin_);
+}
+
+extern void RestoreScreen()
+{
+  if (_screensaved == 0)
+    return;
+  scr_set("./tmp/.screendump");
+  _screensaved = 0;
+  wrefresh(_mainwin_);
+  redrawwin(_mainwin_);
+}

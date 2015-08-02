@@ -2648,7 +2648,8 @@
       *
        RELEASE-DEBTOR-RECORD SECTION.
        REL-000.
-           UNLOCK DEBTOR-MASTER.
+      *      IF DEBTOR-MASTER LOCK
+                UNLOCK DEBTOR-MASTER.
        REL-999.
            EXIT.
       *
@@ -2691,8 +2692,8 @@
                 MOVE WS-ACCOUNTNUMBER TO DR-ACCOUNT-NUMBER
                 GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+      *           MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
                 MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                   TO WS-MESSAGE

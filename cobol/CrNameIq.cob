@@ -28,7 +28,6 @@
            03  WS-PHONE         PIC X(20) VALUE " ".
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
        01  WS-SPLIT-ACCOUNT.
            03  WS-SP-1          PIC X VALUE " ".
            03  WS-SP-REST       PIC X(39) VALUE " ".
@@ -77,7 +76,7 @@
                MOVE ALPHA-RATE TO WS-ACC
             ELSE
                MOVE F-NAMEFIELD TO WS-SHORTNAME.
-            MOVE 0           TO F-EXIT-CH.
+      *      MOVE 0              TO F-EXIT-CH.
        GET-999.
             EXIT.
       *

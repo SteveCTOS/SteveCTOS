@@ -89,15 +89,15 @@
            03  FILLER REDEFINES NUMERIC-RATE.
                05  N-RATE       PIC 9 OCCURS 15.
       * 01  WS-PASSWORD-KEY.
-      *     03  WS-PA-KEY         PIC X OCCURS 11.
+      *     03  WS-PA-KEY       PIC X OCCURS 11.
        01  WS-NUMBER-CHECK VALUE "  ".
-           03  WS-NU1        PIC X.
-           03  WS-NU2        PIC X.
+           03  WS-NU1           PIC X.
+           03  WS-NU2           PIC X.
        01  WS-STORAGE.
-           03  WS-CTOS-ERROR  PIC 9(4) COMP.
-           03  WS-MODE        PIC 9(4) COMP.
+           03  WS-CTOS-ERROR    PIC 9(4) COMP.
+           03  WS-MODE          PIC 9(4) COMP.
        01  W-READ-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY        PIC X OCCURS 11.
        01  CTOS_DISPLAY_ACCEPT.
           78  CDA-BLACK   VALUE 0.
           78  CDA-RED     VALUE 1.

@@ -166,6 +166,27 @@ extern void ZOOMBOX(INT* erc)
   ZoomBox(erc);
 }
 
+extern void CLONE(INT* erc)
+{
+  Clone(erc);
+}
+//INT* erc, CHAR* form, CHAR* fieldname, CHAR* fieldnamelen
+
+extern void EXEC(INT* erc, CHAR* command, INT commandlen)
+{
+  Exec(erc, command, *commandlen);
+}
+
+extern void SAVESCREEN()
+{
+  SaveScreen();
+}
+
+extern void RESTORESCREEN()
+{
+  RestoreScreen();
+}
+
 #ifdef __cplusplus
 };
 #endif

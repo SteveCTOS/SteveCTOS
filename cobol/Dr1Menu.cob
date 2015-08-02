@@ -38,7 +38,6 @@
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"1B" AND NOT = X"1D"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO GET-010.
-      *      PERFORM ERROR-020
             MOVE 2 TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA.
             IF F-NAMEFIELD = " "
@@ -73,7 +72,7 @@
       *    CALL WS-PROGRAM Using Ws-Linkage.
 
           IF WS-PASSWORD-VALID = "N"
-                MOVE "INVALID PASSWORD ENTERED, PLEASE RE-ENTER."
+                MOVE "INVALID PASSWORD ENTERED, PLEASE RE-ENTER...."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 GO TO GET-010

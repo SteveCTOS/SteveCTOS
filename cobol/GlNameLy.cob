@@ -25,7 +25,6 @@
            03  WS-TYPE          PIC X(44) VALUE " ".
        01  WS-GL-LY-STATUS.
            03  WS-GL-LY-ST1    PIC 99.
-      *     03  WS-GL-LY-ST2    PIC X.
        01  WS-GLACC.
            03  WS-SUBHEADER.
                05  WS-GLHEADER     PIC X(2).
