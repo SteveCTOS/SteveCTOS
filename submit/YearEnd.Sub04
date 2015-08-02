@@ -1,43 +1,24 @@
-Delete
-<ctn>*
-
 Path
 Win
 Program
+
+Delete
+<CTC>*
+
+
 
 C/2 Run
 MainCont.Int
 
 -N +P
-3
-MONTHLY
-2
-3
-17
-
-
-
-
-3
-2
-21
-X
-<CTN>SL21
-
-
-
-
-
-
-
-
-
+4
+CPTMONTH
 3
 4
 
 1
 X
-<CTN>SL1
+<CTC>SL1
 01
 
 
@@ -46,42 +27,29 @@ X
 
 
 
-
-
 2
 X
-<CTN>Sl2
-
+<CTC>Sl2
 
 4
 X
-<CTN>Sl4
-
+<CTC>Sl4
 
 5
 X
-<CTN>Sl5
-
+<CTC>Sl5
 
 6
 X
-<CTN>Sl6
+<CTC>Sl6
 
 Y
-
-
-6
-X
-<CTN>Sl6A
-
-N
 
 
 7
 X
-<CTN>Sl7
+<CTC>Sl7
 Y
-
 
 
 
@@ -89,9 +57,7 @@ Y
 3
 22
 X
-<CTN>SLP22
-
-
+<CTC>SLP22
 
 
 
@@ -102,6 +68,7 @@ Y
 
 
 E
+
 
 Path
 Win
@@ -404,73 +371,98 @@ Y
 Path
 Win
 Program
-
 C/2 Run
 MainCont.Int
 
 -N +P
 
-3
-MONTHLY
+4
+CPTMONTH
+1
+2
+14
+X
+<SPL>DR14A
+5000
+T
+S1
+
+14
+X
+<SPL>DR14B
+5000
+T
+S2
+
+
+
 3
 4
 
 8
 X
-<CTN>SL8A
+<CTC>SL8A
 50
-
-8
-X
-<CTN>SL8B
-52
 
 9
 X
-<CTN>SL9A
+<CTC>SL9A
 1
 NN
 
 9
 X
-<CTN>SL9B
+<CTC>SL9B
 2
-NN
-
-9
-X
-<CTN>SL9C
-3
 NN
 
 10
 X
-<CTN>SL10
+<CTC>SL10
+
 
 
 
 11
 X
-<CTN>Sl11
+<CTC>SL11
 01000019999999AD
 
 12
 X
-<CTN>SL12
+<CTC>SL12A
 A
 ZZZZZ
 Y
 
+12
+X
+<CTC>SL12B
+A
+ZZZZZ
+N
+
 13
 X
-<CTN>SL13
+<CTC>SL13A
 
 ZZZZZ
 Y
 
+
+
+13
+X
+<CTC>SL13B
+
+ZZZZZ
+N
+
+
+
 14
 X
-<CTN>SL14
+<CTC>SL14
 A
 ZZZZZ
 Y
@@ -481,7 +473,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
@@ -493,7 +485,7 @@ N
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -506,7 +498,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -519,7 +511,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 Y
 N
 Y
@@ -527,24 +519,24 @@ Y
 
 16
 X
-<CTN>SL16
+<CTC>SL16
 A
 Z
 PY
 
 17
 X
-<CTN>SL17A
+<CTC>SL17A
 A
-ZZZZZZ
-YY
+ZZZZZ
+NY
 
 
 
 2
 15
 X
-<CTN>SL15
+<CTC>SL15
 
 Y
 Y
@@ -555,26 +547,28 @@ Y
 2
 2
 X
-<CTN>ST2
+<CTC>ST2
 A
 ZZZZZZ
 OY
 
 16
 X
-<CTN>ST16
+<CTC>ST16
 /
 Z
 N
 
 
+
 26
 X
-<CTN>ST26
+<CTC>ST26
 A
 Z
 Y
 Y
+
 
 
 
@@ -583,7 +577,7 @@ Y
 2
 8
 X
-<CTN>DR8
+<CTC>DR8
 
 9999999
 A
@@ -594,7 +588,7 @@ A
 1
 16
 X
-<CTN>DR16
+<CTC>DR16
 XX
 
 
@@ -603,34 +597,79 @@ XX
 2
 17
 X
-<CTN>SL17B
-
-N
-
-
-17
-X
-<CTN>SL17C
+<CTC>SL17B
 
 Y
 
 
 19
 X
-<CTN>SL19
+<CTC>Sl19
 21
+
 
 
 
 4
 
-19
-MYTRESPASS
-
+18
+X
+<CTC>SL18A
+0
 
+18
+X
+<CTC>SL18B
+1
+
+18
+X
+<CTC>SL18C
+2
+
+18
+X
+<CTC>SL18D
+3
+
+18
+X
+<CTC>SL18E
+4
+
+18
+X
+<CTC>SL18F
+5
+
+18
+X
+<CTC>SL18G
+6
+
+18
+X
+<CTC>SL18H
+7
+
+18
+X
+<CTC>SL18I
+8
+
+18
+X
+<CTC>SL18J
+9
+
+19
+YYTRESPASS
+
 
 
 E
+
+
 
 Path
 Win
@@ -766,7 +805,7 @@ CoCompany.Ind
 
 
 
-CHAR:2.0.ANU.M
+@<Temp>Company.Key
 6
 
 
@@ -848,7 +887,20 @@ SlRegister.Ind
 
 @[Win]<Temp>Reg.Key
 6
-600
+500
+500
+5500
+60
+Y
+I Reo
+<Data>SlRegLY
+SlRegLY.Ind
+
+
+
+@[Win]<Temp>Reg.Key
+6
+500
 500
 5500
 60
@@ -965,6 +1017,20 @@ StTrans.Ind
 Y
 
 I Reo
+<Data>StTransLY
+StTransLY.Ind
+
+
+
+@[Win]<Temp>StTrans.Key
+6
+1000
+1000
+15000
+60
+Y
+
+I Reo
 [Win]<Data>BmMaster
 BmMaster.Ind
 
@@ -978,6 +1044,19 @@ BmMaster.Ind
 
 Y
 
+Is rename
+<Data>StReceiptLy
+<Data>StReceiptLY04
+[Win]<DataInd>StReceiptLY04.Ind
+y
+
+Is rename
+<Data>StReceipt
+<Data>StReceiptLY
+[Win]<DataInd>StReceiptLY.Ind
+y
+
+
 Path
 Win
 Program
@@ -990,78 +1069,85 @@ Y
 Y
 
 100
-
 Is Delete
 <Data>SlSpecials
 Path
 Win
-PS03
+PS04
 
 Append
-<PS03>*/*
-<CTN>SlP22
+<PS04>*/*
+<CTC>SlP22
 Append
 <PS01>*
-<CTN>SlP22
+<CTC>SlP22
 
 Delete
-<PS03>* <PS01>*
+<PS04>* <PS01>*
+
 
 COPY
-<SPL>DRSTATECO03
-<CTN>DRSTATECO03
+<SPL>DrStateCo04
+<CTC>DrStateCo04
 Y
 
 COPY
-<spl>DrLaserCo03
-<CTN>DrLaserCo03
-Y
-
-COPY
-<spl>DrNOMALCo03
-<CTN>DrNOMALCo03
+<spl>DrLaserCo04
+<CTC>DrLaserCo04
 Y
 
 
 COPY
-<spl>DrEMAILCo03
-<CTN>DrEMAILCo03
+<spl>DrNOMALCo04
+<CTC>DrNOMALCo04
 Y
 
+
+COPY
+<spl>DrEMAILCo04
+<CTC>DrEMAILCo04
+Y
 
 Rename
-<Spl>DB*03
-<CTN>DB*03
+<Spl>DB*4
+<CTC>DB*4
 
 
 Path
-Win
+win
 Program
 
-
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
 
-3
-MONTHLY
+4
+CPTMONTH
 3
 4
 
 3
 X
-<CTN>Sl31
-1N
+<CTC>Sl3
+Y
 
-3
-X
-<CTN>Sl32
-2N
+
+2
+1
+25
+A
+ZZZZZ
+N
 
-3
+
+
+
+3
+2
+17
 X
-<CTN>Sl3
+<SPL>SL
 
 Y
 E
@@ -1098,18 +1184,21 @@ Y
 
 
 Path
-
-CTN
+Win
+CTC
 
 /ZIP
 *
-MonthEnd3.Zip
+MonthEnd4.Zip
 y
 
 
 Delete
 Sl* ct* st* dr* db*
 
+Path
+Win
+Program
 
 File
 <Data*>*
@@ -1118,14 +1207,14 @@ File
 
 1
 
-Sel Arch
+Sel Arc
 @<Temp>TapeBackup.key
 
 
 [Qic]
 Y
 
-Restore Archi
+Rest Archi
 [Qic]
 
 
@@ -1136,17 +1225,4 @@ Restore Archi
 y
 [Win]<Spl>Backup.Lst
 
-
-**** MONTH-END BACKUP COMPLETE *****
-
-
-
-a n uMain
-[Win]<CTN>MonthEnd3.Zip
-
-[Win]<CTN>MonthEnd3.Zip
-
-
-
-**** CTN MONTH-END COMPLETE *****
-
+*** CTC YEAR-END COMPLETE ***

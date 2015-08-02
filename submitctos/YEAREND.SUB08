@@ -6,7 +6,7 @@ Delete
 <CSC>*
 
 C/2 Run
-MainCont.Int
+MainCont
 
 -N +P
 8
@@ -14,6 +14,8 @@ CSC-MONTH
 2
 3
 17
+
+
 
 
 
@@ -26,16 +28,14 @@ X
 
 
 
-
-
-
-3
+
 4
 
 1
 X
 <CSC>SL1
 01
+
 
 
 
@@ -64,12 +64,12 @@ X
 
 Y
 
+
 6
 X
 <CSC>Sl6A
 
 N
-
 
 
 7
@@ -87,8 +87,6 @@ X
 <CSC>SLP22
 
 
-
-
 3
 D
 Y
@@ -101,6 +99,20 @@ E
 Path
 Win
 DataInd
+
+I Reo
+<Data>BmMaster
+BmMaster.Ind
+
+
+
+@[Win]<Temp>Kit.Key
+6
+80
+80
+750
+
+Y
 
 I Reo
 <Data>CoMenu
@@ -159,6 +171,20 @@ DrMaster.Ind
 Y
 
 I Reo
+<Data>DrContact
+DrContact.Ind
+
+
+
+@<Temp>DrCont.Key
+6
+
+
+
+
+Y
+
+I Reo
 <Data>DrTrans
 DrTrans.Ind
 
@@ -169,6 +195,20 @@ DrTrans.Ind
 100
 60
 300
+
+Y
+
+I Reo
+<Data>SlDistTot
+SlDistTot.Ind
+
+
+
+Char:1.0.ASU.M
+6
+
+
+
 
 Y
 
@@ -187,13 +227,13 @@ CHAR:6.0.ANU.M
 Y
 
 I Reo
-<Data>SlDistTot
-SlDistTot.Ind
+<Data>SlMaster
+SlMaster.Ind
 
 
 
-Char:1.0.ASU.M
-5
+Char:2.0.ASU.M
+6
 
 
 
@@ -213,7 +253,6 @@ Char:2.0.ASU.M
 
 
 Y
-
 I Reo
 <Data>SlRegister
 SlRegister.Ind
@@ -226,20 +265,6 @@ SlRegister.Ind
 500
 5500
 60
-Y
-
-I Reo
-<Data>SlMaster
-SlMaster.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
 Y
 
 I Reo
@@ -270,7 +295,19 @@ Char:8.0.ANU.M
 
 Y
 
+I Reo
+<Data>StImports
+StImports.Ind
 
+
+
+@[Win]<Temp>Import.Key
+6
+200
+150
+500
+
+Y
 
 I Reo
 <Data>StMaster
@@ -283,6 +320,34 @@ StMaster.Ind
 500
 300
 550
+
+Y
+
+I Reo
+<Data>StOrders
+StOrders.Ind
+
+
+
+@[Win]<Temp>StOrders.Key
+6
+50
+80
+400
+
+Y
+
+I Reo
+<Data>StOrderGen
+StOrderGen.Ind
+
+
+
+CHAR:23.0.ANU.M
+6
+
+
+
 
 Y
 
@@ -329,17 +394,35 @@ StTrans.Ind
 60
 Y
 
+
 Path
 Win
 Program
-
 C/2 Run
-MainCont.Int
+MainCont
 
 -N +P
-
 8
 CSC-MONTH
+1
+2
+
+14
+X
+<CSC>DR14A
+5000
+T
+S1
+
+14
+X
+<CSC>DR14B
+5000
+T
+S2
+
+
+
 3
 4
 
@@ -352,6 +435,23 @@ X
 X
 <CSC>SL8B
 51
+
+8
+X
+<CSC>SL8C
+52
+
+8
+X
+<CSC>SL8D
+53
+
+8
+X
+<CSC>SL8E
+55
+
+
 
 9
 X
@@ -377,27 +477,40 @@ X
 
 
 
-
 11
 X
 <CSC>Sl11
 01000019999999AD
 
 
-
 12
 X
-<CSC>SL12
+<CSC>SL12A
 A
 ZZZZZ
 Y
 
+12
+X
+<CSC>SL12B
+A
+ZZZZZ
+N
+
 13
 X
-<CSC>SL13
+<CSC>SL13A
 
 ZZZZZ
 Y
+
+
+13
+X
+<CSC>SL13B
+
+ZZZZZ
+N
 
 14
 X
@@ -412,7 +525,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
@@ -424,7 +537,7 @@ N
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -437,7 +550,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -450,7 +563,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -467,8 +580,9 @@ PY
 X
 <CSC>SL17A
 A
-ZZZZZZ
-YY
+ZZZZZ
+NY
+
 
 
 2
@@ -479,17 +593,20 @@ X
 Y
 Y
 
+
 17
 X
 <CSC>SL17B
 
 N
 
+
 17
 X
 <CSC>SL17C
 
 Y
+
 
 19
 X
@@ -501,6 +618,7 @@ X
 
 2
 2
+
 2
 X
 <CSC>ST2
@@ -515,7 +633,6 @@ X
 Z
 N
 
-
 26
 X
 <CSC>ST26
@@ -523,6 +640,29 @@ A
 Z
 Y
 Y
+
+
+
+
+28
+X
+<CSC>ST28A
+A
+ZZZZZ
+200
+RTN
+
+
+
+28
+X
+<CSC>ST28B
+A
+ZZZZZ
+200
+UTN
+
+
 
 
 
@@ -538,6 +678,7 @@ A
 
 
 
+
 
 1
 16
@@ -548,71 +689,115 @@ XX
 
 
 
+1
+2
+
+
+14
+X
+<CSC>DR14A
+500
+TP
+
+
+14
+X
+<CSC>DR14B
+500
+TS
+
+
+
+
 3
 4
 
+
+18
+X
+<CSC>SL18A
+0
+
+18
+X
+<CSC>SL18B
+1
+
+18
+X
+<CSC>SL18C
+2
+
+18
+X
+<CSC>SL18D
+3
+
+18
+X
+<CSC>SL18E
+4
+
+18
+X
+<CSC>SL18F
+5
+
+18
+X
+<CSC>SL18G
+6
+
+18
+X
+<CSC>SL18H
+7
+
+18
+X
+<CSC>SL18I
+8
+
+18
+X
+<CSC>SL18J
+9
+
+
+
 19
-MYTRESPASS
+YYTRESPASS
 
 
 
 E
 
-
 Path
 Win
 DataInd
 
+
 I Reo
-<Data>DrMaster
-DrMaster.Ind
+<Data>BmMaster
+BmMaster.Ind
 
 
 
-@[Win]<Temp>DebMas.Key
+@[Win]<Temp>Kit.Key
 6
-120
-120
-400
 80
-Y
+80
+750
 
-
-Sort
-[Win]<Data>DrTrans
-[Win]<Data>Temp
-@[Win]<Temp>DrSort.Key
-
-[Win]<$>SortWorkFile1
-[Win]<$>SortWorkFile2
-
-Rename
-[Win]<Data>Temp
-[Win]<Data>DrTrans
 Y
 
 I Reo
-<Data>DrTrans
-DrTrans.Ind
+<Data>CoCompany
+CoCompany.Ind
 
 
 
-@[Win]<Temp>DrTrans.Key
-6
-100
-60
-300
-
-Y
-
-Y
-I Reo
-<Data>CoMenu
-CoMenu.Ind
-
-
-
-CHAR:2.0.ANU.M
+@<Temp>Company.Key
 6
 
 
@@ -635,16 +820,70 @@ CHAR:3.0.ANU.M
 Y
 
 I Reo
-<Data>CoCompany
-CoCompany.Ind
+<Data>CoMenu
+CoMenu.Ind
 
 
 
-@<Temp>Company.Key
+CHAR:2.0.ANU.M
 6
 
 
 
+
+Y
+
+I Reo
+<Data>DrMaster
+DrMaster.Ind
+
+
+
+@[Win]<Temp>DebMas.Key
+6
+120
+120
+400
+80
+Y
+
+I Reo
+<Data>DrContact
+DrContact.Ind
+
+
+
+@<Temp>DrCont.Key
+6
+
+
+
+
+Y
+
+Sort
+[Win]<Data>DrTrans
+[Win]<Data>Temp
+@[Win]<Temp>DrSort.Key
+
+[Win]<$>SortWorkFile1
+[Win]<$>SortWorkFile2
+
+Rename
+[Win]<Data>Temp
+[Win]<Data>DrTrans
+Y
+I Reo
+<Data>DrTrans
+DrTrans.Ind
+
+
+
+@[Win]<Temp>DrTrans.Key
+6
+100
+60
+300
 
 Y
 
@@ -676,6 +915,19 @@ CHAR:6.0.ANU.M
 
 Y
 
+I Reo
+<Data>SlMaster
+SlMaster.Ind
+
+
+
+Char:2.0.ASU.M
+6
+
+
+
+
+Y
 
 I Reo
 <Data>SlParameter
@@ -690,32 +942,18 @@ Char:2.0.ASU.M
 
 
 Y
-Sort
-[Win]<Data>StReceipt
-[Win]<Data>Temp
-@[Win]<Temp>StRecSort.Key
 
-[Win]<$>SortWorkFile1
-[Win]<$>SortWorkFile2
+Sort
+<Data>SlRegister
+<Data>Temp
+@<Temp>RegSort.Key
+
+<$>SortWorkFiles1
+<$>SortWorkFiles2
 
 Rename
-[Win]<Data>Temp
-[Win]<Data>StReceipt
-Y
-
-
-I Reo
-<Data>StReceipt
-StReceipt.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
+<Data>Temp
+<Data>SlRegister
 Y
 
 I Reo
@@ -731,19 +969,18 @@ SlRegister.Ind
 5500
 60
 Y
-
 I Reo
-<Data>SlMaster
-SlMaster.Ind
+<Data>SlRegLY
+SlRegLY.Ind
 
 
 
-Char:2.0.ASU.M
+@[Win]<Temp>Reg.Key
 6
-
-
-
-
+500
+500
+5500
+60
 Y
 
 I Reo
@@ -776,6 +1013,63 @@ Y
 
 
 I Reo
+<Data>StImports
+StImports.Ind
+
+
+
+@[Win]<Temp>Import.Key
+6
+200
+150
+500
+
+Y
+
+I Reo
+<Data>StOrderGen
+StOrderGen.Ind
+
+
+
+CHAR:23.0.ANU.M
+6
+
+
+
+
+Y
+
+I Reo
+<Data>StReceipt
+StReceipt.Ind
+
+
+
+@[Win]<Temp>StRec.Key
+6
+100
+50
+500
+
+Y
+
+
+I Reo
+<Data>StOrders
+StOrders.Ind
+
+
+
+@[Win]<Temp>StOrders.Key
+6
+50
+80
+400
+
+Y
+
+I Reo
 <Data>StMaster
 StMaster.Ind
 
@@ -802,19 +1096,19 @@ CHAR:15.0.ANU.M
 150
 
 Y
-
 Sort
-[Win]<Data>StTrans
-[Win]<Data>Temp
-@[Win]<Temp>StTransSort.Key
+<Data>StTrans
+<Data>Temp
+@<Temp>StTransSort.Key
 
-[Win]<$>SortWorkFile1
-[Win]<$>SortWorkFile2
+<$>SortWorkFiles1
+<$>SortWorkFiles2
 
 Rename
-[Win]<Data>Temp
-[Win]<Data>StTrans
-Y
+<Data>Temp
+<Data>StTrans
+y
+
 I Reo
 <Data>StTrans
 StTrans.Ind
@@ -828,20 +1122,32 @@ StTrans.Ind
 15000
 60
 Y
-
 I Reo
-<Data>BmMaster
-BmMaster.Ind
+<Data>StTransLY
+StTransLY.Ind
 
 
 
-@[Win]<Temp>Kit.Key
+@[Win]<Temp>StTrans.Key
 6
-80
-80
-750
-
+1000
+1000
+15000
+60
 Y
+
+Is renam
+<Data>StReceiptLy
+<Data>StReceiptLY14
+[Win]<DataInd>StReceiptLY14.Ind
+Y
+
+Is renam
+<Data>StReceipt
+<Data>StReceiptLY
+[Win]<DataInd>StReceiptLY.Ind
+y
+
 
 Path
 Win
@@ -857,20 +1163,16 @@ Y
 100
 
 
-Is rename
-<Data>SlSpecials
-<Spl>SlSpecOld
-
-Yes
-
 Path
 Win
 PS08
+
 
 Append
 <PS08>*/*
 <CSC>SlP22
 N
+
 
 Delete
 <PS08>*
@@ -889,6 +1191,7 @@ COPY
 <CSC>DrLaserCo08
 Y
 
+
 COPY
 <spl>DrNOMALCo08
 <CSC>DrNOMALCo08
@@ -900,19 +1203,23 @@ COPY
 <CSC>DrEMAILCo08
 Y
 
-
 COPY
-<CSC>SL11
-<SPL>CSCDrAge
+<CSC>Sl11
+<Spl>CSCDrAge
 Y
+
 
 Rename
 <Spl>DB*08
 <CSC>DB*08
-
+Y
+Path
+Win
+Program
+
 
 C/2 Run
-MainCont.Int
+MainCont
 
 -N +P
 
@@ -937,7 +1244,25 @@ X
 
 Y
 
+
+2
+1
+25
+A
+ZZZZZ
+N
+
+
+3
+2
+17
+X
+<SPL>SL17D
+
+Y
+
 E
+
 
 Path
 Win
@@ -957,6 +1282,7 @@ Char:23.0.anu.m
 
 
 Y
+
 Path
 Win
 CSC
@@ -977,6 +1303,7 @@ Monthend8.Zip
 
 Delete
 DR* DB* Sl* St*
+
 
 Path
 Win
@@ -999,13 +1326,13 @@ File
 
 1
 
-
-Sel Arch
+Sel Arc
 @<Temp>TapeBackup.key
 
 
 [Qic]
 Y
+
 Rest Archi
 [Qic]
 
@@ -1017,7 +1344,8 @@ Rest Archi
 y
 [Win]<Spl>Backup.Lst
 
-**** MONTH-END BACKUP COMPLETE *****
+
+**** YEAR-END BACKUP COMPLETE *****
 
 
 a n uMain
@@ -1028,5 +1356,5 @@ a n uMain
 
 
 
-***** CSC MONTH-END COMPLETE *****
+***** CSC YEAR-END COMPLETE *****
 
