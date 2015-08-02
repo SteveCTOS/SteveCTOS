@@ -547,6 +547,8 @@ extern void ZoomBox(INT* erc)
   }
   *erc = 0;
   wpid = waitpid(pid, &status, 0);
+  wrefresh(_topwin_);
+  redrawwin(_topwin_);
   wrefresh(_mainwin_);
   redrawwin(_mainwin_);
 }
@@ -563,6 +565,8 @@ extern void Clone(INT* erc)
   }
   *erc = 0;
   wpid = waitpid(pid, &status, 0);
+  wrefresh(_topwin_);
+  redrawwin(_topwin_);
   wrefresh(_mainwin_);
   redrawwin(_mainwin_);
 }
@@ -579,15 +583,19 @@ extern void Exec(INT* erc, CHAR* command, INT commandlen)
   strncpy(work, command, commandlen);
   work[commandlen] = 0;
   *erc = system(command);
+  wrefresh(_topwin_);
+  redrawwin(_topwin_);
   wrefresh(_mainwin_);
   redrawwin(_mainwin_);
 }
 
 extern void SaveScreen()
 {
-  int n = mkdir("./tmp", 0664);
-  scr_dump("./tmp/.screendump");
+  int n = mkdir("./tmp", 0777);
+  scr_dump("./tmp/screendump.dump");
   _screensaved = 1;
+  wrefresh(_topwin_);
+  redrawwin(_topwin_);
   wrefresh(_mainwin_);
   redrawwin(_mainwin_);
 }
@@ -596,8 +604,11 @@ extern void RestoreScreen()
 {
   if (_screensaved == 0)
     return;
-  scr_set("./tmp/.screendump");
+  scr_restore("./tmp/screendump.dump");
+  doupdate();
   _screensaved = 0;
+  wrefresh(_topwin_);
+  redrawwin(_topwin_);
   wrefresh(_mainwin_);
   redrawwin(_mainwin_);
 }

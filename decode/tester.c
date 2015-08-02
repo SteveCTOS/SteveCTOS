@@ -127,6 +127,8 @@ int main(int argc, char* argv[])
   strncpy(strelomt.f_description2, "DESCRIPTION TWO     ", strelomt.f_description2_len);
   WriteAll(&erc, form, (CHAR*)&strelomt);
   exitcode = input_test(&erc, form);
+  #define NO_TEST_ZOOMBOX
+  #if defined(TEST_ZOOMBOX)
   ZoomBox(&erc);
   if (erc != 0)
   {
@@ -135,6 +137,30 @@ int main(int argc, char* argv[])
     Accept(&erc, 25, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter, 0);
   	exit(0);
   }
+  #endif
+  #define NO_TEST_CLONE
+  #if defined(TEST_CLONE)
+  Clone(&erc);
+  if (erc != 0)
+  {
+    CloseForm(&erc, form);
+    Display(&erc, 25, 12, title, strlen(title), 2, 'C', 0);
+    Accept(&erc, 25, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter, 0);
+    exit(0);
+  }
+  #endif
+  #define TEST_EXEC
+  #if defined(TEST_EXEC)
+  #define EXEC_COMMAND "bash"
+  Exec(&erc, EXEC_COMMAND, sizeof(EXEC_COMMAND));
+  #endif
+  #define NO_TEST_SAVE_AND_RESTORE
+  #if defined(TEST_SAVE_AND_RESTORE)
+  SaveScreen();
+  Display(&erc, 5, 12, title, strlen(title), 2, 'C', 0);
+  Accept(&erc, 5, strlen(title)+14, formname, strlen(formname), 2, 'E', &key, filter, 0);
+  RestoreScreen();
+  #endif
   exitcode = input_test(&erc, form);
   ReadField(&erc, form, "TRANSDESC", 9, 0, cbret, 40, &cbret_len, &type);
   ReadAll(&erc, form, (CHAR*)&strelomt);

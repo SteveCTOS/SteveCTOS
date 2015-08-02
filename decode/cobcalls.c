@@ -172,7 +172,7 @@ extern void CLONE(INT* erc)
 }
 //INT* erc, CHAR* form, CHAR* fieldname, CHAR* fieldnamelen
 
-extern void EXEC(INT* erc, CHAR* command, INT commandlen)
+extern void EXEC(INT* erc, CHAR* command, INT* commandlen)
 {
   Exec(erc, command, *commandlen);
 }
