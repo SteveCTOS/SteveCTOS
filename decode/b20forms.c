@@ -589,10 +589,21 @@ extern void Exec(INT* erc, CHAR* command, INT commandlen)
   redrawwin(_mainwin_);
 }
 
+#define SCREENDUMP "./tmp/screendump.dump"
+
 extern void SaveScreen()
 {
   int n = mkdir("./tmp", 0777);
-  scr_dump("./tmp/screendump.dump");
+  #ifdef USE_SCR_DUMP
+  WINDOW *save_curscr = curscr;
+  curscr = _mainwin_;
+  scr_dump(SCREENDUMP);
+  curscr = save_curscr;
+  #else
+  FILE* outf = fopen(SCREENDUMP, "wb");
+  putwin(_mainwin_, outf);
+  fclose(outf);
+  #endif
   _screensaved = 1;
   wrefresh(_topwin_);
   redrawwin(_topwin_);
@@ -602,10 +613,22 @@ extern void SaveScreen()
 
 extern void RestoreScreen()
 {
+  #ifdef USE_SCR_DUMP
+  WINDOW *save_curscr;
   if (_screensaved == 0)
     return;
-  scr_restore("./tmp/screendump.dump");
+  save_curscr = curscr;
+  curscr = _mainwin_;
+  scr_restore(SCREENDUMP);
   doupdate();
+  curscr = save_curscr;
+  #else
+  FILE* inpf = fopen(SCREENDUMP, "rb");
+  if (_screensaved == 0)
+    return;
+  _mainwin_ = getwin(inpf);
+  fclose(inpf);
+  #endif
   _screensaved = 0;
   wrefresh(_topwin_);
   redrawwin(_topwin_);

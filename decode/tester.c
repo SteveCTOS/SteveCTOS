@@ -149,12 +149,12 @@ int main(int argc, char* argv[])
     exit(0);
   }
   #endif
-  #define TEST_EXEC
+  #define NO_TEST_EXEC
   #if defined(TEST_EXEC)
   #define EXEC_COMMAND "bash"
   Exec(&erc, EXEC_COMMAND, sizeof(EXEC_COMMAND));
   #endif
-  #define NO_TEST_SAVE_AND_RESTORE
+  #define TEST_SAVE_AND_RESTORE
   #if defined(TEST_SAVE_AND_RESTORE)
   SaveScreen();
   Display(&erc, 5, 12, title, strlen(title), 2, 'C', 0);
