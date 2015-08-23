@@ -1,0 +1,2 @@
+set_verbose DB_VERB_FILEOPS_ALL 0
+set_verbose DB_VERB_WAITSFOR 0

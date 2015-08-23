@@ -2189,8 +2189,7 @@
                        GST-AMT-EXPORT-YTD.
        CLSC-050.
            MOVE WS-NUMBER TO DIST-KEY.
-            IF WS-DISTRIBUTION-ST1 = 51
-              UNLOCK DISTRIBUTIONS.
+           UNLOCK DISTRIBUTIONS.
        CLSC-999.
              EXIT.      
       *

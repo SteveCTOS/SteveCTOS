@@ -1153,8 +1153,7 @@
       *
        RELEASE-STOCK-RECORD SECTION.
        REL-000.
-            IF WS-STOCK-ST1 = 51
-                UNLOCK STOCK-MASTER.
+           UNLOCK STOCK-MASTER.
        REL-999.
            EXIT.
       *

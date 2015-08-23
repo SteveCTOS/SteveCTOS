@@ -1566,10 +1566,7 @@
                 MOVE " " TO WS-BINNO
                 PERFORM CLEAR-FIELDS
                 PERFORM DISPLAY-FORM
-             IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
-                GO TO GET-010
-             ELSE
                 GO TO GET-010.
             DISPLAY " " AT 3079 WITH BELL.
             GO TO GET-111.
@@ -4514,8 +4511,7 @@
                GO TO CRS-999.
            MOVE "Y" TO WS-NEWORDER.
        CRS-900.
-             IF WS-INCR-ST1 = 51
-                UNLOCK INCR-REGISTER.
+           UNLOCK INCR-REGISTER.
        CRS-999.
            EXIT.
       *
@@ -5875,8 +5871,7 @@
              MOVE 1 TO SUB-1.
              GO TO CI-010.
        CI-900.
-             IF WS-INCR-ST1 = 51
-                 UNLOCK INCR-REGISTER.
+             UNLOCK INCR-REGISTER.
              UNLOCK STOCK-TRANS-FILE.
        CI-950.
              PERFORM CLEAR-FIELDS.

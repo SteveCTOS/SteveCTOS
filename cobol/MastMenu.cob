@@ -131,8 +131,9 @@
        END-999.
            EXIT.
       *
-       Copy "PassChck.Src".
+       Copy "PassChck.cob".
        Copy "ReadFieldAlpha".
+       Copy "CTOSCobolAccept".
        Copy "WriteFieldAlpha".
        Copy "DisplayForm".
        Copy "UserFillField".

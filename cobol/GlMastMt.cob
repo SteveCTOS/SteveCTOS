@@ -1019,8 +1019,7 @@
       *
        RELEASE-GL-RECORD SECTION.
        REL-000.
-           IF WS-GLPARAMETER-ST1 = 51
-               UNLOCK GL-MASTER.
+           UNLOCK GL-MASTER.
        REL-999.
            EXIT.
       *

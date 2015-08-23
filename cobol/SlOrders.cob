@@ -5421,7 +5421,7 @@
            READ INCR-REGISTER
                INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 = 23 OR 35 OR 49
-      *         UNLOCK INCR-REGISTER
+               UNLOCK INCR-REGISTER
                MOVE 88 TO WS-INCR-ST1
                GO TO CIOV-999.
            IF WS-INCR-ST1 NOT = 0
@@ -5553,8 +5553,7 @@
            MOVE "Y" TO WS-NEWORDER.
            MOVE 0   TO INCR-COPY-NUMBER.
        CRS-900.
-      *     IF WS-INCR-ST1 = 51
-               UNLOCK INCR-REGISTER.
+           UNLOCK INCR-REGISTER.
        CRS-999.
            EXIT.
       *

@@ -2648,8 +2648,7 @@
       *
        RELEASE-DEBTOR-RECORD SECTION.
        REL-000.
-      *      IF DEBTOR-MASTER LOCK
-                UNLOCK DEBTOR-MASTER.
+              UNLOCK DEBTOR-MASTER.
        REL-999.
            EXIT.
       *

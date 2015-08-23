@@ -533,7 +533,7 @@
             IF WS-SALOB-1-13 = "BOND PAYMENT"
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
-              MOVE " Bond Payment                                "
+              MOVE " Bond Payment FNB                            "
                   TO WS-NARRATIVE 
               MOVE "75-030-30-05" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
@@ -542,7 +542,7 @@
               GO TO RCF-030.
       * FOR SFI
            IF WS-LOAN-1-47 = 
-                "PROPERTY LOAN00003000009962594                 "
+                "FNB/PROPLN  00003000009962594                 "
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Bond Payment FNB                            "

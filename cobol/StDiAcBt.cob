@@ -419,8 +419,7 @@
       *                   STDISC-ACCOUNT
                          STDISC-DATE.
        CLSC-500.
-             IF F-EXIT-CH = X"07"
-                  UNLOCK STDISC-MASTER.
+             UNLOCK STDISC-MASTER.
        CLSC-999.
              EXIT.
       *

@@ -425,8 +425,7 @@
              MOVE 0   TO STPR-PRICE
                          STPR-DATE.
        CLSC-500.
-             IF WS-STOCK-ST1 = 51
-                 UNLOCK STPR-MASTER.
+             UNLOCK STPR-MASTER.
        CLSC-999.
              EXIT.
       *

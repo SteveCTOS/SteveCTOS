@@ -2243,8 +2243,7 @@
       *
        RELEASE-CREDITOR-RECORD SECTION.
        REL-000.
-          IF WS-CREDITOR-ST1 = 51
-               UNLOCK CREDITOR-MASTER.
+           UNLOCK CREDITOR-MASTER.
        REL-999.
            EXIT.
       *

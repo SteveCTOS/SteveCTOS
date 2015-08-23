@@ -615,6 +615,11 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO UPOO-120.
+                
+      * ADDED NEXT TWO LINES INCASE QTY=0, DONE WITH LINUZ UPGRADE
+           IF OG-QUANTITY = 0
+                GO TO UPOO-120.
+                
            ADD OG-QUANTITY        TO OO-QUANTITY
            MOVE WS-DATE           TO OO-ORDERDATE
            MOVE WS-DUEDATE        TO OO-DUEDATE
