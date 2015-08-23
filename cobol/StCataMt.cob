@@ -183,8 +183,7 @@
       *
        RELEASE-CATALOGUE-RECORD SECTION.
        REL-000.
-            IF WS-STCAT-ST1 = 51
-               UNLOCK STCAT-MASTER.
+           UNLOCK STCAT-MASTER.
        REL-999.
            EXIT.
       *

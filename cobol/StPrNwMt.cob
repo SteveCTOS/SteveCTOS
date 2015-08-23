@@ -352,8 +352,7 @@
              MOVE 0   TO STNWPR-PRICE
                          STNWPR-DATE.
        CLSC-500.
-            IF WS-STNWPR-ST1 = 51
-               UNLOCK STNWPR-MASTER.
+             UNLOCK STNWPR-MASTER.
        CLSC-999.
              EXIT.
       *

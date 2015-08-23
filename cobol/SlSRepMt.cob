@@ -385,8 +385,7 @@
              MOVE 0   TO SBREP-SALES-BUDGET
                          SBREP-PROFIT-BUDGET.
              MOVE WS-NUMBER TO SBREP-REP.
-            IF WS-SBREP-ST1 = 51
-                UNLOCK SBREP-MASTER.
+             UNLOCK SBREP-MASTER.
        CLSC-999.
              EXIT.      
       *

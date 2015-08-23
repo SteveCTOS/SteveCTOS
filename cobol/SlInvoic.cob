@@ -1571,10 +1571,7 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 PERFORM DISPLAY-FORM
-      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
-                GO TO GET-010
-             ELSE
                 GO TO GET-010.
 
            IF WS-PASSWORD-VALID = "Y"
@@ -1603,10 +1600,7 @@
                PERFORM ERROR1-020
                PERFORM ERROR-020
                PERFORM DISPLAY-FORM
-      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
-               GO TO GET-010
-             ELSE
                GO TO GET-010.
              
            IF DR-SUPPLY-Y-N = "S"
@@ -1618,10 +1612,7 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 PERFORM DISPLAY-FORM
-      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
-                GO TO GET-010
-             ELSE
                 GO TO GET-010.
             MOVE " " TO INCR-AREA.
        GET-012.
@@ -1876,6 +1867,7 @@
             MOVE "                        " TO F-NAMEFIELD.
             MOVE "COMMENTLINE" TO F-FIELDNAME.
             MOVE 11 TO F-CBFIELDNAME.
+            
             MOVE 30 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
@@ -1907,11 +1899,8 @@
               MOVE 3010 TO POS
               DISPLAY WS-MESSAGE AT POS
               PERFORM DISPLAY-FORM
-      *       IF WS-INCR-ST1 = 51
-               UNLOCK INCR-REGISTER
-               GO TO GET-010
-             ELSE
-               GO TO GET-010.
+              UNLOCK INCR-REGISTER
+              GO TO GET-010.
            IF WS-NEWORDER = "P"
              MOVE "THE ORDER IS IN THE STORE READY FOR PULLING, DON'T"
              TO WS-MESSAGE
@@ -1920,10 +1909,7 @@
              TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
-      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
-               GO TO GET-010
-             ELSE
                GO TO GET-010.
            IF WS-NEWORDER = "C"
                MOVE "THIS ORDER HAS BEEN INVOICED AND IS COMPLETE."
@@ -1937,10 +1923,7 @@
                MOVE WS-DAILY-MESSAGE       TO WS-MESSAGE
                PERFORM ERROR1-MESSAGE
                PERFORM ERROR-020
-      *       IF WS-INCR-ST1 = 51
                UNLOCK INCR-REGISTER
-               GO TO GET-010
-             ELSE
                GO TO GET-010.
        GET-115.
             IF Ws-Sold-By NOT = "  "
@@ -2160,10 +2143,7 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 PERFORM DISPLAY-FORM
-      *       IF WS-INCR-ST1 = 51
                 UNLOCK INCR-REGISTER
-                GO TO GET-010
-             ELSE
                 GO TO GET-010.
       ****************************************************************
       *SECTION TO CHECK IF THE NEW ORDER TO BE INVOICED WILL PUSH THE*
@@ -2192,20 +2172,17 @@
              IF WS-PASSWORD-VALID = "N"
              MOVE
             "NEW ORDER CANNOT BE INVOICED AS THE ACCOUNT WILL BE OVER"
-             TO WS-MESSAGE
-             PERFORM ERROR1-000
-             MOVE
-            "THE CREDIT LIMIT, AND THE PASSWORD ENTERED IS INCORRECT."
-             TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             PERFORM CLEAR-SCREEN
-             PERFORM ERROR1-020
-             PERFORM ERROR-020
-             PERFORM DISPLAY-FORM
-      *       IF WS-INCR-ST1 = 51
-                UNLOCK INCR-REGISTER
-                GO TO GET-010
-             ELSE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE
+             "THE CREDIT LIMIT, AND THE PASSWORD ENTERED IS INCORRECT."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM CLEAR-SCREEN
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              PERFORM DISPLAY-FORM
+              UNLOCK INCR-REGISTER
                 GO TO GET-010.
 
            IF WS-PASSWORD-VALID = "Y"
@@ -4008,8 +3985,7 @@
                MOVE INCR-INVOICE TO WS-INVOICE
                GO TO CRS-999.
        CRS-900.
-      *       IF WS-INCR-ST1 = 51
-               UNLOCK INCR-REGISTER.
+           UNLOCK INCR-REGISTER.
        CRS-999.
            EXIT.
       *
@@ -5693,10 +5669,8 @@
              MOVE 1 TO SUB-1.
              GO TO CI-010.
        CI-900.
-      *      IF WS-INCR-ST1 = 51
-                 UNLOCK INCR-REGISTER.
-      *      IF WS-STTRANS-ST1 = 51
-                 UNLOCK STOCK-TRANS-FILE.
+             UNLOCK INCR-REGISTER.
+             UNLOCK STOCK-TRANS-FILE.
        CI-950.
              PERFORM CLEAR-FIELDS.
              PERFORM DISPLAY-FORM.

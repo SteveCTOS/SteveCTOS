@@ -3653,8 +3653,7 @@
                          INCR-LY-LINENO.
              MOVE WS-INVOICE TO INCR-LY-INVOICE.
              MOVE WS-TRANS   TO INCR-LY-TRANS.
-             IF WS-INCR-LY-ST1 = 51
-                 UNLOCK INCR-LY-REGISTER.
+             UNLOCK INCR-LY-REGISTER.
        CLSC-999.
              EXIT.      
       *

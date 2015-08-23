@@ -220,9 +220,9 @@
             MOVE F-NAMEFIELD  TO ALPHA-RATE.
             PERFORM DECIMALISE-RATE.
             MOVE NUMERIC-RATE TO OG-QUANTITY.
-            IF NUMERIC-RATE < 0
+            IF NUMERIC-RATE NOT > 0
                MOVE
-              "THIS FIELD MAY NOT BE NEGATIVE, 'ESC' TO RE-ENTER."
+              "THIS FIELD CAN'T BE NEGATIVE OR ZERO, 'ESC' TO RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO GET-020.
@@ -442,8 +442,7 @@
                 MOVE WS-NUMBER TO OG-KEY.
              IF WS-END = "Y"
                 MOVE " " TO WS-SAVE WS-NUMBER.
-             IF F-EXIT-CH = X"07"
-                 UNLOCK ORDER-GEN-FILE.
+             UNLOCK ORDER-GEN-FILE.
        CLSC-999.
              EXIT.      
       *

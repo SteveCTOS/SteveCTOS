@@ -754,9 +754,8 @@
              MOVE WS-ORDERNUMBER TO OO-ORDER-NUMBER.
              MOVE WS-STOCKNUMBER TO OO-STOCK-NUMBER.
        CLSC-500.
-            IF F-EXIT-CH = X"07"
-               UNLOCK OUTSTANDING-ORDERS
-               UNLOCK STOCK-MASTER.
+             UNLOCK OUTSTANDING-ORDERS
+             UNLOCK STOCK-MASTER.
        CLSC-999.
              EXIT.      
       *

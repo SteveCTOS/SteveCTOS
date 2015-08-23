@@ -486,8 +486,7 @@
                          SB-ACCOUNT-NAME.
              MOVE WS-NUMBER  TO SB-TYPE.
              MOVE WS-INVSAVE TO SB-INVOICE-NUMBER.
-            IF WS-SOLDBY-ST1 = 51
-                UNLOCK SOLD-BY.
+             UNLOCK SOLD-BY.
        CLSC-999.
              EXIT.      
       *

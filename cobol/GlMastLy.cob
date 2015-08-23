@@ -954,8 +954,7 @@
       *
        RELEASE-GL-LY-RECORD SECTION.
        REL-000.
-          IF WS-GL-LY-ST1 = 51
-               UNLOCK GL-LY-MASTER.
+            UNLOCK GL-LY-MASTER.
        REL-999.
            EXIT.
       *
@@ -1179,8 +1178,7 @@
                      GL-LY-OPEN-YEAR-BAL
                      GL-LY-LAST-YEAR-BAL.
        CLSC-500.
-           IF WS-GL-LY-ST1 = 51
-               PERFORM RELEASE-GL-LY-RECORD.
+           PERFORM RELEASE-GL-LY-RECORD.
        CLSC-999.
            EXIT.
       *

@@ -486,8 +486,7 @@
                        SA-SALES-YTD.
             MOVE " " TO SA-NAME.
             MOVE WS-NUMBER TO SA-ANALYSIS-CODE.
-            IF WS-SALES-ST1 = 51
-               UNLOCK SALES-ANALYSIS.
+            UNLOCK SALES-ANALYSIS.
        CLSC-999.
              EXIT.      
       *

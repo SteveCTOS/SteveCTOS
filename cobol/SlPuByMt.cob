@@ -170,8 +170,7 @@
              MOVE " " TO PU-INITIAL
                          PU-NAME.
              MOVE WS-NUMBER TO PU-INITIAL.
-            IF WS-PULLERS-ST1 = 51
-                UNLOCK PULLER-MASTER.
+             UNLOCK PULLER-MASTER.
        CLSC-999.
              EXIT.      
       *

@@ -2231,8 +2231,7 @@
                          INCR-LINENO.
              MOVE WS-INVOICE TO INCR-INVOICE.
              MOVE WS-TRANS   TO INCR-TRANS.
-             IF WS-INCR-ST1 = 51
-                 UNLOCK INCR-REGISTER.
+             UNLOCK INCR-REGISTER.
        CLSC-999.
              EXIT.      
       *

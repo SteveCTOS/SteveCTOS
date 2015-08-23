@@ -556,8 +556,8 @@
              MOVE WS-REFERENCE TO GLTRANS-LY-REFERENCE.
              MOVE WS-TRANSNO   TO GLTRANS-LY-TRANS.
              MOVE WS-TYPE      TO GLTRANS-LY-TYPE.
-             IF F-EXIT-CH = X"07"
-                  UNLOCK GLTRANS-LY-FILE.
+             
+             UNLOCK GLTRANS-LY-FILE.
        CLSC-999.
              EXIT.      
       *

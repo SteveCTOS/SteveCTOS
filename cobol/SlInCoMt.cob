@@ -170,8 +170,7 @@
        CLSC-000.
              MOVE " "       TO COMM-DESC.
              MOVE WS-NUMBER TO PA-RECORD.
-            IF WS-SLPARAMETER-ST1 = 51
-                 UNLOCK PARAMETER-FILE.
+             UNLOCK PARAMETER-FILE.
        CLSC-999.
              EXIT.      
       *

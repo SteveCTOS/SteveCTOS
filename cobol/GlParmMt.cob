@@ -2011,9 +2011,9 @@
                          GLPA-GLSALES-ADJ
                          GLPA-GLBDEBT-ACC
                          GLPA-CB-POST.
-            MOVE WS-NUMBER TO GLPA-RECORD.
-            IF F-EXIT-CH = X"07"
-                UNLOCK GLPARAMETER-FILE.
+             MOVE WS-NUMBER TO GLPA-RECORD.
+
+             UNLOCK GLPARAMETER-FILE.
        CLSC-999.
              EXIT.
       *

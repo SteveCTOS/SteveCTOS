@@ -2585,8 +2585,7 @@
              IF SUB-1 < 401
                  GO TO CF-010.
              MOVE 1 TO SUB-1.
-             IF WS-STKRECEIPT-ST1 = 51
-                 UNLOCK STKRECEIPTS-FILE.
+             UNLOCK STKRECEIPTS-FILE.
        CF-999.
              EXIT.
       *

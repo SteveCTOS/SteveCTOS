@@ -1813,8 +1813,7 @@
       *
        RELEASE-STOCK-RECORD SECTION.
        REL-000.
-           IF WS-STTRANSLY-ST1 = 51
-               UNLOCK STOCK-TRANSLY-FILE.
+           UNLOCK STOCK-TRANSLY-FILE.
        REL-999.
            EXIT.
       *

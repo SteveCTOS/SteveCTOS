@@ -233,8 +233,7 @@
             ADD 1 TO WS-SUB1-DIS.
             MOVE ST-STOCKNUMBER TO WS-WORK.
             DISPLAY WS-WORK AT WS-SUB1-DIS
-              WITH reverse-video BLINK
-                FOREGROUND-COLOR IS 2.
+              WITH reverse-video FOREGROUND-COLOR IS 2.
       *      ADD 13 TO WS-SUB1-DIS.
       *       DISPLAY "ÿAA" AT WS-SUB1-DIS.
             MOVE " " TO WS-WORK.
@@ -399,8 +398,7 @@
             ADD 1 TO WS-SUB1-DIS.
             MOVE ST-STOCKNUMBER TO WS-WORK.
             DISPLAY WS-WORK AT WS-SUB1-DIS
-              WITH reverse-video BLINK
-                FOREGROUND-COLOR IS 2.
+              WITH reverse-video FOREGROUND-COLOR IS 2.
 
       *      ADD 13 TO WS-SUB1-DIS.
       *      DISPLAY "ÿAA" AT WS-SUB1-DIS.
