@@ -1,23 +1,30 @@
-Path
-Win
-Program
-
-
-Delete
-<Orx>*
-
-
-C/2 Run
-MainCont
-
--N +P
 5
-ORXMONTH
+ORYXMONTH
+2
+3
+17
+
+
+#04
+#04
+3
+2
+
+21
+XX
+/ctools/orx/SL21
+
+
+
+
+
+
+#04
 3
 4
 1
-X
-<Orx>SL1
+XX
+/ctools/orx/SL1
 01
 
 
@@ -25,43 +32,42 @@ X
 
 
 
-
-
 2
-X
-<Orx>Sl2
+XX
+/ctools/orx/Sl2
 
 
 4
-X
-<Orx>Sl4
+XX
+/ctools/orx/Sl4
 
 
 5
-X
-<Orx>Sl5
+XX
+/ctools/orx/Sl5
 
 
 6
-X
-<Orx>Sl6
+XX
+/ctools/orx/Sl6
 
 Y
 
 
 7
-X
-<Orx>Sl7
+XX
+/ctools/orx/Sl7
 Y
 
 
 
 
 
-3
+#04
+3
 22
-X
-<Orx>SLP22
+XX
+/ctools/orx/SLP22
 
 
 3
@@ -69,367 +75,45 @@ D
 Y
 
 
-
-
-E
-
-Path
-Win
-OryxInd
-
-I Reo
-<Oryx>BmMaster
-BmMaster.Ind
-
-
-
-@[Win]<Temp>Kit.Key
-6
-80
-80
-750
-
-Y
-
-I Reo
-<Oryx>CoMenu
-CoMenu.Ind
-
-
-
-CHAR:2.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>CoDataName
-CoDataName.Ind
-
-
-
-CHAR:3.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>CoCompany
-CoCompany.Ind
-
-
-
-@<Temp>Company.Key
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>DrMaster
-DrMaster.Ind
-
-
-
-@[Win]<Temp>DebMas.Key
-6
-120
-120
-400
-80
-Y
-
-I Reo
-<Oryx>DrContact
-DrContact.Ind
-
-
-
-@<Temp>DrCont.Key
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>DrTrans
-DrTrans.Ind
-
-
-
-@[Win]<Temp>DrTrans.Key
-6
-100
-60
-300
-
-Y
-
-I Reo
-<Oryx>SlDistTot
-SlDistTot.Ind
-
-
-
-Char:1.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlInvRev
-SlInvRev.Ind
-
-
-
-CHAR:6.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlMaster
-SlMaster.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlParameter
-SlParameter.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-I Reo
-<Oryx>SlRegister
-SlRegister.Ind
-
-
-
-@[Win]<Temp>Reg.Key
-6
-500
-500
-5500
-60
-Y
-
-I Reo
-<Oryx>SlSbRep
-SlSbRep.Ind
-
-
-
-Char:1.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlSoldBy
-SlSoldBy.Ind
-
-
-
-Char:8.0.ANU.M
-6
-50
-30
-100
-
-Y
-
-I Reo
-<Oryx>StImports
-StImports.Ind
-
-
-
-@[Win]<Temp>Import.Key
-6
-200
-150
-500
-
-Y
-
-I Reo
-<Oryx>StMaster
-StMaster.Ind
-
-
-
-@[Win]<Temp>StMas.Key
-6
-500
-300
-550
-
-Y
-
-I Reo
-<Oryx>StOrders
-StOrders.Ind
-
-
-
-@[Win]<Temp>StOrders.Key
-6
-50
-80
-400
-
-Y
-
-I Reo
-<Oryx>StOrderGen
-StOrderGen.Ind
-
-
-
-CHAR:23.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>StReceipt
-StReceipt.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-I Reo
-<Oryx>StReceiptLy
-StReceiptLy.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-
-
-I Reo
-<Oryx>StSpecPr
-StSpecPr.Ind
-
-
-
-CHAR:15.0.ANU.M
-6
-30
-30
-150
-
-Y
-
-I Reo
-<Oryx>StTrans
-StTrans.Ind
-
-
-
-@[Win]<Temp>StTrans.Key
-6
-1000
-1000
-15000
-60
-Y
-
-
-Path
-Win
-Program
-C/2 Run
-MainCont
-
--N +P
-5
-ORXMONTH
-3
+#04
 4
 
 8
-X
-<Orx>SL8A
+XX
+/ctools/orx/SL8A
 50
 
 
 10
-X
-<Orx>SL10
+XX
+/ctools/orx/SL10
 
 
 11
-X
-<Orx>Sl11
-01000019999999AD
+XX
+/ctools/orx/Sl11
+0100001
+9999999
+A
+D
 
 12
-X
-<Orx>SL12A
+XX
+/ctools/orx/SL12A
 A
 ZZZZZ
 Y
 
 12
-X
-<Orx>SL12B
+XX
+/ctools/orx/SL12B
 A
 ZZZZZ
 N
 
 13
-X
-<Orx>SL13A
+XX
+/ctools/orx/SL13A
 
 ZZZZZ
 Y
@@ -437,18 +121,19 @@ Y
 
 
 13
-X
-<Orx>SL13B
+XX
+/ctools/orx/SL13B
 
 ZZZZZ
 N
 
 14
-X
-<Orx>SL14
+XX
+/ctools/orx/SL14
 A
 ZZZZZ
 Y
+
 
 15
 0100001
@@ -476,508 +161,63 @@ Y
 
 
 17
-X
-<Orx>SL17A
+XX
+/ctools/orx/SL17A
 A
 ZZZZZ
-NY
+N
+Y
 
 
 
 18
-X
-<Orx>SL18A
+XX
+/ctools/orx/SL18A
 A
 
 
 
-
+#04
 2
 19
-X
-<Orx>SL19
+XX
+/ctools/orx/SL19
 21
 
 
-
+#04
+#04
 1
 1
 16
-X
-<ORX>DR16
+XX
+/ctools/orx/DR16
 XX
 
 
-
+#1F
+#04
+#04
+#04
 3
 4
 
 19
-YYTRESPASS
-
-
-
-E
-
-Path
-Win
-OryxInd
-
-
-I Reo
-<Oryx>BmMaster
-BmMaster.Ind
-
-
-
-@[Win]<Temp>Kit.Key
-6
-80
-80
-750
-
-Y
-
-I Reo
-<Oryx>CoCompany
-CoCompany.Ind
-
-
-
-@<Temp>Company.Key
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>CoDataName
-CoDataName.Ind
-
-
-
-CHAR:3.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>CoMenu
-CoMenu.Ind
-
-
-
-CHAR:2.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>DrMaster
-DrMaster.Ind
-
-
-
-@[Win]<Temp>DebMas.Key
-6
-120
-120
-400
-80
-Y
-
-I Reo
-<Oryx>DrContact
-DrContact.Ind
-
-
-
-@<Temp>DrCont.Key
-6
-
-
-
-
-Y
-
-Sort
-[Win]<Oryx>DrTrans
-[Win]<Oryx>Temp
-@[Win]<Temp>DrSort.Key
-
-[Win]<$>SortWorkFile1
-[Win]<$>SortWorkFile2
-
-Rename
-[Win]<Oryx>Temp
-[Win]<Oryx>DrTrans
-Y
-I Reo
-<Oryx>DrTrans
-DrTrans.Ind
-
-
-
-@[Win]<Temp>DrTrans.Key
-6
-100
-60
-300
-
-Y
-
-I Reo
-<Oryx>SlDistTot
-SlDistTot.Ind
-
-
-
-Char:1.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlInvRev
-SlInvRev.Ind
-
-
-
-CHAR:6.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlMaster
-SlMaster.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlParameter
-SlParameter.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-
-Sort
-<Oryx>SlRegister
-<Oryx>Temp
-@<Temp>RegSort.Key
-
-<$>SortWorkFiles1
-<$>SortWorkFiles2
-
-Rename
-<Oryx>Temp
-<Oryx>SlRegister
-Y
-
-I Reo
-<Oryx>SlRegister
-SlRegister.Ind
-
-
-
-@[Win]<Temp>Reg.Key
-6
-500
-500
-5500
-60
-Y
-I Reo
-<Oryx>SlRegLY
-SlRegLY.Ind
-
-
-
-@[Win]<Temp>Reg.Key
-6
-500
-500
-5500
-60
-Y
-
-I Reo
-<Oryx>SlSbRep
-SlSbRep.Ind
-
-
-
-Char:1.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>SlSoldBy
-SlSoldBy.Ind
-
-
-
-Char:8.0.ANU.M
-6
-50
-30
-100
-
-Y
-
-
-I Reo
-<Oryx>StImports
-StImports.Ind
-
-
-
-@[Win]<Temp>Import.Key
-6
-200
-150
-500
-
-Y
-
-I Reo
-<Oryx>StOrderGen
-StOrderGen.Ind
-
-
-
-CHAR:23.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Oryx>StReceipt
-StReceipt.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-I Reo
-<Oryx>StReceiptLy
-StReceiptLy.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-
-
-I Reo
-<Oryx>StOrders
-StOrders.Ind
-
-
-
-@[Win]<Temp>StOrders.Key
-6
-50
-80
-400
-
-Y
-
-I Reo
-<Oryx>StMaster
-StMaster.Ind
-
-
-
-@[Win]<Temp>StMas.Key
-6
-500
-300
-550
-
-Y
-
-I Reo
-<Oryx>StSpecPr
-StSpecPr.Ind
-
-
-
-CHAR:15.0.ANU.M
-6
-30
-30
-150
-
-Y
-Sort
-<Oryx>StTrans
-<Oryx>Temp
-@<Temp>StTransSort.Key
-
-<$>SortWorkFiles1
-<$>SortWorkFiles2
-
-Rename
-<Oryx>Temp
-<Oryx>StTrans
-y
-
-I Reo
-<Oryx>StTrans
-StTrans.Ind
-
-
-
-@[Win]<Temp>StTrans.Key
-6
-1000
-1000
-15000
-60
-Y
-I Reo
-<Oryx>StTransLY
-StTransLY.Ind
-
-
-
-@[Win]<Temp>StTrans.Key
-6
-1000
-1000
-15000
-60
-Y
-
-
-Is renam
-<Oryx>StReceiptLY
-<Oryx>StReceiptLY10
-[Win]<OryxInd>StReceiptLY10.Ind
-y
-
-Is renam
-<Oryx>StReceipt
-<Oryx>StReceiptLY
-[Win]<OryxInd>StReceiptLY.Ind
-y
-
-
-Path
-Win
-Program
-
-Screen Setup
-
 Y
-
-
 Y
-
-100
-
-
-Append
-<PS05>*
-<Orx>SlP22
-n
+TRESPASS
+#07
+#07
 
 
-Delete
-<PS05>*
-
-COPY
-<spl>DrStateCo05
-<Orx>DrStateCo05
-Y
-
-COPY
-<spl>DrLaserCo05
-<Orx>DrLaserCo05
-Y
-
-
-COPY
-<Orx>Sl11
-<Spl>ORXDrAge
-Y
-
-
-Rename
-<Spl>DB*05
-<Orx>DB*05
-Y
-
-
-Path
-Win
-Program
-
-
-
-C/2 Run
-MainCont
-
--N +P
-
-5
-ORXMONTH
-3
-4
 
 3
-X
-<Orx>Sl3
+XX
+/ctools/orx/Sl3
 Y
 
-
+#04
+#04
 2
 1
 25
@@ -986,40 +226,18 @@ ZZZZZ
 N
 
 
-3
+#04
+#04
+3
 2
 17
-X
-<SPL>SL
+XX
+/ctools/orx/SL17
 
 Y
 
-E
-
-
-Path
-Win
-OryxInd
-
-
-I Reo
-<Oryx>SlSpecials
-SlSpecials.Ind
-
-
-
-Char:23.0.anu.m
-6
-
-
-
-
-Y
-
-Path
-Win
-Program
-
-
-***** Oryx YEAR-END DONE *****
-
+#04
+#04
+#04
+#04
+E

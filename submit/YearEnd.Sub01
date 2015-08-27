@@ -1,32 +1,31 @@
-Path
-Win
-Program
-
-Delete
-<CTJ>*
-
-C/2 Run
-MainCont
-
--N +P
 1
 CTJ-MONTH
+2
+3
+17
+
+
+
+
+
+#04
+#04
 3
 2
-18
-3
-I
+21
+XX
+/ctools/ctj/SL21
 
 
 
 
 
 
-4
-
+#04
+4
 1
-X
-<CTJ>SL1
+XX
+/ctools/ctj/SL1
 01
 
 
@@ -37,48 +36,49 @@ X
 
 
 2
-X
-<CTJ>Sl2
+XX
+/ctools/ctj/Sl2
 
 
 4
-X
-<CTJ>Sl4
+XX
+/ctools/ctj/Sl4
 
 
 5
-X
-<CTJ>Sl5
+XX
+/ctools/ctj/Sl5
 
 
 6
-X
-<CTJ>Sl6
+XX
+/ctools/ctj/Sl6
 
 Y
 
 
 6
-X
-<CTJ>Sl6A
+XX
+/ctools/ctj/Sl6A
 
 N
 
 
 
 7
-X
-<CTJ>Sl7
+XX
+/ctools/ctj/Sl7
 Y
 
 
 
 
 
-3
+#04
+3
 22
-X
-<CTJ>SLP22
+XX
+/ctools/ctj/SLP22
 
 
 3
@@ -87,473 +87,168 @@ Y
 
 
 
-
-E
-
-Path
-Win
-DataInd
-
-I Reo
-<Data>BmMaster
-BmMaster.Ind
-
-
-
-@[Win]<Temp>Kit.Key
-6
-80
-80
-750
-
-Y
-
-I Reo
-<Data>CoMenu
-CoMenu.Ind
-
-
-
-CHAR:2.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>CoDataName
-CoDataName.Ind
-
-
-
-CHAR:3.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>CoCompany
-CoCompany.Ind
-
-
-
-@<Temp>Company.Key
-6
-
-
-
-
-Y
-
-I Reo
-<Data>DrMaster
-DrMaster.Ind
-
-
-
-@[Win]<Temp>DebMas.Key
-6
-120
-120
-400
-80
-Y
-
-I Reo
-<Data>DrContact
-DrContact.Ind
-
-
-
-@<Temp>DrCont.Key
-6
-
-
-
-
-Y
-
-I Reo
-<Data>DrTrans
-DrTrans.Ind
-
-
-
-@[Win]<Temp>DrTrans.Key
-6
-100
-60
-300
-
-Y
-
-I Reo
-<Data>SlDistTot
-SlDistTot.Ind
-
-
-
-Char:1.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlInvRev
-SlInvRev.Ind
-
-
-
-CHAR:6.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlMaster
-SlMaster.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlParameter
-SlParameter.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-I Reo
-<Data>SlRegister
-SlRegister.Ind
-
-
-
-@[Win]<Temp>Reg.Key
-6
-500
-500
-5500
-60
-Y
-
-I Reo
-<Data>SlSbRep
-SlSbRep.Ind
-
-
-
-Char:1.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlSoldBy
-SlSoldBy.Ind
-
-
-
-Char:8.0.ANU.M
-6
-50
-30
-100
-
-Y
-
-I Reo
-<Data>StImports
-StImports.Ind
-
-
-
-@[Win]<Temp>Import.Key
-6
-200
-150
-500
-
-Y
-
-I Reo
-<Data>StMaster
-StMaster.Ind
-
-
-
-@[Win]<Temp>StMas.Key
-6
-500
-300
-550
-
-Y
-
-I Reo
-<Data>StOrders
-StOrders.Ind
-
-
-
-@[Win]<Temp>StOrders.Key
-6
-50
-80
-400
-
-Y
-
-I Reo
-<Data>StOrderGen
-StOrderGen.Ind
-
-
-
-CHAR:23.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>StReceipt
-StReceipt.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-I Reo
-<Data>StReceiptLy
-StReceiptLy.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-
-
-I Reo
-<Data>StSpecPr
-StSpecPr.Ind
-
-
-
-CHAR:15.0.ANU.M
-6
-30
-30
-150
-
-Y
-
-I Reo
-<Data>StTrans
-StTrans.Ind
-
-
-
-@[Win]<Temp>StTrans.Key
-6
-1000
-1000
-15000
-60
-Y
-
-Path
-Win
-Program
-
-C/2 Run
-MainCont
-
--N +P
-
-1
-CTJ-MONTH
+#04
+#04
 1
 2
 14
-X
-<CTJ>DR14A
+XX
+/ctools/ctj/DR14A
 5000
 T
-S1
+S
+1
 
 14
-X
-<CTJ>DR14B
+XX
+/ctools/ctj/DR14B
 5000
 T
-S2
+S
+2
 
 14
-X
-<CTJ>DR14C
+XX
+/ctools/ctj/DR14C
 5000
 T
-S3
+S
+3
 
 14
-X
-<CTJ>DR14D
+XX
+/ctools/ctj/DR14D
 5000
 T
-S4
+S
+4
 
 14
-X
-<CTJ>DR14E
+XX
+/ctools/ctj/DR14E
 5000
 T
-S5
+S
+5
 
 
-
+#04
+#04
 3
 4
 
 8
-X
-<CTJ>SL8A
+XX
+/ctools/ctj/SL8A
 50
 
 8
-X
-<CTJ>SL8B
+XX
+/ctools/ctj/SL8B
 51
 
 8
-X
-<CTJ>SL8C
+XX
+/ctools/ctj/SL8C
 52
 
 8
-X
-<CTJ>SL8D
+XX
+/ctools/ctj/SL8D
 53
 
 8
-X
-<CTJ>SL8E
+XX
+/ctools/ctj/SL8E
 55
 
 
 9
-X
-<CTJ>SL9A
+XX
+/ctools/ctj/SL9A
 1
-NN
+N
+N
 
 9
-X
-<CTJ>SL9B
+XX
+/ctools/ctj/SL9B
 2
-NN
+N
+N
 
 9
-X
-<CTJ>SL9C
+XX
+/ctools/ctj/SL9C
 3
-NN
+N
+N
 
 9
-X
-<CTJ>SL9D
+XX
+/ctools/ctj/SL9D
 4
-NN
+N
+N
 
 9
-X
-<CTJ>SL9E
+XX
+/ctools/ctj/SL9E
 5
-NN
+N
+N
 
 
 9
-X
-<CTJ>SL9F
+XX
+/ctools/ctj/SL9F
 7
-NN
+N
+N
 
 10
-X
-<CTJ>SL10
+XX
+/ctools/ctj/SL10
 
 
 
 11
-X
-<CTJ>Sl11
-01000019999999AD
+XX
+/ctools/ctj/Sl11
+0100001
+9999999
+A
+D
 
 
 
 11
-X
-<CTJ>Sl11A
-01000019999999AS
+XX
+/ctools/ctj/Sl11A
+0100001
+9999999
+A
+S
 
 
 
 12
-X
-<CTJ>SL12A
+XX
+/ctools/ctj/SL12A
 A
 ZZZZZ
 Y
 
 12
-X
-<CTJ>SL12B
+XX
+/ctools/ctj/SL12B
 A
 ZZZZZ
 N
 
 13
-X
-<CTJ>SL13A
+XX
+/ctools/ctj/SL13A
 
 ZZZZZ
 Y
@@ -561,16 +256,16 @@ Y
 
 
 13
-X
-<CTJ>SL13B
+XX
+/ctools/ctj/SL13B
 
 ZZZZZ
 N
 
 
 14
-X
-<CTJ>SL14
+XX
+/ctools/ctj/SL14
 A
 ZZZZZ
 Y
@@ -624,64 +319,68 @@ Y
 4
 
 16
-X
-<CTJ>SL16
+XX
+/ctools/ctj/SL16
 A
 Z
-PY
+P
+Y
 
 17
-X
-<CTJ>SL17A
+XX
+/ctools/ctj/SL17A
 A
 ZZZZZ
-NY
+N
+Y
 
 
-
+#04
 2
 15
-X
-<CTJ>SL15
+XX
+/ctools/ctj/SL15
 
 Y
 Y
 
 
 17
-X
-<CTJ>SL17B
+XX
+/ctools/ctj/SL17B
 
 Y
 
 
 19
-X
-<CTJ>SL19
+XX
+/ctools/ctj/SL19
 21
 
 
 
-
+#04
+#04
 2
 2
 2
-X
-<CTJ>ST2
+XX
+/ctools/ctj/ST2
 A
 ZZZZZZ
-OY
+O
+Y
 
 16
-X
-<CTJ>ST16
+XX
+/ctools/ctj/ST16
 /
 Z
 N
 
 26
-X
-<CTJ>ST26
+XX
+/ctools/ctj/ST26
 A
 Z
 Y
@@ -690,31 +389,36 @@ Y
 
 
 28
-X
-<CTJ>ST28A
+XX
+/ctools/ctj/ST28A
 A
 ZZZZZ
 200
-RTN
+R
+T
+N
 
 
 
 28
-X
-<CTJ>ST28B
+XX
+/ctools/ctj/ST28B
 A
 ZZZZZ
 200
-UTN
+U
+T
+N
 
 
 
-
+#04
+#04
 1
 2
 8
-X
-<CTJ>DR8
+XX
+/ctools/ctj/DR8
 
 9999999
 A
@@ -722,586 +426,129 @@ A
 
 
 
-
+#04
 1
 16
-X
-<CTJ>DR16
+XX
+/ctools/ctj/DR16
 XX
 
 
-
-1
+#1F
+#04
+#04
 2
 
 14
-X
-<CTJ>DR14A
+XX
+/ctools/ctj/DR14A
 500
-TP
+T
+P
 
 
 14
-X
-<CTJ>DR14B
+XX
+/ctools/ctj/DR14B
 500
-TS
+T
+S
 
-
+#04
+#04
 3
-2
-17
-X
-<CTJ>SL17B
-
-Y
-
+4
 
 19
-X
-<CTJ>SL19
+XX
+/ctools/ctj/SL19
 21
 
 
 
-
+#04
 4
 
 
 18
-X
-<CTJ>SL18A
+XX
+/ctools/ctj/SL18A
 0
 
 18
-X
-<CTJ>SL18B
+XX
+/ctools/ctj/SL18B
 1
 
 18
-X
-<CTJ>SL18C
+XX
+/ctools/ctj/SL18C
 2
 
 18
-X
-<CTJ>SL18D
+XX
+/ctools/ctj/SL18D
 3
 
 18
-X
-<CTJ>SL18E
+XX
+/ctools/ctj/SL18E
 4
 
 18
-X
-<CTJ>SL18F
+XX
+/ctools/ctj/SL18F
 5
 
 18
-X
-<CTJ>SL18G
+XX
+/ctools/ctj/SL18G
 6
 
 18
-X
-<CTJ>SL18H
+XX
+/ctools/ctj/SL18H
 7
 
 18
-X
-<CTJ>SL18I
+XX
+/ctools/ctj/SL18I
 8
 
 18
-X
-<CTJ>SL18J
+XX
+/ctools/ctj/SL18J
 9
 
 19
-YYTRESPASS
-
-
-
-E
-
-Path
-Win
-DataInd
-
-
-I Reo
-<Data>BmMaster
-BmMaster.Ind
-
-
-
-@[Win]<Temp>Kit.Key
-6
-80
-80
-750
-
-Y
-
-I Reo
-<Data>CoCompany
-CoCompany.Ind
-
-
-
-@<Temp>Company.Key
-6
-
-
-
-
-Y
-
-I Reo
-<Data>CoDataName
-CoDataName.Ind
-
-
-
-CHAR:3.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>CoMenu
-CoMenu.Ind
-
-
-
-CHAR:2.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>DrMaster
-DrMaster.Ind
-
-
-
-@[Win]<Temp>DebMas.Key
-6
-120
-120
-400
-80
-Y
-
-I Reo
-<Data>DrContact
-DrContact.Ind
-
-
-
-@<Temp>DrCont.Key
-6
-
-
-
-
-Y
-
-Sort
-[Win]<Data>DrTrans
-[Win]<Data>Temp
-@[Win]<Temp>DrSort.Key
-
-[Win]<$>SortWorkFile1
-[Win]<$>SortWorkFile2
-
-Rename
-[Win]<Data>Temp
-[Win]<Data>DrTrans
-Y
-I Reo
-<Data>DrTrans
-DrTrans.Ind
-
-
-
-@[Win]<Temp>DrTrans.Key
-6
-100
-60
-300
-
-Y
-
-I Reo
-<Data>SlDistTot
-SlDistTot.Ind
-
-
-
-Char:1.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlInvRev
-SlInvRev.Ind
-
-
-
-CHAR:6.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlMaster
-SlMaster.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlParameter
-SlParameter.Ind
-
-
-
-Char:2.0.ASU.M
-6
-
-
-
-
-Y
-
-Sort
-<Data>SlRegister
-<Data>Temp
-@<Temp>RegSort.Key
-
-<$>SortWorkFiles1
-<$>SortWorkFiles2
-
-Rename
-<Data>Temp
-<Data>SlRegister
-Y
-
-I Reo
-<Data>SlRegister
-SlRegister.Ind
-
-
-
-@[Win]<Temp>Reg.Key
-6
-500
-500
-5500
-60
-Y
-I Reo
-<Data>SlRegLY
-SlRegLY.Ind
-
-
-
-@[Win]<Temp>Reg.Key
-6
-500
-500
-5500
-60
-Y
-
-I Reo
-<Data>SlSbRep
-SlSbRep.Ind
-
-
-
-Char:1.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>SlSoldBy
-SlSoldBy.Ind
-
-
-
-Char:8.0.ANU.M
-6
-50
-30
-100
-
-Y
-
-
-I Reo
-<Data>StImports
-StImports.Ind
-
-
-
-@[Win]<Temp>Import.Key
-6
-200
-150
-500
-
-Y
-
-I Reo
-<Data>StOrderGen
-StOrderGen.Ind
-
-
-
-CHAR:23.0.ANU.M
-6
-
-
-
-
-Y
-
-I Reo
-<Data>StReceipt
-StReceipt.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-I Reo
-<Data>StReceiptLy
-StReceiptLy.Ind
-
-
-
-@[Win]<Temp>StRec.Key
-6
-100
-50
-500
-
-Y
-
-
-I Reo
-<Data>StOrders
-StOrders.Ind
-
-
-
-@[Win]<Temp>StOrders.Key
-6
-50
-80
-400
-
-Y
-
-I Reo
-<Data>StMaster
-StMaster.Ind
-
-
-
-@[Win]<Temp>StMas.Key
-6
-500
-300
-550
-
-Y
-
-I Reo
-<Data>StSpecPr
-StSpecPr.Ind
-
-
-
-CHAR:15.0.ANU.M
-6
-30
-30
-150
-
-Y
-Sort
-<Data>StTrans
-<Data>Temp
-@<Temp>StTransSort.Key
-
-<$>SortWorkFiles1
-<$>SortWorkFiles2
-
-Rename
-<Data>Temp
-<Data>StTrans
-y
-
-I Reo
-<Data>StTrans
-StTrans.Ind
-
-
-
-@[Win]<Temp>StTrans.Key
-6
-1000
-1000
-15000
-60
-Y
-
-I Reo
-<Data>StTransLY
-StTransLY.Ind
-
-
-
-@[Win]<Temp>StTrans.Key
-6
-1000
-1000
-15000
-60
-Y
-
-Is renam
-<Data>StReceiptLy
-<Data>StReceiptLY10
-[Win]<DataInd>StReceiptLY10.Ind
-Y
-
-Is renam
-<Data>StReceipt
-<Data>StReceiptLY
-[Win]<DataInd>StReceiptLY.Ind
-y
-
-
-Path
-Win
-Program
-
-Screen Setup
-
 Y
-
-
 Y
-
-100
-
-
-Is rename
-<Data>SlSpecials
-<Spl>SlSpecOld
-
-Path
-Win
-PS01
-
-Append
-<PS01>*/*
-<CTJ>SlP22
-N
+TRESPASS
+#07
+#07
 
 
-Delete
-<PS01>*
-
-Path
-Win
-Program
-
-COPY
-<spl>DrStateCo01
-<CTJ>DrStateCo01
-Y
-
-COPY
-<spl>DrLaserCo01
-<CTJ>DrLaserCo01
-Y
-
-COPY
-<spl>DrNOMALCo01
-<CTJ>DrNOMALCo01
-Y
-
-
-COPY
-<spl>DrEMAILCo01
-<CTJ>DrEMAILCo01
-Y
-
-COPY
-<CTJ>Sl11
-<Spl>CTJDrAge
-Y
-
-Rename
-<Spl>DB*01
-<CTJ>DB*01
-Y
-
-Path
-Win
-Program
-
-C/2 Run
-MainCont
-
--N +P
-
+3
+XX
+/ctools/ctj/Sl31
 1
-CTJ-MONTH
-3
-4
+N
 
 3
-X
-<CTJ>Sl3
+XX
+/ctools/ctj/Sl32
+2
+N
+
+
+
+3
+XX
+/ctools/ctj/Sl3
 Y
 
-
+#04
+#04
 2
 1
 25
@@ -1310,76 +557,8 @@ ZZZZZ
 N
 
 
-3
-2
-17
-X
-<SPL>SL
-
-Y
-
-E
-
-
-Path
-Win
-DataInd
-
-
-I Reo
-<Data>SlSpecials
-SlSpecials.Ind
-
-
-
-Char:23.0.anu.m
-6
-
-
-
-
-Y
-
-Path
-Win
-Program
-
-Screen Setup
-
-Y
-
-
-Y
-
-100
-
-
-File
-@<Temp>CompanyBackup.Fls
-
-<Temp>TapeBackup.key
-
-1
-
-Sel Arc
-@<Temp>TapeBackup.key
-
-
-[Qic]
-Y
-
-Rest Archi
-[Qic]
-
-
-
-
-
-
-y
-[Win]<Spl>Backup.Lst
-
-
-
-***** CTJ YEAR-END DONE *****
-
+#04
+#04
+#04
+#04
+E

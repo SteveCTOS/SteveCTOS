@@ -77,8 +77,20 @@ D
 Y
 
 
-
 #04
+#04
+1
+16
+XX
+/ctools/hky/DR16
+XX
+
+
+#1F
+#04
+#04
+#04
+3
 4
 
 11
@@ -143,55 +155,7 @@ Y
 
 
 #04
-2
-17
-XX
-/ctools/hky/SL
-
-Y
-
-
-#04
 #04
 #04
 #04
 E
-
-
-
-Path
-Win
-HunkInd
-
-
-I Reo
-<Hunk>SlSpecials
-SlSpecials.Ind
-
-
-
-Char:23.0.anu.m
-6
-
-
-
-
-Y
-
-Screen Setup
-
-Y
-
-
-Y
-
-100
-
-
-
-Path
-Win
-Program
-
-***** HunkyDory MONTH-END DONE *****
-
