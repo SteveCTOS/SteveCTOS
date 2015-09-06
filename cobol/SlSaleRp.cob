@@ -3,6 +3,8 @@
         AUTHOR.     STEVE CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -246,45 +248,22 @@
            PERFORM PRR-020.
            GO TO PRR-005.
        PRR-010.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-               GO TO PRR-012.
-           IF LINE-CNT > 20
-             MOVE 3010 TO POS
-             DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT."
-             AT POS
-             ADD 60 TO POS
-             ACCEPT WS-ACCEPT AT POS
-            ELSE
-              GO TO PRR-025.
-           IF W-ESCAPE-KEY = 3
-              GO TO END-900
-           ELSE
-      *        PERFORM CLEAR-SCREEN-PART
-              GO TO PRR-015.
-       PRR-012.
             IF LINE-CNT < 60
                GO TO PRR-025.
        PRR-015.
            ADD 1         TO PAGE-CNT
            MOVE PAGE-CNT TO H1-PAGE.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-                PERFORM CLEAR-SCREEN-PART.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-            IF WS-PRINT-TYPE = 2
+           IF WS-PRINT-TYPE = 2
                MOVE WS-PRINT-COMP TO PRINT-REC
                WRITE PRINT-REC
                MOVE " " TO PRINT-REC.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-            IF PAGE-CNT = 1
+           IF PAGE-CNT = 1
                WRITE PRINT-REC FROM COMPANY-LINE
             ELSE
                WRITE PRINT-REC FROM COMPANY-LINE AFTER PAGE.
                
             MOVE " " TO PRINT-REC
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-               WRITE PRINT-REC FROM HEAD1 AFTER 1
-            ELSE
-               WRITE PRINT-REC FROM HEAD1 AFTER 1.
+            WRITE PRINT-REC FROM HEAD1 AFTER 1.
             MOVE " " TO PRINT-REC
             WRITE PRINT-REC FROM HEAD2 AFTER 1
             MOVE " " TO PRINT-REC
@@ -294,10 +273,7 @@
             MOVE " " TO PRINT-REC
             WRITE PRINT-REC AFTER 1.
 
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-               MOVE 7 TO LINE-CNT
-           ELSE
-               MOVE 6 TO LINE-CNT.
+            MOVE 7 TO LINE-CNT.
        PRR-016.
            GO TO PRR-025.
        PRR-020.
@@ -413,31 +389,11 @@
            ADD 4 TO LINE-CNT
            MOVE 0 TO WS-MARGIN
                      WS-PERC.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-            IF LINE-CNT > 23
-              MOVE 66 TO LINE-CNT.
               
            IF SUB-1 < 22
                ADD 1 TO SUB-1.
            IF WS-REP-NUM (SUB-1) NOT = " "
                GO TO PRR-010.
-       PRR-030.
-      * REP ENTRIES FINISHED.  NOW WRITING BLANK LINES UNTIL END OF
-      * PAGE.
-      *     IF LINE-CNT > 10
-      *     
-      *     IF LINE-CNT < 22
-      *        WRITE PRINT-REC AFTER 1
-      *        ADD 1 TO LINE-CNT
-      *        GO TO PRR-030.
-              
-           IF LINE-CNT > 19
-            IF WS-PRINTER = "[VID]" OR = "[Vid]"
-             MOVE 3010 TO POS
-             DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT."
-             AT POS
-             ADD 60 TO POS
-             ACCEPT WS-ACCEPT AT POS.
        PRR-999.
            EXIT.
       *
@@ -496,22 +452,10 @@
       *
        END-SALES-OFF SECTION.
        END-SALES-000.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-              PERFORM ERROR-020
-              MOVE 3010 TO POS
-              DISPLAY "Press ANY KEY for Company amounts.            "
-              AT POS
-              MOVE 2850 TO POS
-              ACCEPT WS-ACCEPT AT POS.
-              
             MOVE " WEEK / MONTH / THIS YEAR TO DATE" TO H3-NAME.
             MOVE SPACES                              TO H4-NAME.
             
-            IF WS-PRINTER = "[VID]" OR = "[Vid]"
-               PERFORM PRR-015.
-
-            IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-             IF LINE-CNT < 46
+            IF LINE-CNT < 46
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC FROM HEAD3 AFTER 2
                MOVE " " TO PRINT-REC
@@ -521,35 +465,6 @@
                GO TO END-SALES-010
              ELSE
                PERFORM PRR-015.
-           
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-              GO TO END-SALES-020.
-           IF LINE-CNT < 24
-              GO TO END-SALES-020.
-           IF WS-TOTAlS-ONLY = "Y"
-              PERFORM PRR-015
-              GO TO END-SALES-020.
-           IF WS-TOTAlS-ONLY = "N"
-              MOVE 3010 TO POS
-              DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT"
-              AT POS
-              ADD 60 TO POS
-
-              MOVE ' '       TO CDA-DATA
-              MOVE 1         TO CDA-DATALEN
-              MOVE 27        TO CDA-ROW
-              MOVE 75        TO CDA-COL
-              MOVE CDA-GREEN TO CDA-COLOR
-              MOVE 'F'       TO CDA-ATTR
-              PERFORM CTOS-ACCEPT
-              MOVE CDA-DATA TO WS-ACCEPT.
-
-      *        ACCEPT WS-ACCEPT AT POS.
-           IF W-ESCAPE-KEY = 3
-              GO TO END-SALES-999
-           ELSE
-              PERFORM PRR-015
-              GO TO END-SALES-020.
         END-SALES-010.
            IF LINE-CNT > 56
               PERFORM PRR-015.
@@ -593,36 +508,7 @@
            ADD 4 TO LINE-CNT
            MOVE 0 TO TOT-PERC
                      TOT-MARGIN.
-       END-SALES-100.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-              GO TO END-SALES-110.
-           IF LINE-CNT < 24
-              GO TO END-SALES-120.
-           IF WS-TOTAlS-ONLY = "Y"
-              PERFORM PRR-015
-              GO TO END-SALES-120.
-           IF WS-TOTAlS-ONLY = "N"
-              MOVE 3010 TO POS
-              DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT"
-              AT POS
-              ADD 60 TO POS
-
-              MOVE ' '       TO CDA-DATA
-              MOVE 1         TO CDA-DATALEN
-              MOVE 27        TO CDA-ROW
-              MOVE 75        TO CDA-COL
-              MOVE CDA-GREEN TO CDA-COLOR
-              MOVE 'F'       TO CDA-ATTR
-              PERFORM CTOS-ACCEPT
-              MOVE CDA-DATA TO WS-ACCEPT.
-
-      *        ACCEPT WS-ACCEPT AT POS.
-           IF W-ESCAPE-KEY = 3
-              GO TO END-SALES-999
-           ELSE
-              PERFORM PRR-015
-              GO TO END-SALES-120.
-        END-SALES-110.
+        END-SALES-100.
            IF LINE-CNT > 56
               PERFORM PRR-015.
         END-SALES-120.
@@ -667,36 +553,7 @@
                      WS-MARGIN.
                      
            ADD 4 TO LINE-CNT.
-       END-SALES-700.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-              GO TO END-SALES-710.
-           IF LINE-CNT < 24
-              GO TO END-SALES-720.
-           IF WS-TOTAlS-ONLY = "Y"
-              PERFORM PRR-015
-              GO TO END-SALES-720.
-           IF WS-TOTAlS-ONLY = "N"
-              MOVE 3010 TO POS
-              DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT"
-              AT POS
-              ADD 60 TO POS
-
-              MOVE ' '       TO CDA-DATA
-              MOVE 1         TO CDA-DATALEN
-              MOVE 27        TO CDA-ROW
-              MOVE 75        TO CDA-COL
-              MOVE CDA-GREEN TO CDA-COLOR
-              MOVE 'F'       TO CDA-ATTR
-              PERFORM CTOS-ACCEPT
-              MOVE CDA-DATA TO WS-ACCEPT.
-
-      *        ACCEPT WS-ACCEPT AT POS.
-           IF W-ESCAPE-KEY = 3
-              GO TO END-SALES-999
-           ELSE
-              PERFORM PRR-015
-              GO TO END-SALES-720.
-        END-SALES-710.
+        END-SALES-700.
            IF LINE-CNT > 56
               PERFORM PRR-015.
         END-SALES-720.
@@ -827,17 +684,10 @@
       *
        END-OFF SECTION.
        END-000.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-              GO TO END-010.
-
-           GO TO END-020.
-        END-010.
+       END-010.
            IF LINE-CNT > 56
               PERFORM PRR-015.
-        END-020.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-            IF LINE-CNT > 20
-              PERFORM PRR-015.
+       END-020.
            MOVE "S/MAN TOTALS**"     TO D-CATEGORY.
            MOVE TOT-SALESAMT-PTD     TO D-SALESAMT.
            COMPUTE WS-MARGIN = TOT-SALESAMT-PTD - TOT-COST-PTD.
@@ -921,20 +771,31 @@
            
            PERFORM END-SALES-OFF.
 
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-               PERFORM GET-USER-MAIL-NAME
-               PERFORM GET-REPORT-Y2K-DATE
-               PERFORM PRINT-REPORT-INFO.
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           PERFORM PRINT-REPORT-INFO.
                
            CLOSE PRINT-FILE.
-           PERFORM SEND-REPORT-TO-PRINTER.
            
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-             MOVE 3010 TO POS
-             DISPLAY "Press ANY KEY to EXIT the program.              "
-             AT POS
-             MOVE 2850 TO POS
-             ACCEPT WS-ACCEPT AT POS.
+      *     MOVE WS-PRINTERNUMBER (21) TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+           IF WS-PRINTERNUMBER (21) NOT = 20 AND NOT = 0
+                PERFORM SEND-REPORT-TO-PRINTER
+                GO TO END-900.
+           IF WS-PRINTERNUMBER (21) = 0
+                GO TO END-900.
+           
+            MOVE "When Finished Viewing The Report, Press Q to Quit."
+              TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE. 
+              
+            MOVE 
+            CONCATENATE('less ', ' ', TRIM(WS-PRINTER))
+                TO WS-COMMAND-LINE.
+      
+            CALL "SYSTEM" USING WS-COMMAND-LINE.
+      *      RETURNING W-STATUS.
        END-900.
            CLOSE DEBTOR-MASTER
                  SBREP-MASTER

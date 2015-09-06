@@ -101,6 +101,8 @@
             CALL "SYSTEM" USING "less /ctools/spl/sl6"
             RETURNING W-STATUS.
 
+            go to END-900.
+
             PERFORM CLEAR-SCREEN-PART.
             MOVE 315 TO POS.
             DISPLAY "** SALESMAN CORPORATE A/C ANALYSIS **" AT POS
@@ -110,6 +112,7 @@
             PERFORM OPEN-FILES.
        CONTROL-045.
            PERFORM READ-ROUTINE.
+       CONTROL-050.
            PERFORM END-OFF.
       *
       *
