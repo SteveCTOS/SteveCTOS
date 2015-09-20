@@ -129,7 +129,7 @@
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
-                 MOVE "Backup03 " TO WS-DATA-NAME 
+                 MOVE "Backup03.sh " TO WS-DATA-NAME 
                 PERFORM SETUP-BACKUP-FILES
                 MOVE 
               "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
@@ -154,7 +154,7 @@
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
-                 MOVE "Backup05 " TO WS-DATA-NAME 
+                 MOVE "Backup05.sh " TO WS-DATA-NAME 
                 PERFORM SETUP-BACKUP-FILES
                 MOVE 
               "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"

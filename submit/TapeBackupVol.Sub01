@@ -1,11 +1,10 @@
-
 1
 CTJ-MONTH
 2
 1
 12
 A
-Z
+ZZZZZ
 R
 
 
@@ -26,7 +25,7 @@ ZZZZZZZZ
 A
 Z
 A
-N
+Y
 
 20
 X
@@ -50,7 +49,7 @@ N
 8
 
 
-
+Y
 
 
 #04
@@ -58,13 +57,108 @@ N
 8
 9
 ** RESET INPUTS **
+#04
+#04
+#04
+#04
+2
+GRCMONTH
+2
+1
+12
+A
+ZZZZZ
+R
+
+
+#04
+2
+27
+2
+A
+ZZZZZZZZ
+
+
+#04
+#04
+#04
+#04
+5
+ORXMONTH
+2
+1
+12
+A
+ZZZZZ
+R
+
+
+#04
+2
+27
+2
+A
+ZZZZZZZZ
 
 
 
+#04
+#04
+#04
+#04
+7
+SFJ-MONTH
+2
+1
+12
+A
+ZZZZZZZ
+R
+
+
+#04
+2
+27
+1
+A
+ZZZZZZZZ
+
+
+#04
+#04
+8
+9
+** RESET INPUTS **
+#04
+#04
+#04
+#04
+
+8
+CSC-MONTH
+2
+1
+12
+A
+ZZZZZZ
+R
+
+
+#04
+2
+27
+1
+A
+ZZZZZZ
+
+
+#04
+#04
+8
+9
+** RESET INPUTS **
 #04
 #04
 #04
 #04
 E
-
-
