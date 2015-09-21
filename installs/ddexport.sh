@@ -13,4 +13,7 @@ export COB_LIBRARY_PATH=/usr/local/lib:/ctools/bin:$COB_LIBRARY_PATH
 umask 0002
 alias MainCont='MainCont 2> /dev/null'
 alias Menu='MainCont 2> /dev/null'
+alias MENU='MainCont 2> /dev/null'
+alias menu='MainCont 2> /dev/null'
+
 

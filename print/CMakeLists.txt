@@ -3,18 +3,18 @@ project (ctools_print)
 set (copy_list
   fohtotext.py
   PrintCredit
-  PrintInvoice
-  PrintStatement
-  PrintStatementNoMail
-  PrintQuote1
-  PrintQuote2
-  PrintMergeQuote
   PrintDrOverdue1
   PrintDrOverdue2
+  PrintInvoice
   PrintMergeDrOverdue
+  PrintMergePOrder
+  PrintMergeQuote
   PrintPOrder1
   PrintPOrder2
-  PrintMergePOrder
+  PrintQuote1
+  PrintQuote2
+  PrintStatement
+  PrintStatementNoMail
 #  creditnote01
 #  invoice01
 #  statement01
