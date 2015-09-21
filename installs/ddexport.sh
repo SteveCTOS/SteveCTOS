@@ -15,5 +15,8 @@ alias MainCont='MainCont 2> /dev/null'
 alias Menu='MainCont 2> /dev/null'
 alias MENU='MainCont 2> /dev/null'
 alias menu='MainCont 2> /dev/null'
+<<<<<<< HEAD
 
+=======
+>>>>>>> 59def9fcb1400b8435a45747be4fdd1d3d816821
 

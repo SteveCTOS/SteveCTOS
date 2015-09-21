@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 project (ctools_print)
+=======
+project (ctools_submit)
+>>>>>>> 59def9fcb1400b8435a45747be4fdd1d3d816821
 
 set (copy_list
   AutoAllocations.Sub01
