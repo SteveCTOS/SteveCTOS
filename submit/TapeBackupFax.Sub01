@@ -18,6 +18,10 @@ ZZZZZZZZ
 
 #04
 #04
+8
+9
+** RESET INPUTS **
+#04
 #04
 #04
 
@@ -62,7 +66,11 @@ R
 
 ZZZZZZZZ
 
-
+#04
+#04
+8
+9
+** RESET INPUTS **
 #04
 #04
 #04
@@ -108,7 +116,11 @@ R
 
 ZZZZZZZZ
 
-
+#04
+#04
+8
+9
+** RESET INPUTS **
 #04
 #04
 #04
@@ -131,7 +143,11 @@ R
 
 ZZZZZZZZ
 
-
+#04
+#04
+8
+9
+** RESET INPUTS **
 #04
 #04
 #04
@@ -244,20 +260,127 @@ T
 M
 
 
+#04
+#04
+#04
+#04
 
+2
+GRCMONTH
+1
+2
+7
+XX
+/ctools/spl/DRGRCFAX
+0100001
+2699999
+3
+
+0
+Y
+N
+N
+Y
+Y
+Y
+D
+
+
+
+#07
+#07
+#07
+#07
+
+#04
+#04
+#04
+#04
+1
+CTJ-MONTH
+1
+2
+7
+XX
+/ctools/spl/DRCTJFAX
+0100001
+2699999
+3
+
+0
+Y
+N
+N
+Y
+Y
+Y
+D
+
+#07
+#07
+#07
+#07
+
+#04
+#04
+#04
+#04
+7
+SFJ-MONTH
+1
+2
+7
+XX
+/ctools/spl/DRSFJFAX
+0100001
+2699999
+3
+
+0
+Y
+N
+N
+Y
+Y
+Y
+D
+
+#07
+#07
+#07
+#07
+
+#04
+#04
 #04
 #04
 8
-9
-** RESET INPUTS **
+CSC-MONTH
+1
+2
+7
+XX
+/ctools/spl/DRCSCFAX
+0100001
+2699999
+3
 
+0
+Y
+N
+N
+Y
+Y
+Y
+D
 
-
+#07
+#07
+#07
+#07
 
 #04
 #04
 #04
 #04
 E
-
-

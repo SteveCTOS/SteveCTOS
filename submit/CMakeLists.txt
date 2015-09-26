@@ -11,6 +11,8 @@ set (copy_list
   AutoAllocations.Sub08
   Backup03.sh
   Backup05.sh
+  Backup06.sh
+  Backup07.sh
   GlGroup.sh
   GlGroupReports.Sub
   GlMonthly.sh
@@ -42,6 +44,8 @@ set (copy_list
   renamegp.py
   renameorig.py
   TapeBackup.Sub01
+  TapeBackupFax.Sub01
+  TapeBackupMonth.Sub01
   TapeBackupVol.Sub01
   YearEnd.Sub01
   YearEnd.Sub02
