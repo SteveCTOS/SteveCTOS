@@ -48,7 +48,7 @@
        A-ACCEPT SECTION.
        A-001.
            MOVE 0810 TO POS.
-           DISPLAY "** CBMAST EXPORT / IMPORT OF DATA **" AT POS
+           DISPLAY "** CBMASTLY EXPORT / IMPORT OF DATA **" AT POS
            MOVE 1010 TO POS
            DISPLAY "ENTER E=EXPORT TO ASCII, I=IMPORT FROM ASCII: [ ]"
               AT POS

@@ -16,7 +16,7 @@ mkdir /media/ctools/BACKUPUSB/data12
 
 cp /ctools/data01/* /media/ctools/BACKUPUSB/data01
 cp /ctools/data02/* /media/ctools/BACKUPUSB/data02
-cp /ctools/data03/* /media/ctools/BACKUPUSB/data03
+cp /ctools/data03/* /media/ctools/BACKUPUSB/data03 
 cp /ctools/data05/* /media/ctools/BACKUPUSB/data05
 cp /ctools/data06/* /media/ctools/BACKUPUSB/data06
 cp /ctools/data07/* /media/ctools/BACKUPUSB/data07
