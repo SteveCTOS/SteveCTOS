@@ -44,6 +44,7 @@ lp -d ctj-spl /ctools/dev/source/print/Compressed.Key
 lp -d ctj-spl /ctools/spl/ctj-aa1
 lp -d ctj-spl /ctools/spl/ctj-aa2
 
-# *****COPYING DATA TO [D1] ****
-# add this section into the script.....
+echo COPYING DATA TO BACKUP DISK ON SERVER
+
+cp -a /ctools/* /media/ctools/backup/ctools/
 

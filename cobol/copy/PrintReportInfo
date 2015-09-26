@@ -11,5 +11,9 @@
            IF WS-PRINT-TYPE = 2
                MOVE WS-PRINT-NORMAL TO PRINT-REC
                WRITE PRINT-REC.
+      * new line below entered for linux to get a form feed AFTER the
+      * report is finished printing.
+           MOVE " "        TO PRINT-REC
+           WRITE PRINT-REC BEFORE PAGE.
        PRI-999.
            EXIT.

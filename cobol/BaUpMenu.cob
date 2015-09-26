@@ -108,7 +108,7 @@
                 PERFORM ERROR-000
                 GO TO GET-010.
       *      CANCEL WS-PROGRAM.
-           IF WS-ANSWER = "35"
+            IF WS-ANSWER = "35"
                 MOVE "CoStffIq.Int" TO WS-PROGRAM.
             IF WS-ANSWER = " " OR = "0"
                 GO TO GET-005.
@@ -136,14 +136,6 @@
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                 GO TO GET-005.
-                
-      *      IF WS-ANSWER = " 3"
-      *          Move "TapeBackup.Sub" TO Ws-Data-Name
-      *          PERFORM CHECK-FOR-BACKUP-PAUSE
-      *          PERFORM GET-100.
-            IF WS-ANSWER = " 4"
-                Move "TapeRestore.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
             IF WS-ANSWER = " 5"
                 MOVE 
               "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
@@ -164,11 +156,55 @@
                 Move "TapeBackupVol.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
             IF WS-ANSWER = " 6"
-                Move "TapeBackupFax.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
+                MOVE 
+              "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                MOVE 
+            "THE COMMAND PROMPT WILL BE DISPLAYED WHILE BACKUP HAPPENS."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE "Backup06.sh " TO WS-DATA-NAME 
+                PERFORM SETUP-BACKUP-FILES
+                MOVE 
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                GO TO GET-005.
             IF WS-ANSWER = " 7"
-                Move "TapeBackupMonth.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
+                MOVE 
+              "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                MOVE 
+            "THE COMMAND PROMPT WILL BE DISPLAYED WHILE BACKUP HAPPENS."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE "Backup07.sh " TO WS-DATA-NAME 
+                PERFORM SETUP-BACKUP-FILES
+                MOVE 
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                GO TO GET-005.
+      *      IF WS-ANSWER = " 3"
+      *          Move "TapeBackup.Sub" TO Ws-Data-Name
+      *          PERFORM CHECK-FOR-BACKUP-PAUSE
+      *          PERFORM GET-100.
+      *      IF WS-ANSWER = " 4"
+      *          Move "TapeRestore.Sub" TO Ws-Data-Name
+      *          PERFORM GET-100.
+      *      IF WS-ANSWER = " 5"
+      *          Move "TapeBackupVol.Sub" TO Ws-Data-Name
+      *          PERFORM GET-100.
+      *      IF WS-ANSWER = " 6"
+      *          Move "TapeBackupFax.Sub" TO Ws-Data-Name
+      *          PERFORM GET-100.
+      *      IF WS-ANSWER = " 7"
+      *          Move "TapeBackupMonth.Sub" TO Ws-Data-Name
+      *          PERFORM GET-100.
                 
             IF WS-ANSWER = " 8"
                 Move "FormatFloppy.Sub" TO Ws-Data-Name
