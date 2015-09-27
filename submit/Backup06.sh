@@ -1,4 +1,3 @@
-echo  
 echo Your Daily Backup & fax Sending is in Process,  Please be patient... 
 
 mkdir /media/ctools/BACKUPUSB/data01
