@@ -45,5 +45,5 @@ lp -d ctj-spl /ctools/spl/ctj-aa1
 lp -d ctj-spl /ctools/spl/ctj-aa2
 
 echo COPYING DATA TO BACKUP DISK ON SERVER
-cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/
+cp -a /ctools/* /media/ctools/BACKUPHDD/ctools/
 
