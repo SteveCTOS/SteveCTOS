@@ -126,7 +126,11 @@ set (stock_list
 )
 
 foreach (name ${company_list})
+<<<<<<< HEAD
   cobol_module(${name}) 
+=======
+  cobol_module(${name})
+>>>>>>> 07012ab725845b98ef811b4a88df4b55fbc283c0
 endforeach()
 foreach (name ${menu_list})
   cobol_module(${name})

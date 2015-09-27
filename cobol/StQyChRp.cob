@@ -271,12 +271,13 @@
            IF WS-PRINTED NOT = "Y"
               MOVE "**** NOTHING TO PRINT IN THAT RANGE" TO PRINT-REC
               WRITE PRINT-REC
-              GO TO END-500.
+              GO TO END-450.
            MOVE WS-TOTVALUE       TO T-VALUE
            MOVE "TOTAL EXCESS: R" TO T-NAME
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
            MOVE " "               TO PRINT-REC.
            WRITE PRINT-REC.
+       END-450.
            PERFORM GET-USER-MAIL-NAME
            PERFORM GET-REPORT-Y2K-DATE
            PERFORM PRINT-REPORT-INFO.
