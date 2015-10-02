@@ -24,6 +24,8 @@
 
        WORKING-STORAGE SECTION.
        77  WS-QUES-PAUSE-BACKUP   PIC X VALUE " ".
+       77  WS-COMPYYMM            PIC X(4) VALUE " ".
+       77  WS-DRYYMM              PIC X(4) VALUE " ".
        77  W-BACKUP-DELAY         PIC 9(4) COMP-X.
        01  W-CRTSTATUS            PIC 9(4) value 0.
        Copy "WsMenuDateInfo".
@@ -51,7 +53,7 @@
       *
        GET-DATA SECTION.
        GET-005.
-            MOVE 2 TO WS-MODE.
+            MOVE 2           TO WS-MODE.
             MOVE "         " TO F-NAMEFIELD
             MOVE "SELECTION" TO F-FIELDNAME
             MOVE 9           TO F-CBFIELDNAME
@@ -118,7 +120,6 @@
             IF WS-ANSWER = " 2"
                 Move "Restore.Sub" TO Ws-Data-Name
                 PERFORM GET-100.
-                
             IF WS-ANSWER = " 3"
                 MOVE 
               "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
@@ -132,7 +133,7 @@
                  MOVE "Backup03.sh " TO WS-DATA-NAME 
                 PERFORM SETUP-BACKUP-FILES
                 MOVE 
-              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                 GO TO GET-005.
@@ -149,12 +150,10 @@
                  MOVE "Backup05.sh " TO WS-DATA-NAME 
                 PERFORM SETUP-BACKUP-FILES
                 MOVE 
-              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                 GO TO GET-005.
-                Move "TapeBackupVol.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
             IF WS-ANSWER = " 6"
                 MOVE 
               "MAKE SURE THE USB DRIVE IS PLUGGED IN, 'ESC' TO CONFIRM."
@@ -168,7 +167,7 @@
                  MOVE "Backup06.sh " TO WS-DATA-NAME 
                 PERFORM SETUP-BACKUP-FILES
                 MOVE 
-              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                 GO TO GET-005.
@@ -185,7 +184,7 @@
                  MOVE "Backup07.sh " TO WS-DATA-NAME 
                 PERFORM SETUP-BACKUP-FILES
                 MOVE 
-              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES"
+              "BACKUP HAS BEEN RUN, CONTINUE WITH OTHER PROCESSES."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                 GO TO GET-005.
@@ -261,8 +260,82 @@
             EXIT.
       *
        SETUP-BACKUP-FILES SECTION.
+       SUQFD-001.
+          IF WS-ANSWER NOT = " 7"
+             MOVE WS-DATA-NAME  TO WS-COMMAND-LINE
+             GO TO SUQFD-020.
+       SUQFD-002.
+          MOVE 
+          "Enter the Year & Month numbers To Rename LAST MONTHS Company"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+          MOVE
+          "files for e.g. 1506 for 2015 June." TO WS-MESSAGE
+             PERFORM ERROR-000.
+       SUQFD-003.
+          MOVE 2610 TO POS
+          DISPLAY "ENTER YEAR MONTH AS YYMM. : [    ]" AT POS
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 4         TO CDA-DATALEN.
+           MOVE 23        TO CDA-ROW.
+           MOVE 38        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-COMPYYMM.
+
+            IF WS-COMPYYMM = " "
+               GO TO SUQFD-003.
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO SUQFD-005
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO SUQFD-003.
+       SUQFD-005.
+          MOVE 
+          "Enter the Year & Month numbers To Rename THIS MONTHS Debtor"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+          MOVE
+          "files for e.g. 1507 for 2015 July." TO WS-MESSAGE
+             PERFORM ERROR-000.
+       SUQFD-006.
+          MOVE 2610 TO POS
+          DISPLAY "ENTER YEAR MONTH AS YYMM. : [    ]" AT POS
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 4         TO CDA-DATALEN.
+           MOVE 23        TO CDA-ROW.
+           MOVE 38        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DRYYMM.
+
+            IF WS-DRYYMM = " "
+               GO TO SUQFD-005.
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO SUQFD-010
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO SUQFD-005.
        SUQFD-010.
-          MOVE WS-DATA-NAME  TO WS-COMMAND-LINE.
+          PERFORM ERROR-020
+          PERFORM ERROR1-020
+          MOVE 2610 TO POS
+          DISPLAY WS-MESSAGE AT POS.
+          MOVE 
+          CONCATENATE('./Backup07.sh ', TRIM(WS-COMPYYMM), ' '
+              TRIM(WS-DRYYMM))  TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.  
+      *    ACCEPT W-ENTER.
+      *The variables which will be specified are:
+      *$1 = The username                         e.g. steve
+      *$2 = The company number from 01 to 12     e.g. 07
+       SUQFD-020.
+          IF WS-ANSWER = " 3"
+              PERFORM CHECK-FOR-BACKUP-PAUSE.
           CALL "SYSTEM" USING   WS-COMMAND-LINE
                        RETURNING W-STATUS.
        SUQFD-999.

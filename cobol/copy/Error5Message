@@ -5,7 +5,8 @@
              
              MOVE 2801 TO POS.
              DISPLAY "                                      " AT POS.
-             DISPLAY WS-MESSAGE AT 2801 WITH REVERSE-VIDEO BLINK
+             DISPLAY WS-MESSAGE AT 2801 WITH REVERSE-VIDEO
+      *       DISPLAY WS-MESSAGE AT 2801 WITH reverse-video BLINK
                 BELL FOREGROUND-COLOR IS 4.
        ERRO5-010.
              CALL "LOCKKBD" USING F-FIELDNAME.

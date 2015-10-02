@@ -9,11 +9,14 @@ set (copy_list
   Backup05.sh
   Backup06.sh
   Backup07.sh
+  FNBDebtor.sh
   GlGroup.sh
   GlGroupReports.Sub
   GlMonthly.sh
   GlMonthly.Sub
   GlMonthTemp
+  GlParamDate.sh
+  GlParamDate.Sub
   MonthEnd.Sub01
   MonthEnd.Sub02
   MonthEnd.Sub03

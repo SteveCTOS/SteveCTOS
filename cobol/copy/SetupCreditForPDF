@@ -2,7 +2,7 @@
        SETUP-CREDIT-FOR-PDF SECTION.
        SUCFP-005.
           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
-       SUCFP-010.          
+       SUCFP-010.
           MOVE 
           CONCATENATE('./PrintCredit ', TRIM(WS-USERNAME), ' '
               WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE))

@@ -5,8 +5,7 @@
              
              MOVE 3001 TO POS.
              DISPLAY "                                      " AT POS.
-             DISPLAY WS-MESSAGE AT 3001
-              WITH reverse-video
+             DISPLAY WS-MESSAGE AT 3001 WITH reverse-video
       *        WITH reverse-video BLINK
                 BELL FOREGROUND-COLOR IS 4.
       *      CALL "C$SLEEP" USING 1.
