@@ -376,14 +376,14 @@
            MOVE 3001 TO POS
            DISPLAY WS-MESSAGE AT POS.
         GET-010.
-           MOVE 2910 TO POS
+           MOVE 2810 TO POS
+           DISPLAY "2 & <CODE-F8> TO FIND AN ORDER AND DISPLAY" AT POS.
+           MOVE 2911 TO POS
            DISPLAY
            "Suppliers-Order Inq By : X=STOCK, P=PORDER," AT POS
-           MOVE 3020 TO POS
+           MOVE 3012 TO POS
            DISPLAY "BLANK=StockInq, OR Enter Numbers From 1-9."
               AT POS.
-           MOVE 2815 TO POS
-           DISPLAY "2 & <CODE-TAB> TO FIND AN ORDER AND DISPLAY" AT POS.
 
            MOVE "                   " TO F-NAMEFIELD.
            MOVE "TRANSCODE" TO F-FIELDNAME.
@@ -462,17 +462,20 @@
               GO TO GET-010.
        GET-020.
       ***************************************************************
-      * F-EXIT-CH = X"87" = <CODE-CANCEL> = TO ENTER ONLY THE CRJRN *
+      * F-EXIT-CH = X"87" = <CODE-CANCEL>; <ALT-F10>=X"9F" IN LINUX *
+      * TO ENTER ONLY THE CRJRN                                     *
       * INFO WITHOUT ENTERING STOCK FIRST                           *
-      * F-EXIT-CH = x"89" = <CODE-TAB> = TO SEARCH FOR P/O NUMBER   *
+      *                                                             *
+      * F-EXIT-CH = X"89" = <CODE-TAB>; <ALT-F8>=X"9D" IN LINUX     *
+      * TO SEARCH FOR P/O NUMBER AND DISPLAY                        *
       ***************************************************************
            IF STRE-TRANSACTION-CODE = 1 OR 2
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
                 MOVE "Y" TO WS-CRJRN-INPUT-ONLY
                 PERFORM WRITE-CRJRN-INV-TRANS
                 GO TO GET-999.
             IF STRE-TRANSACTION-CODE = 2
-             IF F-EXIT-CH = X"89"
+             IF F-EXIT-CH = X"89" OR = X"9D"
                  PERFORM GET-SUPPLIER-ORDER-OFF-SYSTEM
                  MOVE "8" TO WS-ABOVE-BODY.
             IF STRE-TRANSACTION-CODE = 3
@@ -676,7 +679,7 @@
             IF F-EXIT-CH = X"8C"
              IF SUB-1 NOT < SUB-25
                 PERFORM READ-NEXT-STOCK-ITEM
-             IF WS-STOCK-ST1 = "0"
+             IF WS-STOCK-ST1 = 0
                 PERFORM DISPLAY-LINE-ITEMS
                 GO TO FILL-010
              ELSE
@@ -716,10 +719,16 @@
               ELSE
                   PERFORM ERROR-020
                   GO TO FILL-999.
-      *****************************
-      * <ESC> TO CANCEL AN ITEM*
-      *****************************
-            IF F-EXIT-CH = X"07"
+      ******************************************************
+      * <CODE-ESC>=X"87" IN CTOS, <ALT-F10>=X"9F" IN LINUX *
+      ******************************************************
+           IF F-EXIT-CH = X"07"
+               MOVE 
+               "PRESS 'Alt-F10' TO CANCEL A LINE ITEM, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO  FILL-010.
+            IF F-EXIT-CH = X"87" OR =X"9F"
                 MOVE SUB-1 TO SUB-7
                 PERFORM CANCEL-TRANSACTION
                 MOVE 1 TO SUB-1
@@ -3338,7 +3347,7 @@
             PERFORM ERROR1-020
             PERFORM ERROR-020.
             MOVE 2815 TO POS
-            DISPLAY "PRESS <CODE-ESC> TO EXIT THIS PROGRAM." AT POS.
+            DISPLAY "PRESS <CODE-F10> TO EXIT THIS PROGRAM." AT POS.
             MOVE 2910 TO POS
             DISPLAY 
             "WHEN ALL INFO'S ENTERED, <GO> AT LAST FIELD TO WRITE TRANS"
@@ -3386,9 +3395,9 @@
             MOVE 10      TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-DNOTE-NO WS-INV-NO.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
                PERFORM CHECK-PASSWORD.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
              IF WS-PASSWORD-VALID = "Y"
                PERFORM ERROR-020
                PERFORM ERROR1-020

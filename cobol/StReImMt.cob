@@ -1061,7 +1061,11 @@
                       WS-B-DISCOUNTPERC.
             MOVE 2510 TO POS
             DISPLAY
-            "TO CHANGE THE PRINTER TO PRINT REPORT TO, PRESS <CODE-p>."
+            "TO CHANGE THE PRINTER TO PRINT REPORT TO, PRESS <ALT-P>."
+               AT POS.
+            MOVE 2615 TO POS
+            DISPLAY
+            "TO SEARCH FOR P/O NUMBER PRESS <ALT-F8>...."
                AT POS.
        FILL-010.
             MOVE "                    " TO F-NAMEFIELD.
@@ -1087,7 +1091,7 @@
             
       ***********************************************
       * NEW SECTION TO ALTER THE PRINTER SELECTED.  *
-      * <CODE-P> = X"F0"  <CODE-SHIFT-P> = X"D0"    *
+      * <CODE-p> = X"F0"  <CODE-SHIFT-P> = X"D0"    *
       ***********************************************
             IF F-EXIT-CH = X"F0" OR = X"D0"
                 PERFORM ZB-005 THRU ZB-040
@@ -1130,24 +1134,26 @@
       ********************
            IF F-EXIT-CH = X"09"
                 GO TO FILL-999.
-      *************************
-      * CODE-TAB CHARACTER    *
-      *************************
-           IF F-EXIT-CH = X"89"
+      *****************************************************
+      * <CODE-TAB>=X"89" IN CTOS, <ALT-F8>=X"9D" IN LINUX *
+      *****************************************************
+           IF F-EXIT-CH = X"89" OR = X"9D"
                 MOVE SUB-1 TO SUB1-SAVE
                 PERFORM GET-NEW-ORDER-ENTERED
                 MOVE SUB1-SAVE TO SUB-1
                 PERFORM SCROLL-NEXT
                 PERFORM SCROLL-PREVIOUS
                 GO TO FILL-010.
-                
-           IF F-EXIT-CH = X"87"
+      ******************************************************
+      * <CODE-ESC>=X"87" IN CTOS, <ALT-F10>=X"9F" IN LINUX *
+      ******************************************************
+           IF F-EXIT-CH = X"07"
                MOVE 
-               "PRESS 'Alt-ESC' TO CANCEL A LINE ITEM, 'ESC' TO RETRY."
+               "PRESS 'Alt-F10' TO CANCEL A LINE ITEM, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO  FILL-010.
-           IF F-EXIT-CH = X"87"
+           IF F-EXIT-CH = X"87" OR = X"9F"
              MOVE SUB-1 TO SUB-7
              COMPUTE WS-INVERSEDISC =
              ((100 - B-DISCOUNTPERC (SUB-1)) / 100)
@@ -1223,7 +1229,7 @@
             IF F-EXIT-CH = X"8C"
              IF SUB-1 NOT < SUB-25
                 PERFORM READ-NEXT-STOCK-ITEM
-             IF WS-STOCK-ST1 = "0"
+             IF WS-STOCK-ST1 = 0
                 PERFORM DISPLAY-LINE-ITEMS
                 GO TO FILL-015
              ELSE

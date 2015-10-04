@@ -1,6 +1,10 @@
 project (ctools_submit)
 
 set (copy_list
+  Auto01.sh
+  Auto03.sh
+  Auto07.sh
+  Auto08.sh
   AutoAllocations.Sub01
   AutoAllocations.Sub03
   AutoAllocations.Sub07
@@ -15,7 +19,7 @@ set (copy_list
   GlMonthly.sh
   GlMonthly.Sub
   GlMonthTemp
-  GlParamDate.sh
+  GlDrParamDate.sh
   GlParamDate.Sub
   MonthEnd.Sub01
   MonthEnd.Sub02

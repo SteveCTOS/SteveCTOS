@@ -3381,8 +3381,24 @@
       *****************************************************************
       *CREATE A BLANK SPACE INTO WHICH A NEW LINE OF STOCK IS ENTERED *
       *****************************************************************
-      * <CODE-TAB>
+      * <CODE-TAB> (CTOS); <ALT-F8> =X"9D" IN LINUX
            IF F-EXIT-CH = X"89" AND SUB-25 < 150
+                PERFORM EMPTY-LINE
+                MOVE SUB-3 TO SUB-1
+                ADD 1 TO SUB-25
+                MOVE "E" TO WS-LINECHANGED
+                MOVE "Y" TO WS-CODETAB
+              IF SUB-1 > 3
+                SUBTRACT 3 FROM SUB-1
+                PERFORM SCROLL-NEXT
+                ADD 1 TO SUB-25
+                GO TO FILL-005 
+              ELSE
+                PERFORM SCROLL-NEXT
+                ADD 1 TO SUB-25
+                GO TO FILL-005.
+           IF F-EXIT-CH = X"9D"
+            AND SUB-25 < 150
                 PERFORM EMPTY-LINE
                 MOVE SUB-3 TO SUB-1
                 ADD 1 TO SUB-25
@@ -3524,12 +3540,12 @@
                 PERFORM ERROR-020
                 PERFORM CHECK-SUB1-TOTAL
                 GO TO FILL-999.
-      * 'ESC' = X"07"; 'CODE-CANCEL' = X"87"
-            IF F-EXIT-CH = X"07" OR = X"87"
+      * 'ESC' = X"07"; 'CODE-CANCEL' = X"87"; 'ALT-F10' = X"9F"
+            IF F-EXIT-CH = X"07" OR = X"87" OR = X"9F"
              IF B-STOCKNUMBER (SUB-1) = "  "
                 GO TO FILL-010.
             IF F-EXIT-CH = X"07"
-                MOVE "TO DELETE A LINE-ITEM PRESS 'ALT-ESC'"
+                MOVE "TO DELETE A LINE-ITEM PRESS 'ALT-F10'"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-010.
@@ -3549,7 +3565,7 @@
                 PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 GO TO FILL-010.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
                 MOVE SUB-1 TO SUB-7
                 MOVE "Y" TO WS-MUST-PRINT
                 PERFORM CANCEL-TRANSACTION

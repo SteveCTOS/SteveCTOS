@@ -2772,18 +2772,18 @@
                 PERFORM ERROR-020
                 PERFORM CHECK-SUB1-TOTAL
                 GO TO FILL-999.
-      ***************************************************
-      * 'ESC' = X"07"; 'CODE-CANCEL' = X"87"         *
-      ***************************************************
+      **********************************************************
+      * 'ESC' = X"07"; 'CODE-CANCEL' = X"87" ; 'Alt-F10'=X"9F" *
+      **********************************************************
             IF F-EXIT-CH = X"07"
                 AND B-STOCKNUMBER (SUB-1) = " "
                 GO TO FILL-010.
             IF F-EXIT-CH = X"07"
-                MOVE "TO DELETE A LINE-ITEM PRESS 'ALT-ESC'"
+                MOVE "TO DELETE A LINE-ITEM PRESS 'ALT-F10'"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-010.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
                 MOVE SUB-1 TO SUB-7
                 PERFORM CANCEL-TRANSACTION
                 SUBTRACT 1 FROM SUB-25

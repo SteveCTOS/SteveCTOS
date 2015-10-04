@@ -109,6 +109,7 @@ int main(int argc, char *argv[])
   add_field(0x1e, "F9          (F9)");
   add_field(0x1f, "F10         (F10)");
   add_field(0x89, "CODE-TAB    (A-tab)");
+  add_field(0x9d, "CODE-TAB    (A-F8)");
   add_field(0x8f, "CODE-MOVE   (A-S-M)");
   add_field(0x95, "CODE-F1     (A-F1)");
   add_field(0x96, "CODE-F2     (A-F2)");
@@ -144,13 +145,16 @@ int main(int argc, char *argv[])
   add_field(0x91, "CODE-SCR-UP (A-F12)");
   add_field(0x93, "CODE-SCR-DN (A-F11)");
   add_field(0x87, "CODE-CANCEL (A-Esc)");
+  add_field(0x9f, "CODE-CANCEL (A-F10)");
   add_field(0x8a, "CODE-RETURN (A-R)");
   add_field(0x8b, "CODE-DOWN   (A-down)");
   add_field(0xfa, "CODE-z      (A-z)");
   add_field(0xda, "CODE-Z      (A-Z)");
-  add_field(0x8c, "CODE-NEXT-PG (A-PgDn)");
-  add_field(0x81, "SHIFT-TAB   (S-TAB)");
+  add_field(0x8C, "CODE-NEXT-PG (A-PgDn)");
+  add_field(0x81, "SHIFT-TAB    (S-TAB)");
   add_field(0x85, "CODE-PREV-PG (A-PgUp)");
+  add_field(0xf0, "CODE-p       (A-p)");
+  add_field(0xd0, "CODE-P       (A-P)");
   //add_field(0x83, "UNUSED      (none)");
   //add_field(0x84, "UNUSED      (none)");
   //add_field(0x85, "UNUSED      (none)");
