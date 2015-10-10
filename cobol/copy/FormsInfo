@@ -89,6 +89,7 @@
            03  F-EDRUNNINGAMOUNT      PIC Z(5)9.99-.
 
            03  F-INDEX                BINARY-SHORT VALUE 1.
+           03  F-INDEXSAVE            BINARY-SHORT VALUE 1.
            03  F-FXNO                 BINARY-SHORT VALUE 1.
            03  F-NO                   BINARY-SHORT VALUE 1.
            03  F-ILED                 BINARY-SHORT VALUE 7.

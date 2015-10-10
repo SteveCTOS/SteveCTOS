@@ -1950,10 +1950,10 @@
               
            PERFORM ERROR1-020
            PERFORM ERROR-020.
-           IF F-EXIT-CH = X"19" OR = X"1F" OR = X"9B"
+           IF F-EXIT-CH = X"19" OR = X"1F" OR = X"9B" OR = X"C7"
              IF F-NAMEFIELDRED1 NOT = "*" AND NOT = "Q" AND NOT = "R"
                 GO TO GET-010.
-           IF F-EXIT-CH = X"9B" OR = X"1F" OR = X"15"
+           IF F-EXIT-CH = X"9B" OR X"C7" OR = X"1F" OR = X"15"
                 PERFORM CHECK-PASSWORD
             IF WS-PASSWORD-VALID = "N"
                GO TO GET-010.
@@ -1976,8 +1976,9 @@
                 GO TO GET-999.
       **********************************************************
       * 'CODE-GO' KEY, TO FIND OLD ORDER, PENDING STOCK & PULL *
+      * <ALT-G> = X"C7"    <ALT-g> = X"9B"                     *
       **********************************************************
-           IF F-EXIT-CH = X"9B"
+           IF F-EXIT-CH = X"9B" OR = X"C7"
                 MOVE "          " TO ALPHA-RATE
                 MOVE F-NAMEFIELDRED7 TO ALPHA-RATE
                 PERFORM DECIMALISE-RATE
@@ -2125,7 +2126,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO GET-010.
-           IF F-EXIT-CH = X"19" OR = X"9B"
+           IF F-EXIT-CH = X"19" OR = X"9B" OR = X"C7"
             IF F-NAMEFIELDRED1 = "*"
              IF WS-NEWORDER = "Y"
                 MOVE "ORDER NOT FOUND IN THE SYSTEM, CAN'T DISPLAY."
@@ -3439,6 +3440,21 @@
        RSB-999.
             EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1 < 7
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
             IF WS-ABOVE-BODY = " "
@@ -3447,10 +3463,15 @@
             MOVE 1 TO SUB-1 SUB-2 SUB-3.
        FILL-005.
             PERFORM ERROR-020.
+            MOVE 2710 TO POS
+            DISPLAY
+            "PRESS <ALT-Z> TO GO INTO ZOOMBOX MODE TO CALL UP STOCKINQ."
+               AT POS.
             MOVE 2810 TO POS
             DISPLAY
              "PRESS <ALT-F12> TO SWITCH BETWEEN SHOWING COSTS OR NOT."
                AT POS.
+               
             MOVE 3010 TO POS
             DISPLAY "    BODY LINE: " AT POS
             ADD 15 TO POS
@@ -3512,6 +3533,7 @@
                 GO TO FILL-005.
       *<CODE-m> = GO TO MIDDLE
            IF F-EXIT-CH = X"ED" OR = X"CD" OR = X"6D"
+                     OR = X"0F" OR = X"8F"
              IF SUB-25 > 10
                 MOVE SUB-25 TO SUB-1
                 COMPUTE SUB-1 = SUB-1 / 2
@@ -3531,12 +3553,21 @@
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO FILL-005.
 
-      *<CODE-Z> = GO INTO ZOOMBOX MODE
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
            IF F-EXIT-CH = X"FA" OR = X"DA"
-                PERFORM ZB-005 THRU ZB-040
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
                 CALL WS-STOCK-INQUIRY USING WS-LINKAGE
                 CANCEL WS-STOCK-INQUIRY
-                PERFORM ZB-050
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FIND-010 THRU FIND-020
+                PERFORM CALC-POS-OF-CURSOR
                 GO TO FILL-005.
 
             IF F-EXIT-CH = X"01" AND F-INDEX = 1
@@ -5595,7 +5626,7 @@
                GO TO RIR-999.
            IF INCR-PRINTED = "P"
             IF F-EXIT-CH NOT = X"9B" AND NOT = X"1F" AND NOT = X"17"
-                     AND NOT = X"15"
+                     AND NOT = X"15" AND NOT = X"C7"
              MOVE "THE ORDER IS IN THE STORE READY FOR PULLING, DON'T"
              TO WS-MESSAGE
              PERFORM ERROR1-000
@@ -6438,7 +6469,7 @@
               GO TO RSTT-999.
            IF STTR-TYPE NOT = 4
               GO TO RSTT-010.
-           IF F-EXIT-CH = X"9B"
+           IF F-EXIT-CH = X"9B" OR = X"C7"
               MOVE "*" TO B-PULL (SUB-1).
            MOVE STTR-TRANSACTION-NUMBER TO B-STTRANS (SUB-1).
            MOVE STTR-STOCK-NUMBER       TO B-STOCKNUMBER (SUB-1)
@@ -6822,7 +6853,8 @@
                 MOVE 15                TO F-CBFIELDLENGTH
                 PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE 1 TO SUB-1
+            IF SUB-1 NOT > 0
+                MOVE 1 TO SUB-1.
             PERFORM SCROLL-NEXT
             PERFORM SCROLL-PREVIOUS
             PERFORM CHECK-DISCOUNT.

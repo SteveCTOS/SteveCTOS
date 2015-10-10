@@ -187,7 +187,7 @@
            03  WS-INVOICENUM    PIC X(10).
        01  WS-PRINTER-INFO.
            03  WS-PRN-FIL     PIC X(8) VALUE " ".
-           03  WS-PRN-NAME    PIC X(12) VALUE " ".
+           03  WS-PRN-NAME    PIC X(20) VALUE " ".
        01  JOURNAL-DATA.
            03  WS-JRN.
                05  WS-JRN-1STCHAR   PIC X(2) VALUE "PI".
@@ -465,7 +465,7 @@
        GET-001.
             MOVE "Printer:"   TO WS-PRN-FIL
             MOVE Ws-Printer   To WS-PRN-NAME
-            MOVE 0458 TO POS
+            MOVE 0449 TO POS
             DISPLAY WS-PRINTER-INFO AT POS.
        GET-002.
             PERFORM CLEAR-ORDER-TOTALS.
@@ -1094,11 +1094,13 @@
       * <CODE-p> = X"F0"  <CODE-SHIFT-P> = X"D0"    *
       ***********************************************
             IF F-EXIT-CH = X"F0" OR = X"D0"
-                PERFORM ZB-005 THRU ZB-040
                 PERFORM CHANGE-PRINTER
-                PERFORM ZB-050
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FI-010 THRU FI-020
                 PERFORM GET-001
-                GO TO FILL-012.
+                MOVE 1 TO SUB-1 F-INDEX
+                GO TO FILL-005.
                 
             IF F-EXIT-CH = X"01" AND F-INDEX = 1
                 MOVE "1" TO WS-ABOVE-BODY
@@ -2089,6 +2091,18 @@
             MOVE IMRE-SUPPLIER   TO WS-SUPPLIER.
             MOVE IMRE-INVOICENUM TO WS-INVOICENUM.
        FI-010.
+            MOVE "SUPPLIERNUM" TO F-FIELDNAME.
+            MOVE 11            TO F-CBFIELDNAME.
+            MOVE 10            TO F-CBFIELDLENGTH.
+            MOVE IMRE-SUPPLIER TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "INVOICENUM"    TO F-FIELDNAME.
+            MOVE 10              TO F-CBFIELDNAME.
+            MOVE 10              TO F-CBFIELDLENGTH.
+            MOVE IMRE-INVOICENUM TO F-NAMEFIELD
+            PERFORM WRITE-FIELD-ALPHA.
+
             MOVE "CURRENCY"    TO F-FIELDNAME.
             MOVE 8             TO F-CBFIELDNAME.
             MOVE 4             TO F-CBFIELDLENGTH.
@@ -2097,7 +2111,7 @@
 
             MOVE "EXCHANGERATE"    TO F-FIELDNAME.
             MOVE 12                TO F-CBFIELDNAME.
-            MOVE 10                TO F-CBFIELDLENGTH.
+            MOVE 7                 TO F-CBFIELDLENGTH.
             MOVE IMRE-EXCHANGERATE TO F-EDNAMEFIELDNUMDEC.
             PERFORM WRITE-FIELD-NUM-DEC.
 
@@ -2192,6 +2206,10 @@
             MOVE 6                  TO F-CBFIELDLENGTH
             MOVE IMRE-ONCOSTPERCENT TO F-EDNAMEFIELDPERC
             PERFORM WRITE-FIELD-PERC.
+       FI-020.
+            MOVE 1 TO SUB-1 F-INDEX.
+            PERFORM SCROLL-NEXT
+            PERFORM SCROLL-PREVIOUS.
        FI-999.
             EXIT.
       *
@@ -4692,7 +4710,7 @@
        Copy "PrintReportInfo".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
-       Copy "ZoomBox".
+      * Copy "ZoomBox".
       ******************
       *Mandatory Copies*
       ******************

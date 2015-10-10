@@ -1797,13 +1797,13 @@
                 PERFORM ERROR1-020
                 PERFORM FIND-INFO
                 GO TO GET-150.
-           IF F-EXIT-CH = X"19" OR = X"9B"
+           IF F-EXIT-CH = X"19" OR = X"9B" OR = X"C7"
             IF WS-NEWORDER = "P"
                 MOVE "AN ORDER WITH THIS REF. HAS BEEN ENTERED ALREADY."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO GET-010.
-           IF F-EXIT-CH = X"19" OR = X"9B"
+           IF F-EXIT-CH = X"19" OR = X"9B" OR = X"C7"
             IF WS-NEWORDER = "Y"
                 MOVE "QUOTE NOT FOUND IN THE SYSTEM, CAN'T DISPLAY."
                 TO WS-MESSAGE
@@ -3280,6 +3280,21 @@
        GET-999.
             EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1 < 7
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
             MOVE " " TO WS-ABOVE-BODY
@@ -3288,11 +3303,11 @@
             PERFORM ERROR-020.
             MOVE 2610 TO POS
             DISPLAY
-             "PRESS <ALT-z> TO ENTER ZOOMBOX TO DO A STOCK ENQUIRY."
+             "PRESS <ALT-Z> TO ENTER ZOOMBOX TO DO A STOCK ENQUIRY."
                AT POS.
             MOVE 2710 TO POS
             DISPLAY
-             "PRESS <ALT-g> TO ENTER A TOOLKIT LISTING INTO THE QUOTE."
+             "PRESS <ALT-G> TO ENTER A TOOLKIT LISTING INTO THE QUOTE."
                AT POS.
             MOVE 2810 TO POS
             DISPLAY
@@ -3349,39 +3364,28 @@
                 PERFORM SCROLL-NEXT
                 GO TO FILL-005.
   
-      *<CODE-z> = GO INTO ZOOMBOX MODE - CTOS
-      *     IF F-EXIT-CH = X"FA"
-      *          PERFORM ZB-005 THRU ZB-040
-      *          CALL WS-STOCK-INQUIRY USING WS-LINKAGE
-      *          CANCEL WS-STOCK-INQUIRY
-      *          PERFORM ZB-050
-      *          GO TO FILL-005.
-      *<ALT-z> = GO INTO ZOOMBOX MODE - LINUX
-      * X"FA" = z  X"DA" = Z
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
            IF F-EXIT-CH = X"FA" OR = X"DA"
-                PERFORM END-000
-                MOVE 1 TO F-RC
-                CALL "ZOOMBOX" USING F-RC
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
                 CALL WS-STOCK-INQUIRY USING WS-LINKAGE
-      *          CANCEL WS-STOCK-INQUIRY
-                MOVE "before stop run" TO WS-MESSAGE 
-                PERFORM ERROR-MESSAGE
-                STOP RUN
-                MOVE "after stop run" TO WS-MESSAGE 
-                PERFORM ERROR-MESSAGE
-      *          MOVE F-RC TO WS-MESSAGE 
-      *          PERFORM ERROR-MESSAGE
-      *          CALL "ZOOMBOX" USING F-RC
-                PERFORM OPEN-011 THRU OPEN-020
-                MOVE "after open section" TO WS-MESSAGE 
-                PERFORM ERROR-MESSAGE
-                
+                CANCEL WS-STOCK-INQUIRY
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FIND-010 THRU FIND-020
+                PERFORM CALC-POS-OF-CURSOR
                 GO TO FILL-005.
 
       *****************************************************************
       *CREATE A BLANK SPACE INTO WHICH A NEW LINE OF STOCK IS ENTERED *
       *****************************************************************
       * <CODE-TAB> (CTOS); <ALT-F8> =X"9D" IN LINUX
+      * CTOS SECTION
            IF F-EXIT-CH = X"89" AND SUB-25 < 150
                 PERFORM EMPTY-LINE
                 MOVE SUB-3 TO SUB-1
@@ -3397,8 +3401,8 @@
                 PERFORM SCROLL-NEXT
                 ADD 1 TO SUB-25
                 GO TO FILL-005.
-           IF F-EXIT-CH = X"9D"
-            AND SUB-25 < 150
+      * LINUX SECTION
+           IF F-EXIT-CH = X"9D" AND SUB-25 < 150
                 PERFORM EMPTY-LINE
                 MOVE SUB-3 TO SUB-1
                 ADD 1 TO SUB-25
@@ -3668,7 +3672,7 @@
       ***********************************************************
       * NEW SECTION TO CALL UP TOOLKIT LIST AND QUOTE. <CODE-GO>*
       ***********************************************************
-            IF F-EXIT-CH = X"9B"
+            IF F-EXIT-CH = X"9B" or = x"C7"
              IF SP-1STCHAR NOT = "/"
                 MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER
                                               WS-TOOLKIT-NUMBER
@@ -5940,7 +5944,8 @@
             MOVE 2         TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE 1 TO SUB-1
+            IF SUB-1 NOT > 0
+                MOVE 1 TO SUB-1.
             PERFORM SCROLL-NEXT
             PERFORM SCROLL-PREVIOUS
             PERFORM CHECK-DISCOUNT.
