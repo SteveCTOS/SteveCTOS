@@ -236,9 +236,10 @@
        Procedure Division Using Ws-Linkage.
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
-           PERFORM OPEN-FILES
+           PERFORM OPEN-FILES.
            PERFORM CLEAR-SCREEN.
        CONTROL-010.
+           PERFORM CLEAR-SCREEN.
            PERFORM CLEAR-FIELDS.
            PERFORM ERROR1-020
            PERFORM DISPLAY-FORM.
