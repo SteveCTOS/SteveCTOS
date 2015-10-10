@@ -1226,6 +1226,21 @@
        GET-999.
            EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1 < 7
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
       *     IF INCR-PRINTED NOT = "P"
@@ -1242,6 +1257,11 @@
             MOVE " " TO WS-ABOVE-BODY.
             MOVE 1 TO SUB-1 SUB-2.
        FILL-005.
+            MOVE 2710 TO POS
+            DISPLAY
+            "PRESS <ALT-Z> TO GO INTO ZOOMBOX MODE TO CALL UP STOCKINQ."
+               AT POS.
+
             PERFORM ERROR-020
             MOVE 3010 TO POS
             DISPLAY "    BODY LINE: " AT POS
@@ -1295,6 +1315,23 @@
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO SPLIT-STOCK.
             PERFORM FILL-005.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-STOCK-INQUIRY USING WS-LINKAGE
+                CANCEL WS-STOCK-INQUIRY
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FIND-010
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+
             IF F-EXIT-CH = X"01"
              IF B-STOCKNUMBER (SUB-1) = "  "
                 SUBTRACT 1 FROM F-INDEX SUB-1
@@ -1728,6 +1765,82 @@
             GO TO FILL-010.
        FILL-999.
              EXIT.
+      *
+       FIND-INFO SECTION.
+       FIND-010.
+            MOVE "REFNO"    TO F-FIELDNAME.
+            MOVE 5          TO F-CBFIELDNAME.
+            MOVE WS-INVOICE TO F-EDNAMEFIELDNUM.
+            MOVE 7          TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-NUMERIC.
+
+            MOVE "KITDATE"    TO F-FIELDNAME.
+            MOVE 7            TO F-CBFIELDNAME.
+            MOVE WS-ORDERDATE TO SPLIT-DATE.
+            PERFORM CONVERT-DATE-FORMAT.
+            MOVE DISPLAY-DATE TO F-NAMEFIELD
+            MOVE 10           TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "KITORD" TO F-FIELDNAME.
+            MOVE 6        TO F-CBFIELDNAME.
+            MOVE WS-KITQTY   TO F-EDNAMEFIELDKITQTY.
+            MOVE 3        TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-KITQTY.
+
+            MOVE "KITSHPD"  TO F-FIELDNAME.
+            MOVE 7          TO F-CBFIELDNAME.
+            MOVE WS-SHPDQTY TO F-EDNAMEFIELDKITQTY.
+            MOVE 3          TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-KITQTY.
+
+            MOVE "KITNAME"   TO F-FIELDNAME.
+            MOVE 7           TO F-CBFIELDNAME.
+            MOVE WS-KIT-SAVE TO F-NAMEFIELD.
+            MOVE 15          TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE SPACES       TO WS-STDESC
+            MOVE WS-KIT-DESC1 TO WS-DESC1
+            MOVE WS-KIT-DESC2 TO WS-DESC2.
+
+            MOVE "KT-DESC"    TO F-FIELDNAME.
+            MOVE 7            TO F-CBFIELDNAME.
+            MOVE WS-STDESC    TO F-NAMEFIELD.
+            MOVE 40           TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "KITPRICE"   TO F-FIELDNAME.
+            MOVE 8            TO F-CBFIELDNAME.
+            MOVE WS-KIT-PRICE TO F-EDNAMEFIELDAMOUNT.
+            MOVE 9            TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-AMOUNT.
+
+            MOVE "KITCOMMENT"   TO F-FIELDNAME.
+            MOVE 10             TO F-CBFIELDNAME.
+            MOVE WS-KIT-COMMENT TO F-NAMEFIELD.
+            MOVE 40             TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "COPYDESC"             TO F-FIELDNAME
+            MOVE 8                      TO F-CBFIELDNAME
+            MOVE "   B/M COPY NUMBER :" TO F-NAMEFIELD
+            MOVE 20                     TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "COPYNUMBER"     TO F-FIELDNAME
+            MOVE 10               TO F-CBFIELDNAME
+            MOVE INCR-COPY-NUMBER TO F-NAMEFIELD
+            MOVE 2                TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ALPHA.
+
+            IF SUB-1 NOT > 0
+                MOVE 1 TO SUB-1 F-INDEX.
+            PERFORM SCROLL-NEXT
+            PERFORM SCROLL-PREVIOUS.
+
+       FIND-999.
+            EXIT.
       *
        CHANGE-QTY SECTION.
        CQS-010.

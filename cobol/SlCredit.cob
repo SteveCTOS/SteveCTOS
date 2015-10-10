@@ -963,11 +963,31 @@
        GET-999.
             EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1 < 7
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
              MOVE " " TO WS-ABOVE-BODY.
              MOVE 1 TO SUB-1 SUB-2 SUB-3.
        FILL-005.
+            MOVE 2710 TO POS
+            DISPLAY
+            "PRESS <ALT-Z> TO GO INTO ZOOMBOX MODE TO CALL UP STOCKINQ."
+               AT POS.
+
              PERFORM ERROR-020.
              MOVE 3010 TO POS.
              DISPLAY "    BODY LINE: " AT POS.
@@ -1050,12 +1070,15 @@
                 PERFORM ERROR-020
                 PERFORM CHECK-SUB1-TOTAL
                 GO TO FILL-999.
+      **********************************************************
+      * 'ESC' = X"07"; 'CODE-CANCEL' = X"87" ; 'Alt-F10'=X"9F" *
+      **********************************************************
       * <ESC>
             IF F-EXIT-CH = X"07" OR = X"87"
                 AND B-STOCKNUMBER (SUB-1) = " "
                 GO TO FILL-010.
       *<ALT-ESC>
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
                 MOVE SUB-1 TO SUB-7
                 PERFORM CANCEL-TRANSACTION
                 MOVE 1 TO SUB-1
@@ -1063,6 +1086,23 @@
                 PERFORM SCROLL-NEXT
                 PERFORM SCROLL-PREVIOUS
                 GO TO FILL-010.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX          *
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-STOCK-INQUIRY USING WS-LINKAGE
+                CANCEL WS-STOCK-INQUIRY
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FIND-010
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+
             IF F-NAMEFIELD = " "
                GO TO FILL-010.
       *
@@ -1872,7 +1912,8 @@
             MOVE 2         TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE 1 TO SUB-1
+            IF SUB-1 NOT > 0
+                 MOVE 1 TO SUB-1
             PERFORM SCROLL-NEXT
             PERFORM SCROLL-PREVIOUS.
 
