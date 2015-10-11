@@ -2594,7 +2594,7 @@
       *
        CALC-POS-OF-CURSOR SECTION.
        CPOC-005.
-             IF SUB-1 < 7
+             IF SUB-1SAVE < 7
                  GO  TO CPOC-500.
        CPOC-010.
             COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.

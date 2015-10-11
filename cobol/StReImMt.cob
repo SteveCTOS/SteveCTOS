@@ -73,6 +73,7 @@
        77  WS-ORDER-DISC        PIC 9(2)V99 VALUE 0.
        77  WS-DISCOUNT-ENTRY    PIC X(5) VALUE " ".
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
+       77  WS-STOCK-INQUIRY     PIC X(8) VALUE "StMastIq".
        77  WS-ORDER-INQUIRY     PIC X(8) VALUE "StOrStIq".
        77  WS-PORDER-INQUIRY    PIC X(8) VALUE "StOrOrIq".
        77  WS-PERCENT           PIC 9(3)V99 VALUE 0.
@@ -1041,6 +1042,21 @@
        GET-999.
             EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1SAVE < 7
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
             IF WS-ABOVE-BODY NOT = " "
@@ -1066,6 +1082,10 @@
             MOVE 2615 TO POS
             DISPLAY
             "TO SEARCH FOR P/O NUMBER PRESS <ALT-F8>...."
+               AT POS.
+            MOVE 2710 TO POS
+            DISPLAY
+            "PRESS <ALT-Z> TO GO INTO ZOOMBOX MODE TO CALL UP STOCKINQ."
                AT POS.
        FILL-010.
             MOVE "                    " TO F-NAMEFIELD.
@@ -1094,13 +1114,33 @@
       * <CODE-p> = X"F0"  <CODE-SHIFT-P> = X"D0"    *
       ***********************************************
             IF F-EXIT-CH = X"F0" OR = X"D0"
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
                 PERFORM CHANGE-PRINTER
                 PERFORM CLEAR-SCREEN
                 PERFORM DISPLAY-FORM
                 PERFORM FI-010 THRU FI-020
                 PERFORM GET-001
-                MOVE 1 TO SUB-1 F-INDEX
+                PERFORM CALC-POS-OF-CURSOR
                 GO TO FILL-005.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-STOCK-INQUIRY USING WS-LINKAGE
+                CANCEL WS-STOCK-INQUIRY
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FI-010 THRU FI-020
+                PERFORM GET-001
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+
                 
             IF F-EXIT-CH = X"01" AND F-INDEX = 1
                 MOVE "1" TO WS-ABOVE-BODY
@@ -1208,6 +1248,14 @@
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO FILL-010.
        FILL-015.
+            MOVE SPACES TO WS-MESSAGE
+            MOVE 2510 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+            MOVE 2610 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+            MOVE 2710 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+            
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "STOCKNUMBER" TO F-FIELDNAME.
             MOVE 11 TO F-CBFIELDNAME.
