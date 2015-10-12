@@ -70,6 +70,7 @@
        77  WS-AVERAGECOST       PIC 9(8)V99 VALUE 0.
        77  WS-PORDER-PROGRAM    PIC X(8) VALUE "StOrStIq".
        77  WS-PORDERINQ-PROGRAM PIC X(8) VALUE "StOrOrIq".
+       77  WS-STOCK-INQUIRY     PIC X(8) VALUE "StMastIq".
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
        77  WS-PERCENT           PIC 9(2)V99 VALUE 0.
        77  WS-QTY               PIC 9(5) VALUE 0.
@@ -566,6 +567,21 @@
        CAIV-999.
            EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1SAVE < 11
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
              IF WS-ABOVE-BODY NOT = "8" 
@@ -575,7 +591,7 @@
              IF WS-ABOVE-BODY = "2" OR = "8"
                 MOVE " " TO WS-ABOVE-BODY
                 PERFORM SCROLL-NEXT
-                PERFORM SCROLL-PREVIOUS.
+                PERFORM SCROLL-PREVIOUS. 
              PERFORM GET-005.
        FILL-005.
             IF STRE-TRANSACTION-CODE = 3
@@ -589,6 +605,11 @@
              DISPLAY WS-BODY-LINE AT POS.
              PERFORM SCROLL-010.
        FILL-010.
+            MOVE 2710 TO POS
+            DISPLAY
+            "PRESS <ALT-Z> TO GO INTO ZOOMBOX MODE TO CALL UP STOCKINQ."
+               AT POS.
+
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "STOCKNUMBER" TO F-FIELDNAME.
             MOVE 11            TO F-CBFIELDNAME.
@@ -745,8 +766,6 @@
                 GO TO FILL-005.
             MOVE 15 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
-            IF F-NAMEFIELD = " "
-                GO TO FILL-010.
             MOVE F-NAMEFIELD TO B-STOCKNUMBER (SUB-1)
                                 WS-STOCKNUMBER.
             IF B-STOCKNUMBER (SUB-1) = "INQ"
@@ -754,6 +773,36 @@
                 PERFORM CLEAR-SCREEN
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 MOVE " " TO B-STOCKNUMBER (SUB-1)
+                PERFORM DISPLAY-FORM
+                MOVE "TRANSCODE"           TO F-FIELDNAME
+                MOVE 9                     TO F-CBFIELDNAME
+                MOVE 1                     TO F-CBFIELDLENGTH
+                MOVE STRE-TRANSACTION-CODE TO F-NAMEFIELD
+                PERFORM WRITE-FIELD-ALPHA
+                MOVE "TRANSDESC" TO F-FIELDNAME
+                MOVE 9                     TO F-CBFIELDNAME
+                MOVE WS-TRANS-DESC (STRE-TRANSACTION-CODE)
+                     TO F-NAMEFIELD
+                MOVE 20                    TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA
+                
+                PERFORM SCROLL-NEXT
+                PERFORM SCROLL-PREVIOUS
+                PERFORM OPEN-000
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                CLOSE STOCK-MASTER
+                PERFORM CLEAR-SCREEN
+                CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
+      *          MOVE " " TO B-STOCKNUMBER (SUB-1)
                 PERFORM DISPLAY-FORM
                 MOVE "TRANSCODE"           TO F-FIELDNAME
                 MOVE 9                     TO F-CBFIELDNAME
@@ -769,6 +818,9 @@
                 PERFORM SCROLL-NEXT
                 PERFORM SCROLL-PREVIOUS
                 PERFORM OPEN-000
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+            IF F-NAMEFIELD = " "
                 GO TO FILL-010.
        FILL-012.
             PERFORM READ-STOCK.

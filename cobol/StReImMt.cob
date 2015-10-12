@@ -73,6 +73,7 @@
        77  WS-ORDER-DISC        PIC 9(2)V99 VALUE 0.
        77  WS-DISCOUNT-ENTRY    PIC X(5) VALUE " ".
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
+       77  WS-STOCK-INQUIRY     PIC X(8) VALUE "StMastIq".
        77  WS-ORDER-INQUIRY     PIC X(8) VALUE "StOrStIq".
        77  WS-PORDER-INQUIRY    PIC X(8) VALUE "StOrOrIq".
        77  WS-PERCENT           PIC 9(3)V99 VALUE 0.
@@ -187,7 +188,7 @@
            03  WS-INVOICENUM    PIC X(10).
        01  WS-PRINTER-INFO.
            03  WS-PRN-FIL     PIC X(8) VALUE " ".
-           03  WS-PRN-NAME    PIC X(12) VALUE " ".
+           03  WS-PRN-NAME    PIC X(20) VALUE " ".
        01  JOURNAL-DATA.
            03  WS-JRN.
                05  WS-JRN-1STCHAR   PIC X(2) VALUE "PI".
@@ -465,7 +466,7 @@
        GET-001.
             MOVE "Printer:"   TO WS-PRN-FIL
             MOVE Ws-Printer   To WS-PRN-NAME
-            MOVE 0458 TO POS
+            MOVE 0449 TO POS
             DISPLAY WS-PRINTER-INFO AT POS.
        GET-002.
             PERFORM CLEAR-ORDER-TOTALS.
@@ -1041,6 +1042,21 @@
        GET-999.
             EXIT.
       *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1SAVE < 7
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
+           EXIT.
+      *
        FILL-BODY SECTION.
        FILL-000.
             IF WS-ABOVE-BODY NOT = " "
@@ -1066,6 +1082,10 @@
             MOVE 2615 TO POS
             DISPLAY
             "TO SEARCH FOR P/O NUMBER PRESS <ALT-F8>...."
+               AT POS.
+            MOVE 2710 TO POS
+            DISPLAY
+            "PRESS <ALT-Z> TO GO INTO ZOOMBOX MODE TO CALL UP STOCKINQ."
                AT POS.
        FILL-010.
             MOVE "                    " TO F-NAMEFIELD.
@@ -1094,11 +1114,33 @@
       * <CODE-p> = X"F0"  <CODE-SHIFT-P> = X"D0"    *
       ***********************************************
             IF F-EXIT-CH = X"F0" OR = X"D0"
-                PERFORM ZB-005 THRU ZB-040
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
                 PERFORM CHANGE-PRINTER
-                PERFORM ZB-050
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FI-010 THRU FI-020
                 PERFORM GET-001
-                GO TO FILL-012.
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1   TO SUB-1SAVE
+                MOVE F-INDEX TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-STOCK-INQUIRY USING WS-LINKAGE
+                CANCEL WS-STOCK-INQUIRY
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM FI-010 THRU FI-020
+                PERFORM GET-001
+                PERFORM CALC-POS-OF-CURSOR
+                GO TO FILL-005.
+
                 
             IF F-EXIT-CH = X"01" AND F-INDEX = 1
                 MOVE "1" TO WS-ABOVE-BODY
@@ -1206,6 +1248,14 @@
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO FILL-010.
        FILL-015.
+            MOVE SPACES TO WS-MESSAGE
+            MOVE 2510 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+            MOVE 2610 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+            MOVE 2710 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+            
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "STOCKNUMBER" TO F-FIELDNAME.
             MOVE 11 TO F-CBFIELDNAME.
@@ -2089,6 +2139,18 @@
             MOVE IMRE-SUPPLIER   TO WS-SUPPLIER.
             MOVE IMRE-INVOICENUM TO WS-INVOICENUM.
        FI-010.
+            MOVE "SUPPLIERNUM" TO F-FIELDNAME.
+            MOVE 11            TO F-CBFIELDNAME.
+            MOVE 10            TO F-CBFIELDLENGTH.
+            MOVE IMRE-SUPPLIER TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "INVOICENUM"    TO F-FIELDNAME.
+            MOVE 10              TO F-CBFIELDNAME.
+            MOVE 10              TO F-CBFIELDLENGTH.
+            MOVE IMRE-INVOICENUM TO F-NAMEFIELD
+            PERFORM WRITE-FIELD-ALPHA.
+
             MOVE "CURRENCY"    TO F-FIELDNAME.
             MOVE 8             TO F-CBFIELDNAME.
             MOVE 4             TO F-CBFIELDLENGTH.
@@ -2097,7 +2159,7 @@
 
             MOVE "EXCHANGERATE"    TO F-FIELDNAME.
             MOVE 12                TO F-CBFIELDNAME.
-            MOVE 10                TO F-CBFIELDLENGTH.
+            MOVE 7                 TO F-CBFIELDLENGTH.
             MOVE IMRE-EXCHANGERATE TO F-EDNAMEFIELDNUMDEC.
             PERFORM WRITE-FIELD-NUM-DEC.
 
@@ -2192,6 +2254,10 @@
             MOVE 6                  TO F-CBFIELDLENGTH
             MOVE IMRE-ONCOSTPERCENT TO F-EDNAMEFIELDPERC
             PERFORM WRITE-FIELD-PERC.
+       FI-020.
+            MOVE 1 TO SUB-1 F-INDEX.
+            PERFORM SCROLL-NEXT
+            PERFORM SCROLL-PREVIOUS.
        FI-999.
             EXIT.
       *
@@ -4692,7 +4758,7 @@
        Copy "PrintReportInfo".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
-       Copy "ZoomBox".
+      * Copy "ZoomBox".
       ******************
       *Mandatory Copies*
       ******************

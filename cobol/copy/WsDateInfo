@@ -1,5 +1,6 @@
        77  POS                  PIC 9(4) VALUE 0.
        77  SUB-1                PIC S9(5) VALUE 0.
+       77  SUB-1SAVE            PIC S9(5) VALUE 0.
        77  SUB-2                PIC S9(5) VALUE 0.
        77  SUB-3                PIC S9(5) VALUE 0.
        77  SUB-4                PIC S9(5) VALUE 0.
