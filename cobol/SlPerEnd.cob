@@ -96,58 +96,40 @@
            03  WS-RESTOFACCOUNT    PIC X(6).
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC 9(2) COMP-X.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC 9(2) COMP-X.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC 9(2) COMP-X.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1   PIC 99.
-      *     03  WS-STTRANS-ST2   PIC X.
        01  WS-STTRANSLY-STATUS.
            03  WS-STTRANSLY-ST1   PIC 99.
-      *     03  WS-STTRANSLY-ST2   PIC X.
        01  WS-OUTORD-STATUS.
            03  WS-OUTORD-ST1   PIC 99.
-      *     03  WS-OUTORD-ST2   PIC 9(2) Comp-X.
        01  WS-SALES-STATUS.
            03  WS-SALES-ST1   PIC 99.
-      *     03  WS-SALES-ST2   PIC X.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
        01  WS-DISTRIBUTION-STATUS.
            03  WS-DISTRIBUTION-ST1   PIC 99.
-      *     03  WS-DISTRIBUTION-ST2   PIC X.
        01  WS-IMPRECEIPT-STATUS.
            03  WS-IMPRECEIPT-ST1   PIC 99.
-      *     03  WS-IMPRECEIPT-ST2   PIC X.
        01  WS-SOLDBY-STATUS.
            03  WS-SOLDBY-ST1     PIC 99.
-      *     03  WS-SOLDBY-ST2     PIC X.
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1   PIC 99.
-      *     03  WS-INCR-ST2   PIC X.
        01  WS-INCR-LY-STATUS.
            03  WS-INCR-LY-ST1   PIC 99.
-      *     03  WS-INCR-LY-ST2   PIC 9(2) COMP-X.
        01  WS-STKRECEIPT-STATUS.
            03  WS-STK-ST1     PIC 99.
-      *     03  WS-STK-ST2     PIC X.
        01  WS-GLMAST-STATUS.
            03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC 9(2) COMP-X.
        01  WS-GLTRANS-STATUS.
            03  WS-GLTRANS-ST1   PIC 99.
-      *     03  WS-GLTRANS-ST2   PIC 9(2) COMP-X.
        01  WS-GLPARAMETER-STATUS.
            03  WS-GLPARAMETER-ST1   PIC 99.
-      *     03  WS-GLPARAMETER-ST2   PIC 9(2) COMP-X.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-MONTH-DESCRIPTIONS.
            03  FILLER          PIC X(4) VALUE "MAR ".
            03  FILLER          PIC X(4) VALUE "APR ".
@@ -242,7 +224,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM CONTROL-900.
            IF WS-ANSWER1 NOT = "W" AND NOT = "M" AND NOT = "Y"
@@ -279,7 +260,6 @@
                PERFORM CTOS-ACCEPT
                MOVE CDA-DATA TO WS-ANSWER2.
 
-      *        ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-ANSWER2 = "Y"
@@ -315,16 +295,15 @@
                AT POS.
            MOVE 755 TO POS.
 
-             MOVE ' '       TO CDA-DATA
-             MOVE 1         TO CDA-DATALEN
-             MOVE 4         TO CDA-ROW
-             MOVE 54        TO CDA-COL
-             MOVE CDA-WHITE TO CDA-COLOR
-             MOVE 'F'       TO CDA-ATTR
-             PERFORM CTOS-ACCEPT
-             MOVE CDA-DATA TO WS-ANSWER3.
+           MOVE ' '       TO CDA-DATA
+           MOVE 1         TO CDA-DATALEN
+           MOVE 4         TO CDA-ROW
+           MOVE 54        TO CDA-COL
+           MOVE CDA-WHITE TO CDA-COLOR
+           MOVE 'F'       TO CDA-ATTR
+           PERFORM CTOS-ACCEPT
+           MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-ANSWER3 = "N"
@@ -349,16 +328,15 @@
                AT POS.
            MOVE 855 TO POS.
 
-             MOVE ' '       TO CDA-DATA
-             MOVE 1         TO CDA-DATALEN
-             MOVE 5         TO CDA-ROW
-             MOVE 54        TO CDA-COL
-             MOVE CDA-GREEN TO CDA-COLOR
-             MOVE 'F'       TO CDA-ATTR
-             PERFORM CTOS-ACCEPT
-             MOVE CDA-DATA TO WS-ANSWER3.
+           MOVE ' '       TO CDA-DATA
+           MOVE 1         TO CDA-DATALEN
+           MOVE 5         TO CDA-ROW
+           MOVE 54        TO CDA-COL
+           MOVE CDA-GREEN TO CDA-COLOR
+           MOVE 'F'       TO CDA-ATTR
+           PERFORM CTOS-ACCEPT
+           MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-020.
            IF WS-ANSWER3 = "N"
@@ -409,13 +387,12 @@
              MOVE 'F'       TO CDA-ATTR
              PERFORM CTOS-ACCEPT
              MOVE CDA-DATA TO WS-ANSWER3
-
-      *       ACCEPT WS-ANSWER3 AT POS
              GO TO CONTROL-900.
-           PERFORM READ-SL-PARAMETER.
-           PERFORM WRITE-DIST-TO-GL.
-           PERFORM CLEAR-WEEK-DIST-AMTS.
-           PERFORM CLEAR-WEEK-SALES-AMTS.
+
+            PERFORM READ-SL-PARAMETER.
+            PERFORM WRITE-DIST-TO-GL.
+            PERFORM CLEAR-WEEK-DIST-AMTS.
+            PERFORM CLEAR-WEEK-SALES-AMTS.
       ****************************************************************
       *New section added to see how many times and when the week-end *
       *processes are done.                                           *
@@ -441,7 +418,7 @@
            MOVE 2910 TO POS
            DISPLAY "Press 'NEXT' or 'GO' To End The Program. " AT POS.
        CONTROL-051.
-           MOVE 3010 TO POS.
+             MOVE 3010 TO POS.
 
              MOVE ' '       TO CDA-DATA
              MOVE 1         TO CDA-DATALEN
@@ -451,8 +428,6 @@
              MOVE 'F'       TO CDA-ATTR
              PERFORM CTOS-ACCEPT
              MOVE CDA-DATA TO WS-ANSWER3.
-
-      *     ACCEPT WS-ANSWER3 AT POS.
 
            IF W-ESCAPE-KEY = 1 OR 2
                GO TO CONTROL-900
@@ -465,10 +440,11 @@
            DISPLAY "There Are 14 Data Files To Process." AT POS
               ELSE
            DISPLAY "There Are 16 Data Files To Process." AT POS.
-           
+
            PERFORM CHECK-WEEK-END-DONE.
            PERFORM CGP-005 THRU CGP-010.
            PERFORM CGP-900. 
+
            PERFORM PARAMETERS.
            PERFORM DEBTORS.
            PERFORM STOCK.
@@ -509,7 +485,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 1 OR 2
                GO TO CONTROL-900
            ELSE
@@ -529,6 +504,9 @@
        CRS-010.
             READ INCR-REGISTER NEXT
                AT END
+               MOVE 1610 TO POS
+               DISPLAY "Checking Credit Notes are Printed ... Done"
+               AT POS
                GO TO CRS-900.
             IF INCR-TRANS = 1
                MOVE 1410 TO POS
@@ -752,8 +730,16 @@
                 MOVE 1610 TO POS
                 DISPLAY "Press 'NEXT' Or 'GO' To End The Program."
                 AT POS
-                MOVE 3010 TO POS
-                ACCEPT WS-ANSWER3 AT POS
+                MOVE 3010 TO POS                
+
+                MOVE ' '       TO CDA-DATA
+                MOVE 1         TO CDA-DATALEN
+                MOVE 13        TO CDA-ROW
+                MOVE 70        TO CDA-COL
+                MOVE CDA-GREEN TO CDA-COLOR
+                MOVE 'F'       TO CDA-ATTR
+                PERFORM CTOS-ACCEPT
+                MOVE CDA-DATA TO WS-ANSWER3
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE PARAMETER-FILE
                 EXIT PROGRAM
@@ -761,6 +747,7 @@
                MOVE 3010 TO POS
                DISPLAY " " AT 3079 WITH BELL
                GO TO PAR-010.
+               
             IF PA-CURRENT-PER-MM NOT = 2
              IF WS-ANSWER1 = "Y"
                 MOVE 1510 TO POS
@@ -770,7 +757,15 @@
                 DISPLAY "Press 'NEXT' Or 'GO' To End The Program."
                 AT POS
                 MOVE 3010 TO POS
-                ACCEPT WS-ANSWER3 AT POS
+
+                MOVE ' '       TO CDA-DATA
+                MOVE 1         TO CDA-DATALEN
+                MOVE 13        TO CDA-ROW
+                MOVE 70        TO CDA-COL
+                MOVE CDA-GREEN TO CDA-COLOR
+                MOVE 'F'       TO CDA-ATTR
+                PERFORM CTOS-ACCEPT
+                MOVE CDA-DATA TO WS-ANSWER3
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE PARAMETER-FILE
                 EXIT PROGRAM
@@ -793,7 +788,6 @@
                 DISPLAY "Press 'NEXT' or 'GO' To Finish The Program."
                     AT POS
                 MOVE 3010 TO POS
-
                 MOVE ' '       TO CDA-DATA
                 MOVE 1         TO CDA-DATALEN
                 MOVE 27        TO CDA-ROW
@@ -801,9 +795,7 @@
                 MOVE CDA-WHITE TO CDA-COLOR
                 MOVE 'F'       TO CDA-ATTR
                 PERFORM CTOS-ACCEPT
-                MOVE CDA-DATA TO WS-ANSWER3.
-
-      *          ACCEPT WS-ANSWER3 AT POS
+                MOVE CDA-DATA TO WS-ANSWER3
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE PARAMETER-FILE
                 EXIT PROGRAM
@@ -1334,6 +1326,8 @@
            READ INCR-REGISTER NEXT WITH LOCK
                AT END
                GO TO DIR-900.
+           IF WS-INCR-ST1 = 11 OR = 23
+               GO TO DIR-900.
            MOVE 2910 TO POS.
            DISPLAY "Register Being Processed" AT POS.
            ADD 26 TO POS.
@@ -1354,7 +1348,6 @@
       * AT YEAR END THE INV, C/NOTE, REPAIR & B/M TRANS WILL BE COPIED *
       * INTO A NEW SLREGLY FILE AND DELETED FROM THE CURRENT FILE.     *
       ******************************************************************
-      
            IF WS-ANSWER1 = "M"
             IF INCR-TRANS = 1 OR = 3 OR = 4 OR = 6 OR = 7 OR = 8
                GO TO DIR-010.
@@ -1740,8 +1733,9 @@
            READ GLPARAMETER-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               DISPLAY "NO GLPARAMETER RECORD!!!!"
-               CALL "LOCKKBD" USING F-FIELDNAME
+               MOVE "NO GLPARAMETER RECORD ON CGP-010 READ"
+                   TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                STOP RUN.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1

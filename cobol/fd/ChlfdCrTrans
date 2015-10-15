@@ -6,11 +6,12 @@
            03  CRTR-PERIOD.
                05  CRTR-FUTURE      PIC X.
                05  CRTR-NO          PIC 9(2).
-           03  CRTR-ACC-NUMBER      PIC 9(7).
+           03  CRTR-ACC-DATE.
+               05  CRTR-ACC-NUMBER  PIC 9(7).
+               05  CRTR-DATE        PIC 9(8).
            03  CRTR-REFERENCE       PIC X(10).
            03  CRTR-INV-NO          PIC X(10).
            03  CRTR-DNOTE-NO        PIC X(10).
-           03  CRTR-DATE            PIC 9(8).
            03  CRTR-DUE-DATE        PIC 9(8).
            03  CRTR-LOC-AMT         PIC S9(7)V99.
            03  CRTR-VAT-AMT         PIC S9(7)V99.

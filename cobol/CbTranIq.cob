@@ -24,7 +24,7 @@
            03  FILLER           PIC X(132).
       *
        WORKING-STORAGE SECTION.
-       77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "CBMastIq".
+       77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "CbMastIq".
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-PERIOD-SAVE       PIC 99 VALUE 0.
        77  WS-NO-OF-TRANS       PIC 9(4) VALUE 0.

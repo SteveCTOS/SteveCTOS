@@ -158,6 +158,7 @@
       *
        GET-DATA SECTION.
        GET-000.
+            PERFORM OPEN-009.
             MOVE 0 TO WS-ORIG-AMT
                       WS-REMAIN-AMT.
             MOVE 0   TO WS-ACCOUNT-NUMBER
@@ -251,6 +252,11 @@
            IF WS-TYPE = 0
                MOVE 01           TO WS-DD
                MOVE WS-DATE      TO SPLIT-DATE
+               SUBTRACT 1 FROM SPLIT-MM
+            IF SPLIT-MM < 1
+               MOVE 1 TO SPLIT-MM
+               SUBTRACT 1 FROM SPLIT-YY.
+           IF WS-TYPE = 0
                PERFORM CONVERT-DATE-FORMAT
                MOVE DISPLAY-DATE TO F-NAMEFIELD
                MOVE 10           TO F-CBFIELDLENGTH
@@ -334,16 +340,19 @@
            MOVE "Y" TO WS-NEWINPUT.
            MOVE 0   TO SUB-2.
        RDTR-005.
-           IF WS-TYPE NOT = 0
+           IF WS-TYPE > 0
               MOVE WS-TYPE TO CRTR-TYPE
            ELSE
-              MOVE 01      TO CRTR-TYPE.
+              MOVE 1       TO CRTR-TYPE.
            MOVE 1          TO CRTR-TRANS.
            START CRTR-FILE KEY NOT < CRTR-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 = 23 OR 35 OR 49
                 GO TO RDTR-999.
            IF WS-CRTRANS-ST1 NOT = 0
+              MOVE "CR-TRANS NOT = 0 ON START, GOING TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
               GO TO RDTR-005.
        RDTR-010.
            READ CRTR-FILE NEXT
@@ -371,12 +380,12 @@
            IF WS-ACCOUNT-NUMBER NOT = 0
             IF CRTR-ACC-NUMBER NOT = WS-ACCOUNT-NUMBER
                MOVE 2910 TO POS
-               DISPLAY "Reading Next Valid Transaction...." AT POS
+               DISPLAY "Reading Next Valid Acc Transaction...." AT POS
                GO TO RDTR-010.
            IF WS-SALEDATE NOT = 0
             IF CRTR-DATE < WS-SALEDATE
                MOVE 2910 TO POS
-               DISPLAY "Reading Next Valid Transaction...." AT POS
+               DISPLAY "Reading Next Valid Date Transaction...." AT POS
                GO TO RDTR-010.
            PERFORM ERROR-020.
        RDTR-020. 
@@ -585,6 +594,8 @@
            MOVE " " TO PRINT-REC
            MOVE 3 TO LINE-CNT.
        PRR-900.
+           IF LINE-CNT = 66
+               PERFORM PRR-060.
            MOVE "** SUMMARY OF CODES FOR THIS PRINT **" TO PRINT-REC
            WRITE PRINT-REC AFTER 2.
            MOVE "    TYPE           BEGIN       REMAIN" TO PRINT-REC

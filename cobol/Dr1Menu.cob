@@ -38,7 +38,7 @@
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"1B" AND NOT = X"1D"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO GET-010.
-            MOVE 2 TO F-CBFIELDLENGTH
+            MOVE 1 TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA.
             IF F-NAMEFIELD = " "
                 GO TO GET-010.

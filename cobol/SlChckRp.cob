@@ -566,7 +566,7 @@
               PERFORM ERROR-020
               MOVE 2210 TO POS
               DISPLAY WS-MESSAGE AT POS
-              PERFORM ERROR-010
+              PERFORM ERROR-000
               GO TO RBD-900.
            IF WS-INCR-ST1 NOT = 0
              MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."

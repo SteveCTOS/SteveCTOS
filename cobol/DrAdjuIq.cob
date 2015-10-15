@@ -562,6 +562,8 @@
            MOVE " " TO PRINT-REC
            MOVE 3 TO LINE-CNT.
        PRR-900.
+           IF LINE-CNT = 66
+               PERFORM PRR-060.
            MOVE "** SUMMARY OF CODES FOR THIS PRINT **" TO PRINT-REC
            WRITE PRINT-REC AFTER 2.
            MOVE "    TYPE           BEGIN       REMAIN" TO PRINT-REC

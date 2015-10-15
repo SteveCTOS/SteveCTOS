@@ -51,14 +51,11 @@
            03  WS-CURRENCY      PIC X(8).
            03  WS-BAL-OWED      PIC S9(8)V99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1     PIC 99.
-      *     03  WS-CREDITOR-ST2     PIC X.
+           03  WS-CREDITOR-ST1        PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1     PIC 99.
-      *     03  WS-CRTRANS-ST2     PIC X.
+           03  WS-CRTRANS-ST1         PIC 99.
        01  WS-GLPARAMETER-STATUS.
            03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
        01  WS-TYPES.
            03  FILLER           PIC X(7) VALUE "INVOICE".
            03  FILLER           PIC X(7) VALUE "PAYMENT".
@@ -216,7 +213,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -239,7 +235,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-RANGE2 = " "
@@ -264,7 +259,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-ANSWER = "A" OR = "D" OR = "C"
@@ -294,7 +288,7 @@
            MOVE WS-RANGE1 TO CRTR-ACC-NUMBER.
            START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER
                INVALID KEY NEXT SENTENCE.
-           IF WS-CRTRANS-ST1 NOT = 0
+           IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
                MOVE 0 TO WS-CRTRANS-ST1
                MOVE "CR-TRANS FILE ERROR IN START, 'ESC' TO RETRY."
                TO WS-MESSAGE
@@ -304,7 +298,7 @@
        PR-002.
            READ CRTR-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-CRTRANS-ST1 = 10
+           IF WS-CRTRANS-ST1 = 10 OR = 23
                  PERFORM SUBTOTALS
                GO TO PR-999.
            IF WS-CRTRANS-ST1 NOT = 0
@@ -542,7 +536,6 @@
        OPEN-FILES SECTION.
        OPEN-005.
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE  FROM DATE
            MOVE WS-DATE      TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H-DATE.

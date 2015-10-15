@@ -519,12 +519,14 @@
        RIR-005.
            READ INCR-REGISTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
                MOVE 0 TO INCR-INVOICE
                GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
                MOVE "REGISTER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RIR-005.
            IF INCR-TRANS NOT = 4
@@ -801,7 +803,17 @@
             "Run Finished, Press <RETURN> to EXIT The Program.    "
              AT POS
            ADD 50 TO POS
-           ACCEPT WS-SOLDBY AT POS
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-SOLDBY.
+           
+      *     ACCEPT WS-SOLDBY AT POS
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
        END-900.

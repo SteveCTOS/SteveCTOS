@@ -1,18 +1,11 @@
 11
 HKY-MONTH
-2
-3
-17
-
-
-#04
-#04
 3
 2
 
 21
 XX
-/ctools/csc/SL21
+/ctools/hky/SL21
 
 
 
@@ -61,7 +54,7 @@ XX
 Y
 
 
-
+T
 
 
 #04
@@ -72,13 +65,16 @@ XX
 /ctools/hky/SLP22
 
 
+
 3
 D
 Y
 
 
+
 #04
 #04
+1
 1
 16
 XX
@@ -96,7 +92,10 @@ XX
 11
 XX
 /ctools/hky/Sl11
-01000019999999AD
+0100001
+9999999
+A
+D
 
 
 15
@@ -136,7 +135,6 @@ XX
 
 
 
-
 #04
 4
 
@@ -151,6 +149,7 @@ TRESPASS
 3
 XX
 /ctools/hky/Sl3
+
 Y
 
 

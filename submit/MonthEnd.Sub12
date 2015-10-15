@@ -1,18 +1,11 @@
 12
 KRS-MONTH
-2
-3
-17
-
-
-#04
-#04
 3
 2
 
 21
 XX
-/ctools/csc/SL21
+/ctools/krs/SL21
 
 
 
@@ -61,28 +54,31 @@ XX
 Y
 
 
-
-
+T
 
 #04
 3
-
 22
 XX
 /ctools/krs/SLP22
+
+
 
 
 3
 D
 Y
 
+
 #04
 #04
 1
+1
 16
-XXXX
+XX
 /ctools/krs/DR16
-XXXX
+XX
+
 
 
 #1F
@@ -95,7 +91,10 @@ XXXX
 11
 XX
 /ctools/krs/Sl11
-01000019999999AD
+0100001
+9999999
+A
+D
 
 
 15
@@ -134,11 +133,8 @@ XX
 
 
 
-
-
 #04
 4
-
 19
 M
 Y
@@ -151,6 +147,7 @@ TRESPASS
 3
 XX
 /ctools/krs/Sl3
+
 Y
 
 

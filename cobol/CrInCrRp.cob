@@ -130,7 +130,7 @@
        CONTROL-003.
            Copy "PrinterAcceptCr".
        CONTROL-010.
-           PERFORM OPEN-013.
+           PERFORM OPEN-012 THRU OPEN-013.
            PERFORM GET-DATE.
            PERFORM OPEN-FILES.
            PERFORM ERROR-020.
@@ -157,7 +157,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PERIOD-ACCEPT.
 
-      *     ACCEPT WS-PERIOD-ACCEPT AT POS.
            IF WS-PERIOD-ACCEPT = " "
                GO TO GET-010.
            MOVE WS-PERIOD-ACCEPT TO ALPHA-RATE
@@ -189,7 +188,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-JRN-ACCEPT.
 
-      *     ACCEPT WS-JRN-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-005.
            IF WS-JRN-ACCEPT = " "
@@ -215,7 +213,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DET-SUMM.
 
-      *     ACCEPT WS-DET-SUMM AT POS.
            IF WS-DET-SUMM NOT = "D" AND NOT = "S"
                GO TO GET-015.
            IF W-ESCAPE-KEY = 4
@@ -618,11 +615,9 @@
            MOVE GL-BEGDATE (SUB-1) TO WS-BEG-DATE
            MOVE GL-ENDDATE (SUB-1) TO WS-END-DATE.
            CLOSE GLPARAMETER-FILE.
-      *     PERFORM OPEN-016.
        OPEN-106.
            MOVE Ws-Co-Name TO CO-NAME.
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE.
            MOVE WS-DATE TO SPLIT-DATE.
            PERFORM CONVERT-DATE-FORMAT.
            MOVE DISPLAY-DATE TO H1-DATE.

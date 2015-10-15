@@ -2710,14 +2710,29 @@
             MOVE 1210 TO POS
             DISPLAY "ENTER YES TO RE-ENTER, NO IS DEFAULT." AT POS
             ADD 40 TO POS
-            MOVE "N" TO WS-ACCEPT
-            DISPLAY WS-ACCEPT AT POS.
-            ACCEPT WS-ACCEPT AT POS.
+
+            MOVE 'N'       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 9         TO CDA-ROW.
+            MOVE 50        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-ACCEPT.
+
             IF WS-ACCEPT = "N"
                 GO TO RSLP-999.
        RSLP-030.
             MOVE 1045 TO POS
-            ACCEPT ALPHA-RATE AT POS
+
+            MOVE ' '       TO CDA-DATA.
+            MOVE 10        TO CDA-DATALEN.
+            MOVE 7         TO CDA-ROW.
+            MOVE 44        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO ALPHA-RATE.
             PERFORM DECIMALISE-RATE
             MOVE NUMERIC-RATE TO WS-VAT-PERC
             GO TO RSLP-020.
@@ -3049,5 +3064,6 @@
        Copy "ErrorMessage".
        Copy "Error1Message".
        Copy "WriteDailyExcep1".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

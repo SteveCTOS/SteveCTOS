@@ -438,8 +438,8 @@
                MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME
                OPEN OUTPUT PRINT-FILE
                
-               MOVE "HERE AT OPEN D TYPE PRINT FILE" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+      *         MOVE "HERE AT OPEN D TYPE PRINT FILE" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                
                GO TO CONT-036.
        CONT-035.
@@ -864,7 +864,17 @@
             MOVE 2910 TO POS
             DISPLAY "ENTER 'Y' TO CONTINUE, 'N' TO EXIT [ ]" AT POS
             ADD 36 TO POS
-            ACCEPT WS-COMPLETE AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 45        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-COMPLETE.
+            
+      *      ACCEPT WS-COMPLETE AT POS.
             IF WS-COMPLETE NOT = "Y" AND NOT = "N"
                GO TO GET-900.
             IF WS-COMPLETE = "N"

@@ -37,13 +37,10 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
        01  WS-CRTRANS-STATUS.
            03  WS-CRTRANS-ST1    PIC 99.
-      *     03  WS-CRTRANS-ST2    PIC X.
        01  WS-GLPARAMETER-STATUS.
            03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
        01  WS-PERIOD.
            03  WS-1ST-CHAR        PIC X.
            03  WS-PER             PIC 99.
@@ -308,19 +305,19 @@
                CLOSE CRTR-FILE
                GO TO RDTR-999.
        RDTR-010.
-           IF F-EXIT-CH NOT = 1
+           IF F-EXIT-CH NOT = 1 AND NOT = 23
              READ CRTR-FILE NEXT
                AT END NEXT SENTENCE.
            IF F-EXIT-CH = 1
              READ CRTR-FILE PREVIOUS
                AT END NEXT SENTENCE.
            IF F-EXIT-CH = 1
-            IF WS-CRTRANS-ST1 = 10
+            IF WS-CRTRANS-ST1 = 10 OR = 23
                MOVE 1 TO F-INDEX
                CLOSE CRTR-FILE
                GO TO RDTR-000.
            IF F-EXIT-CH NOT = 1
-            IF WS-CRTRANS-ST1 = 10
+            IF WS-CRTRANS-ST1 = 10 OR = 23
                MOVE 1 TO F-INDEX
                CLOSE CRTR-FILE
                GO TO RDTR-999.
@@ -412,9 +409,11 @@
        RALT-010.
            READ CRTR-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-CRTRANS-ST1 = 10
+           IF WS-CRTRANS-ST1 = 10 OR = 23
                GO TO RALT-900.
-           IF WS-CRTRANS-ST1 NOT = 0
+           IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
+               MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RALT-010.
            IF CRTR-ACC-NUMBER NOT = CR-ACCOUNT-NUMBER
                GO TO RALT-900.

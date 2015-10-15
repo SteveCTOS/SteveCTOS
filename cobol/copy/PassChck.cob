@@ -88,6 +88,16 @@
                MOVE Ws-OptionSave     TO WS-OPTION
                MOVE W-READ-KEY        TO WS-LASTPASSWORD.
        CP-900.
+      *     MOVE WS-LASTPRIORITY TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE Ws-PriorityNeeded TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+      *     MOVE WS-LASTPASSWORD TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE Ws-PasswordNeeded TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       
            PERFORM ERROR-020.
            MOVE 2901 TO POS
            DISPLAY WS-MESSAGE AT POS.

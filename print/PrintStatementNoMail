@@ -1,5 +1,4 @@
 python fohtotext.py -r statement -T /ctools/spl/$1.temp0.txt /ctools/spl/$1DrNoMalCo$2
-#text2pdf /ctools/spl/$1.temp0.txt -fCourier-Bold -x595 -y842 -l66 -c88 -V27 -H41 > /ctools/spl/$1.temp1.pdf
 text2pdf /ctools/spl/$1.temp0.txt -fCourier-Bold -x595 -y842 -l66 -c88 -V18 -H41 > /ctools/spl/$1.temp1.pdf
 pdftk /ctools/spl/$1.temp1.pdf background /ctools/dev/source/print/StatementOverlay$2.pdf output /ctools/spl/$1DrNoMalCo$2.pdf
 lp -d $3 /ctools/spl/$1DrNoMalCo$2.pdf
