@@ -147,6 +147,8 @@
        COPY "UserFillField".
        COPY "MenuClearScreen".
        COPY "ErrorMessage".
+       Copy "Error1Message".
+       Copy "Error5Message".
        Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

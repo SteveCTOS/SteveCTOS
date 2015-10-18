@@ -79,73 +79,6 @@
             PERFORM FILL-DATA
             GO TO CONT-010.
       *
-       PRINT-PASSWORDS SECTION.
-       PP-010.
-           PERFORM ERROR1-020.
-           MOVE 2701 TO POS
-           DISPLAY WS-MESSAGE AT POS
-           MOVE 2730 TO POS
-           DISPLAY WS-MESSAGE AT POS.
-           
-           MOVE 2720 TO POS
-           DISPLAY "Printing of Passwords in Progress......" AT POS
-           OPEN OUTPUT PRINT-FILE.
-           MOVE WS-CO-NAME TO CO-NAME.
-           MOVE 1 TO SUB-1 WS-1STPRINT.
-           IF MU-OPTION = 0
-              MOVE 1 TO MU-OPTION.
-           START MENU-PASSWORDS KEY NOT < MU-KEY
-              INVALID KEY NEXT SENTENCE.
-           IF WS-MENU-ST1 NOT = 0
-              MOVE "INVALID START, 'CANCEL' TO EXIT." TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PP-999.
-       PP-020.
-           READ MENU-PASSWORDS NEXT
-               AT END NEXT SENTENCE.
-           IF WS-MENU-ST1 = 10
-               MOVE 0 TO WS-MENU-ST1
-               GO TO PP-900.
-           IF WS-MENU-ST1 NOT = 0
-               MOVE 0 TO WS-MENU-ST1
-               GO TO PP-020.
-           IF WS-1STPRINT = "1"
-               WRITE PRINT-REC FROM COMPANY-LINE
-               WRITE PRINT-REC FROM HEAD1-LINE AFTER 1
-               WRITE PRINT-REC FROM HEAD2-LINE AFTER 1
-               MOVE " " TO PRINT-REC
-               WRITE PRINT-REC
-               MOVE 0 TO WS-1STPRINT.
-           WRITE PRINT-REC FROM HEADER-LINE AFTER 1
-           MOVE " " TO PRINT-REC
-           WRITE PRINT-REC.
-       PP-030.
-           IF MU-NUMBER (SUB-1) = "     "
-              GO TO PP-045.
-           MOVE MU-OPTION           TO D-MENU
-           MOVE SUB-1               TO D-PROG-NO
-           MOVE MU-NUMBER (SUB-1)   TO D-PASSWORD
-           MOVE MU-PRIORITY (SUB-1) TO D-PRIORITY
-           WRITE PRINT-REC FROM DETAIL-LINE
-           MOVE " " TO PRINT-REC.
-       PP-040.
-           IF SUB-1 NOT > 34
-               ADD 1 TO SUB-1
-               GO TO PP-030.
-       PP-045.
-           MOVE 1 TO SUB-1.
-           IF F-NAMEFIELD = "XX"
-              GO TO PP-020.
-       PP-900.
-           PERFORM GET-USER-MAIL-NAME
-           PERFORM GET-REPORT-Y2K-DATE
-           PERFORM PRINT-REPORT-INFO.
-           
-           CLOSE PRINT-FILE.
-           PERFORM ERROR1-020.
-       PP-999.
-           EXIT.
-      *
         GET-DATA SECTION.
         GET-000.
            MOVE "N" TO NEW-NO
@@ -243,6 +176,74 @@
             PERFORM WRITE-FIELD-ANALYSIS.
        GET-999.
             EXIT.
+      *
+       PRINT-PASSWORDS SECTION.
+       PP-010.
+           PERFORM ERROR1-020.
+           PERFORM ERROR-020.
+           MOVE 2701 TO POS
+           DISPLAY WS-MESSAGE AT POS
+           MOVE 2730 TO POS
+           DISPLAY WS-MESSAGE AT POS.
+           
+           MOVE 2720 TO POS
+           DISPLAY "Printing of Passwords in Progress......" AT POS
+           OPEN OUTPUT PRINT-FILE.
+           MOVE WS-CO-NAME TO CO-NAME.
+           MOVE 1 TO SUB-1 WS-1STPRINT.
+           IF MU-OPTION = 0
+              MOVE 1 TO MU-OPTION.
+           START MENU-PASSWORDS KEY NOT < MU-KEY
+              INVALID KEY NEXT SENTENCE.
+           IF WS-MENU-ST1 NOT = 0
+              MOVE "INVALID START, 'CANCEL' TO EXIT." TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO PP-999.
+       PP-020.
+           READ MENU-PASSWORDS NEXT
+               AT END NEXT SENTENCE.
+           IF WS-MENU-ST1 = 10
+               MOVE 0 TO WS-MENU-ST1
+               GO TO PP-900.
+           IF WS-MENU-ST1 NOT = 0
+               MOVE 0 TO WS-MENU-ST1
+               GO TO PP-020.
+           IF WS-1STPRINT = "1"
+               WRITE PRINT-REC FROM COMPANY-LINE
+               WRITE PRINT-REC FROM HEAD1-LINE AFTER 1
+               WRITE PRINT-REC FROM HEAD2-LINE AFTER 1
+               MOVE " " TO PRINT-REC
+               WRITE PRINT-REC
+               MOVE 0 TO WS-1STPRINT.
+           WRITE PRINT-REC FROM HEADER-LINE AFTER 1
+           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC.
+       PP-030.
+           IF MU-NUMBER (SUB-1) = "     "
+              GO TO PP-045.
+           MOVE MU-OPTION           TO D-MENU
+           MOVE SUB-1               TO D-PROG-NO
+           MOVE MU-NUMBER (SUB-1)   TO D-PASSWORD
+           MOVE MU-PRIORITY (SUB-1) TO D-PRIORITY
+           WRITE PRINT-REC FROM DETAIL-LINE
+           MOVE " " TO PRINT-REC.
+       PP-040.
+           IF SUB-1 NOT > 34
+               ADD 1 TO SUB-1
+               GO TO PP-030.
+       PP-045.
+           MOVE 1 TO SUB-1.
+           IF F-NAMEFIELD = "XX"
+              GO TO PP-020.
+       PP-900.
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           PERFORM PRINT-REPORT-INFO.
+           
+           CLOSE PRINT-FILE.
+           PERFORM ERROR1-020.
+       PP-999.
+           EXIT.
       *
        DELETE-RECORD SECTION.
        DDR-000.

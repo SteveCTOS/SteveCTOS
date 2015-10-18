@@ -30,6 +30,7 @@
        GET-DATA SECTION.
        GET-010.
             MOVE "                      " TO F-NAMEFIELD
+            MOVE " " TO F-EXIT-CH
             MOVE "SELECTION" TO F-FIELDNAME
             MOVE 9 TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
@@ -122,6 +123,8 @@
        Copy "UserFillField".
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
+       Copy "Error5Message".
        Copy "DisplayProgNum".
        Copy "CTOSCobolAccept".
       *

@@ -102,6 +102,6 @@
           03 WS-CRREMITTRANS  PIC X(40).
           03 WS-DEBTOROLD     PIC X(40).
           03 WS-STOCKLOOKUP   PIC X(40).
-          03 WS-CRMASTEROLD   PIC X(40).
+          03 WS-CRMASTEROLD       PIC X(40).
           03 WS-COPRINTERSREMOTE  PIC X(40).
       *

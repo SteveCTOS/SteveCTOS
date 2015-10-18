@@ -22,10 +22,8 @@
        77  WS-TRANSNO         PIC 9(6) VALUE 0.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1   PIC 99.
-      *     03  WS-DRTRANS-ST2   PIC X.
        01  WS-DEBTOR-STATUS.
            03  WS-DR-ST1   PIC 99.
-      *     03  WS-DR-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -719,7 +717,7 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
-           IF WS-DRTRANS-ST1 NOT = 0
+           IF WS-DRTRANS-ST1 NOT = 0 AND NOT = 46
                MOVE 0 TO WS-DRTRANS-ST1
                PERFORM START-TRANS
                GO TO RONX-005.

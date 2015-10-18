@@ -11,6 +11,13 @@
            Move Ws-Selection                 To Sub-3.
            Move Ws-Pa-Number (Sub-1 Sub-3)   To Ws-PasswordNeeded
            Move Ws-Pa-Priority (Sub-1 Sub-3) To Ws-PriorityNeeded.
+           
+      *     MOVE SUB-3 TO WS-MESSAGE
+      *     PERFORM ERROR5-000
+      *     MOVE WS-PASSWORDNEEDED TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-PRIORITYNEEDED TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        CPI-999.
            Exit.
       *

@@ -150,6 +150,8 @@
        Copy "UserFillField".
        Copy "MenuClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
+       Copy "Error5Message".
        Copy "DisplayProgNum".
        Copy "CTOSCobolAccept".
       *

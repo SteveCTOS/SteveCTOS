@@ -186,17 +186,17 @@
            MOVE 0 TO DATA-NUMBER.
            START DATA-FILE KEY NOT < DATA-KEY
               INVALID KEY NEXT SENTENCE.
-           IF WS-DATA-ST1 NOT = "0"
+           IF WS-DATA-ST1 NOT = 0
               MOVE "INVALID START, 'ESC' TO EXIT." TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO PP-999.
        PP-020.
            READ DATA-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-DATA-ST1 = "1"
+           IF WS-DATA-ST1 = 10
                MOVE " " TO WS-DATA-ST1
                GO TO PP-900.
-           IF WS-DATA-ST1 NOT = "0"
+           IF WS-DATA-ST1 NOT = 0
                MOVE " " TO WS-DATA-ST1
                GO TO PP-020.
            IF WS-1STPRINT = "1"

@@ -639,7 +639,8 @@
            MOVE 0 TO WS-BF-BAL.
            READ DEBTOR-TRANS-FILE NEXT
               AT END NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 10
+      * 10=END OF FILE, 23=KEY NOT FOUND, 46=READ ERC
+           IF WS-DRTRANS-ST1 = 10 OR = 23 OR = 46
               GO TO PR-999.
            IF WS-DRTRANS-ST1 = 91
               MOVE 10 TO WS-DRTRANS-ST1
@@ -648,6 +649,8 @@
            IF WS-DRTRANS-ST1 NOT = 0
               MOVE "DR-TRANS FILE BUSY AT PR-001, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-DRTRANS-ST1
               GO TO PR-001.
@@ -937,7 +940,8 @@
            MOVE 0 TO WS-BF-BAL.
            READ DEBTOR-TRANS-FILE NEXT
               AT END NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 10
+      * 10=END OF FILE, 23=KEY NOT FOUND, 46=READ ERC
+           IF WS-DRTRANS-ST1 = 10 OR = 23 OR = 46
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               GO TO PRL-999.

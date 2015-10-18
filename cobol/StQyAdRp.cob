@@ -44,8 +44,7 @@
        77  TOT-ADJAMT-YTD       PIC S9(7)V99 VALUE 0.
        77  TOT-ADJAMT-LAST      PIC S9(7)V99 VALUE 0.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC X.
-           03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).

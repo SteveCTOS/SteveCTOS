@@ -182,9 +182,26 @@
                           WS-LASTOPTION
               MOVE " " TO WS-LASTPASSWORD.
           
+           IF WS-OPTION = 98
+              PERFORM CLEAR-MEM-OF-PREV-CO.
           PERFORM CHECK-PASSWORD.
        CONTROL-999.
            EXIT PROGRAM.
+      *
+       CLEAR-MEM-OF-PREV-CO SECTION.
+       CMOPC-001.
+      *     MOVE SPACES TO WS-LINKAGE.
+           MOVE 0 TO SUB-1.
+       CMOPC-005.
+           ADD 1 TO SUB-1.
+           IF SUB-1 > 30
+              GO TO CMOPC-900.
+           MOVE SPACES TO WS-PASSWORDDATA (SUB-1).
+           GO TO CMOPC-005.
+       CMOPC-900.
+           MOVE 1 TO SUB-1.
+       CMOPC-999.
+           EXIT.
       *
        WORK-OUT-REMOTE-PRINTER-FILE SECTION.
        WORPF-000.
@@ -202,6 +219,7 @@
 
       *      MOVE WS-COPRINTERSREMOTE TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE.
+            MOVE SPACES TO ALPHA-RATE DATA-RATE.
        WORPF-999.
             EXIT.
       *
@@ -210,7 +228,6 @@
            MOVE 1 TO SUB-1.
        CPI-010.
            IF WS-MENUNUMBER (SUB-1) NOT = WS-OPTION
-      *      IF SUB-1 < 35
             IF SUB-1 < 30
               ADD 1 TO SUB-1
               GO TO CPI-010.
@@ -236,7 +253,7 @@
            MOVE 1 TO SUB-1 SUB-2 SUB-3.
        CP-005.
            OPEN INPUT MENU-PASSWORDS.
-           IF WS-MENU-STATUS NOT = 00
+           IF WS-MENU-STATUS NOT = 0
                MOVE "ERROR ON PASSWORD OPEN" TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-MENU-STATUS TO WS-MESSAGE
@@ -246,15 +263,16 @@
                MOVE WS-MENU TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                EXIT PROGRAM.
+           MOVE 0 TO MU-KEY.
            START MENU-PASSWORDS KEY NOT < MU-KEY
              INVALID KEY NEXT SENTENCE.
        CP-010.
            READ MENU-PASSWORDS NEXT
                AT END NEXT SENTENCE.
            IF WS-MENU-STATUS = 10
-               MOVE " " TO WS-MENU-STATUS
+               MOVE 0 TO WS-MENU-STATUS
                GO TO CP-015.
-           IF WS-MENU-STATUS NOT = 00
+           IF WS-MENU-STATUS NOT = 0
                MOVE "ERROR ON PASSWORD READ-NEXT." TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-MENU-STATUS TO WS-MESSAGE
@@ -477,7 +495,7 @@
               GO TO RNXR-005.
        RNXR-900.
            IF SUB-1 < 21
-              MOVE " " TO WS-PRINTERDATA (SUB-1)
+              MOVE SPACES TO WS-PRINTERDATA (SUB-1)
               ADD 1 TO SUB-1
               GO TO RNXR-900.
            CLOSE PRINTER-REMOTE.
@@ -633,6 +651,7 @@
            PERFORM CDN-025
            PERFORM CHECK-DATA-NAME-POSITION           
            PERFORM CDN-031
+
            GO TO CDN-040.
        CDN-900.
            PERFORM ERROR-020.
@@ -702,7 +721,7 @@
            IF F-ERROR5 = 0 OR = 220
                  OPEN INPUT DATA-FILE.
             IF WS-DATA-STATUS NOT = 00
-               MOVE "DATAFILE BUSY ON OPEN, 'CANCEL' TO RETRY."
+               MOVE "DATAFILE BUSY ON OPEN, 'ESC ' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE "D" TO WS-PASSWORD-VALID
@@ -720,7 +739,6 @@
       *  THEN RE-COMPILE THIS PROGRAM WITH ENTRIES IN FOLLOWING FILES  *
       *  <COPY>CHECKDATANAMEPOSITION & <COPY>CHLFDLINKAGE CHANGED.     *
       ******************************************************************
-
        Copy "CheckDataNamePosition".
        Copy "ReadMenuKBD".
        Copy "ErrorMessage".
