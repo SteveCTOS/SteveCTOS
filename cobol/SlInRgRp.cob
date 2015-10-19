@@ -635,6 +635,7 @@
       *
        READ-BY-DATE SECTION.
        RBD-001.
+           MOVE "N" TO WS-RANDOM-WRITTEN.
            MOVE 2310 TO POS
            DISPLAY "READING BY DATE FIRST..." AT POS.
            MOVE WEEK-DATE TO INCR-DATE.
@@ -642,6 +643,9 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
               MOVE 88 TO WS-INCR-ST1
+              CLOSE RANDOM-FILE
+              CLOSE INCR-REGISTER
+              MOVE "N" TO WS-RANDOM-WRITTEN
               GO TO RBD-999.
        RBD-003.
            READ INCR-REGISTER NEXT
