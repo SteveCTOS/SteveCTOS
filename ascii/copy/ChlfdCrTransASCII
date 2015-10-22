@@ -24,6 +24,4 @@
       * CRTR-REFERENCE: = BATCH NO ENTERED.
       * CRTR-TYPE: 1=INVOICE, 2=PAYMENT,  4=JRN-DEBIT, 5=JRN-CREDIT,
       *            6=C/NOTE,  7=INTEREST, 8=DISCOUNT,  9=FOREX       
-       
-       
-           03  ASCII-MESSAGE        PIC X(117).
+      *

@@ -169,7 +169,7 @@
        77  WS-PARCEL            PIC 9(2) VALUE 0.
        77  WS-PARCEL-PRINTED    PIC 9(2) VALUE 0.
        77  WS-PasswordSaved     Pic X(10).
-       01  W-READ-KEY           PIC X.
+       01  W-READ-KEY           PIC X(11).
        01  W-CRTSTATUS           PIC 9(4) value 0.
        01  WS-STDESC.
            03  WS-DESC1          PIC X(20) VALUE " ".
@@ -6552,7 +6552,7 @@
        Copy "WriteFieldAmountDis".
        Copy "WriteFieldNumeric".
        Copy "WriteFieldPrice".
-       Copy "WriteFieldQty".
+       Copy "WriteFieldQty". 
        Copy "CheckDataNames".
        Copy "QueuePrintLaserInvoice".
        Copy "Z1LaserHeadings".

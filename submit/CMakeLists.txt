@@ -22,7 +22,7 @@ set (copy_list
   GlDrParamDate.sh
   GlParamDate.Sub
   MonthEnd.Sub01
-  MonthEnd.Sub02 
+  MonthEnd.Sub02
   MonthEnd.Sub03
   MonthEnd.Sub05
   MonthEnd.Sub06

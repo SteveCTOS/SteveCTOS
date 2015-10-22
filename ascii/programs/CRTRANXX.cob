@@ -33,6 +33,8 @@
            77  POS           PIC 9(4) VALUE 0.
            77  WS-COUNT      PIC 9(6) VALUE 0.
            77  WS-MESSAGE    PIC X(60) VALUE " ".
+           77  WS-EOF        PIC X(3) VALUE "   ".
+           01  F-FIELDNAME   PIC X(20) VALUE " ".
            01  WS-CRTR-STATUS.
                03  WS-STAT1  PIC 99.
       *
@@ -118,10 +120,12 @@
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY ASCII-DATE AT 1505
+           DISPLAY ASCII-TRANS AT 1505
+           DISPLAY ASCII-UNAPPLIED-AMT AT 1520
            ADD 1 TO WS-COUNT
-           DISPLAY WS-COUNT AT 2510
-
+           DISPLAY WS-COUNT AT 2510.
+      *     CALL "C$SLEEP" USING 1.
+            
            MOVE ASCII-TYPE            TO CRTR-TYPE
            MOVE ASCII-TRANS           TO CRTR-TRANS
            MOVE ASCII-FUTURE          TO CRTR-FUTURE
@@ -147,6 +151,7 @@
              DISPLAY WS-STAT1
              CALL "C$SLEEP" USING 3
              STOP RUN.
+             
            GO TO BI-005.
         BI-EXIT.
            EXIT.

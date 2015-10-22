@@ -986,19 +986,19 @@
            MOVE WS-WORKTOTAL TO F-EDNAMEFIELD9MIL
            DISPLAY F-EDNAMEFIELD9MIL AT POS.
            MOVE 3055 TO POS
-           DISPLAY "Apply? (Y/N):" AT POS WITH BELL.
+           DISPLAY "Apply? (Y/N): [ ]        " AT POS WITH BELL.
        QUNAP-010.
-           MOVE 3069 TO POS
-           DISPLAY "       " AT POS.
+      *     MOVE 3069 TO POS
+      *     DISPLAY "       " AT POS.
       *     ACCEPT WS-ANSWER1 AT POS
            
-           MOVE 30 TO CDA-ROW
-           MOVE 69 TO CDA-COL
-           MOVE 1  TO CDA-DATALEN
-           MOVE 3  TO CDA-COLOR
-           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 69        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           
            MOVE CDA-DATA TO WS-ANSWER1.
            
       *     MOVE WS-ANSWER1 TO WS-MESSAGE
@@ -1355,8 +1355,8 @@
            MOVE 0 TO SUB-1.   
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 NOT = "0"
-              MOVE " " TO WS-DRTRANS-ST1
+           IF WS-DRTRANS-ST1 NOT = 0
+              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS BUSY START AP-000, 'ESC' TO RETRY" 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
