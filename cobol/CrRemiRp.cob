@@ -580,14 +580,14 @@
                DISPLAY WS-FOR-LOC AT POS.
            MOVE 1610 TO POS.
            DISPLAY
-           "Enter the Batch name for this RUN      : [          ]"
+           "Enter the Batch name for this RUN      : [PC        ]"
                AT POS.
            ADD 42 TO POS.
            DISPLAY WS-BATCH-1STCHAR AT POS
            ADD 2 TO POS
 
-           MOVE WS-BATCH-1STCHAR TO CDA-DATA.
-           MOVE 10        TO CDA-DATALEN.
+           MOVE " "       TO CDA-DATA.
+           MOVE 8         TO CDA-DATALEN.
            MOVE 13        TO CDA-ROW.
            MOVE 53        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
@@ -595,7 +595,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BATCH-REST.
 
-      *     ACCEPT WS-BATCH-REST AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-050.
            IF WS-BATCH-REST = " "
@@ -2395,6 +2394,8 @@
           IF WS-REMI-ST1 NOT = 0
               MOVE "CRREM RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-REMI-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RSR-020.
        RSR-999.
