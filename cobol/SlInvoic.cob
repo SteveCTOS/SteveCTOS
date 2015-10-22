@@ -700,7 +700,7 @@
                GO TO IM-999.
            IF WS-IMM-PR = "H"
             IF WS-PRINTERNUMBER (SUB-1) = 15
-               MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER
+               MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER-SAVE
                MOVE 3 TO WS-PROG-TYPE
                GO TO IM-999.
            IF SUB-1 < 11
@@ -5975,14 +5975,24 @@
            "ENTER THE INITIALS OF THE PERSON THAT PULLED THE STOCK [  ]"
              AT POS
            ADD 56 TO POS
-           ACCEPT PB-INITIAL AT POS
+
+           MOVE PB-INITIAL TO CDA-DATA.
+           MOVE 2          TO CDA-DATALEN.
+           MOVE 26         TO CDA-ROW.
+           MOVE 65         TO CDA-COL.
+           MOVE CDA-WHITE  TO CDA-COLOR.
+           MOVE 'F'        TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO PB-INITIAL.
+
            IF PB-INITIAL = "  "
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-015.
            MOVE PB-INITIAL TO PU-INITIAL INCR-PULLBY
            PERFORM READ-PULLERS.
            IF WS-PU-ST1 = 23 OR 35 OR 49
-              MOVE "PLEASE ENTER AN INITIAL FOR A CURRENT STORES PULLER"
+              MOVE
+           "PLEASE ENTER A VALID INITIAL FOR A CURRENT STORES PULLER"
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO QPC-015.
@@ -6013,7 +6023,16 @@
            DISPLAY
            "IS THIS A CASH TRANSACTION, ENTER Y OR N : [ ]" AT POS
            ADD 44 TO POS
-           ACCEPT WS-DIS AT POS.
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 53        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+
            IF WS-DIS NOT = "N" AND NOT = "Y"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-505.
@@ -6045,7 +6064,6 @@
            MOVE F-EDNAMEFIELDAMOUNT TO WS-CASH-ACCEPT CDA-DATA
            DISPLAY F-EDNAMEFIELDAMOUNT AT POS.
 
-      *     MOVE ' '       TO CDA-DATA.
            MOVE 9         TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 42        TO CDA-COL.
@@ -6054,7 +6072,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CASH-ACCEPT.
 
-      *     ACCEPT WS-CASH-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO QPC-505.
            MOVE WS-CASH-ACCEPT TO ALPHA-RATE
@@ -6071,7 +6088,16 @@
            MOVE 3010 TO POS
            DISPLAY "IS THE AMOUNT ENTERED CORRECT : [ ]" AT POS
            ADD 33 TO POS
-           ACCEPT WS-DIS AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 42        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+
            IF WS-DIS NOT = "Y" AND NOT = "N"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-517.
@@ -6102,7 +6128,17 @@
            "DO YOU WISH TO PRINT A PACKING LABEL, ENTER Y OR N : [ ]"
             AT POS
            ADD 54 TO POS
-           ACCEPT WS-DIS AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 63        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+
+.
            IF WS-DIS NOT = "N" AND NOT = "Y"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-910.
@@ -6124,7 +6160,16 @@
            DISPLAY
            "HOW MANY COPIES DO YOU WANT TO PRINT : [  ]" AT POS
            ADD 40 TO POS
-           ACCEPT WS-SOLD-BY AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 2         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 49        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-SOLD-BY.
+
            IF WS-SOLDBY = " "
               DISPLAY " " AT 3079 WITH BELL
               GO TO PL-002.
@@ -6138,10 +6183,18 @@
                DISPLAY "ARE YOU SURE YOU WANT SO MANY COPIES? [ ]"
                AT POS
                ADD 39 TO POS
-               ACCEPT WS-DIS AT POS.
+               MOVE ' '       TO CDA-DATA
+               MOVE 1         TO CDA-DATALEN
+               MOVE 26        TO CDA-ROW
+               MOVE 48        TO CDA-COL
+               MOVE CDA-WHITE TO CDA-COLOR
+               MOVE 'F'       TO CDA-ATTR
+               PERFORM CTOS-ACCEPT
+               MOVE CDA-DATA TO WS-DIS.
+
             IF WS-COPIES = 1
                GO TO PL-003.
-            IF WS-COPIES < 1
+            IF WS-COPIES NOT > 1
                GO TO PL-002.
             IF WS-DIS = "Y"
                GO TO PL-003
@@ -6153,7 +6206,16 @@
            DISPLAY
            "HOW MANY PARCELS ARE THERE TO PRINT FOR: [  ]" AT POS
            ADD 42 TO POS
-           ACCEPT WS-SOLD-BY AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 2         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 52        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-SOLD-BY.
+
            IF WS-SOLDBY = " "
               DISPLAY " " AT 3079 WITH BELL
               GO TO PL-003.
@@ -6171,7 +6233,15 @@
                DISPLAY "ARE YOU SURE YOU WANT SO MANY PARCELS? [ ]"
                AT POS
                ADD 40 TO POS
-               ACCEPT WS-DIS AT POS.
+               MOVE ' '       TO CDA-DATA
+               MOVE 1         TO CDA-DATALEN
+               MOVE 26        TO CDA-ROW
+               MOVE 49        TO CDA-COL
+               MOVE CDA-WHITE TO CDA-COLOR
+               MOVE 'F'       TO CDA-ATTR
+               PERFORM CTOS-ACCEPT
+               MOVE CDA-DATA TO WS-DIS.
+
             IF WS-DIS = "Y"
                GO TO PL-005
             ELSE
@@ -6268,7 +6338,7 @@
            PERFORM SEND-REPORT-TO-PRINTER.
 
            CALL "C$SLEEP" USING 1.
-      *           CALL "&DELAY" USING W-ERROR W-DELAY.
+      *     CALL "&DELAY" USING W-ERROR W-DELAY.
 
            ADD 1 TO WS-PARCEL-PRINTED.
            IF WS-PARCEL-PRINTED NOT = WS-PARCEL
@@ -6395,7 +6465,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-IMM-PR.
 
-      *     ACCEPT WS-IMM-PR AT POS.
            IF W-ESCAPE-KEY = 1 OR 2
                CLOSE PARAMETER-FILE
                EXIT PROGRAM

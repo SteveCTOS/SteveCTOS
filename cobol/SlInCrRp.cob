@@ -605,6 +605,7 @@
        WOPFN-030.
            MOVE SPACES TO DATA-RATE.
            MOVE WS-CO-NUMBER TO DATA-RATE.
+  
            MOVE 1  TO SUB-2.
 
       *     MOVE "IN WOPFN-030." TO WS-MESSAGE
@@ -2495,9 +2496,9 @@
        Copy "Z1LaserHeadings".
        Copy "Z1EMailHeadings".
        Copy "GetSystemY2KDate".
-       Copy "SetupInvoiceForPDF".
        Copy "OrderPassword".
        Copy "CTOSCobolAccept".
+       Copy "SetupInvoiceForPDF".
        Copy "SetupCreditForPDF".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
