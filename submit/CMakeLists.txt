@@ -13,7 +13,7 @@ set (copy_list
   Backup05.sh
   Backup06.sh
   Backup07.sh
-  FNBDebtor.sh 
+  FNBDebtor.sh
   GlGroup.sh
   GlGroupReports.Sub
   GlMonthly.sh
