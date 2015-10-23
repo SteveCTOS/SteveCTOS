@@ -346,7 +346,17 @@
            MOVE 2910 TO POS
            DISPLAY "DO YOU WISH TO PRINT STOCK LABELS: [ ]" AT POS
            ADD 36 TO POS
-           ACCEPT WS-YN AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 45        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
+      *     ACCEPT WS-YN AT POS.
            IF WS-YN NOT = "Y" AND NOT = "N"
                 GO TO CONTROL-960.
            IF WS-YN = "N"
@@ -377,7 +387,16 @@
            MOVE 2610 TO POS
            DISPLAY "PRINT PRICES, COSTS ETC, Y OR N : [ ]" AT POS
            ADD 35 TO POS
-           ACCEPT WS-PRINT-AMTS AT POS.
+
+           MOVE WS-PRINT-AMTS TO CDA-DATA.
+           MOVE 1             TO CDA-DATALEN.
+           MOVE 23            TO CDA-ROW.
+           MOVE 44            TO CDA-COL.
+           MOVE CDA-WHITE     TO CDA-COLOR.
+           MOVE 'F'           TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA      TO WS-PRINT-AMTS.
+
            IF WS-PRINT-AMTS NOT = "Y" AND NOT = "N"
               MOVE "ONLY Y OR N ARE VALID ENTRIES, RE-ENTER."
               TO WS-MESSAGE
@@ -972,7 +991,7 @@
             IF WS-NEWORDER = "Y"
               MOVE 2910 TO POS
               DISPLAY
-            "ENTER QTY, PRESS <CODE-ESC> TO REVERSE ENGINEER A KIT,"
+            "ENTER QTY, PRESS <Alt-F10> TO REVERSE ENGINEER A KIT,"
                  AT POS
               MOVE 3020 TO POS
               DISPLAY "OR <RETURN> TO CREATE A BILL OF MATERIAL."
@@ -1068,12 +1087,20 @@
             IF F-NAMEFIELDRED1 = "D"
                 GO TO GET-270.
             MOVE "                   " TO F-NAMEFIELD.
-            MOVE "RESQTY" TO F-FIELDNAME.
-            MOVE 6        TO F-CBFIELDNAME.
+            MOVE "RESQTY"    TO F-FIELDNAME.
+            MOVE 6           TO F-CBFIELDNAME.
             COMPUTE WS-RESQTY = WS-KITQTY - WS-SHPDQTY.
             MOVE WS-RESQTY   TO F-EDNAMEFIELDKITQTY.
-            MOVE 3        TO F-CBFIELDLENGTH.
+            MOVE 3           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-KITQTY.
+            
+      *      MOVE WS-RESQTY TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WS-KITQTY TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      MOVE WS-SHPDQTY TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+            
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-225.
@@ -2539,9 +2566,12 @@
             MOVE SUB-25             TO INCR-LINENO
             MOVE 7777777            TO INCR-ACCOUNT
             MOVE INCR-INVOICE       TO INCR-PORDER
-            MOVE WS-KITQTY             TO INCR-KITQTY.
+            MOVE WS-KITQTY          TO INCR-KITQTY.
             IF WS-TYPE-OF-FINISH = "1"
                ADD WS-MFGQTY        TO INCR-KITSHPDQTY.
+            IF WS-TYPE-OF-FINISH = "2"
+             IF INCR-KITSHPDQTY NOT > 0
+               MOVE 0               TO INCR-KITSHPDQTY.
             MOVE WS-KIT-SAVE        TO INCR-KITNAME
             MOVE WS-KIT-PRICE       TO INCR-KITPRICE
             MOVE WS-KIT-DESC1       TO INCR-KITDESC1
