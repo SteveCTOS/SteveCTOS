@@ -104,44 +104,31 @@
            03  WS-REMI-YY          PIC 99.
            03  WS-REMI-MM          PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1        PIC 99.
-      *     03  WS-CREDITOR-ST2        PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1  PIC 99.
-      *     03  WS-CRTRANS-ST2  PIC X.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-CRCHEQUE-STATUS.
-           03  WS-CRCHEQUE-ST1  PIC 99.
-      *     03  WS-CRCHEQUE-ST2  PIC X.
+           03  WS-CRCHEQUE-ST1     PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1  PIC 99.
-      *     03  WS-CRJRN-ST2  PIC X.
+           03  WS-CRJRN-ST1        PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1  PIC 99.
-      *     03  WS-GLTRANS-ST2  PIC X.
+           03  WS-GLTRANS-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1    PIC 99.
-      *     03  WS-DAILY-ST2    PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SPOOLER-STATUS.
-           03  WS-SPOOLER-ST1    PIC 99.
-      *     03  WS-SPOOLER-ST2    PIC X.
+           03  WS-SPOOLER-ST1      PIC 99.
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1  PIC 99.
-      *     03  WS-CBTRANS-ST2  PIC X.
+           03  WS-CBTRANS-ST1      PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1    PIC 99.
-      *     03  WS-CB-ST2    PIC 9(2) COMP-X.
+           03  WS-CB-ST1           PIC 99.
        01  WS-REMI-STATUS.
-           03  WS-REMI-ST1   PIC 99.
-      *     03  WS-REMI-ST2   PIC X.
+           03  WS-REMI-ST1         PIC 99.
        01  WS-REMITTRANS-STATUS.
            03  WS-REMITTRANS-ST1   PIC 99.
-      *     03  WS-REMITTRANS-ST2   PIC X.
        01  BODY-FIELDS.
            03  BODY-LINE OCCURS 401.
                05  WS-APPLY           PIC X.
@@ -2395,6 +2382,8 @@
           IF WS-REMI-ST1 NOT = 0
               MOVE "CRREM RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-REMI-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RSR-020.
        RSR-999.
