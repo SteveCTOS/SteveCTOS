@@ -2,6 +2,8 @@ rm /ctools/qtm/*
 
 Submit MainCont MonthEnd.Sub10
 
+Submit MainCont MonthEnd2.Sub10
+
 cd /ctools/ps10
 cat /ctools/ps10/* >> /ctools/qtm/slp22
 rm /ctools/ps10/*

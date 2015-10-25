@@ -2,6 +2,8 @@ rm /ctools/sfj/*
 
 Submit MainCont MonthEnd.Sub07
 
+Submit MainCont MonthEnd2.Sub07
+
 cd /ctools/ps07
 cat /ctools/ps07/* >> /ctools/sfj/slp22
 rm /ctools/ps07/*

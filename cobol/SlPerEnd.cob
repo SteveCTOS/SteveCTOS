@@ -95,41 +95,41 @@
                05  WS-GLSUBHEADER  PIC X(4).
            03  WS-RESTOFACCOUNT    PIC X(6).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
+           03  WS-DEBTOR-ST1         PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
+           03  WS-STOCK-ST1          PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
+           03  WS-DRTRANS-ST1        PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1   PIC 99.
+           03  WS-STTRANS-ST1        PIC 99.
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTRANSLY-ST1   PIC 99.
+           03  WS-STTRANSLY-ST1      PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1   PIC 99.
+           03  WS-OUTORD-ST1         PIC 99.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1   PIC 99.
+           03  WS-SALES-ST1          PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
+           03  WS-SLPARAMETER-ST1    PIC 99.
        01  WS-DISTRIBUTION-STATUS.
            03  WS-DISTRIBUTION-ST1   PIC 99.
        01  WS-IMPRECEIPT-STATUS.
-           03  WS-IMPRECEIPT-ST1   PIC 99.
+           03  WS-IMPRECEIPT-ST1     PIC 99.
        01  WS-SOLDBY-STATUS.
-           03  WS-SOLDBY-ST1     PIC 99.
+           03  WS-SOLDBY-ST1         PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1   PIC 99.
+           03  WS-INCR-ST1           PIC 99.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1   PIC 99.
+           03  WS-INCR-LY-ST1        PIC 99.
        01  WS-STKRECEIPT-STATUS.
-           03  WS-STK-ST1     PIC 99.
+           03  WS-STK-ST1            PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
+           03  WS-GLMAST-ST1         PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1   PIC 99.
+           03  WS-GLTRANS-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
+           03  WS-GLPARAMETER-ST1    PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
+           03  WS-DAILY-ST1          PIC 99.
        01  WS-MONTH-DESCRIPTIONS.
            03  FILLER          PIC X(4) VALUE "MAR ".
            03  FILLER          PIC X(4) VALUE "APR ".
@@ -445,19 +445,32 @@
            PERFORM CGP-005 THRU CGP-010.
            PERFORM CGP-900. 
 
+           CALL "C$SLEEP" USING 1.
            PERFORM PARAMETERS.
+           CALL "C$SLEEP" USING 1.
            PERFORM DEBTORS.
+           CALL "C$SLEEP" USING 1.
            PERFORM STOCK.
+           CALL "C$SLEEP" USING 1.
            PERFORM DEBTOR-TRANS.
+           CALL "C$SLEEP" USING 1.
            PERFORM OUT-ORDERS.
+           CALL "C$SLEEP" USING 1.
            PERFORM S-ANALYSIS.
+           CALL "C$SLEEP" USING 1.
            PERFORM IMPORTS.
+           CALL "C$SLEEP" USING 1.
            PERFORM UP-DIST.
+           CALL "C$SLEEP" USING 1.
            PERFORM DELETE-SOLDBY.
+           CALL "C$SLEEP" USING 1.
            PERFORM DELETE-REGISTER.
        CONTROL-056.
+           CALL "C$SLEEP" USING 1.
            PERFORM DELETE-STOCK-TRANS.
+           CALL "C$SLEEP" USING 1.
            PERFORM DELETE-STOCK-RECEIPTS.
+           CALL "C$SLEEP" USING 1.
            PERFORM CHANGE-GL-PARAMETER.
        CONTROL-057.
            PERFORM DELETE-QUOTE-REGISTER.
@@ -2593,50 +2606,50 @@
       *
        OPEN-FILES SECTION.
        OPEN-000.
-           OPEN I-O DISTRIBUTIONS.
-           IF WS-DISTRIBUTION-ST1 NOT = 0
+            OPEN I-O DISTRIBUTIONS.
+            IF WS-DISTRIBUTION-ST1 NOT = 0
               MOVE "ERROR IN OPENING DIST FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-000.
        OPEN-005.
-           OPEN I-O SALES-ANALYSIS.
-           IF WS-SALES-ST1 NOT = 0
+            OPEN I-O SALES-ANALYSIS.
+            IF WS-SALES-ST1 NOT = 0
               MOVE "ERROR IN OPENING SALES FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-005.
        OPEN-010.
-           OPEN I-O PARAMETER-FILE.
-           IF WS-SLPARAMETER-ST1 NOT = 0
+            OPEN I-O PARAMETER-FILE.
+            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE "ERROR IN OPENING PARAM FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-010.
        OPEN-015.
-           OPEN I-O DEBTOR-MASTER.
-           IF WS-DEBTOR-ST1 NOT = 0
+            OPEN I-O DEBTOR-MASTER.
+            IF WS-DEBTOR-ST1 NOT = 0
               MOVE "ERROR IN OPENING DEBTOR FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-015.
        OPEN-020.
-           OPEN I-O STOCK-MASTER.
-           IF WS-STOCK-ST1 NOT = 0
+            OPEN I-O STOCK-MASTER.
+            IF WS-STOCK-ST1 NOT = 0
               MOVE "ERROR IN OPENING STOCK FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-020.
        OPEN-025.
-           OPEN I-O DEBTOR-TRANS-FILE.
-           IF WS-DRTRANS-ST1 NOT = 0
+            OPEN I-O DEBTOR-TRANS-FILE.
+            IF WS-DRTRANS-ST1 NOT = 0
               MOVE "ERROR IN OPENING DRTRANS FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-025.
        OPEN-030.
-           OPEN I-O OUTSTANDING-ORDERS.
-           IF WS-OUTORD-ST1 NOT = 0
+            OPEN I-O OUTSTANDING-ORDERS.
+            IF WS-OUTORD-ST1 NOT = 0
               MOVE "ERROR IN OPENING ORDERS FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
@@ -2646,36 +2659,40 @@
       *        perform error-message
               GO TO OPEN-030.
        OPEN-035.
-           OPEN I-O SALES-ANALYSIS.
-           IF WS-SALES-ST1 NOT = 0
+            OPEN I-O SALES-ANALYSIS.
+            IF WS-SALES-ST1 NOT = 0
               MOVE "ERROR IN OPENING SALES FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-035.
        OPEN-040.
-           OPEN I-O IMPRECEIPTS-FILE.
-           IF WS-IMPRECEIPT-ST1 NOT = 0
+            OPEN I-O IMPRECEIPTS-FILE.
+            IF WS-IMPRECEIPT-ST1 NOT = 0
               MOVE "ERROR IN OPENING IMPORTS FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-040.
        OPEN-045.
-           OPEN I-O SOLD-BY.
-           IF WS-SOLDBY-ST1 NOT = 0
-              MOVE "ERROR IN OPENING SOLDBY FILE, GOING TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-000
+            OPEN I-O SOLD-BY.
+            IF WS-SOLDBY-ST1 NOT = 0
+               MOVE "SOLDBY FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-SOLDBY-ST1
+               CLOSE SOLD-BY
               GO TO OPEN-045.
        OPEN-050.
-           OPEN I-O INCR-REGISTER.
-           IF WS-INCR-ST1 NOT = 0
+            OPEN I-O INCR-REGISTER.
+            IF WS-INCR-ST1 NOT = 0
               MOVE "ERROR IN OPENING REGISTER FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO OPEN-050.
        OPEN-052.
-           OPEN OUTPUT INCR-LY-REGISTER.
-           IF WS-INCR-LY-ST1 NOT = 0
+            OPEN OUTPUT INCR-LY-REGISTER.
+            IF WS-INCR-LY-ST1 NOT = 0
               MOVE "ERROR IN OPENING LY-REGISTER FILE, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

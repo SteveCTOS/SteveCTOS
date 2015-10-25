@@ -2,6 +2,8 @@ rm /ctools/hky/*
 
 Submit MainCont MonthEnd.Sub11
 
+Submit MainCont MonthEnd2.Sub11
+
 cd /ctools/ps11
 cat /ctools/ps11/* >> /ctools/hky/slp22
 rm /ctools/ps11/*

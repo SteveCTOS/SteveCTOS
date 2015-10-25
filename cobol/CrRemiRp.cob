@@ -2353,10 +2353,19 @@
       *
        REWRITE-CRREM-RECORD SECTION.
        RSR-010.
+           MOVE 2610 TO POS
+           DISPLAY "WRITING CR-REMITTANCE RECORD: " AT POS
+           ADD 30 TO POS
+           DISPLAY CRREM-KEY AT POS.
+           
            MOVE A-SUM-ACC (SUB-10)    TO CRREM-ACC-NUMBER.
 
            PERFORM READ-REMIT.
            
+           MOVE A-SUM-ACC (SUB-10)    TO CRREM-ACC-NUMBER.
+           MOVE WS-REMI-YY            TO CRREM-YY
+           MOVE WS-REMI-MM            TO CRREM-MM
+           MOVE WS-REMI-F-L           TO CRREM-F-L
            MOVE A-SUM-CHEQUE (SUB-10) TO CRREM-PMT-REF
            MOVE A-SUM-AMT (SUB-10)    TO CRREM-BAL-FROM-REMIT
            MOVE "N"                   TO CRREM-COMPLETE.
@@ -2383,6 +2392,8 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE WS-REMI-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE CRREM-ACC-NUMBER  TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RSR-020.
        RSR-999.
@@ -2418,16 +2429,20 @@
              START CRREMIT-FILE KEY NOT < CRREM-KEY
                 INVALID KEY NEXT SENTENCE.
              IF WS-REMI-ST1 NOT = 0
+                MOVE SPACES TO CRREM-RECORD
+                PERFORM CLEAR-FORM
                 GO TO R-GL-999.
        R-GL-010.
              READ CRREMIT-FILE WITH LOCK
                  INVALID KEY NEXT SENTENCE.
              IF WS-REMI-ST1 = 23 OR 35 OR 49
+                MOVE SPACES             TO CRREM-RECORD
                 PERFORM CLEAR-FORM
                 MOVE WS-REMI-YY         TO CRREM-YY
                 MOVE WS-REMI-MM         TO CRREM-MM
                 MOVE A-SUM-ACC (SUB-10) TO CRREM-ACC-NUMBER
                 MOVE "Y"                TO NEW-CRREMNO 
+                MOVE SPACES             TO CRREM-RECORD
                 GO TO R-GL-999.
              IF WS-REMI-ST1 NOT = 0
                 MOVE "CRREM RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."

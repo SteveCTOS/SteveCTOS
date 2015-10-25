@@ -3,6 +3,10 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -12,6 +16,10 @@
        FILE SECTION.
 
        WORKING-STORAGE SECTION.
+       77  WS-YYNAME                PIC X(5) VALUE " ".
+       01  W-CRTSTATUS              PIC 9(4) value 0.
+       01  WS-COMMAND-LINE          PIC X(256).                                    
+       01  W-STATUS                 PIC 9(4) BINARY COMP.
        Copy "WsMenuDateInfo".
 
        LINKAGE SECTION.
@@ -87,7 +95,7 @@
       *     CANCEL WS-PROGRAM.
            PERFORM DISPLAY-PR-NO.
            IF WS-ANSWER = "35"
-                MOVE "CoStffIq.Int" TO WS-PROGRAM.
+                MOVE "CoStffIq" TO WS-PROGRAM.
             IF WS-ANSWER = " 1"
                 MOVE "CrMastMt" TO WS-PROGRAM.
             IF WS-ANSWER = " 2"
@@ -130,10 +138,26 @@
                 MOVE "CrPerEnd" TO WS-PROGRAM.
                 
             IF WS-ANSWER = "21"
-                Move "CrMaint.Sub" TO Ws-Data-Name
-                Go To GET-015.
+             IF WS-CO-NUMBER NOT = 1
+                MOVE
+           "THIS PROCESS CAN ONLY BE RUN FROM COMPANY NUMBER 1, 'Esc'" &
+           " TO EXIT" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                GO TO GET-010
+             ELSE
+                Move "CrMaint.sh" TO Ws-Data-Name
+                PERFORM SETUP-ZIP-FILES
+                MOVE 
+            "The Zip File Has Been Created & last Months Files Deleted."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+               Go To GET-011.
            Call Ws-Program Using Ws-Linkage.
-
+       GET-011.
             PERFORM CLEAR-SCREEN
             CANCEL WS-PROGRAM
             PERFORM DISPLAY-FORM
@@ -160,6 +184,52 @@
             STOP RUN.
        GET-999.
             EXIT.
+      *
+       SETUP-ZIP-FILES SECTION.
+       SUQFD-002.
+          MOVE 
+         "Enter the Year Number & Month Name for the Creditor Zip File."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+          MOVE "For e.g. Enter 15Jun for 2015 June." TO WS-MESSAGE
+             PERFORM ERROR-000.
+       SUQFD-003.
+          MOVE 2721 TO POS
+          DISPLAY "ENTER YEAR MONTH AS YYName: [     ]" AT POS
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 5         TO CDA-DATALEN.
+           MOVE 24        TO CDA-ROW.
+           MOVE 49        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YYNAME.
+
+            IF WS-YYNAME = " "
+               GO TO SUQFD-003.
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO SUQFD-010
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO SUQFD-003.
+       SUQFD-010.
+          PERFORM ERROR-020
+          PERFORM ERROR1-020
+          MOVE 2710 TO POS
+          DISPLAY WS-MESSAGE AT POS.
+          MOVE CONCATENATE('./CrMaint.sh ', TRIM(WS-YYNAME))
+                TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.  
+      *    ACCEPT WS-ACCEPT.
+      *The variable which will be specified are:
+      *$1 = The YYName          e.g. 15Jun
+       SUQFD-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUQFD-999.
+           EXIT.
+            
       *
        OPEN-FILES SECTION.
        OPEN-010.

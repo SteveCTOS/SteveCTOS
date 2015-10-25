@@ -86,7 +86,7 @@
        GET-020.
             PERFORM ERROR-020.
             PERFORM ERROR1-020.
-            MOVE 2720 TO POS
+            MOVE 2920 TO POS
             DISPLAY "ENTER ALL 'X' TO PRINT ALL DATA-NAME INFO" AT POS.
             MOVE SPACES TO F-NAMEFIELD
                            ALPHA-RATE.
@@ -135,15 +135,19 @@
             MOVE WS-NAME TO F-NAMEFIELD
             MOVE 25      TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
+
+            PERFORM ERROR-020.
+            PERFORM ERROR1-020.
        GET-035.
-            MOVE ALL SPACES TO F-NAMEFIELD.
-            MOVE 2710 TO POS
+            MOVE 2910 TO POS
             DISPLAY 
-            "PRESS 'F10' TO DELETE, 'GO' TO RE-WRITE, 'NEXT-PAGE' "
+            "PRESS 'F10' TO DELETE, 'GO' TO RE-WRITE, 'PgDn' "
             AT POS
-            MOVE 2815 TO POS
+            MOVE 3015 TO POS
             DISPLAY "FOR NEXT ITEM,  'ESC' TO CLEAR THE FORM."
             AT POS.
+
+            MOVE ALL SPACES TO F-NAMEFIELD.
             MOVE "NAME"     TO F-FIELDNAME
             MOVE 4          TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
@@ -162,6 +166,7 @@
                 PERFORM REWRITE-DATAFILE
                 GO TO GET-999.
             IF F-EXIT-CH = X"0C"
+                 PERFORM REWRITE-DATAFILE
                  PERFORM READ-NEXT-DATAFILE
               IF WS-END NOT = "Y"
                  GO TO GET-030

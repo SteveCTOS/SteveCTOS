@@ -21,7 +21,6 @@
        77  WS-INVSAVE         PIC 9(6) VALUE 0.
        01  WS-SOLDBY-STATUS.
            03  WS-SOLDBY-ST1   PIC 99.
-      *     03  WS-SOLDBY-ST2   PIC X.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -537,7 +536,7 @@
         RD-010.
            READ SOLD-BY WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-           IF WS-SOLDBY-ST1 = 23 OR 35 OR 49
+           IF WS-SOLDBY-ST1 = 23 OR 35 OR 49 OR = 52
                 MOVE 0 TO WS-SOLDBY-ST1
                 PERFORM CLEAR-FORM
                 MOVE "Y" TO NEW-NO
@@ -545,10 +544,12 @@
                 MOVE WS-INVSAVE TO SB-INVOICE-NUMBER
                 GO TO RD-999.
            IF WS-SOLDBY-ST1 NOT = 0
-                MOVE 0 TO WS-SOLDBY-ST1
                 MOVE "SOLDBY BUSY ON READ, PRESS 'ESC' TO RETRY."
                   TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE SB-TYPE TO WS-SAVE.
@@ -633,7 +634,13 @@
             OPEN I-O SOLD-BY.
             IF WS-SOLDBY-ST1 NOT = 0
                MOVE 0 TO WS-SOLDBY-ST1
-               MOVE "SOLDBY FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "SOLDBY FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+            OPEN OUTPUT SOLD-BY
+             IF WS-SOLDBY-ST1 NOT = 0
+               MOVE 0 TO WS-SOLDBY-ST1
+               MOVE "SOLDBY FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-000.

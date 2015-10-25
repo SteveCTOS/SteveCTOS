@@ -2,6 +2,8 @@ rm /ctools/csc/*
 
 Submit MainCont MonthEnd.Sub08
 
+Submit MainCont MonthEnd2.Sub08
+
 cd /ctools/ps08
 cat /ctools/ps08/* >> /ctools/csc/slp22
 rm /ctools/ps08/*

@@ -2,6 +2,8 @@ rm /ctools/ctn/*
 
 Submit MainCont MonthEnd.Sub03
 
+Submit MainCont MonthEnd2.Sub03
+
 cd /ctools/ps03
 cat /ctools/ps03/* >> /ctools/ctn/slp22
 rm /ctools/ps03/*

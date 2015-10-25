@@ -127,14 +127,12 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MONTHEND.
 
-      *     ACCEPT WS-MONTHEND AT POS.
            IF WS-MONTHEND NOT = "Y" AND NOT = "N"
                 GO TO CONTROL-009.
            IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-005.
            IF WS-MONTHEND = "Y"
               PERFORM GET-SYSTEM-Y2K-DATE
-      *        ACCEPT WS-DATE FROM DATE
               MOVE 01 TO WS-DD
               MOVE WS-DD TO CONVERT-DD
               MOVE WS-MM TO CONVERT-MM
@@ -160,7 +158,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT-DATE.
 
-      *     ACCEPT WS-ACCEPT-DATE AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-009.
            MOVE WS-ACCEPT-DATE TO ALPHA-RATE.
@@ -197,7 +194,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CODE.
 
-      *     ACCEPT WS-CODE AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-010.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -211,7 +207,7 @@
               AT POS.
            ADD 42 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'T'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 13        TO CDA-ROW.
            MOVE 51        TO CDA-COL.
@@ -220,7 +216,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-YEAR.
 
-      *     ACCEPT WS-YEAR AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-010.
            IF WS-YEAR NOT = "T" AND NOT = "L"

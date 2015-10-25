@@ -2,6 +2,8 @@ rm /ctools/orx/*
 
 Submit MainCont MonthEnd.Sub05
 
+Submit MainCont MonthEnd2.Sub05
+
 cd /ctools/ps05
 cat /ctools/ps05/* >> /ctools/orx/slp22
 rm /ctools/ps05/*

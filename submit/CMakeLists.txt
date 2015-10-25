@@ -13,6 +13,7 @@ set (copy_list
   Backup05.sh
   Backup06.sh
   Backup07.sh
+  CrMaint.sh
   FNBDebtor.sh
   GlGroup.sh
   GlGroupReports.Sub
@@ -22,16 +23,26 @@ set (copy_list
   GlDrParamDate.sh
   GlParamDate.Sub
   MonthEnd.Sub01
+  MonthEnd2.Sub01
   MonthEnd.Sub02
+  MonthEnd2.Sub02
   MonthEnd.Sub03
+  MonthEnd2.Sub03
   MonthEnd.Sub05
+  MonthEnd2.Sub05
   MonthEnd.Sub06
   MonthEnd.Sub07
+  MonthEnd2.Sub07
   MonthEnd.Sub08
+  MonthEnd2.Sub08
   MonthEnd.Sub09
+  MonthEnd2.Sub09
   MonthEnd.Sub10
+  MonthEnd2.Sub10
   MonthEnd.Sub11
+  MonthEnd2.Sub11
   MonthEnd.Sub12
+  MonthEnd2.Sub12
   MonthEnd01.sh
   MonthEnd02.sh
   MonthEnd03.sh
