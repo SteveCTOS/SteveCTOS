@@ -119,7 +119,12 @@
            IF WS-ANSWER = "15"
                 MOVE "CbPerEnd" TO WS-PROGRAM.
            IF WS-ANSWER = "16"
-                Move "CbMaint.Sub" TO Ws-Data-Name
+                MOVE
+           "THIS PROCESS HAS BEEN BLOCKED IN THIS APP VERSION, 'Esc'" &
+           " TO EXIT" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+      *          Move "CbMaint.Sub" TO Ws-Data-Name
                 Go To GET-015.
 
            Call Ws-Program Using Ws-Linkage.

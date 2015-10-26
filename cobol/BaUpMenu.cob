@@ -111,7 +111,7 @@
                 GO TO GET-010.
       *      CANCEL WS-PROGRAM.
             IF WS-ANSWER = "35"
-                MOVE "CoStffIq.Int" TO WS-PROGRAM.
+                MOVE "CoStffIq" TO WS-PROGRAM.
             IF WS-ANSWER = " " OR = "0"
                 GO TO GET-005.
             IF WS-ANSWER = " 1"

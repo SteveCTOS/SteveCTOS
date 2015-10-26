@@ -120,7 +120,12 @@
             IF WS-ANSWER = "16"
                 MOVE "GlPerEnd" TO WS-PROGRAM.
             IF WS-ANSWER = "17"
-                Move "GlMaint.Sub" TO Ws-Data-Name
+                MOVE
+           "THIS PROCESS HAS BEEN BLOCKED IN THIS APP VERSION, 'Esc'" &
+           " TO EXIT" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+      *          Move "GlMaint.Sub" TO Ws-Data-Name
                 Perform GET-015.
 
            Call Ws-Program Using Ws-Linkage.

@@ -1,4 +1,4 @@
-           SELECT SOLD-BY ASSIGN TO Ws-SoldBy
+            SELECT SOLD-BY ASSIGN TO Ws-SoldBy
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

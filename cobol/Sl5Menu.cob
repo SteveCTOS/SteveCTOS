@@ -3,6 +3,10 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -12,6 +16,9 @@
        FILE SECTION.
 
        WORKING-STORAGE SECTION.
+       01  W-CRTSTATUS              PIC 9(4) value 0.
+       01  WS-COMMAND-LINE          PIC X(256).                                    
+       01  W-STATUS                 PIC 9(4) BINARY COMP.
        Copy "WsMenuDateInfo".
 
        LINKAGE SECTION.
@@ -87,7 +94,7 @@
       *     CANCEL WS-PROGRAM.
            PERFORM DISPLAY-PR-NO.
            IF WS-ANSWER = "35"
-                MOVE "CoStffIq.Int" TO WS-PROGRAM.
+                MOVE "CoStffIq" TO WS-PROGRAM.
             IF WS-ANSWER = " 1"
                 MOVE "SlInRgRp" TO WS-PROGRAM.
             IF WS-ANSWER = " 2"
@@ -129,19 +136,54 @@
 
             IF WS-ANSWER = "20"
                 Move "SortDr.Sub" TO Ws-Data-Name
-                Perform GET-100.
+                MOVE
+           "THIS PROCESS HAS BEEN BLOCKED IN THIS APP VERSION, 'Esc'" &
+           " TO EXIT" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                GO TO GET-010.
             IF WS-ANSWER = "21"
                 Move "SortData.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
+                MOVE
+           "THIS PROCESS HAS BEEN BLOCKED IN THIS APP VERSION, 'Esc'" &
+           " TO EXIT" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                GO TO GET-010.
             IF WS-ANSWER = "22"
                 Move "IReoData.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
+                MOVE
+           "THIS PROCESS HAS BEEN BLOCKED IN THIS APP VERSION, 'Esc'" &
+           " TO EXIT" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                GO TO GET-010.
             IF WS-ANSWER = "23"
-                Move "MonthEnd.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
+                Move "MonthEnd.sh" TO Ws-Data-Name
+                PERFORM SETUP-MONTH-FILES
+                MOVE "The MonthEnd Has Been Run....." TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+      *          PERFORM GET-100.
             IF WS-ANSWER = "24"
-                Move "YearEnd.Sub" TO Ws-Data-Name
-                PERFORM GET-100.
+                Move "YearEnd.sh" TO Ws-Data-Name
+                PERFORM SETUP-MONTH-FILES
+                MOVE "The Yearend Has Been Run ....." TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+      *          PERFORM GET-100.
        GET-050.
            Call Ws-Program Using Ws-Linkage.
             PERFORM CLEAR-SCREEN
@@ -168,6 +210,37 @@
             STOP RUN.
        GET-999.
             EXIT.
+      *
+       SETUP-MONTH-FILES SECTION.
+       SUQFD-002.
+            IF WS-ANSWER = "23"
+              MOVE "./MonthEnd" TO ALPHA-RATE
+              MOVE WS-CO-NUMBER TO DATA-RATE
+              MOVE DAT-RATE (1) TO AL-RATE (11)
+              MOVE DAT-RATE (2) TO AL-RATE (12)
+              MOVE "."          TO AL-RATE (13)
+              MOVE "s"          TO AL-RATE (14)
+              MOVE "h"          TO AL-RATE (15)
+              MOVE ALPHA-RATE   TO WS-DATA-NAME
+            ELSE 
+              MOVE "./YearEnd" TO ALPHA-RATE
+              MOVE WS-CO-NUMBER TO DATA-RATE
+              MOVE DAT-RATE (1) TO AL-RATE (10)
+              MOVE DAT-RATE (2) TO AL-RATE (11)
+              MOVE "."          TO AL-RATE (12)
+              MOVE "s"          TO AL-RATE (13)
+              MOVE "h"          TO AL-RATE (14)
+              MOVE ALPHA-RATE   TO WS-DATA-NAME.
+          
+          MOVE CONCATENATE(WS-DATA-NAME) TO WS-COMMAND-LINE.
+      *    MOVE WS-COMMAND-LINE TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    ACCEPT WS-ACCEPT.
+       SUQFD-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUQFD-999.
+           EXIT.
       *
        OPEN-FILES SECTION.
        OPEN-010.

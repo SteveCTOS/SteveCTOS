@@ -81,7 +81,7 @@
        GET-020.
             PERFORM DISPLAY-PR-NO.
            IF WS-ANSWER = "35"
-                MOVE "CoStffIq.Int" TO WS-PROGRAM.
+                MOVE "CoStffIq" TO WS-PROGRAM.
             IF WS-ANSWER = " 1"
                 MOVE "StMaster" TO WS-PROGRAM.
             IF WS-ANSWER = " 2"

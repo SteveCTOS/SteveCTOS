@@ -22,7 +22,6 @@
        77  WS-ALL-ENTERED     PIC X VALUE " ".
        01  WS-CRCAMSTRANS-STATUS.
            03  WS-CRCAMSTRANS-ST1   PIC 99.
-      *      03  WS-CRCAMSTRANS-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       *                  FORMS WORK FIELDS                         *
@@ -936,10 +935,12 @@
        OPEN-000.
             OPEN I-O CR-CAMS-TRANS-FILE.
             IF WS-CRCAMSTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRCAMSTRANS-ST1
                MOVE "CRCAMS TRANS BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE WS-CRCAMSTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-CRCAMSTRANS-ST1
                GO TO OPEN-000.
        OPEN-005.
            PERFORM GET-SYSTEM-Y2K-DATE.

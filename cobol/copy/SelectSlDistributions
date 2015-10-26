@@ -1,4 +1,4 @@
-           SELECT DISTRIBUTIONS ASSIGN TO Ws-Distribution
+            SELECT DISTRIBUTIONS ASSIGN TO Ws-Distribution
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

@@ -84,7 +84,7 @@
       *     CANCEL WS-PROGRAM
            PERFORM DISPLAY-PR-NO.
            IF WS-ANSWER = "35"
-                MOVE "CoStffIq.Int" TO WS-PROGRAM.
+                MOVE "CoStffIq" TO WS-PROGRAM.
            IF WS-ANSWER = " 1"
                MOVE "MenuPass" TO WS-PROGRAM.
            IF WS-ANSWER = " 2"

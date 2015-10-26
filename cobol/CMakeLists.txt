@@ -47,7 +47,7 @@ endforeach()
 
 set (company_list 
   CoCsParm  CoFxParm  Company   CoPrinter  CoPrntMt  CoPuByMt CoQuParm
-  CoRpParm  CoStffIq  CoStffMt  CrPrinter  DrPrinter
+  CoRpParm  CoStffIq  CoStffMt  CrPrinter  DrPrinter DataName 
 )
 
 set (menu_list 
@@ -57,7 +57,7 @@ set (menu_list
   Cr1Menu   Cr2Menu  Cr3Menu  Cr4Menu
   Gl1Menu   Gl2Menu  Gl3Menu  Gl4Menu
   BaUpMenu  Bm1Menu  Cb1Menu  MastMenu
-  ContMenu  PassWrds DataName MenuPass   
+  ContMenu  PassWrds MenuPass   
 )
 
 set (billofmaterial_list 
@@ -127,12 +127,12 @@ set (stock_list
 #foreach (name ${company_list})
 # cobol_module(${name})
 #endforeach()
-#foreach (name ${menu_list})
-#  cobol_module(${name})
-#endforeach()
-foreach (name ${billofmaterial_list})
+foreach (name ${menu_list})
   cobol_module(${name})
 endforeach()
+#foreach (name ${billofmaterial_list})
+#  cobol_module(${name})
+#endforeach()
 #foreach (name ${cashbook_list})
 #  cobol_module(${name})
 #endforeach()
@@ -145,9 +145,9 @@ endforeach()
 #foreach (name ${general_list})
 #  cobol_module(${name})
 #endforeach()
-#foreach (name ${sales_list})
-#  cobol_module(${name})
-#endforeach()
+foreach (name ${sales_list})
+  cobol_module(${name})
+endforeach()
 #foreach (name ${stock_list})
 #  cobol_module(${name})
 #endforeach()
