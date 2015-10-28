@@ -1,5 +1,5 @@
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. CbCamsMt.
+        PROGRAM-ID. CbCAMSMt.
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
@@ -53,20 +53,15 @@
            03  FILLER     PIC X.
            03  WS-CS-YYYY PIC 9999.
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1   PIC 99.
-      *     03  WS-CBTRANS-ST2   PIC X.
+           03  WS-CBTRANS-ST1       PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1   PIC 99.
-      *     03  WS-CB-ST2   PIC X.
+           03  WS-CB-ST1            PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC X.
+           03  WS-GLMAST-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1   PIC 99.
        01  WS-CAMS-STATUS.
-           03  WS-CAMS-ST1     PIC 99.
-      *     03  WS-CAMS-ST2     PIC 9(2) COMP-X.
+           03  WS-CAMS-ST1          PIC 99.
        01  WS-BANK-VAT-ENTRY.
            03  WS-BANK-GROSS-AMT     PIC S9(8)V99.
            03  WS-BANK-VAT-AMT       PIC S9(8)V99.
@@ -328,9 +323,13 @@
            MOVE 6            TO F-CBFIELDLENGTH
            PERFORM WRITE-FIELD-NUMERIC.
        RTFD-035.
+       
+       MOVE 2501 TO POS
+       DISPLAY BANK-CAMS-REC AT POS.
+       
            REWRITE BANK-CAMS-REC.
            IF WS-CAMS-ST1 NOT = 0
-              MOVE "CAMS-FILE ERROR ON REWRITE, 'ESC' FOR STATUS."
+              MOVE "CAMS-FILE ERC ON REWRITE RTFD, 'ESC' FOR STATUS."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE WS-CAMS-ST1 TO WS-MESSAGE
@@ -341,7 +340,8 @@
        RTFD-900.
            MOVE "CAMS-FILE DATE RE-FORMAT FINISHED, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
               
             PERFORM CLEAR-FIELDS
             PERFORM CLEAR-BODY.
@@ -1982,7 +1982,7 @@
        RALL-005.
            READ CBTRANS-FILE NEXT
               AT END NEXT SENTENCE.
-           IF WS-CBTRANS-ST1  = "1"
+           IF WS-CBTRANS-ST1  = 10
               SUBTRACT 1 FROM SUB-20
               GO TO RALL-900.
            IF WS-CBTRANS-ST1 NOT = 0

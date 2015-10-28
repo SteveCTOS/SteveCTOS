@@ -48,14 +48,11 @@
        77  LINES-DISPLAYED      PIC 9(5) VALUE 0.
        77  WS-NO-OF-TRANS       PIC 9(5) VALUE 0.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1    PIC X.
-           03  WS-CB-ST2    PIC X.
+           03  WS-CB-ST1           PIC 99.
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1    PIC X.
-           03  WS-CBTRANS-ST2    PIC X.
+           03  WS-CBTRANS-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC X.
-           03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-PERIOD.
            03  WS-1ST-CHAR        PIC X.
            03  WS-PER             PIC 99.
@@ -226,7 +223,7 @@
             DISPLAY "Enter the PERIOD to print for: [  ]" AT POS
             MOVE 1342 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-RANGE2 TO CDA-DATA.
            MOVE 2         TO CDA-DATALEN.
            MOVE 10        TO CDA-ROW.
            MOVE 41        TO CDA-COL.
@@ -289,7 +286,7 @@
             DISPLAY ": [ ]" AT POS
             ADD 3 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-RANGE4 TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 15        TO CDA-ROW.
            MOVE 63        TO CDA-COL.

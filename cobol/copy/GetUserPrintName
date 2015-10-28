@@ -1,6 +1,9 @@
       *
        GET-USER-PRINT-NAME SECTION.
        GUPN-005.
+            IF WS-PRINTER-SAVE > " "
+               MOVE WS-PRINTER-SAVE TO WS-PRINTER
+               MOVE SPACES          TO WS-PRINTER-SAVE.
             IF WS-PRINTERSELECTED = 0 OR = 88
                 GO TO GUPN-999.
       *      ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".

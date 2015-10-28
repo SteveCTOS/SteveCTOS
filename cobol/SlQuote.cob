@@ -1103,7 +1103,8 @@
 
            CLOSE PRINT-FILE.
 
-           IF Fax-PaNumber NOT = 3 AND NOT = 4
+      *     IF Fax-PaNumber NOT = 3 AND NOT = 4
+           IF Fax-PaNumber = 3 OR = 4
             IF WS-ANSWER = "1" OR = "2"
                PERFORM SEND-REPORT-TO-PRINTER.
 

@@ -491,7 +491,7 @@
                         WS-ABOVE-BODY.
             PERFORM CLEAR-FIELDS.
             MOVE WS-LASTPASSWORD TO WS-PASSWORDSAVED.
-       GET-001.
+        GET-001.
             MOVE "Printer:"   TO WS-PRN-FIL
             MOVE Ws-Printer   To WS-PRN-NAME
             MOVE 1125 TO POS

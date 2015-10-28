@@ -1,5 +1,5 @@
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. CbCamsAl.
+        PROGRAM-ID. CbCAMSAl.
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
@@ -35,20 +35,15 @@
            03  WS-BATCH-1STCHAR  PIC X(2) VALUE "CB".
            03  WS-BATCH-REST     PIC X(8).
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1   PIC 99.
-      *     03  WS-CBTRANS-ST2   PIC X.
+           03  WS-CBTRANS-ST1     PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1   PIC 99.
-      *     03  WS-CB-ST2   PIC X.
+           03  WS-CB-ST1          PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-CAMS-STATUS.
-           03  WS-CAMS-ST1     PIC 99.
-      *     03  WS-CAMS-ST2     PIC 9(2) COMP-X.
+           03  WS-CAMS-ST1        PIC 99.
        01  WS-TRANS-TYPE.
            03  FILLER        PIC X(7) VALUE "CHQ PAY".
            03  FILLER        PIC X(7) VALUE "MTX PAY".
@@ -404,7 +399,7 @@
             IF F-EXIT-CH = X"8C"
       *       IF SUB-20 > 1
               PERFORM READ-NEXT-GLNUMBER
-               IF WS-GLMAST-ST1 = "0"
+               IF WS-GLMAST-ST1 = 0
                 MOVE GL-NUMBER TO WS-ACCOUNT-NUMBER (SUB-20)
                                   F-NAMEFIELD
                 MOVE 12 TO F-CBFIELDLENGTH
@@ -720,7 +715,7 @@
             ELSE
                REWRITE CBTRANS-REC
                   INVALID KEY NEXT SENTENCE.
-            IF WS-CBTRANS-ST1 = "0"
+            IF WS-CBTRANS-ST1 = 0
                 GO TO WCBT-020.
             GO TO WCBT-000.
        WCBT-020.
