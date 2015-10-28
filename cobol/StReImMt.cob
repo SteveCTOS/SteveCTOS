@@ -3959,14 +3959,14 @@
             PERFORM ERROR1-020
             PERFORM ERROR-020.
             
-            MOVE 2701 TO POS.
+            MOVE 2719 TO POS.
             MOVE "** THIS SCREEN FOR FREIGHT INVOICE ONLY **"
              TO WS-MESSAGE
             DISPLAY WS-MESSAGE AT POS 
               WITH reverse-video BLINK
                 BELL FOREGROUND-COLOR IS 4.
             MOVE 2815 TO POS
-            DISPLAY "PRESS <Alt-ESC> TO EXIT THIS PROGRAM." AT POS.
+            DISPLAY "PRESS <Alt-f10> TO EXIT THIS PROGRAM." AT POS.
             MOVE 2910 TO POS
             DISPLAY 
             "WHEN ALL INFO'S ENTERED, <GO> AT LAST FIELD TO WRITE TRANS"

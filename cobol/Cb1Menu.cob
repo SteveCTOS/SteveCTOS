@@ -113,9 +113,9 @@
            IF WS-ANSWER = "12"
                 MOVE "CbGlPost" TO WS-PROGRAM.
            IF WS-ANSWER = "13"
-                MOVE "CbCAMSMt" TO WS-PROGRAM.
+                MOVE "CbCamsMt" TO WS-PROGRAM.
            IF WS-ANSWER = "14"
-                MOVE "CbCAMSAl" TO WS-PROGRAM.
+                MOVE "CbCamsAl" TO WS-PROGRAM.
            IF WS-ANSWER = "15"
                 MOVE "CbPerEnd" TO WS-PROGRAM.
            IF WS-ANSWER = "16"

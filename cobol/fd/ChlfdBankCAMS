@@ -1,11 +1,13 @@
        FD  BANK-CAMS-FILE.
        01  BANK-CAMS-REC.
            03  BANK-CAMS-LINE.
+             04  BANK-FIRST-80-CHARS.
                05  BANK-CAMS-STATEMENT-DATE  PIC X(10).
                05  BANK-CAMS-FILL1           PIC X(1).
                05  BANK-CAMS-STATEMENT-NUM   PIC X(6).
                05  BANK-CAMS-FILL2           PIC X(2).
                05  BANK-CAMS-NARRATIVE       PIC X(47).
+             04  BANK-SECOND-80-CHARS.
                05  BANK-CAMS-FILL3           PIC X(3).
                05  BANK-CAMS-CH-REFNUM       PIC X(8).
                05  BANK-CAMS-FILL4           PIC X(4).
@@ -18,7 +20,7 @@
                05  BANK-CAMS-VAT-AMT         PIC X(11).
                05  BANK-CAMS-FILL8           PIC X.
                05  BANK-CAMS-FEC-FOUND       PIC X.
-               05  BANK-CAMS-RETURN-CHAR     PIC X.
+               05  BANK-CAMS-RETURN-CHAR     PIC X(2).
       *
       * THE CAMS FILE OFF THE PC SHOULD BE MADE TO BE 134 CHARS LONG
       * - INCLUDING THE RETURN CHAR AT THE END OF EACH LINE -

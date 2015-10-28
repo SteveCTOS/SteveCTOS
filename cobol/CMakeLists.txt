@@ -66,7 +66,7 @@ set (billofmaterial_list
 )
 
 set (cashbook_list 
-  CbBankTr CbCAMSAl  CbCAMSMt  CbGlPost  CbMaLyIq  CbMastIq  CbMastMt
+  CbBankTr CbCamsAl  CbCamsMt  CbGlPost  CbMaLyIq  CbMastIq  CbMastMt
   CbPerEnd CbStAlMt  CbStatRp  CbTranIq  CbTrans   CbTrFuIq  CbTrLyIq  CbTrOsRp
 )
 
@@ -127,9 +127,9 @@ set (stock_list
 #foreach (name ${company_list})
 # cobol_module(${name})
 #endforeach()
-#foreach (name ${menu_list})
-#  cobol_module(${name})
-#endforeach()
+foreach (name ${menu_list})
+  cobol_module(${name})
+endforeach()
 #foreach (name ${billofmaterial_list})
 #  cobol_module(${name})
 #endforeach()

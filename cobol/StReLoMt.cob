@@ -122,35 +122,25 @@
            03  WS-DEL-CODE       PIC X.
            03  WS-DEL-TERM       PIC X(20).
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-STKRECEIPT-STATUS.
-           03  WS-STKRECEIPT-ST1     PIC 99.
-      *     03  WS-STKRECEIPT-ST2     PIC X.
+           03  WS-STKRECEIPT-ST1   PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1     PIC 99.
-      *     03  WS-OUTORD-ST2     PIC X.
+           03  WS-OUTORD-ST1       PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1  PIC 99.
-      *     03  WS-CRJRN-ST2  PIC X.
+           03  WS-CRJRN-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-Spl-STATUS.
-           03  WS-Spl-ST1       PIC 99.
-      *     03  WS-Spl-ST2       PIC 9(2) COMP-X.
+           03  WS-Spl-ST1          PIC 99.
        01  LINE-DESCRIPTION.
            03  WS-CR1              PIC X(4).
            03  WS-CRACC            PIC X(8).
