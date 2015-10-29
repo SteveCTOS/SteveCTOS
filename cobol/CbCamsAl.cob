@@ -113,7 +113,8 @@
            PERFORM DISPLAY-FORM.
            PERFORM DISPLAY-TOP-INFO.
            PERFORM GET-DATA.
-           GO TO CONTROL-010.
+           PERFORM END-OFF.
+           GO TO CONTROL-000.
       *
        GET-DATA SECTION.
        GET-000.
