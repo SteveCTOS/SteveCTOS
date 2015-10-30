@@ -62,34 +62,25 @@
        77  WS-PAGE              PIC 99 VALUE 0.
        77  WS-INQUIRY           PIC X(8) VALUE "CrNameIq".
        01  W-READ-KEY           PIC X.
-       01  W-CRTSTATUS           PIC 9(4) VALUE 0.
+       01  W-CRTSTATUS             PIC 9(4) VALUE 0.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1  PIC 99.
-      *     03  WS-GLTRANS-ST2  PIC X.
+           03  WS-GLTRANS-ST1      PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1  PIC 99.
-      *     03  WS-CRJRN-ST2  PIC X.
+           03  WS-CRJRN-ST1        PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1  PIC 99.
-      *     03  WS-CRTRANS-ST2  PIC X.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-CURRENCY-STATUS.
-           03  WS-CU-ST1  PIC 99.
-      *     03  WS-CU-ST2  PIC X.
+           03  WS-CU-ST1           PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY         PIC X OCCURS 11.
        01  WS-PRINTER-INFO.
@@ -220,6 +211,7 @@
        CONTROL-003.
            Copy "PrinterAcceptCr".
        CONTROL-010.
+           MOVE 0 TO BATCH-DATE.
            PERFORM OPEN-FILES.
            PERFORM READ-SALES-LEDGER-PARAMETER.
            PERFORM CLEAR-SCREEN.
@@ -3001,12 +2993,13 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-015.
+            GO TO OPEN-020.
        OPEN-016.
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H1-DATE.
+           
            IF BATCH-DATE NOT > 0
             IF WS-DATE > GL-ENDDATE (WS-CURRENTPER)
                MOVE GL-ENDDATE (WS-CURRENTPER) TO BATCH-DATE

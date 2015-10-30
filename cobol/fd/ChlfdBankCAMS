@@ -14,9 +14,9 @@
                05  BANK-CAMS-DATE            PIC X(5).
                05  BANK-CAMS-FILL6           PIC X.
                05  BANK-CAMS-FOUND           PIC X(3).
-               05  BANK-CAMS-FILL7           PIC X(13).
-               05  BANK-CAMS-VAT-AMT         PIC X(11).
-               05  BANK-CAMS-FILL8           PIC X.
+               05  BANK-CAMS-FILL7           PIC X(14).
+               05  BANK-CAMS-VAT-AMT         PIC X(10).
+               05  BANK-CAMS-FILL8           PIC X(1).
                05  BANK-CAMS-FEC-FOUND       PIC X.
                05  BANK-CAMS-RETURN-CHAR     PIC X(3).
       *
@@ -30,7 +30,7 @@
       *AND ONE BLANK LINE AFTER IT.
       *
       * IN CTOS
-      *THE OPENING AND CLOSING BALANCES MUST BE SHOWN AS: 
+      *THE OPENING AND CLOSING BALANCES MUST BE SHOWN AS:
       *Opening balance    Closing balance
       * IN LINUX
       *THE OPENING AND CLOSING BALANCES MUST BE SHOWN AS:

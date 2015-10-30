@@ -10,11 +10,11 @@ rm /ctools/ps09/*
 cd /ctools/bin
 
 cp /ctools/spl/DrStateCo09 /ctools/sfi/drstateco09
-cp /ctools/spl/DrLaserCo09 /ctools/sfi/drlaserco09
+cp /ctools/spl/ctoolsDrLaserCo09 /ctools/sfi/drlaserco09
 #cp /ctools/spl/drnomalco09 /ctools/sfi/drnomalco09
 #cp /ctools/spl/dremailco09 /ctools/sfi/dremailco09
-cp /ctools/sfi/sl11 /ctools/spl/sfidrage
-cp /ctools/spl/DPPrintCo09 /ctools/sfi/DBPrintCo09
+#cp /ctools/sfi/sl11 /ctools/spl/sfidrage
+cp /ctools/spl/DBPrintCo09 /ctools/sfi/DBPrintCo09
 
 mkdir /media/ctools/BACKUPUSB/data09
 #cp /ctools/data01/* /media/ctools/BACKUPUSB/data01

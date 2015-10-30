@@ -32,17 +32,13 @@
            03  WS-BATCH-1STCHAR  PIC X(2) VALUE "CB".
            03  WS-BATCH-REST     PIC X(8).
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1   PIC 99.
-      *     03  WS-CBTRANS-ST2   PIC X.
+           03  WS-CBTRANS-ST1     PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1   PIC 99.
-      *     03  WS-CB-ST2   PIC X.
+           03  WS-CB-ST1          PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-TRANS-TYPE.
            03  FILLER        PIC X(7) VALUE "CHQ PAY".
            03  FILLER        PIC X(7) VALUE "MTX PAY".
@@ -245,22 +241,24 @@
               IF WS-TRANS-DESC (SUB-3) = " "
                  GO TO FILL-0110
               ELSE
-              MOVE SUB-3 TO WS-TYPE (SUB-1) F-EDNAMEFIELDANAL
-              MOVE 2     TO F-CBFIELDLENGTH
-              PERFORM WRITE-FIELD-ANALYSIS
-              MOVE "TYPEDESC"            TO F-FIELDNAME
-              MOVE 8                     TO F-CBFIELDNAME
-              MOVE WS-TRANS-DESC (SUB-3) TO F-NAMEFIELD
-              MOVE 7                     TO F-CBFIELDLENGTH
-              PERFORM WRITE-FIELD-ALPHA
-              GO TO FILL-010.
+                 MOVE SUB-3 TO WS-TYPE (SUB-1) F-EDNAMEFIELDANAL
+                 MOVE 2     TO F-CBFIELDLENGTH
+                 PERFORM WRITE-FIELD-ANALYSIS
+                 MOVE "TYPEDESC"            TO F-FIELDNAME
+                 MOVE 8                     TO F-CBFIELDNAME
+                 MOVE WS-TRANS-DESC (SUB-3) TO F-NAMEFIELD
+                 MOVE 7                     TO F-CBFIELDLENGTH
+                 PERFORM WRITE-FIELD-ALPHA
+                 GO TO FILL-010.
            MOVE F-NAMEFIELD TO ALPHA-RATE
            PERFORM DECIMALISE-RATE.
+           
            IF NUMERIC-RATE > 27
               MOVE "ENTRY CANNOT BE > 27, PLEASE RE-ENTER."
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO FILL-010.
+
            MOVE NUMERIC-RATE TO WS-TYPE (SUB-1) SUB-3 F-EDNAMEFIELDANAL
            MOVE 2            TO F-CBFIELDLENGTH
            PERFORM WRITE-FIELD-ANALYSIS.
@@ -268,6 +266,12 @@
               MOVE "ENTRY IS INCORRECT, PLEASE RE-ENTER." TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO FILL-010.
+              
+            MOVE "TYPE"                TO F-FIELDNAME
+            MOVE 4                     TO F-CBFIELDNAME
+            MOVE 2                     TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ANALYSIS.
+
             MOVE "TYPEDESC"            TO F-FIELDNAME
             MOVE 8                     TO F-CBFIELDNAME
             MOVE WS-TRANS-DESC (SUB-3) TO F-NAMEFIELD

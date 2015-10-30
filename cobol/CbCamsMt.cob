@@ -564,7 +564,7 @@
               GO TO RCF-030.
       * FOR SFI
            IF WS-LOAN-1-47 = 
-                "FNB/PROPLN  00003000009962594                 "
+                "FNB/PROPLN   00003000009962594                 "
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Bond Payment FNB                            "
@@ -1647,6 +1647,7 @@
              ELSE
                 GO TO WCBT-005.
        WCBT-900.
+            PERFORM ERROR1-020
             MOVE 1 TO SUB-1.
        WCBT-999.
             EXIT.

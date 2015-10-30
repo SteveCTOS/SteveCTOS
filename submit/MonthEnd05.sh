@@ -13,7 +13,7 @@ cp /ctools/spl/ctoolsDrLaserCo05 /ctools/orx/drlaserco05
 #cp /ctools/spl/drnomalco05 /ctools/orx/drnomalco05
 #cp /ctools/spl/dremailco05 /ctools/orx/dremailco05
 #cp /ctools/orx/sl11 /ctools/spl/orxdrage
-cp /ctools/spl/DBPrintCo05 /ctools/orx/dbprintco05
+cp /ctools/spl/DBPrintCo05 /ctools/orx/DBPrintCo05
 
 echo Backing up data05 information......
 mkdir /media/ctools/BACKUPUSB/data05
