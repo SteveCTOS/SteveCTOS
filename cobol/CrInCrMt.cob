@@ -2993,6 +2993,7 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-015.
+       OPEN-0151.
             GO TO OPEN-020.
        OPEN-016.
            PERFORM GET-SYSTEM-Y2K-DATE.
