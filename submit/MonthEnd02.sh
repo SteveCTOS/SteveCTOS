@@ -9,7 +9,7 @@ cat /ctools/ps02/* >> /ctools/grc/slp22
 rm /ctools/ps02/*
 
 cp /ctools/spl/DrStateCo02 /ctools/grc/drstateco02
-cp /ctools/spl/ctoolsDrLaserCo02 /ctools/grc/drlaserco02
+cp /ctools/spl/DrLaserCo02 /ctools/grc/drlaserco02
 cp /ctools/spl/DrNoMalCo02 /ctools/grc/drnomalco02
 cp /ctools/spl/DrEmailCo02 /ctools/grc/dremailco02
 #cp /ctools/grc/sl11 /ctools/spl/grcdrage
