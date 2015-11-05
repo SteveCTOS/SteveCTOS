@@ -4028,7 +4028,7 @@
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"1D"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO FILL-049.
-            PERFORM READ-FIELD-ALPHA.
+            PERFORM READ-FIELD-ALPHA. 
             MOVE F-NAMEFIELD TO B-UNIT (SUB-1).
             MOVE 4           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.

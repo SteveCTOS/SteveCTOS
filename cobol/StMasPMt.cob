@@ -25,13 +25,10 @@
        77  WS-OLDPRICE        PIC 9(6)V99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1   PIC 9.
-      *     03  WS-STCHANGE-ST2   PIC X.
+           03  WS-STCHANGE-ST1   PIC 99.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -2992,7 +2989,7 @@
        R-ST-010.
              READ STOCK-MASTER WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-             IF WS-STOCK-ST1 = "2"
+             IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 PERFORM CLEAR-SCREEN-FORM
                 MOVE "Y" TO NEW-STOCKNO
                 MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER
@@ -3024,7 +3021,7 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-STOCK-ST1 = "2"
+           IF WS-STOCK-ST1 =  23 OR 35 OR 49
                MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK FILE BUSY, PRESS 'ESC' TO RETRY"
                TO WS-MESSAGE
