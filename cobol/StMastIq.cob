@@ -905,8 +905,9 @@
        Copy "WriteFieldValue".
        Copy "DisplayForm".
        Copy "UserFillField".
-       Copy "ReadKBD".
+      * Copy "ReadKBD".
        Copy "StockSpecPassword".
+       Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*
       ******************
