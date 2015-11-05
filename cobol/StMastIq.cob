@@ -39,25 +39,20 @@
        77  WS-PasswordSaved      PIC X(10).
        77  PSW-SUB1              PIC S9(5) VALUE 0.
        77  PSW-SUB2              PIC S9(5) VALUE 0.
-       01  W-READ-KEY            PIC X.
+       01  W-READ-KEY            PIC X(11).
        01  W-CRTSTATUS           PIC 9(4) VALUE 0.
        01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY          PIC X OCCURS 11.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1        PIC 99.
        01  WS-STCAT-STATUS.
-           03  WS-STCAT-ST1     PIC 99.
-      *     03  WS-STCAT-ST2     PIC X.
+           03  WS-STCAT-ST1       PIC 99.
        01  WS-STALT-STATUS.
-           03  WS-STALT-ST1     PIC 99.
-      *     03  WS-STALT-ST2     PIC X.
+           03  WS-STALT-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
            
        Copy "WsDateInfo".
       **************************************************************
@@ -98,7 +93,8 @@
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD   TO ST-STOCKNUMBER WS-STOCKNUMBER.
             
-      *   IF F-EXIT-CH = X"91" = <CODE-SCROLL-UP>
+      *   IF F-EXIT-CH = X"91" = <CODE-SCROLL-UP> CTOS
+      *   IF F-EXIT-CH = X"91" = <Alt-F12> linux
            IF F-EXIT-CH = X"91"
               MOVE WS-LASTPASSWORD TO WS-PASSWORDSAVED
               PERFORM CHECK-PASSWORD.

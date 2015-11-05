@@ -30,14 +30,11 @@
        77  WS-OLDPRICE        PIC 9(6)V99.
        77  WS-QUES-MU-GP-PERC PIC X VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1   PIC 99.
-      *     03  WS-STCHANGE-ST2   PIC X.
+           03  WS-STCHANGE-ST1    PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS

@@ -39,11 +39,11 @@
        77  WS-MESSAGE2          PIC X(79) VALUE " ".
        77  WS-AMOUNT            PIC 9(4)V99 VALUE 0.
        01  SIGN-FOUND           PIC 9(4) COMP.
-       01  WS-COMMAND-LINE          PIC X(256).                                    
+       01  WS-COMMAND-LINE      PIC X(256).                                    
        01  W-PRINTCOMMAND.
-           03  W-PRINTCOM1A        PIC X(6) VALUE SPACES.
-           03  W-PRINTCOM1         PIC X(90) VALUE SPACES.
-           03  W-PRINTCOM2         PIC X(100) VALUE SPACES.
+           03  W-PRINTCOM1A     PIC X(6) VALUE SPACES.
+           03  W-PRINTCOM1      PIC X(90) VALUE SPACES.
+           03  W-PRINTCOM2      PIC X(100) VALUE SPACES.
        01  W-STATUS             PIC 9(4) BINARY COMP.
        01  W-ENTER              PIC X.
        01  CTOS_DISPLAY_ACCEPT.

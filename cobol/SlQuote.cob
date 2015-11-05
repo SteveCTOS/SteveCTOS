@@ -154,7 +154,7 @@
        77  WS-PASSWORDSAVED     PIC X(10).
        77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
-       01  W-READ-KEY           PIC X.
+       01  W-READ-KEY           PIC X(11).
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  F-RC                 BINARY-SHORT VALUE 0.
        01  WS-STDESC.
