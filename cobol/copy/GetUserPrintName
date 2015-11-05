@@ -1,6 +1,12 @@
       *
        GET-USER-PRINT-NAME SECTION.
        GUPN-005.
+      *      MOVE WS-PRINTER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+      *      
+      *      MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+
             IF WS-PRINTER-SAVE > " "
                MOVE WS-PRINTER-SAVE TO WS-PRINTER
                MOVE SPACES          TO WS-PRINTER-SAVE.

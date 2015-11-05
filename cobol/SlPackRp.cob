@@ -29,8 +29,7 @@
        77  WS-SEND-CHARS        PIC X VALUE "N".
        77  WS-TYPE              PIC 9 VALUE 0.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1       PIC 99.
-      *     03  WS-INCR-ST2       PIC 9(2) COMP-X.
+           03  WS-INCR-ST1      PIC 99.
        01  PARCEL-LINE.
            03  PL-DIG1              PIC X.
            03  PL-REST.
@@ -158,6 +157,15 @@
                       WS-PARCEL-PRINTED.
       *     MOVE 10 TO W-DELAY.
        PR-012.
+      *     MOVE "PR-005" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+      *     MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+           
            PERFORM CONTROL-000
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
