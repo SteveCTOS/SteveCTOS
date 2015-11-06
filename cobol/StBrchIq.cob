@@ -1389,6 +1389,7 @@
        Copy "WriteFieldValue".
        Copy "ReadKBD".
        Copy "StockSpecPassword".
+       Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*
       ******************
