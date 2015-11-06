@@ -80,35 +80,25 @@
            03  WS-BATCH-1STCHAR PIC X(2) VALUE "DC".
            03  WS-BATCH-REST    PIC X(8).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1         PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1          PIC 99.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1    PIC 99.
-      *     03  WS-SLPARAMETER-ST2    PIC X.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1    PIC 99.
-      *     03  WS-DRTRANS-ST2    PIC X.
+           03  WS-DRTRANS-ST1        PIC 99.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1    PIC 99.
-      *     03  WS-DISTRIBUTION-ST2    PIC X.
+           03  WS-DISTRIBUTION-ST1   PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1    PIC 99.
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1  PIC 99.
-      *     03  WS-CBTRANS-ST2  PIC X.
+           03  WS-CBTRANS-ST1        PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1    PIC 99.
-      *     03  WS-CB-ST2    PIC X.
+           03  WS-CB-ST1             PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1   PIC 99.
-      *     03  WS-GLTRANS-ST2   PIC 9(2) COMP-X.
+           03  WS-GLTRANS-ST1        PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC 9(2) COMP-X.
+           03  WS-GLMAST-ST1         PIC 99.
        01  WS-DIST-TOTALS.
            03  WS-DIST-PAYMENT    PIC 9(7)V99 VALUE 0.
            03  WS-DIST-RDCHEQUE   PIC 9(7)V99 VALUE 0.
@@ -1418,6 +1408,7 @@
            MOVE 0 TO SUB-9.
        RDT-005.
            MOVE WS-ACCOUNT-NUMBER TO DRTR-ACCOUNT-NUMBER.
+           MOVE 0                 TO DRTR-DATE.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
