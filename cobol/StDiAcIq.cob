@@ -1002,6 +1002,7 @@
        Copy "GetSystemY2KDate".
        Copy "ReadKBD".
        Copy "StockSpecPassword".
+       Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*
       ******************
