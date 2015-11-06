@@ -2290,8 +2290,15 @@
               DISPLAY "DO YOU WISH TO SEE THIS OLD QUOTE, Y OR N:"
               AT POS
               ADD 43 TO POS
-              ACCEPT WS-DIS AT POS
-            IF W-ESCAPE-KEY = 1 OR 2
+              MOVE 'N'       TO CDA-DATA
+              MOVE 1         TO CDA-DATALEN
+              MOVE 27        TO CDA-ROW
+              MOVE 52        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-DIS
+             IF W-ESCAPE-KEY = 1 OR 2
                  GO TO GET-112
               ELSE
                  DISPLAY " " AT 3079 WITH BELL
@@ -2305,6 +2312,11 @@
             IF WS-DIS = "Y"
                PERFORM READ-INVOICE-REGISTER
              IF WS-NEWORDER = "C" OR = "Y"
+               MOVE
+         "THIS QUOTE IS COMPLETE AND CANNOT BE DISLAYED, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM DISPLAY-FORM
                GO TO GET-010
              ELSE
                PERFORM READ-STOCK-TRANSACTIONS

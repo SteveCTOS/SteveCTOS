@@ -970,12 +970,13 @@
        QUESTION-UNAPPLIED-AMOUNT SECTION.
        QUNAP-000.
            PERFORM CLEAR-010.
-           MOVE 3010 TO POS
+       QUNAP-005.
+           MOVE 2910 TO POS
            DISPLAY "This Amount is Unapplied:" AT POS
            ADD 27 TO POS
            MOVE WS-WORKTOTAL TO F-EDNAMEFIELD9MIL
            DISPLAY F-EDNAMEFIELD9MIL AT POS.
-           MOVE 3055 TO POS
+           MOVE 2955 TO POS
            DISPLAY "Apply? (Y/N): [ ]        " AT POS WITH BELL.
        QUNAP-010.
       *     MOVE 3069 TO POS
@@ -984,7 +985,7 @@
            
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 27        TO CDA-ROW.
+           MOVE 26        TO CDA-ROW.
            MOVE 69        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -1007,9 +1008,10 @@
            IF WS-ANSWER1 NOT = "N" AND NOT = "Y"
                 MOVE "INVALID ANSWER, MUST BE N OR Y, RE-ENTER"
                 TO WS-MESSAGE
-                PERFORM ERROR-010
+                PERFORM ERROR-000
                 DISPLAY " " AT 3079 WITH BELL
-                GO TO QUNAP-010.
+                GO TO QUNAP-005.
+           PERFORM ERROR1-020.
            PERFORM ERROR-020.
        QUNAP-030.
            IF WS-ANSWER1 = "Y "
