@@ -1,11 +1,13 @@
       *
        GET-USER-PRINT-NAME SECTION.
        GUPN-005.
-      *      MOVE WS-PRINTER TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
-      *      
-      *      MOVE WS-PRINTER-SAVE TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
+            MOVE "IN GET USER PRINT FILE SECTION" TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
+            MOVE WS-PRINTER TO WS-MESSAGE
+            PERFORM ERROR1-000      
+            MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE
+            PERFORM ERROR1-020.
 
             IF WS-PRINTER-SAVE > " "
                MOVE WS-PRINTER-SAVE TO WS-PRINTER
@@ -67,17 +69,20 @@
        GUPN-040.
             MOVE ALPHA-RATE TO WS-PRINT-FILE-NAME.
             
+            MOVE "LEAVING GET USER PRINT FILE, 2 PRINTER DISPLAYS"
+               TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
       *       MOVE WS-PRINT-FILE-NAME TO WS-MESSAGE
       *       PERFORM ERROR-MESSAGE.
 
             MOVE WS-PRINTER TO WS-PRINTER-SAVE.
             MOVE WS-PRINT-FILE-NAME TO WS-PRINTER.
             
-      *       MOVE WS-PRINTER TO WS-MESSAGE
-      *       PERFORM ERROR-MESSAGE.
-            
-      *      MOVE WS-PRINTER-SAVE TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
+            MOVE WS-PRINTER TO WS-MESSAGE
+            PERFORM ERROR1-000      
+            MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE
+            PERFORM ERROR1-020.
        GUPN-999.
            EXIT.
       *

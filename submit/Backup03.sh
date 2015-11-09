@@ -27,9 +27,9 @@ cp /ctools/data12/* /media/ctools/BACKUPUSB/data12
 
 Submit MainCont TapeBackup.Sub01
 
-lp -d ctj-spl /ctools/dev/source/print/Compressed.Key
-lp -d ctj-spl /ctools/spl/ctj-aa1
-lp -d ctj-spl /ctools/spl/ctj-aa2
+lp -d ctj-splB /ctools/dev/source/print/Compressed.Key
+lp -d ctj-splB /ctools/spl/ctj-aa1
+lp -d ctj-splB /ctools/spl/ctj-aa2
 
 echo COPYING DATA TO BACKUP DISK ON SERVER
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/
