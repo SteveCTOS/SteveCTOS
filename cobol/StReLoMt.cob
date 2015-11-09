@@ -113,7 +113,7 @@
        77  WS-CREDITOR-ACCEPT   PIC X(7) VALUE " ".
        77  WS-CURRENTGLPER      PIC 99 VALUE 0.
        77  WS-WRITE-MESSAGE     PIC X(60) VALUE " ".
-       01  W-READ-KEY           PIC X.
+       01  W-READ-KEY           PIC X(11) VALUE " ".
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 3.
        01  STORE-DEL.
@@ -846,6 +846,7 @@
                COMPUTE WS-STAFFCOST = ST-AVERAGECOST * 1.10
                MOVE WS-STAFFCOST TO F-EDNAMEFIELD99Mil
                                     B-UNITPRICE (SUB-1).
+                                    
             IF STRE-TRANSACTION-CODE = 6
               MOVE 11 TO F-CBFIELDLENGTH
               PERFORM WRITE-FIELD-99Mil
@@ -871,7 +872,7 @@
               DISPLAY "NORMAL PRICE:" AT POS
               ADD 13 TO POS
               MOVE ST-PRICE TO F-EDNAMEFIELD99Mil
-              DISPLAY F-EDNAMEFIELD99Mil AT POS
+              DISPLAY F-EDNAMEFIELD99Mil AT POS.
               
            IF STRE-TRANSACTION-CODE = 1 OR = 4
               MOVE "UNITPRICE" TO F-FIELDNAME
@@ -880,6 +881,7 @@
                                   B-UNITPRICE (SUB-1)
               MOVE 11          TO F-CBFIELDLENGTH
               PERFORM WRITE-FIELD-99Mil.
+              
            IF STRE-TRANSACTION-CODE = 2
               MOVE "UNITPRICE" TO F-FIELDNAME
               MOVE 9           TO F-CBFIELDNAME

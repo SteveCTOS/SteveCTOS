@@ -30,14 +30,11 @@
            03  WS-FUTURE      PIC X.
            03  WS-NO          PIC 99.
        01  WS-CRCAMSTRANS-STATUS.
-           03  WS-CRCAMSTRANS-ST1   PIC 99.
-      *     03  WS-CRCAMSTRANS-ST2   PIC X.
+           03  WS-CRCAMSTRANS-ST1  PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1   PIC 99.
-      *     03  WS-CB-ST2   PIC X.
+           03  WS-CB-ST1           PIC 99.
        01  WS-ALL-LINES.
            03  WS-LINES OCCURS 500.
                05  WS-TRANS-NUM     PIC 9(6).
@@ -618,7 +615,7 @@
             MOVE "AMOUNT" TO F-FIELDNAME
             MOVE 6        TO F-CBFIELDNAME
             MOVE " "      TO F-NAMEFIELD
-            MOVE 8        TO F-CBFIELDLENGTH
+            MOVE 12       TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "BANK"  TO F-FIELDNAME
