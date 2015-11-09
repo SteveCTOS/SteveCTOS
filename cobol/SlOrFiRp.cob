@@ -837,6 +837,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "WriteDailyExcep1".
        Copy "CTOSCobolAccept".
       *
