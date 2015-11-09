@@ -735,6 +735,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       *
       * END-OF-JOB.
