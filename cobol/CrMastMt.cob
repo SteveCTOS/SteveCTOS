@@ -2151,13 +2151,13 @@
                PERFORM RELEASE-CREDITOR-RECORD
                PERFORM CLEAR-FORM
                GO TO FILL-999.
+            MOVE F-NAMEFIELD     TO CR-CAMS-BANK-NUM.
+            PERFORM CHECK-BANK-NUM.
             IF CR-CAMS-BANK-NUM = " "
                MOVE "THIS ENTRY CANNOT BE BLANK, 'ESC' TO RE-ENTER"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO FILL-220.
-            MOVE F-NAMEFIELD     TO CR-CAMS-BANK-NUM.
-            PERFORM CHECK-BANK-NUM.
             IF WS-ACC-ERROR = "Y"
                GO TO FILL-220.
             PERFORM ERROR1-020.
@@ -2207,13 +2207,13 @@
                PERFORM RELEASE-CREDITOR-RECORD
                PERFORM CLEAR-FORM
                GO TO FILL-999.
+            MOVE F-NAMEFIELD     TO CR-CAMS-BRANCH-NUM.
+            PERFORM CHECK-BRANCH-NUM.
             IF F-NAMEFIELD = " "
                MOVE "THIS ENTRY CANNOT BE BLANK, 'ESC' TO RE-ENTER"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO FILL-225.
-            MOVE F-NAMEFIELD     TO CR-CAMS-BRANCH-NUM.
-            PERFORM CHECK-BRANCH-NUM.
             IF WS-ACC-ERROR = "Y"
                GO TO FILL-225.
             PERFORM ERROR1-020.

@@ -2177,9 +2177,20 @@
               DISPLAY "ARE YOU SURE ABOUT DELETING THE ENTIRE ORDER."
               AT POS
               MOVE 3010 TO POS
-              DISPLAY "ENTER Y TO DELETE, N TO STOP DELETION." AT POS
+              DISPLAY "ENTER Y TO DELETE, N TO STOP DELETION. [ ]"
+                 AT POS
               ADD 40 TO POS
-              ACCEPT WS-DIS AT POS
+
+              MOVE 'N'       TO CDA-DATA
+              MOVE 1         TO CDA-DATALEN
+              MOVE 26        TO CDA-ROW
+              MOVE 57        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-DIS
+
+      *        ACCEPT WS-DIS AT POS
             IF W-ESCAPE-KEY = 1 OR 2
                MOVE X"1F" TO F-EXIT-CH
                GO TO GET-012
