@@ -113,7 +113,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SEND-CHARS.
 
-      *     ACCEPT WS-SEND-CHARS AT POS.
            IF W-ESCAPE-KEY = 3
               PERFORM END-OFF.
            IF WS-SEND-CHARS NOT = "Y" AND NOT = "N"

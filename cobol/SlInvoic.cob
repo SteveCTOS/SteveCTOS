@@ -133,6 +133,7 @@
        77  WS-GST-AMT-EXPORT       PIC 9(8)V99 VALUE 0.
        77  WS-GST-PERCENT          PIC 99V99 VALUE 0.
        77  WS-BODY-LINE         PIC ZZ9.
+       77  WS-PRINTER-LASER     PIC X VALUE " ".
        77  WS-IMM-PR            PIC X VALUE " ".
        77  WS-MUST-PRINT        PIC X VALUE " ".
        77  WS-TYPE-OF-DOCUMENT  PIC 9.
@@ -175,62 +176,43 @@
            03  WS-DESC1          PIC X(20) VALUE " ".
            03  WS-DESC2          PIC X(20) VALUE " ".
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC 9(2) COMP-X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC 9(2) COMP-X.
+           03  WS-STPR-ST1         PIC 99.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC 9(2) COMP-X.
+           03  WS-SALES-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1  PIC 99.
-      *     03  WS-DRTRANS-ST2  PIC 9(2) COMP-X.
+           03  WS-DRTRANS-ST1      PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1   PIC 99.
-      *     03  WS-STTRANS-ST2   PIC 9(2) COMP-X.
+           03  WS-STTRANS-ST1      PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1       PIC 99.
-      *     03  WS-INCR-ST2       PIC 9(2) COMP-X.
+           03  WS-INCR-ST1         PIC 99.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1  PIC 99.
-      *     03  WS-DISTRIBUTION-ST2  PIC 9(2) COMP-X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  WS-SOLDBY-STATUS.
-           03  WS-SOLDBY-ST1     PIC 99.
-      *     03  WS-SOLDBY-ST2     PIC 9(2) COMP-X.
+           03  WS-SOLDBY-ST1       PIC 99.
        01  WS-PULLBY-STATUS.
-           03  WS-PULLBY-ST1     PIC 99.
-      *     03  WS-PULLBY-ST2     PIC 9(2) COMP-X.
+           03  WS-PULLBY-ST1       PIC 99.
        01  WS-PULLERS-STATUS.
-           03  WS-PU-ST1   PIC 99.
-      *     03  WS-PU-ST2   PIC X.
+           03  WS-PU-ST1           PIC 99.
        01  WS-CASHSALE-STATUS.
            03  WS-CASHSALE-ST1     PIC 99.
-      *     03  WS-CASHSALE-ST2     PIC 9(2) COMP-X.
        01  WS-INVREV-STATUS.
-           03  WS-INVREV-ST1     PIC 99.
-      *     03  WS-INVREV-ST2     PIC 9(2) COMP-X.
+           03  WS-INVREV-ST1       PIC 99.
        01  WS-SBREP-STATUS.
-           03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC 9(2) COMP-X.
+           03  WS-SBREP-ST1        PIC 99.
        01  WS-MENU-STATUS.
-           03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9 COMP-X.
+           03  WS-MENU-ST1         PIC 99.
        01  WS-SPECIALS-STATUS.
-           03  WS-SPECIALS-ST1       PIC 99.
-      *     03  WS-SPECIALS-ST2       PIC 9 COMP-X.
+           03  WS-SPECIALS-ST1     PIC 99.
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1   PIC 99.
-      *     03  WS-STDISC-ST2   PIC X.
+           03  WS-STDISC-ST1       PIC 99.
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY         PIC X OCCURS 11.
        01  WS-NAMEANDADDRESS.
@@ -701,6 +683,7 @@
            IF WS-IMM-PR = "H"
             IF WS-PRINTERNUMBER (SUB-1) = 15
                MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER-SAVE
+                                               WS-PRINTER-LASER
                MOVE 3 TO WS-PROG-TYPE
                GO TO IM-999.
            IF SUB-1 < 11
@@ -710,6 +693,7 @@
              TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
       *     MOVE 3               TO WS-PRINTERTYPE (11).
+       IM-050.
            GO TO IM-999.
        IM-600.
       * SECTION REMOVED 6/9/2000.  A/C'S WANT ALL THREE COPIES
@@ -849,6 +833,7 @@
       *        PERFORM IM-600
       *        PERFORM IM-650
       *        PERFORM GET-USER-PRINT-NAME
+              MOVE WS-PRINTER-LASER TO WS-PRINTER
               PERFORM WORK-OUT-PRINT-FILE-NAME
               OPEN OUTPUT LASER-PRINT
               PERFORM ZL1-LASER-HEADINGS
@@ -1112,7 +1097,6 @@
                
       *      MOVE "´"         TO LASER-REC
       *      WRITE LASER-REC.
-
   
            MOVE " "     TO LASER-REC
            MOVE "´¶"    TO PLCR-CHAR1
@@ -6149,8 +6133,9 @@
       *
        PRINT-LABEL SECTION.
        PL-001.
-           Move 5 To Ws-PrinterNumber (21).
-           Move 4 To Ws-PrinterType (21).
+           Move Spaces To Ws-Printer.
+           Move 5      To Ws-PrinterNumber (21).
+           Move 4      To Ws-PrinterType (21).
            Copy "PrinterSpecial".
        PL-002.
            MOVE "  " TO WS-SOLD-BY.
@@ -6255,8 +6240,10 @@
            CALL "C$SLEEP" USING 1.
       *          MOVE 10 TO  W-DELAY.
        PL-012.
+           PERFORM PL-001.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
+           
            MOVE WS-PRINT-COMP   TO PRINT-REC
            WRITE PRINT-REC.
            MOVE " "             TO PARCEL2 PRINT-REC
