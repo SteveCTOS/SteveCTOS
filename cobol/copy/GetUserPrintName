@@ -8,7 +8,11 @@
       *      MOVE WS-PRINTER-SAVE TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE
       *      PERFORM ERROR1-020.
+<<<<<<< HEAD
 
+=======
+      *
+>>>>>>> 27dbe29296c76abea765d205e7a5d17003d2e5ca
             IF WS-PRINTER-SAVE > " "
                MOVE WS-PRINTER-SAVE TO WS-PRINTER
                MOVE SPACES          TO WS-PRINTER-SAVE.
