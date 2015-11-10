@@ -7572,6 +7572,7 @@
        Copy "WriteFieldAmount".
        Copy "WriteField9Mil".
        Copy "WriteFieldAmount1".
+       
        Copy "WriteFieldAmountDis".
        Copy "WriteFieldNumeric".
        Copy "WriteFieldQty".

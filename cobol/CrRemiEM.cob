@@ -58,19 +58,14 @@
            03  WS-REMI-MM          PIC 99.
        01  WS-REMITTRANS-STATUS.
            03  WS-REMITTRANS-ST1   PIC 99.
-      *     03  WS-REMITTRANS-ST2   PIC X.
        01  WS-REMI-STATUS.
-           03  WS-REMI-ST1   PIC 99.
-      *     03  WS-REMI-ST2   PIC X.
+           03  WS-REMI-ST1         PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-PAR-ST1   PIC 99.
-      *     03  WS-PAR-ST2   PIC X.
+           03  WS-PAR-ST1          PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-SPL-STATUS.
-           03  WS-SPL-ST1     PIC 99.
-      *     03  WS-SPL-ST2     PIC 9(2) COMP-X.
+           03  WS-SPL-ST1          PIC 99.
        01  WS-MONTH-BUDGET.
            03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
        01  WS-INV-PAY-LINE.
@@ -95,8 +90,11 @@
            03  FILLER          PIC X(10) VALUE "OCTOBER  ".
            03  FILLER          PIC X(10) VALUE "NOVEMBER ".
            03  FILLER          PIC X(10) VALUE "DECEMBER ".
+           03  FILLER          PIC X(10) VALUE "OCTOBER  ".
+           03  FILLER          PIC X(10) VALUE "NOVEMBER ".
+           03  FILLER          PIC X(10) VALUE "SEPTEMBER".
        01  WS-MONTH-DESC REDEFINES WS-MONTH-DESCRIPTIONS.
-           03  WS-MM-DESC      PIC X(10) OCCURS 12.
+           03  WS-MM-DESC      PIC X(10) OCCURS 15.
        01 WS-EMAIL-REMIT.
            03  WS-ER-FIL        PIC X(15) VALUE "/ctools/eremit/".
            03  WS-EREMIT        PIC X(4).
