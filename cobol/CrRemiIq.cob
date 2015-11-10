@@ -43,14 +43,11 @@
        01  WS-MONTH-BUDGET.
            03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
        01  WS-REMI-STATUS.
-           03  WS-REMI-ST1   PIC 99.
-      *     03  WS-REMI-ST2   PIC X.
+           03  WS-REMI-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-PAR-ST1   PIC 99.
-      *     03  WS-PAR-ST2   PIC X.
+           03  WS-PAR-ST1       PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -154,11 +151,11 @@
                MOVE 0 TO SIGN-FOUND
                GO TO GET-001.
             IF F-EXIT-CH = X"0C"
-      *          MOVE WS-NUMBER TO CRREM-ACC-NUMBER
-      *          PERFORM START-CRREMIT
+                MOVE WS-NUMBER TO CRREM-ACC-NUMBER
+                PERFORM START-CRREMIT
                 PERFORM READ-REMIT-NEXT
              IF WS-END NOT = "Y"
-               GO TO GET-003
+                GO TO GET-003
              ELSE
                PERFORM CLEAR-FORM
                PERFORM DISPLAY-FORM
@@ -501,7 +498,6 @@
        ATS-999.
             EXIT.
       *
-      *
        REWRITE-CRREM-RECORD SECTION.
        RSR-010.
           IF NEW-CRREMNO = "Y"
@@ -702,10 +698,15 @@
             PERFORM WRITE-FIELD-ALPHA60.
 
             MOVE "AMT"              TO F-FIELDNAME
-            MOVE 3                  TO F-CBFIELDNAME
-            MOVE CRREM-AMT (SUB-1)  TO F-EDNAMEFIELDREC
-            MOVE 12                 TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-REC.
+            MOVE 3                  TO F-CBFIELDNAME.
+            IF CRREM-DESC (SUB-1) NOT = " "
+                MOVE CRREM-AMT (SUB-1)  TO F-EDNAMEFIELDREC
+                MOVE 12                 TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-REC
+            ELSE 
+                MOVE " "      TO F-NAMEFIELD
+                MOVE 12       TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA.
        SCROLL-999.
              EXIT.
       *
@@ -847,7 +848,7 @@
        CLSC-000.
             MOVE 1 TO SUB-1.
        CLSC-005.
-            MOVE 0   TO CRREM-AMT (SUB-1)
+            MOVE 0   TO CRREM-AMT (SUB-1).
             MOVE " " TO CRREM-DESC (SUB-1).
             ADD 1 TO SUB-1.
             IF SUB-1 < 41

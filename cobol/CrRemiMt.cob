@@ -43,14 +43,11 @@
        01  WS-MONTH-BUDGET.
            03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
        01  WS-REMI-STATUS.
-           03  WS-REMI-ST1   PIC 99.
-      *     03  WS-REMI-ST2   PIC X.
+           03  WS-REMI-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-PAR-ST1   PIC 99.
-      *     03  WS-PAR-ST2   PIC X.
+           03  WS-PAR-ST1        PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -1100,7 +1097,7 @@
        CLSC-000.
             MOVE 1 TO SUB-1.
        CLSC-005.
-            MOVE 0   TO CRREM-AMT (SUB-1)
+            MOVE 0   TO CRREM-AMT (SUB-1).
             MOVE " " TO CRREM-DESC (SUB-1).
             ADD 1 TO SUB-1.
             IF SUB-1 < 41
