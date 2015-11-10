@@ -8,11 +8,7 @@
       *      MOVE WS-PRINTER-SAVE TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE
       *      PERFORM ERROR1-020.
-<<<<<<< HEAD
 
-=======
-      *
->>>>>>> 27dbe29296c76abea765d205e7a5d17003d2e5ca
             IF WS-PRINTER-SAVE > " "
                MOVE WS-PRINTER-SAVE TO WS-PRINTER
                MOVE SPACES          TO WS-PRINTER-SAVE.
@@ -68,7 +64,7 @@
                GO TO GUPN-040.
             MOVE DAT-RATE (SUB-46) TO AL-RATE (SUB-45).
             IF SUB-45 < 100
-                ADD 1 TO SUB-45 SUB-46
+                ADD 1 TO SUB-45 SUB-46 
                 GO TO GUPN-035.
        GUPN-040.
             MOVE ALPHA-RATE TO WS-PRINT-FILE-NAME.
