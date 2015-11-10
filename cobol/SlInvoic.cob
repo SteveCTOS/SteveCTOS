@@ -133,7 +133,7 @@
        77  WS-GST-AMT-EXPORT       PIC 9(8)V99 VALUE 0.
        77  WS-GST-PERCENT          PIC 99V99 VALUE 0.
        77  WS-BODY-LINE         PIC ZZ9.
-       77  WS-PRINTER-LASER     PIC X VALUE " ".
+       77  WS-PRINTER-LASER     PIC X(20) VALUE " ".
        77  WS-IMM-PR            PIC X VALUE " ".
        77  WS-MUST-PRINT        PIC X VALUE " ".
        77  WS-TYPE-OF-DOCUMENT  PIC 9.
@@ -724,6 +724,8 @@
       *
        WORK-OUT-PRINT-FILE-NAME SECTION.
        WOPFN-001.
+           MOVE WS-PRINTER-LASER TO WS-PRINTER-SAVE.
+           
            MOVE SPACES TO ALPHA-RATE DATA-RATE.
            ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
            
@@ -768,8 +770,10 @@
                GO TO WOPFN-035.
            MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
            
-      *     MOVE WS-PRINTER TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
+           MOVE WS-PRINTER TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
 
       *     MOVE W-FILENAME TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -2319,6 +2323,11 @@
             IF WS-ABOVE-BODY = "1"
                 GO TO GET-150.
        GET-185.
+            PERFORM ERROR-020.
+            MOVE 2710 TO POS
+            DISPLAY WS-MESSAGE AT POS
+            MOVE 2810 TO POS
+            DISPLAY WS-MESSAGE AT POS.
       ****************************************************************
       *SECTION TO CHECK IF THE NEW ORDER TO BE INVOICED WILL PUSH THE*
       *ACCOUNT OVER THE CREDIT LIMIT.                                *
@@ -6148,7 +6157,7 @@
 
            MOVE ' '       TO CDA-DATA.
            MOVE 2         TO CDA-DATALEN.
-           MOVE 26        TO CDA-ROW.
+           MOVE 27        TO CDA-ROW.
            MOVE 49        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -6195,7 +6204,7 @@
            MOVE ' '       TO CDA-DATA.
            MOVE 2         TO CDA-DATALEN.
            MOVE 27        TO CDA-ROW.
-           MOVE 52        TO CDA-COL.
+           MOVE 51        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
@@ -6241,6 +6250,10 @@
       *          MOVE 10 TO  W-DELAY.
        PL-012.
            PERFORM PL-001.
+           
+           MOVE "IN PRINT-LABEL SECTION" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
            
