@@ -380,7 +380,7 @@
        END-000.
             IF LINE-CNT > 60
                PERFORM PRR-010.
-            IF WS-TOOLKIT-ST1 = "8"
+            IF WS-TOOLKIT-ST1 = 88
                MOVE WS-RANGE1 TO PRINT-REC
                WRITE PRINT-REC
                MOVE "*** STARTING KIT NUMBER TOO HIGH, RE-TRY. ***"

@@ -6333,7 +6333,7 @@
            WRITE PRINT-REC FROM PARCEL2.
 
            MOVE " "             TO PARCEL2 PRINT-REC
-           WRITE PRINT-REC
+           WRITE PRINT-REC BEFORE PAGE.
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
 

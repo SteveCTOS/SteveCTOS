@@ -266,7 +266,7 @@
            WRITE PRINT-REC FROM PLINE2.
 
            MOVE " "             TO PLINE2 PRINT-REC
-           WRITE PRINT-REC
+           WRITE PRINT-REC BEFORE PAGE
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
 
