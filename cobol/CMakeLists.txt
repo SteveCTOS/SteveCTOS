@@ -130,9 +130,15 @@ set (stock_list
 #foreach (name ${menu_list})
 #  cobol_module(${name})
 #endforeach()
+<<<<<<< HEAD
+#foreach (name ${billofmaterial_list})
+# cobol_module(${name})
+#endforeach()
+=======
 foreach (name ${billofmaterial_list})
  cobol_module(${name})
 endforeach()
+>>>>>>> 5de0482c3e4f83c943b4aa5dd7ac2efc910a21ee
 #foreach (name ${cashbook_list})
 #  cobol_module(${name})
 #endforeach()
