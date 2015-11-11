@@ -3,6 +3,10 @@
         AUTHOR.    CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -115,6 +119,7 @@
        77  WS-CREDITOR-ACCEPT   PIC X(7) VALUE " ".
        77  WS-CURRENTGLPER      PIC 99 VALUE 0.
        77  WS-WRITE-MESSAGE     PIC X(60) VALUE " ".
+       01  W-CRTSTATUS           PIC 9(4) value 0.
        01  W-READ-KEY           PIC X(11) VALUE " ".
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 3.
@@ -1379,6 +1384,7 @@
            MOVE 2510 TO POS
            DISPLAY "                                         " AT POS.
            CLOSE LABEL-FILE.
+           PERFORM SEND-REPORT-TO-PRINTER.
        PR-999.
            EXIT.
       *
@@ -2163,7 +2169,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-OLD-ORDER.
 
-           ACCEPT WS-OLD-ORDER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE "2" TO WS-ABOVE-BODY
                GO TO GOOS-999.
@@ -2199,7 +2204,7 @@
            MOVE 27             TO CDA-ROW.
            MOVE 50             TO CDA-COL.
            MOVE CDA-GREEN      TO CDA-COLOR.
-           MOVE 'F'            TO CDA-ATTR.
+           MOVE 'A'            TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-YN.
 
@@ -3334,12 +3339,12 @@
            DISPLAY "Enter the ACCOUNT NUMBER and <Return>, OR" AT POS.
            MOVE 3015 TO POS.
            DISPLAY
-           "Enter a SHORT NAME and <Next-Page> to scroll through Acc'S."
+           "Enter a SHORT NAME and <PgDn> to scroll through Acc'S."
              AT POS.
            MOVE 2838 TO POS.
 
            MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
+           MOVE 7         TO CDA-DATALEN.
            MOVE 25        TO CDA-ROW.
            MOVE 37        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
@@ -3392,7 +3397,7 @@
            DISPLAY "Press <Return> to ACCEPT This Account,    " AT POS.
            MOVE 3015 TO POS.
            DISPLAY 
-           "OR Press <Next-Page> To Scroll Through More Accounts       "
+           "OR Press <PgDn> To Scroll Through More Accounts       "
             AT POS.
            MOVE 3075 TO POS.
 
