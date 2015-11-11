@@ -133,12 +133,9 @@ set (stock_list
 #foreach (name ${billofmaterial_list})
 # cobol_module(${name})
 #endforeach()
-<<<<<<< HEAD
-foreach (name ${billofmaterial_list})
- cobol_module(${name})
-endforeach()
-=======
->>>>>>> f826051c0c165177cf5b224796b5e0e2d697e582
+#foreach (name ${billofmaterial_list})
+# cobol_module(${name})
+#endforeach()
 #foreach (name ${cashbook_list})
 #  cobol_module(${name})
 #endforeach()
