@@ -2484,7 +2484,7 @@
       *X"55" = POSITION 21 IN THE PSWD TABLE OF 92
       *
             IF F-EXIT-CH = X"1D"
-               MOVE X"55" TO F-EXIT-CH
+               MOVE X"57" TO F-EXIT-CH
                PERFORM CHECK-PASSWORD
             ELSE
                GO TO GET-240.

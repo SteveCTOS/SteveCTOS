@@ -44,11 +44,13 @@
        01  PRINT-REC.
            03  FILLER              PIC X(132).
        FD  LABEL-PRINT.
-       01  LABEL-REC               PIC X(250).
+       01  LABEL-REC.
+           03  FILLER              PIC X(250).
       *
        WORKING-STORAGE SECTION.
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
-       77  WS-LABELPRINTER      PIC X(12) VALUE " ".
+       77  WS-LABELPRINTER      PIC X(100) VALUE " ".
+       77  WS-DOTPRINTER        PIC X(100) VALUE " ".
        77  WS-ACCEPT-COPIES     PIC X VALUE " ".
        77  WS-ST-PRINT-LABELS   PIC X VALUE " ".
        77  WS-ITEM-RECOSTED     PIC X VALUE " ".
@@ -133,44 +135,31 @@
        01  WS-MONTH-DESC REDEFINES WS-MONTH-DESCRIPTIONS.
            03  WS-MM-DESC      PIC X(3) OCCURS 12.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1   PIC 99.
-      *     03  WS-STCHANGE-ST2   PIC X.
+           03  WS-STCHANGE-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-IMPRECEIPT-STATUS.
-           03  WS-IMPRECEIPT-ST1     PIC 99.
-      *     03  WS-IMPRECEIPT-ST2     PIC X.
+           03  WS-IMPRECEIPT-ST1   PIC 99.
        01  WS-STKRECEIPT-STATUS.
-           03  WS-STKRECEIPT-ST1     PIC 99.
-      *     03  WS-STKRECEIPT-ST2     PIC X.
+           03  WS-STKRECEIPT-ST1   PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1  PIC 99.
-      *     03  WS-CRJRN-ST2  PIC X.
+           03  WS-CRJRN-ST1        PIC 99.
        01  WS-CURRENCY-STATUS.
-           03  WS-CURRENCY-ST1   PIC 99.
-      *     03  WS-CURRENCY-ST2   PIC X.
+           03  WS-CURRENCY-ST1     PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1     PIC 99.
-      *     03  WS-OUTORD-ST2     PIC X.
+           03  WS-OUTORD-ST1       PIC 99.
        01  WS-Spl-STATUS.
-           03  WS-Spl-ST1       PIC 99.
-      *     03  WS-Spl-ST2       PIC 9(2) COMP-X.
+           03  WS-Spl-ST1          PIC 99.
        01 WS-ORDERNUMBER01.
          02  WS-ORDERNUMBERS OCCURS 20.
            03  WS-ORDER          PIC X(20).
@@ -427,6 +416,7 @@
            DISPLAY "******************************" AT POS.
        CONTROL-003.
            Copy "PrinterAccept".
+           MOVE WS-PRINTER TO WS-DOTPRINTER.
            MOVE 2510 TO POS.
            DISPLAY "Program Loading...... " AT POS.
            MOVE "StReImMt"      TO F-FORMNAME.
@@ -445,6 +435,7 @@
            Move 9 To Ws-PrinterNumber (21)
            Move 9 To Ws-PrinterType (21).
            Copy "PrinterStSpecial".
+           MOVE WS-LABELPRINTER TO WS-PRINTER.
        CONTROL-999.
            EXIT.
       * 
@@ -876,7 +867,7 @@
             MOVE NUMERIC-RATE TO IMRE-MARKUPPERCENT
                                  F-EDNAMEFIELDPERC.
             PERFORM WRITE-FIELD-PERC.
-            IF IMRE-MARKUPPERCENT = 0
+            IF IMRE-MARKUPPERCENT = 0 
                 GO TO GET-180.
        GET-190.
             MOVE "                   " TO F-NAMEFIELD.
@@ -900,6 +891,7 @@
             PERFORM ORDER-NUMBER-ENTRY.
             PERFORM COMPUTE-FOREIGN-ORDER-VALUE.
             MOVE 1 TO SUB-1.
+            MOVE WS-DOTPRINTER TO WS-PRINTER-SAVE.
             PERFORM GET-USER-PRINT-NAME.
             OPEN OUTPUT PRINT-FILE.
             PERFORM PRINT-ROUTINE.
@@ -917,7 +909,7 @@
            PERFORM ERROR-020.
            PERFORM CLEAR-010.
            MOVE 3010 TO POS.
-           DISPLAY "IS IT ALRIGHT TO UPDATE?? ENTER Y OR N: [  ]" AT POS.
+           DISPLAY "IS IT ALRIGHT TO UPDATE?? ENTER Y OR N: [ ]" AT POS.
            ADD 41 TO POS.
 
            MOVE ' '       TO CDA-DATA.
@@ -944,7 +936,8 @@
               MOVE "2" TO WS-ABOVE-BODY
               PERFORM ERROR-020
               GO TO GET-190.
-           MOVE "WHAT ARE YOU TRYING TO ANSWER?????" TO WS-MESSAGE.
+           MOVE "WHAT ARE YOU TRYING TO ANSWER??PRINT-LABEL???"
+              TO WS-MESSAGE.
            PERFORM ERROR-MESSAGE.
            GO TO GET-920.
        GET-930.
@@ -952,7 +945,8 @@
            PERFORM ERROR-020.
            PERFORM CLEAR-010.
            MOVE 3010 TO POS.
-           DISPLAY "  UPDATE SELLING PRICE?? ENTER Y OR N:  [  ]" AT POS.
+           DISPLAY "  UPDATE SELLING PRICE?? ENTER Y OR N:  [ ]" 
+               AT POS.
            ADD 41 TO POS.
 
            MOVE ' '       TO CDA-DATA.
@@ -982,7 +976,7 @@
            PERFORM ERROR-020.
            PERFORM CLEAR-010.
            MOVE 3010 TO POS.
-           DISPLAY "  UPDATE FOREIGN COSTS ? ENTER Y OR N:  [  ]" AT POS.
+           DISPLAY "  UPDATE FOREIGN COSTS ? ENTER Y OR N:  [ ]" AT POS.
            ADD 41 TO POS.
 
            MOVE ' '       TO CDA-DATA.
@@ -1028,7 +1022,16 @@
             MOVE 2910 TO POS
             DISPLAY "DO YOU WISH TO PRINT STOCK LABELS: [ ]" AT POS
             ADD 36 TO POS
-            ACCEPT WS-YN AT POS.
+
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 26        TO CDA-ROW.
+            MOVE 45        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-YN.
+            
             IF WS-YN = "N"
                PERFORM ERROR1-020
                GO TO GET-999.
@@ -1175,6 +1178,13 @@
       * TAB CHARACTER    *
       ********************
            IF F-EXIT-CH = X"09"
+                MOVE SPACES TO WS-MESSAGE
+                MOVE 2510 TO POS
+                DISPLAY WS-MESSAGE AT POS
+                MOVE 2610 TO POS
+                DISPLAY WS-MESSAGE AT POS
+                MOVE 2710 TO POS
+                DISPLAY WS-MESSAGE AT POS
                 GO TO FILL-999.
       *****************************************************
       * <CODE-TAB>=X"89" IN CTOS, <ALT-F8>=X"9D" IN LINUX *
@@ -1484,13 +1494,13 @@
             MOVE B-SELLING (SUB-1) TO F-EDNAMEFIELD99Mil.
             PERFORM WRITE-FIELD-99Mil.
        FILL-090.
-            MOVE 2710 TO POS
+            MOVE 2910 TO POS
             DISPLAY "RUNNING TOTAL:              DUTY AMOUNT:"
             AT POS
-            MOVE 2725 TO POS
+            MOVE 2925 TO POS
             MOVE WS-FOREIGN-CHECK-VAL TO WS-FOREIGN-MASK
             DISPLAY WS-FOREIGN-MASK AT POS
-            MOVE 2750 TO POS
+            MOVE 2950 TO POS
             MOVE WS-DUTY-AMOUNT TO WS-FOREIGN-MASK
             DISPLAY WS-FOREIGN-MASK AT POS.
             
@@ -1502,11 +1512,11 @@
             IF SUB-1 = 200 OR = 300 OR = 375
                 MOVE "NB! YOU MAY ENTER A MAXIMUM OF 400 LINES ONLY."
                 TO WS-MESSAGE
-                MOVE 2720 TO POS
+                MOVE 3020 TO POS
                 DISPLAY WS-MESSAGE AT POS.
             IF SUB-1 = 201 OR = 276
                 MOVE " " TO WS-MESSAGE
-                MOVE 2720 TO POS
+                MOVE 3020 TO POS
                 DISPLAY WS-MESSAGE AT POS.
             IF SUB-1 > 400
                 MOVE "400 LINES ARE UP!! , 'ESC' TO TAB."
@@ -1524,15 +1534,23 @@
       *
        PRINT-LABELS SECTION.
        PR-000.
+      *     MOVE "HERE AT LABEL PRINT SECTION" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE WS-LABELPRINTER TO WS-PRINTER-SAVE.
            PERFORM GET-USER-PRINT-NAME.
+           MOVE WS-PRINTER TO WS-LABELPRINTER.
+
+      *     MOVE "HERE AT LABEL PRINT OPEN" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
            OPEN OUTPUT LABEL-PRINT.
-           IF WS-Spl-ST1 NOT = 0
+           IF WS-SPL-ST1 NOT = 0
                MOVE "LABEL Print File Open error, 'ESC' To RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                Move Ws-LabelPrinter to ws-MESSAGE
                PERFORM ERROR-MESSAGE
-               Move Ws-Printer to ws-MESSAGE
+               Move Ws-PRINTER-SAVE to ws-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-SPL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -1543,7 +1561,16 @@
            MOVE 2910 TO POS
            DISPLAY "WHAT STARTING POS FOR THE 1ST LABEL :[ ]" AT POS
            ADD 38 TO POS
-           ACCEPT WS-YN AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
            IF WS-YN NOT = "1" AND NOT = "2" AND NOT = "3" AND NOT = "4"
               GO TO PR-001.
            MOVE WS-YN TO WS-START-POS.
@@ -1552,7 +1579,16 @@
            MOVE 2910 TO POS
            DISPLAY "DIVIDE THE NO. OF LABELS BY A FACTOR:[ ]" AT POS
            ADD 38 TO POS
-           ACCEPT WS-YN AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
            IF WS-YN NOT = "Y" AND NOT = "N"
               GO TO PR-002.
            IF WS-YN = "N"
@@ -1562,7 +1598,16 @@
            MOVE 2910 TO POS
            DISPLAY "ENTER A NUMBER TO DIVIDE BY         :[   ]" AT POS
            ADD 38 TO POS
-           ACCEPT WS-DIVIDE-ACCEPT AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 3         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIVIDE-ACCEPT.
+           
            MOVE WS-DIVIDE-ACCEPT TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
            MOVE NUMERIC-RATE TO WS-DIVIDE-BY.
@@ -1756,7 +1801,16 @@
             DISPLAY "SEARCH ORDER BY 1=STOCKNUMBER, 2=ORDERNUMBER: [ ]"
             AT POS
             ADD 47 TO POS
-            ACCEPT WS-BYORD-STOCK AT POS.
+
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 26        TO CDA-ROW.
+            MOVE 56        TO CDA-COL.
+            MOVE CDA-GREEN TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-BYORD-STOCK.
+            
             IF WS-BYORD-STOCK NOT = "1" AND NOT = "2" AND NOT = "3"
                MOVE "PLEASE RE-ENTER OPTION, MUST BE 1,2 OR 3"
                TO WS-MESSAGE
@@ -2079,7 +2133,16 @@
             "ENTER A DISCOUNT IF APPLICABLE TO THESE ITEMS: [     ]"
              AT POS.
             MOVE 2958 TO POS.
-            ACCEPT WS-DISCOUNT-ENTRY AT POS.
+
+            MOVE ' '       TO CDA-DATA.
+            MOVE 5         TO CDA-DATALEN.
+            MOVE 26        TO CDA-ROW.
+            MOVE 57        TO CDA-COL.
+            MOVE CDA-GREEN TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-DISCOUNT-ENTRY.
+            
             IF WS-DISCOUNT-ENTRY > 0
                 MOVE WS-DISCOUNT-ENTRY TO ALPHA-RATE
                 PERFORM DECIMALISE-RATE
@@ -3085,7 +3148,16 @@
             DISPLAY "DO YOU WISH TO CHANGE THE ORDER-NUMBER ENTERED.[ ]"
                  AT POS.
             ADD 48 TO POS.
-            ACCEPT WS-CHANGE-ORDER AT POS.
+
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 26        TO CDA-ROW.
+            MOVE 57        TO CDA-COL.
+            MOVE CDA-GREEN TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-CHANGE-ORDER.
+
             IF WS-CHANGE-ORDER NOT = "Y" AND NOT = "N"
                DISPLAY " " AT 3079 WITH BELL
                GO TO CHECK-TREO-008.
@@ -3618,11 +3690,11 @@
             MOVE 2810 TO POS.
             IF WS-NEXT = "N"
                DISPLAY
-            "ENTER A/C NUMBER & <RETURN> OR A SHORT NAME & <NEXT-PAGE>"
+            "ENTER A/C NUMBER & <RETURN> OR A SHORT NAME & <PgDn>"
                AT POS
             ELSE
               DISPLAY
-            "TO END SEARCH AND RE-ENTER SHORT NAME PRESS <CANCEL>.    "
+            "TO END SEARCH AND RE-ENTER SHORT NAME PRESS <Esc>.    "
                AT POS.
             MOVE "                                    " TO F-NAMEFIELD.
             MOVE "SUPPLIER" TO F-FIELDNAME.
@@ -3647,7 +3719,7 @@
             IF F-EXIT-CH = X"0C"
                 PERFORM READ-NEXT-CREDITOR
                 PERFORM WFCT-062
-             IF WS-CREDITOR-ST1 NOT = "8" AND NOT = "1"
+             IF WS-CREDITOR-ST1 NOT = 88 AND NOT = 10
                 MOVE "Y" TO WS-NEXT
                 GO TO WFCT-080
              ELSE
@@ -3959,14 +4031,15 @@
             PERFORM ERROR1-020
             PERFORM ERROR-020.
             
-            MOVE 2719 TO POS.
-            MOVE "** THIS SCREEN FOR FREIGHT INVOICE ONLY **"
+            MOVE 2701 TO POS.
+            MOVE 
+            "                ** THIS SCREEN FOR FREIGHT INVOICE ONLY **"
              TO WS-MESSAGE
             DISPLAY WS-MESSAGE AT POS 
               WITH reverse-video BLINK
                 BELL FOREGROUND-COLOR IS 4.
             MOVE 2815 TO POS
-            DISPLAY "PRESS <Alt-f10> TO EXIT THIS PROGRAM." AT POS.
+            DISPLAY "PRESS <Alt-F10> TO EXIT THIS PROGRAM." AT POS.
             MOVE 2910 TO POS
             DISPLAY 
             "WHEN ALL INFO'S ENTERED, <GO> AT LAST FIELD TO WRITE TRANS"
@@ -4078,14 +4151,14 @@
             MOVE 11            TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-NUMERIC6.
        WCIT-080.
-            MOVE 2610 TO POS.
+            MOVE 2810 TO POS.
             IF WS-NEXT = "N"
                DISPLAY
-            "ENTER A/C NUMBER & <RETURN> OR A SHORT NAME & <NEXT-PAGE>"
+            "ENTER A/C NUMBER & <RETURN> OR A SHORT NAME & <PgDn>"
                AT POS
             ELSE
               DISPLAY
-            "TO END SEARCH AND RE-ENTER SHORT NAME PRESS <CANCEL>.    "
+            "TO END SEARCH AND RE-ENTER SHORT NAME PRESS <Esc>.    "
                AT POS.
             MOVE "                                    " TO F-NAMEFIELD.
             MOVE "SUPPLIER" TO F-FIELDNAME.
