@@ -38,11 +38,13 @@
        01  PRINT-REC.
            03  FILLER           PIC X(80).
        FD  LABEL-FILE.
-       01  LABEL-REC               PIC X(250).
+       01  LABEL-REC.
+           03  FILLER           PIC X(250).
       *
        WORKING-STORAGE SECTION.
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
-       77  WS-LABELPRINTER      PIC X(12) VALUE " ".
+       77  WS-LABELPRINTER      PIC X(100) VALUE " ".
+       77  WS-DOTPRINTER        PIC X(100) VALUE " ".
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  PAGE-CNT             PIC 9(2) VALUE 0.
        77  WS-READS             PIC 9(2) VALUE 0.
@@ -323,6 +325,7 @@
            DISPLAY "****************************" AT POS.
        CONTROL-003.
            Copy "PrinterAccept".
+           MOVE WS-PRINTER TO WS-DOTPRINTER.
            MOVE 2510 TO POS
            DISPLAY "Program loading....." AT POS.
        CONTROL-010.
@@ -339,6 +342,7 @@
            Move 9 To Ws-PrinterNumber (21)
            Move 9 To Ws-PrinterType (21).
            Copy "PrinterStSpecial".
+           MOVE WS-LABELPRINTER TO WS-PRINTER.
        CONTROL-999.
            EXIT.
       *
@@ -522,7 +526,16 @@
                MOVE 2910 TO POS
                DISPLAY "DO YOU WISH TO PRINT STOCK LABELS: [ ]" AT POS
                ADD 36 TO POS
-               ACCEPT WS-YN AT POS.
+
+               MOVE ' '       TO CDA-DATA
+               MOVE 1         TO CDA-DATALEN
+               MOVE 26        TO CDA-ROW
+               MOVE 45        TO CDA-COL
+               MOVE CDA-GREEN TO CDA-COLOR
+               MOVE 'F'       TO CDA-ATTR
+               PERFORM CTOS-ACCEPT
+               MOVE CDA-DATA TO WS-YN.
+
             IF WS-YN = "N"
                PERFORM ERROR1-020
                GO TO GET-999.
@@ -631,7 +644,14 @@
            "ARE YOU SURE YOU WISH TO CANCEL YOUR SESSION ? Y OR N : [ ]"
                 AT POS
                 ADD 57 TO POS
-                ACCEPT WS-CANCEL AT POS
+                MOVE 'N'       TO CDA-DATA
+                MOVE 1         TO CDA-DATALEN
+                MOVE 27        TO CDA-ROW
+                MOVE 66        TO CDA-COL
+                MOVE CDA-GREEN TO CDA-COLOR
+                MOVE 'F'       TO CDA-ATTR
+                PERFORM CTOS-ACCEPT
+                MOVE CDA-DATA TO WS-CANCEL
                 MOVE X"01" TO F-EXIT-CH
               IF WS-CANCEL NOT = "Y"
                   PERFORM ERROR-020
@@ -722,7 +742,14 @@
            "ARE YOU SURE THE RUNNING TOTAL IS EXACTLY = INVOICE AMT:[ ]"
                 AT POS
                 ADD 57 TO POS
-                ACCEPT WS-CANCEL AT POS
+                MOVE 'N'       TO CDA-DATA
+                MOVE 1         TO CDA-DATALEN
+                MOVE 27        TO CDA-ROW
+                MOVE 66        TO CDA-COL
+                MOVE CDA-GREEN TO CDA-COLOR
+                MOVE 'F'       TO CDA-ATTR
+                PERFORM CTOS-ACCEPT
+                MOVE CDA-DATA TO WS-CANCEL
                 MOVE X"09" TO F-EXIT-CH
               IF WS-CANCEL NOT = "Y"
                   PERFORM ERROR-020
@@ -1249,7 +1276,9 @@
       *
        PRINT-LABELS SECTION.
        PR-000.
+           MOVE WS-LABELPRINTER TO WS-PRINTER-SAVE.
            PERFORM GET-USER-PRINT-NAME.
+           MOVE WS-PRINTER TO WS-LABELPRINTER.
            OPEN OUTPUT LABEL-FILE.
            IF WS-Spl-ST1 NOT = 0
                MOVE "Print File Open error, 'ESC' To RE-TRY."
@@ -1257,7 +1286,7 @@
                PERFORM ERROR-MESSAGE
                move ws-LabelPrinter to ws-MESSAGE
                PERFORM ERROR-MESSAGE
-               move ws-Printer to ws-MESSAGE
+               move ws-Printer-SAVE to ws-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-SPL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -1268,7 +1297,16 @@
            MOVE 2910 TO POS
            DISPLAY "WHAT STARTING POS FOR THE 1ST LABEL :[ ]" AT POS
            ADD 38 TO POS
-           ACCEPT WS-YN AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
            IF WS-YN NOT = "1" AND NOT = "2" AND NOT = "3" AND NOT = "4"
               GO TO PR-001.
            MOVE WS-YN TO WS-START-POS.
@@ -1277,7 +1315,16 @@
            MOVE 2910 TO POS
            DISPLAY "DIVIDE THE NO. OF LABELS BY A FACTOR:[ ]" AT POS
            ADD 38 TO POS
-           ACCEPT WS-YN AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
            IF WS-YN NOT = "Y" AND NOT = "N"
               GO TO PR-002.
            IF WS-YN = "N"
@@ -1287,7 +1334,16 @@
            MOVE 2910 TO POS
            DISPLAY "ENTER A NUMBER TO DIVIDE BY         :[   ]" AT POS
            ADD 38 TO POS
-           ACCEPT WS-DIVIDE-ACCEPT AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 3         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIVIDE-ACCEPT.
+           
            MOVE WS-DIVIDE-ACCEPT TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
            MOVE NUMERIC-RATE TO WS-DIVIDE-BY.
@@ -1855,7 +1911,7 @@
            MOVE 2912 TO POS.
 
            MOVE ' '       TO CDA-DATA.
-           MOVE 60         TO CDA-DATALEN.
+           MOVE 60        TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 30        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
@@ -2137,7 +2193,16 @@
            MOVE 3010 TO POS.
            DISPLAY "PRESS <RETURN> TO ACCEPT THIS ORDER" AT POS.
            ADD 50 TO POS.
-           ACCEPT WS-YN AT POS.
+
+           MOVE WS-ORDERNUMBER TO CDA-DATA.
+           MOVE 1              TO CDA-DATALEN.
+           MOVE 27             TO CDA-ROW.
+           MOVE 50             TO CDA-COL.
+           MOVE CDA-GREEN      TO CDA-COLOR.
+           MOVE 'F'            TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
            IF W-ESCAPE-KEY = 4
                GO TO GOOS-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -2198,7 +2263,7 @@
            MOVE 2935 TO POS.
  
            MOVE ' '       TO CDA-DATA.
-           MOVE 20         TO CDA-DATALEN.
+           MOVE 20        TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 34        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
@@ -2699,7 +2764,7 @@
            AT POS.
            MOVE 2950 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'Y'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 49        TO CDA-COL.
@@ -2785,12 +2850,12 @@
                  AT POS.
             ADD 48 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 26        TO CDA-ROW.
-           MOVE 57        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-ORDERNUMBER TO CDA-DATA.
+           MOVE 1              TO CDA-DATALEN.
+           MOVE 26             TO CDA-ROW.
+           MOVE 57             TO CDA-COL.
+           MOVE CDA-WHITE      TO CDA-COLOR.
+           MOVE 'F'            TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHANGE-ORDER.
 
@@ -2873,6 +2938,7 @@
            MOVE 2910 TO POS
            DISPLAY "PRINTING GOODS RETURN SLIP .........               "
            AT POS.
+           MOVE WS-DOTPRINTER TO WS-PRINTER-SAVE.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
            MOVE WS-PRINT-NORMAL TO PRINT-REC
@@ -3056,6 +3122,7 @@
            MOVE 2910 TO POS
            DISPLAY "PRINTING PURCHASE ORDER FORM.........              "
            AT POS.
+           MOVE WS-DOTPRINTER TO WS-PRINTER-SAVE.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
            MOVE "** P U R C H A S E   O R D E R **" TO SO1-NAME
