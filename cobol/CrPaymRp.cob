@@ -43,14 +43,11 @@
        77  WS-ACCDISC           PIC S9(7)V99.
        77  WS-NO-ACCS           PIC 9(5) VALUE 0.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1        PIC 99.
-      *     03  WS-CRTRANS-ST2        PIC X.
+           03  WS-CRTRANS-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1   PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1      PIC 99.
        01  WS-DUE-DATE.
            03  WS-DUE-YY           PIC 9999.
            03  WS-DUE-MM           PIC 99.
@@ -175,8 +172,8 @@
             MOVE SPLIT-DATE TO WS-CHECK-DATE WS-DATE
             PERFORM CHECK-DATE-VALID.
             IF SIGN-FOUND = 9
-               MOVE "2ND CHECK" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+      *         MOVE "2ND CHECK" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                GO TO GET-000.
             MOVE 2510 TO POS.
             DISPLAY "                                          " AT POS.
@@ -357,7 +354,8 @@
       *
        PRINT-ROUTINE SECTION.
        PRR-000.
-            MOVE 0 TO WS-NO-ACCS CR-ACCOUNT-NUMBER CRTR-ACC-NUMBER.
+            MOVE 0 TO WS-NO-ACCS CR-ACCOUNT-NUMBER 
+                      CRTR-DATE CRTR-ACC-NUMBER.
             MOVE WS-RANGE2 TO CRTR-ACC-NUMBER
             START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER
                INVALID KEY NEXT SENTENCE.
@@ -394,7 +392,7 @@
             IF CR-FOREIGN-LOCAL = "L"
                GO TO PRR-010.
                
-           MOVE SPACES TO CREDITOR-RECORD
+      *     MOVE SPACES TO CREDITOR-RECORD
            GO TO PRR-002.
        PRR-010.
            IF CRTR-DUE-DATE > WS-CHECK-DATE
@@ -462,10 +460,10 @@
            WRITE PRINT-REC FROM DETAIL-LINE AFTER 1
            MOVE " " TO PRINT-REC DETAIL-LINE
            ADD CRTR-UNAPPLIED-AMT TO WS-ACCTOTAL
-                                      WS-TOTAL
-           SUBTRACT CRTR-SETT-DISC FROM WS-ACCTOTAL
+                                      WS-TOTAL.
+           SUBTRACT CRTR-SETT-DISC FROM WS-ACCTOTAL.
            ADD CRTR-SETT-DISC TO WS-ACCDISC
-                                  WS-DISC-TOTAL
+                                 WS-DISC-TOTAL.
            ADD 1 TO LINE-CNT
            GO TO PRR-002.
        PRR-999.
@@ -481,10 +479,10 @@
                MOVE "**TYPE=M**"  TO T-ERR2.
            MOVE "Total to pay for Account:" TO T-NAME
            MOVE WS-ACCTOTAL                 TO T-AMT
+           MOVE WS-ACCDISC                  TO T-DISC.
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1
            MOVE " " TO PRINT-REC TOTAL-LINE
-           MOVE WS-ACCDISC                  TO T-DISC
-           WRITE PRINT-REC
+           WRITE PRINT-REC.
            MOVE 0 TO WS-ACCTOTAL
                      WS-ACCDISC
            ADD 2 TO LINE-CNT.
