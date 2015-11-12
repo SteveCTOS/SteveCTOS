@@ -2098,7 +2098,14 @@
               MOVE 3010 TO POS
               DISPLAY "ENTER Y TO DELETE, N TO STOP DELETION." AT POS
               ADD 40 TO POS
-              ACCEPT WS-DIS AT POS
+              MOVE 'N'       TO CDA-DATA
+              MOVE 1         TO CDA-DATALEN
+              MOVE 26        TO CDA-ROW
+              MOVE 49        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-DIS
             IF W-ESCAPE-KEY = 1 OR 2
                MOVE X"1F" TO F-EXIT-CH
                GO TO GET-012
@@ -5403,6 +5410,8 @@
        CANCEL-STOCK-TRANS SECTION.
        CAN-TRANS-000.
            IF B-NEWLINE (SUB-1) = " "
+               MOVE "B-NEWLINE (SUB-1) = ZERO" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO CAN-TRANS-999.
            MOVE WS-INVOICE        TO STTR-REFERENCE1.
            MOVE 8                 TO STTR-TYPE.

@@ -63,7 +63,7 @@
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-EMAIL-STATEMENT.
            03  WS-ES-FIL        PIC X(15) VALUE "/ctools/estate/".
-           03  WS-EStatement    PIC X(7).
+           03  WS-EStatement    PIC X(100).
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1       PIC 99.
        01  WS-DRTRANS-STATUS.
@@ -317,7 +317,8 @@
            IF WS-PRINTER-TYPE = 4
                MOVE "/ctools/spl/DrNoMalCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = 5
-               MOVE WS-ACCNOBEGIN      TO WS-ESTATEMENT
+               PERFORM ADD-USERNAME-TO-FILE
+               MOVE ALPHA-RATE         TO WS-ESTATEMENT
                MOVE WS-EMAIL-STATEMENT TO WS-PRINTER
                                            W-FILENAME
                GO TO CONT-030.
@@ -393,6 +394,31 @@
       *     STOP RUN.
            EXIT PROGRAM.
        CONT-999.
+           EXIT.
+      *
+       ADD-USERNAME-TO-FILE SECTION.
+       AUNTF-000.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+       AUNTF-005.
+           MOVE WS-USERNAME       TO ALPHA-RATE.
+           MOVE 1  TO SUB-1
+           MOVE 1  TO SUB-2.
+       AUNTF-006.
+           IF AL-RATE (SUB-1) NOT = " "
+                ADD 1 TO SUB-1
+            IF SUB-1 < 100
+               GO TO AUNTF-006.
+       AUNTF-008.
+           MOVE 1             TO SUB-2.
+           MOVE WS-ACCNOBEGIN TO DATA-RATE.
+       AUNTF-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO AUNTF-010.
+       AUNTF-999.
            EXIT.
       *
        WORK-OUT-PRINT-FILE-NAME SECTION.
@@ -612,6 +638,16 @@
               GO TO GET-070.
            GO TO GET-069.
        GET-070.
+           IF WS-PRINTER-TYPE = "5"
+            IF WS-IMM-PRINT = "Y"
+              OR WS-LONG-FORMAT = "Y"
+               OR WS-MONTH-END = "Y"
+                 MOVE
+         "FOR PRINTER TYPE 5 YOU MUST ANSWER 'N' TO ALL ABOVE QUESTONS."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO GET-065.
+       GET-075.
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                INVALID KEY NEXT SENTENCE.
@@ -623,7 +659,7 @@
                MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DEBTOR TRANS. FILE BUSY ON START." TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO GET-070.
+               GO TO GET-075.
        GET-999.
             EXIT.
       *
@@ -1255,7 +1291,15 @@
            "EMail :[                                                  ]"
               AT POS.
               MOVE 3018 TO POS
-           ACCEPT WS-EMAIL-NUMBER AT POS.
+              MOVE WS-EMAIL-NUMBER TO CDA-DATA
+              MOVE 50        TO CDA-DATALEN
+              MOVE 27        TO CDA-ROW
+              MOVE 17        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-EMAIL-NUMBER.
+              
            IF WS-EMAIL-NUMBER NOT > " "
               PERFORM ERROR1-020
               PERFORM ERROR-020

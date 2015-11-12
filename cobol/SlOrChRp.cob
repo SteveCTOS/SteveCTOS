@@ -775,7 +775,13 @@
            MOVE WS-PRINT-NORMAL TO PRINT-REC
            WRITE PRINT-REC AFTER 1
            MOVE " " TO PRINT-REC
-           WRITE PRINT-REC AFTER PAGE.
+           WRITE PRINT-REC.
+
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           PERFORM PRINT-REPORT-INFO.
+           
+      *     WRITE PRINT-REC BEFORE PAGE.
        PR-999.
            EXIT.
       *
@@ -1284,12 +1290,12 @@
            
            MOVE " " TO P-DEL DB-REC.
            MOVE WS-PRINT-NORMAL TO DB-REC
-               WRITE DB-REC
-               MOVE " " TO DB-REC.
+           WRITE DB-REC
+           MOVE " " TO DB-REC.
 
            PERFORM GET-USER-MAIL-NAME
            PERFORM GET-REPORT-Y2K-DATE
-           PERFORM PRINT-REPORT-INFO.
+           PERFORM PRINT-DB-REPORT-INFO.
            
            CLOSE DOCUBASE-PRINT.
            PERFORM ERROR1-020.
@@ -1698,9 +1704,9 @@
                GO TO END-000.
       *     ACCEPT WS-TYPE AT POS.
        END-500.
-           PERFORM GET-USER-MAIL-NAME
-           PERFORM GET-REPORT-Y2K-DATE
-           PERFORM PRINT-REPORT-INFO.
+      *     PERFORM GET-USER-MAIL-NAME
+      *     PERFORM GET-REPORT-Y2K-DATE
+      *     PERFORM PRINT-REPORT-INFO.
 
            CLOSE PRINT-FILE.
            IF WS-DOCPRINTED = "Y"
@@ -1779,6 +1785,7 @@
        Copy "GetReportY2KDate".
        Copy "GetUserMailName".
        Copy "PrintReportInfo".
+       Copy "PrintDBReportInfo".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
       ******************

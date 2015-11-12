@@ -39,9 +39,9 @@ Submit MainCont TapeBackupVol.Sub01
 
 echo Running TapeBackupVol.Sub01 Complete.......
 
-lp -d ctj-splB /ctools/dev/source/print/Compressed.Key
-lp -d ctj-splB /ctools/spl/ctj-aa1
-lp -d ctj-splB /ctools/spl/ctj-aa2
+lp -d ctj-splXtra /ctools/dev/source/print/Compressed.Key
+lp -d ctj-splXtra /ctools/spl/ctj-aa1
+lp -d ctj-splXtra /ctools/spl/ctj-aa2
 
 echo COPYING DATA TO BACKUP DISK ON SERVER
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/

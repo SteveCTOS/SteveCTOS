@@ -89,14 +89,11 @@
        01  WS-DAYS-DIS REDEFINES WS-WEEK-DAYS.
            03  WS-DAYS-DESC      PIC X(3) OCCURS 7.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
+           03  WS-SALES-ST1      PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
        01  WS-SBREP-STATUS.
-           03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC 9(2) COMP-X.
+           03  WS-SBREP-ST1      PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
