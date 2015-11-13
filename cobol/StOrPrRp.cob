@@ -443,8 +443,8 @@
            PERFORM PREPARE-FAX-SENDING.
        CONTROL-018.
              
-             MOVE "CONTROL-018" TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
+      *       MOVE "CONTROL-018" TO WS-MESSAGE
+      *       PERFORM ERROR-MESSAGE
              
            CLOSE OUTSTANDING-ORDERS.
       *     MOVE "Y" TO WS-FAX-Y-N.
@@ -475,12 +475,12 @@
            MOVE " " TO WS-PRINTER.
            MOVE WS-PRINTERNAME (21) TO WS-PRINTER.
            
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
 
         CONTROL-041.
-           MOVE WS-FAX-Y-N TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE WS-FAX-Y-N TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
         
            IF WS-FAX-Y-N NOT = "N"
                PERFORM CONTROL-001
@@ -1667,15 +1667,15 @@
        POSXQS-950.
            CLOSE PRINT-SLIP.
 
-           MOVE "CLOSED PRINT-SLIP" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE "CLOSED PRINT-SLIP" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
 
            IF Fax-PaNumber = 4
             IF WS-FAX-Y-N = 'F'
              IF PAGE-CNT = 1
 
-           MOVE "WS-FAX = F" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
+      *     MOVE "WS-FAX = F" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
 
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
@@ -1694,8 +1694,8 @@
             IF WS-ANSWER = 'P'
              IF PAGE-CNT = 1
 
-           MOVE "WS-ANSWER = P" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
+      *     MOVE "WS-ANSWER = P" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
 
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
@@ -1710,8 +1710,8 @@
                  PERFORM SETUP-PORDER2-FOR-PDF
                  PERFORM SETUP-MERGE-PORDER-FOR-PDF.
 
-           MOVE "FINISHED AT POSXQS-999" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE "FINISHED AT POSXQS-999" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
 
        POSXQS-999.
            EXIT.
