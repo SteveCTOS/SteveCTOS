@@ -39,6 +39,7 @@
        77  WS-LINE-NO           PIC 9(3) VALUE 0.
        77  PAGE-CNT             PIC 9(2) VALUE 0.
        77  WS-ABOVE-BODY        PIC X VALUE " ".
+       77  WS-DOTPRINTER        PIC X(100) VALUE " ".
        77  WS-ACCEPT            PIC X VALUE " ".
        77  WS-STILL-ON-ORDER    PIC X VALUE "Y".
        77  WS-SUPPLIER          PIC 9(7) VALUE 0.
@@ -75,26 +76,19 @@
                05  WS-DEL-CODE       PIC X.
                05  WS-DEL-TERM       PIC X(20).
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1         PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1         PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC 9(2) COMP-X.
+           03  WS-CREDITOR-ST1      PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1   PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1     PIC 99.
-      *     03  WS-OUTORD-ST2     PIC 9(2) COMP-X.
+           03  WS-OUTORD-ST1        PIC 99.
        01  WS-SPL-STATUS.
-           03  WS-SPL-ST1     PIC 99.
-      *     03  WS-SPL-ST2     PIC 9(2) COMP-X.
+           03  WS-SPL-ST1           PIC 99.
        01  WS-Fax-STATUS.
-           03  WS-Fax-ST1     PIC 99.
-      *     03  WS-Fax-ST2     PIC 9(2) COMP-X.
+           03  WS-Fax-ST1           PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST     PIC X(20) VALUE " ".
            03  WS-DAILY-2ND     PIC X(20) VALUE " ".

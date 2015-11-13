@@ -2,13 +2,25 @@
        SETUP-CREDIT-FOR-PDF SECTION.
        SUCFP-005.
           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+          
+      *    MOVE WS-USERNAME TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+          
+      *    MOVE W-FILENAME TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
        SUCFP-010.
           MOVE 
-          CONCATENATE('./PrintCredit ', TRIM(WS-USERNAME), ' '
+          CONCATENATE('PrintCredit ', TRIM(WS-USERNAME), ' '
               WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE))
                 TO WS-COMMAND-LINE.
       *          TRIM(WS-PRINTER)) TO WS-COMMAND-LINE.
+
+      *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
       
+      *    MOVE W-STATUS TO  WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    DISPLAY W-STATUS  AT 2810.      
       *    DISPLAY WS-COMMAND-LINE.  
       *    ACCEPT W-ENTER.
           CALL "SYSTEM" USING WS-COMMAND-LINE

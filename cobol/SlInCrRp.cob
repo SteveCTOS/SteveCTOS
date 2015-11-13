@@ -2476,7 +2476,7 @@
        END-000.
       *     STOP RUN.
            CLOSE DEBTOR-MASTER
-                 STOCK-TRANS-FILE
+                 STOCK-TRANS-FILE 
                  INCR-REGISTER
                  PARAMETER-FILE
            EXIT PROGRAM.
