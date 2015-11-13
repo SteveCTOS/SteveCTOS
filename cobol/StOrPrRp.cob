@@ -718,7 +718,7 @@
            "ENTER: F=FAX, E=EMAIL, N=DOT MATRIX PRINT, P=PDF: [ ]."
               AT POS.
            MOVE 2222 TO POS
-           DISPLAY "ENTER: B=BOTH FAX AND PRINT PDF."
+           DISPLAY "ENTER: B=BOTH FAX & PDF PRNITING."
               AT POS.
            MOVE 2151 TO POS.
 
@@ -748,18 +748,23 @@
                 MOVE "N" TO WS-ANSWER
                 GO TO UPOO-040.
             IF WS-FAX-Y-N = "F"
-                MOVE "N" TO WS-ANSWER.
+                MOVE "N" TO WS-ANSWER
+                MOVE CR-FAX TO WS-FAX-NUMBER
+                GO TO UPOO-035.
             IF WS-FAX-Y-N = "P"
                 MOVE "P" TO WS-ANSWER
-                MOVE "N" TO WS-FAX-Y-N.
+                MOVE "N" TO WS-FAX-Y-N
+                GO TO UPOO-040.
             IF WS-FAX-Y-N = "B"
                 MOVE "P" TO WS-ANSWER
-                MOVE "F" TO WS-FAX-Y-N.
+                MOVE "F" TO WS-FAX-Y-N
+                MOVE CR-FAX TO WS-FAX-NUMBER
+                GO TO UPOO-035.
             IF WS-FAX-Y-N = "E"
                 MOVE CR-EMAIL TO WS-EMAIL-ADDR
                 GO TO UPOO-038.
                 
-            MOVE CR-FAX TO WS-FAX-NUMBER.
+      *      MOVE CR-FAX TO WS-FAX-NUMBER.
        UPOO-035.
             PERFORM ERROR1-020.
             MOVE 3010 TO POS.
@@ -840,6 +845,8 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-038.
        UPOO-040.
+           IF WS-FAX-Y-N NOT = "N"
+                GO TO UPOO-050.
            MOVE 2810 TO POS.
            DISPLAY "HOW MANY COPIES DO YOU WANT? ENTER 1-9: [ ]."
               AT POS.
