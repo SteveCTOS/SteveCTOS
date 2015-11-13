@@ -286,7 +286,8 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            MOVE WS-RANGE1 TO CRTR-ACC-NUMBER.
-           START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER
+           MOVE 0         TO CRTR-DATE.
+           START CRTR-FILE KEY NOT < CRTR-ACC-DATE
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
                MOVE 0 TO WS-CRTRANS-ST1
@@ -321,7 +322,8 @@
                GO TO PR-005.
            IF CRTR-ACC-NUMBER = CR-ACCOUNT-NUMBER
                GO TO PR-020.
-           PERFORM SUBTOTALS.
+            IF CR-ACCOUNT-NUMBER > 0
+               PERFORM SUBTOTALS.
        PR-005.
            MOVE CRTR-ACC-NUMBER TO CR-ACCOUNT-NUMBER.
            READ CREDITOR-MASTER 
@@ -464,7 +466,8 @@
            MOVE WS-TOT-90DAY     TO TOT-90DAY
            MOVE WS-TOT-120DAY    TO TOT-120DAY
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
-           IF WS-TOT-BALANCE NOT = CR-BALANCE
+           IF CR-ACCOUNT-NUMBER NOT = 0 
+            IF WS-TOT-BALANCE NOT = CR-BALANCE
               MOVE "************ ACCOUNT IN IMBALANCE **" TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               ADD 1 TO WS-LINE.

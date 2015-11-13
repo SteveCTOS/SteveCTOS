@@ -57,14 +57,11 @@
            03  Ws-FxVol-Dir     PIC X(10).
            03  WS-FILE-NAME     PIC X(10).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
-      *    03  WS-DRTRANS-ST2     PIC X.
+           03  WS-DRTRANS-ST1      PIC 99.
        01  SPLIT-TERMOFSALE.
            03  WSTE-CODE        PIC X VALUE " ".
            03  WSTE-REST        PIC X(10) VALUE " ".
@@ -367,7 +364,9 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            MOVE "N" TO WS-SKIPACCOUNT.
+           MOVE SPACES    TO DEBTOR-RECORD
            MOVE WS-RANGE1 TO DRTR-ACC-KEY.
+           MOVE 0         TO DRTR-DATE.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
@@ -409,6 +408,7 @@
             ELSE
                GO TO PR-002.
            IF WS-SKIPACCOUNT = "N"
+            IF DR-ACCOUNT-NUMBER > 0
               PERFORM SUBTOTALS.
        PR-005.
            MOVE "N" TO WS-SKIPACCOUNT.
@@ -565,8 +565,9 @@
            MOVE WS-TOT-60DAY     TO TOT-60DAY
            MOVE WS-TOT-90DAY     TO TOT-90DAY
            MOVE WS-TOT-120DAY    TO TOT-120DAY
-           WRITE PRINT-REC FROM TOTAL-LINE AFTER 1
-           IF WS-TOT-BALANCE NOT = DR-BALANCE
+           WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
+           IF DR-ACCOUNT-NUMBER NOT = 0 
+            IF WS-TOT-BALANCE NOT = DR-BALANCE
               MOVE "************ ACCOUNT IN IM-BALANCE **" TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               ADD 1 TO WS-LINE.
