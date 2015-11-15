@@ -2622,7 +2622,7 @@
             MOVE 7               TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
-            IF WS-BODDATENUM (SUB-1) = 0
+            IF WS-BODDATENUM (SUB-1) NOT > 0
                 GO TO SCROLL-010.
             MOVE "DATE"                TO F-FIELDNAME
             MOVE 4                     TO F-CBFIELDNAME
