@@ -3764,7 +3764,7 @@
                 GO TO FILL-010.
 
       *****************************
-      *X"91"= DISPLAY COST ON/OFF *
+      *X"91"=<ALT-F8>  DISPLAY COST ON/OFF *
       *****************************
            IF F-EXIT-CH = X"91"
               MOVE WS-LASTPASSWORD TO WS-PASSWORDSAVED
@@ -3843,6 +3843,7 @@
             IF F-EXIT-CH = X"87" OR = X"9F"
                 MOVE SUB-1 TO SUB-7
                 MOVE "Y" TO WS-MUST-PRINT
+                PERFORM CANCEL-STOCK-TRANS
                 PERFORM CANCEL-TRANSACTION
                 SUBTRACT 1 FROM SUB-25
                 MOVE 1 TO SUB-1
@@ -5410,8 +5411,8 @@
        CANCEL-STOCK-TRANS SECTION.
        CAN-TRANS-000.
            IF B-NEWLINE (SUB-1) = " "
-               MOVE "B-NEWLINE (SUB-1) = ZERO" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+      *         MOVE "B-NEWLINE (SUB-1) = ' ' " TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                GO TO CAN-TRANS-999.
            MOVE WS-INVOICE        TO STTR-REFERENCE1.
            MOVE 8                 TO STTR-TYPE.

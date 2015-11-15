@@ -36,10 +36,8 @@
            03  WS-DAY           PIC 9.
        01  WS-DEBTOR-STATUS.
            03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC X.
        01  WS-CONTACT-STATUS.
            03  WS-DC-ST1        PIC 99.
-      *     03  WS-DC-ST2        PIC X.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -132,7 +130,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TOTAL.
 
-      *     ACCEPT WS-TOTAL AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF WS-TOTAL NOT = "N" AND NOT = "Y"
@@ -153,7 +150,7 @@
            DISPLAY "      ENTER THE WEEK NUMBER  : [ ]" AT POS.
            MOVE 1042 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-WEEK   TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 7         TO CDA-ROW.
            MOVE 41        TO CDA-COL.
@@ -162,7 +159,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-WEEK.
 
-      *     ACCEPT WS-WEEK AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-001.
            IF WS-WEEK = 0
@@ -179,7 +175,7 @@
            DISPLAY "      ENTER THE DAY NUMBER   : [ ]" AT POS.
            MOVE 1242 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-DAY    TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 9         TO CDA-ROW.
            MOVE 41        TO CDA-COL.
@@ -188,7 +184,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DAY.
 
-      *     ACCEPT WS-DAY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-001.
            IF WS-DAY = 0
@@ -209,16 +204,15 @@
            DISPLAY "[                                        ]" AT POS.
            MOVE 1611 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 40        TO CDA-DATALEN.
-           MOVE 13        TO CDA-ROW.
-           MOVE 10        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-COMMENT TO CDA-DATA.
+           MOVE 40         TO CDA-DATALEN.
+           MOVE 13         TO CDA-ROW.
+           MOVE 10         TO CDA-COL.
+           MOVE CDA-WHITE  TO CDA-COLOR.
+           MOVE 'F'        TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT.
 
-      *     ACCEPT WS-COMMENT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-010.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -233,16 +227,15 @@
            DISPLAY "Enter a Salesman code.       : [ ]" AT POS.
            MOVE 1842 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 15        TO CDA-ROW.
-           MOVE 41        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-SALESMAN TO CDA-DATA.
+           MOVE 1           TO CDA-DATALEN.
+           MOVE 15          TO CDA-ROW.
+           MOVE 41          TO CDA-COL.
+           MOVE CDA-WHITE   TO CDA-COLOR.
+           MOVE 'F'         TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALESMAN.
 
-      *     ACCEPT WS-SALESMAN AT POS.
            IF W-ESCAPE-KEY = 4
             IF WS-TOTAL = "N"
                GO TO GET-020
@@ -269,11 +262,21 @@
            START DRCONT-MASTER KEY NOT < DC-ALT-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-DR-ST1 NOT = 0
+              MOVE "BAD START" TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
                GO TO PRR-999.
        PRR-010.
            READ DRCONT-MASTER NEXT
                AT END NEXT SENTENCE.
            IF WS-DC-ST1 = 10
+              MOVE "END OF FILE" TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
                GO TO PRR-999.
            IF WS-DC-ST1 NOT = 0
                MOVE 0 TO WS-DC-ST1

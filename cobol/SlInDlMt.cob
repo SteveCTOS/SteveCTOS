@@ -91,7 +91,16 @@
            DISPLAY
            "IS THIS A CASH TRANSACTION, ENTER Y,N OR D:[ ]" AT POS
            ADD 44 TO POS
-           ACCEPT WS-DIS AT POS.
+
+           MOVE WS-DIS    TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 53        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+
            IF WS-DIS NOT = "N" AND NOT = "Y" AND NOT = "D"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-505.
@@ -135,7 +144,7 @@
            DISPLAY "IS THE AMOUNT ENTERED CORRECT : [ ]" AT POS
            ADD 33 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'Y'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 27        TO CDA-ROW.
            MOVE 42        TO CDA-COL.
@@ -144,7 +153,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DIS.
 
-      *     ACCEPT WS-DIS AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO QPC-515.
            IF WS-DIS NOT = "Y" AND NOT = "N"
@@ -159,16 +167,35 @@
        QPC-520.
            WRITE CashSale-Rec
               INVALID KEY NEXT SENTENCE.
-           IF Ws-CashSale-ST1 = 23 OR 35 OR 49
-               MOVE
-                "CashSale RECORD ALREADY EXISTS, 'ESC' TO EXIT."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO QPC-900.
+           IF Ws-CashSale-ST1 = 22 OR = 23 OR = 35 OR = 49
+      *         MOVE
+      *          "CashSale RECORD ALREADY EXISTS, 'ESC' TO EXIT."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               GO TO QPC-530.
            IF Ws-CashSale-ST1 NOT = 0
                MOVE
                 "CashSale RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE.
+            GO TO QPC-900.
+       QPC-530.
+           REWRITE CashSale-Rec
+              INVALID KEY NEXT SENTENCE.
+           IF Ws-CashSale-ST1 = 22 OR = 23 OR = 35 OR = 49
+      *          MOVE
+      *          "CashSale RECORD ALREADY EXISTS, 'ESC' TO EXIT."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               GO TO QPC-900.
+           IF Ws-CashSale-ST1 NOT = 0
+               MOVE
+                "CashSale RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
             GO TO QPC-900.
        QPC-600.
@@ -178,14 +205,14 @@
        QPC-605.
            READ Cash-Sale WITH LOCK
               INVALID KEY NEXT SENTENCE.
-           IF Ws-CashSale-ST1 = 23 OR 35 OR 49
+           IF Ws-CashSale-ST1 = 23 OR = 35 OR = 49
                MOVE
-                "THIS CashSale RECORD DOESN'T EXIST, 'ESC' TO EXIT."
+          "THIS CashSale RECORD DOESN'T EXIST TO DELETE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO QPC-900.
            IF Ws-CashSale-ST1 NOT = 0
-               MOVE "CashSale BUSY ON READ, 'ESC' TO RE-TRY."
+               MOVE "CashSale BUSY ON READ TO DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO QPC-605.
@@ -207,11 +234,11 @@
       *
        GET-DATA SECTION.
        GET-000. 
-            MOVE 2910 TO POS
+            MOVE 2710 TO POS
             DISPLAY
            "ENTER THE INVOICE# AND <PgDn> TO READ NUMBERS ONWARDS"
               AT POS
-            MOVE 3010 TO POS
+            MOVE 2810 TO POS
             DISPLAY 
            "OR ENTER INVOICE # & <ALT-G> TO RECALL A FLAGGED INVOICE."
               AT POS.
@@ -244,13 +271,15 @@
                 OPEN I-O INCR-REGISTER
                 PERFORM DISPLAY-FORM
                 GO TO GET-000.
-           IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C" AND NOT = X"9B"
+      * X"9B" = <alt-g>  X"c7" = <alt-G>
+           IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C"
+                    AND NOT = X"9B" AND NOT = X"C7"
                MOVE
            "YOU MAY ONLY PRESS <RETURN>, <PgDn> OR <ALT-G>"
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-000.
-            IF F-EXIT-CH = X"0A" OR = X"9B"
+            IF F-EXIT-CH = X"0A" OR = X"9B" OR = X"C7"
                MOVE "1" TO WS-NEWINPUT
                PERFORM READ-ONE-TRANSACTION
                GO TO GET-920.
@@ -284,6 +313,12 @@
       *
        FILL-DATA SECTION.
        FILL-000.
+           PERFORM ERROR-020
+           MOVE 2701 TO POS
+           DISPLAY  WS-MESSAGE AT POS
+           MOVE 2801 TO POS
+           DISPLAY  WS-MESSAGE AT POS.
+           
            PERFORM GET-SYSTEM-Y2K-DATE.
            MOVE 1 TO SUB-1 F-INDEX.
            MOVE " " TO WS-ABOVE-BODY.
@@ -295,7 +330,7 @@
        FILL-013.
            MOVE "DEL-DATE"   TO F-FIELDNAME
            MOVE 8            TO F-CBFIELDNAME.
-           IF F-EXIT-CH NOT = X"9B"
+           IF F-EXIT-CH NOT = X"9B" AND NOT = X"C7"
                MOVE WS-DATE        TO SPLIT-DATE
            ELSE
                MOVE INCR-PULL-DATE TO SPLIT-DATE.
@@ -451,7 +486,7 @@
                DISPLAY WS-INCR-ST1 AT POS
                GO TO ROT-010.
                
-           IF F-EXIT-CH NOT = X"9B"
+           IF F-EXIT-CH NOT = X"9B" AND NOT = X"C7"
             IF INCR-PULL-DATE NOT = 0
                MOVE
              "THIS INVOICE NUMBER HAS ALREADY BEEN ALLOCATED, RE-ENTER."

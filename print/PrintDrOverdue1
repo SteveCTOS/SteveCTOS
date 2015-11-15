@@ -6,10 +6,10 @@ if [ "$4" = "01" ] && [ "$6" = "P" ]
      lp -d $2 /ctools/fax/$1DrOverdue$3.pdf
  fi
 
-#If [ "$4" = "01" ] &&  [ "$5" = "F" ]
-#  then
-# Sendfax /ctools/fax/#1DrOverdue$3.pdf $7
-#fi
+if [ "$4" = "01" ] &&  [ "$5" = "F" ]
+   then
+ sendfax -n -d $7 /ctools/fax/$1DrOverdue$3.pdf
+ fi
 
 #lp -d $2 $3
 #--- the following pdftk cats the first statement to a single file from two

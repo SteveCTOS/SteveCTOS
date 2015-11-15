@@ -31,7 +31,6 @@
        77  WS-SALE-AMT          PIC S9(8)V99 VALUE 0.
        01  WS-CASHSALE-STATUS.
            03  WS-CASHSALE-ST1    PIC 99.
-      *     03  WS-CASHSALE-ST2    PIC X.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H1-DATE          PIC X(10).
@@ -130,6 +129,7 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            MOVE "N" TO WS-PRINTED.
+           MOVE 0 TO CS-INVOICE.
            START CASH-SALE KEY NOT < CS-KEY
              INVALID KEY NEXT SENTENCE.
            IF WS-CASHSALE-ST1 NOT = 0
