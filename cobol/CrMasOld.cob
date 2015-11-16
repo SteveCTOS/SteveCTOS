@@ -22,7 +22,7 @@
        77  WS-ACCOUNTNUMBER   PIC 9(7) VALUE 0.
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
+           03  WS-CREDITOR-ST1      PIC 99.
        01  WS-CREDITOROLD-STATUS.
            03  WS-CREDITOROLD-ST1   PIC 99.
        Copy "WsDateInfo".

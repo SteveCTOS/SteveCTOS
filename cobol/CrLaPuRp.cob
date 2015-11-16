@@ -43,12 +43,10 @@
            03  WS-PURCH-LY      PIC S9(8)V99.
            03  WS-BALANCE       PIC S9(8)V99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CR-ST1        PIC 99.
-      *     03  WS-CR-ST2        PIC 9(2) COMP-X.
+           03  WS-CR-ST1           PIC 99.
        01  WS-CREDITOROLD-STATUS.
-           03  WS-CREDITOROLD-ST1   PIC 99.
-      *     03  WS-CREDITOROLD-ST2   PIC X.
-       01  WS-LAST-DATE         PIC 9(8).
+           03  WS-CREDITOROLD-ST1  PIC 99.
+       01  WS-LAST-DATE            PIC 9(8).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -171,16 +169,15 @@
                 AT POS.
             MOVE 1143 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 10        TO CDA-DATALEN.
-           MOVE 8        TO CDA-ROW.
-           MOVE 42        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-ANSWER.
+            MOVE ' '       TO CDA-DATA.
+            MOVE 10        TO CDA-DATALEN.
+            MOVE 8        TO CDA-ROW.
+            MOVE 42        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-ANSWER.
 
-      *      ACCEPT WS-ANSWER AT POS.
             MOVE WS-ANSWER       TO SPLIT-DATE CONVERT-DATE
             MOVE WS-CONVERT-DATE TO DISPLAY-DATE
             MOVE DISPLAY-DATE    TO H1-CR-DATE H1-1-CR-DATE
@@ -205,16 +202,15 @@
             DISPLAY "A=ALL - ZERO AS WELL, N=NO, Y=ZERO ONLY" AT POS
             MOVE 1437 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 11       TO CDA-ROW.
-           MOVE 36        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-PRINT-DATES.
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 11       TO CDA-ROW.
+            MOVE 36        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-PRINT-DATES.
 
-      *      ACCEPT WS-PRINT-DATES AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-000.
             IF WS-PRINT-DATES NOT = "Y" AND NOT = "N" AND NOT = "A"
@@ -231,16 +227,15 @@
             DISPLAY "DO YOU WISH TO DELETE ACCOUNTS, Y OR N. [ ]" AT POS
             MOVE 1751 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 14       TO CDA-ROW.
-           MOVE 50        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-DELETE-ACCS.
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 14       TO CDA-ROW.
+            MOVE 50        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-DELETE-ACCS.
 
-      *      ACCEPT WS-DELETE-ACCS AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-020.
             IF WS-DELETE-ACCS NOT = "Y" AND NOT = "N"
@@ -256,16 +251,15 @@
             DISPLAY "S=PURCHASED SINCE, N=NOT SINCE, N OR S. [ ]" AT POS
             MOVE 1951 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 16       TO CDA-ROW.
-           MOVE 50        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-BEFORE-AFTER.
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 16       TO CDA-ROW.
+            MOVE 50        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-BEFORE-AFTER.
 
-      *      ACCEPT WS-BEFORE-AFTER AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-025.
             IF WS-BEFORE-AFTER NOT = "S" AND NOT = "N"
@@ -281,16 +275,15 @@
             DISPLAY "L=LOCAL, F=FOREIGN ACCOUNTS ONLY        [ ]" AT POS
             MOVE 2151 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 18       TO CDA-ROW.
-           MOVE 50        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-LOCAL-FOREIGN.
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 18       TO CDA-ROW.
+            MOVE 50        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-LOCAL-FOREIGN.
 
-      *      ACCEPT WS-LOCAL-FOREIGN AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-030.
             IF WS-LOCAL-FOREIGN NOT = "F" AND NOT = "L"
@@ -306,16 +299,15 @@
             DISPLAY "B=BANK INFO, P=PURCHASE INFO            [ ]" AT POS
             MOVE 2351 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 20        TO CDA-ROW.
-           MOVE 50        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
-           PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-BANK-PURCHASE.
+            MOVE ' '       TO CDA-DATA.
+            MOVE 1         TO CDA-DATALEN.
+            MOVE 20        TO CDA-ROW.
+            MOVE 50        TO CDA-COL.
+            MOVE CDA-WHITE TO CDA-COLOR.
+            MOVE 'F'       TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-BANK-PURCHASE.
 
-      *      ACCEPT WS-BANK-PURCHASE AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-035.
             IF WS-BANK-PURCHASE NOT = "B" AND NOT = "P"
@@ -550,10 +542,24 @@
        OPEN-002.
             OPEN I-O CREDITOROLD-MASTER.
             IF WS-CREDITOROLD-ST1 NOT = 0
-               MOVE 0 TO WS-CREDITOROLD-ST1
                MOVE "CREDITOROLD FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-CREDITOROLD-ST1
+               GO TO OPEN-003.
+       OPEN-0021.
+             GO TO OPEN-010.
+       OPEN-003.
+            OPEN OUTPUT CREDITOROLD-MASTER.
+            IF WS-CREDITOROLD-ST1 NOT = 0
+               MOVE "CREDITOROLD BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-CREDITOROLD-ST1
                GO TO OPEN-002.
        OPEN-010.
           PERFORM GET-SYSTEM-Y2K-DATE.
