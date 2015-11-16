@@ -33,26 +33,19 @@
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-BODY-LINE         PIC ZZ9.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1    PIC 99.
-      *     03  WS-GL-LY-ST2    PIC X.
+           03  WS-GL-LY-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-GLJRN-STATUS.
-           03  WS-GLJRN-ST1  PIC 99.
-      *     03  WS-GLJRN-ST2  PIC X.
+           03  WS-GLJRN-ST1        PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1  PIC 99.
-      *     03  WS-GLTRANS-ST2  PIC X.
+           03  WS-GLTRANS-ST1      PIC 99.
        01  WS-GLTRANS-LY-STATUS.
-           03  WS-GLTRANS-LY-ST1  PIC 99.
-      *     03  WS-GLTRANS-LY-ST2  PIC X.
+           03  WS-GLTRANS-LY-ST1   PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
                05  WS-GLHEADER     PIC X(2).
@@ -277,7 +270,8 @@
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-JRNACTION GLJRN-ACTION.
             IF WS-JRNACTION NOT = " " AND NOT = "R"
-               MOVE "THE ACTION IND. SHOULD BE BLANK OR = 'R'"
+               MOVE
+           "THE ACTION IND. SHOULD BE BLANK OR = 'R', <Esc> TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO GET-170.
@@ -383,13 +377,16 @@
                GO TO GET-300.
       *
       *WS-TYPE-OF-END: 1=AMEND 2=SUSPEND 3=IMM-POST 4=BATCH-POST
-      *
+      * <F7>
             IF F-EXIT-CH = X"1C"
                MOVE "1" TO WS-TYPE-OF-END.
+      * <F8>
             IF F-EXIT-CH = X"1D"
                MOVE "2" TO WS-TYPE-OF-END.
+      * <F9>
             IF F-EXIT-CH = X"1E"
                MOVE "3" TO WS-TYPE-OF-END.
+      * <f10>
             IF F-EXIT-CH = X"1F"
                MOVE "4" TO WS-TYPE-OF-END.
        GET-350.
@@ -1193,6 +1190,7 @@
            IF WS-GLJRN-ST1 = 23 OR 35 OR 49
       *         MOVE " STATUS = 23 ETC...." TO WS-MESSAGE
       *        PERFORM ERROR-MESSAGE
+      *        MOVE WS-CURRENTPER TO WS-REST SUB-3
               GO TO RSTT-999.
            IF WS-GLJRN-ST1 NOT = 0
               MOVE 0 TO WS-GLJRN-ST1
@@ -1202,6 +1200,7 @@
            IF GLJRN-REFERENCE NOT = WS-JRN
       *        MOVE "REF NOT = JRN...." TO WS-MESSAGE
       *        PERFORM ERROR-MESSAGE
+      *        MOVE WS-CURRENTPER TO WS-REST SUB-3
               GO TO RSTT-999.
            IF GLJRN-COMPLETE = "Y"
               MOVE 88 TO WS-GLJRN-ST1
@@ -1235,6 +1234,7 @@
                 MOVE WS-JRNPERIOD      TO GLJRN-PERIOD
             ELSE
                 MOVE WS-JRN-LY-PERIOD  TO GLJRN-PERIOD.
+                
             MOVE WS-JRNACTION          TO GLJRN-ACTION.
             MOVE WS-JRNDATE            TO GLJRN-DATE.
       *

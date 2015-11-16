@@ -43,26 +43,19 @@
        77  WS-TOTAL             PIC 9(3) VALUE 0.
        77  WS-TOTAL-DIS         PIC Z(2)9 VALUE "0".
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1    PIC 99.
-      *     03  WS-GL-LY-ST2    PIC X.
+           03  WS-GL-LY-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-GLJRN-STATUS.
-           03  WS-GLJRN-ST1  PIC 99.
-      *     03  WS-GLJRN-ST2  PIC X.
+           03  WS-GLJRN-ST1       PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1  PIC 99.
-      *     03  WS-GLTRANS-ST2  PIC X.
+           03  WS-GLTRANS-ST1     PIC 99.
        01  WS-GLTRANS-LY-STATUS.
            03  WS-GLTRANS-LY-ST1  PIC 99.
-      *     03  WS-GLTRANS-LY-ST2  PIC X.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-JRNPERIOD.
            03  WS-1STPER           PIC X.
            03  WS-REST             PIC 99.
@@ -138,7 +131,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT.
 
-      *      ACCEPT WS-ACCEPT AT POS.
             IF W-ESCAPE-KEY = 0 OR 1
                 GO TO GET-350.
             IF W-ESCAPE-KEY = 3
@@ -182,7 +174,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT.
 
-      *      ACCEPT WS-ACCEPT AT POS.
             IF W-ESCAPE-KEY = 0 OR 1
                 GO TO GET-999.
             GO TO GET-500.
@@ -298,7 +289,7 @@
               MOVE 1 TO WS-REST SUB-3
               MOVE 1 TO SUB-1
               GO TO UPGL-005.
-           IF WS-REST NOT = 0
+           IF WS-REST NOT = 0 AND NOT = " "
               MOVE WS-REST TO SUB-3
            ELSE
               MOVE WS-CURRENTPER TO WS-REST SUB-3.
