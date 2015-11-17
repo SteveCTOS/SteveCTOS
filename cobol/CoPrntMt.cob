@@ -54,15 +54,26 @@
            "ENTER 1=SERVER PRINTERS; 3, 7, 8,=REMOTE PRINTERS [ ]"
             AT POS
            MOVE 0661 TO POS
-           ACCEPT WS-ACCEPT AT POS.
+           
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 03        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-ACCEPT.
+
            IF WS-ACCEPT NOT = 1 AND NOT = 3
                     AND NOT = 7 AND NOT = 8
               DISPLAY " " AT 3079 WITH BELL
               GO TO CONTROL-000.
 
-           
-           IF WS-ACCEPT NOT = 1 
+           IF WS-CO-NUMBER NOT = 1
+            IF WS-ACCEPT NOT = 1 
                PERFORM WORK-OUT-REMOTE-PRINTER-FILE.
+               
            PERFORM OPEN-FILES
            PERFORM CLEAR-SCREEN.
        CONT-010.
@@ -1530,6 +1541,7 @@
        Copy "DisplayForm".
        Copy "UserFillField".
        Copy "DecimaliseRate".
+       Copy "CTOSCobolAccept".
        Copy "ClearScreen".
        Copy "ErrorMessage".
       *

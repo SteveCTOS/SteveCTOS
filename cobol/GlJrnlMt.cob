@@ -594,7 +594,7 @@
            IF F-EXIT-CH = X"07"
                AND GLJRN-GLNUMBER (SUB-1) = " "
                GO TO FILL-010.
-           IF F-EXIT-CH = X"87"
+           IF F-EXIT-CH = X"87" OR = X"9F"
                MOVE SUB-1 TO SUB-7
                PERFORM CANCEL-TRANSACTION
                MOVE 1 TO SUB-1

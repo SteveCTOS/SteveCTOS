@@ -47,7 +47,7 @@ endforeach()
 
 set (company_list 
   CoCsParm  CoFxParm  Company   CoPrinter  CoPrntMt  CoPuByMt CoQuParm
-  CoRpParm  CoStffIq  CoStffMt  CrPrinter  DrPrinter DataName 
+  CoRpParm  CoStffIq  CoStffMt  CrPrinter  DrPrinter DataName PassWrds 
 )
 
 set (menu_list 
@@ -57,7 +57,7 @@ set (menu_list
   Cr1Menu   Cr2Menu  Cr3Menu  Cr4Menu
   Gl1Menu   Gl2Menu  Gl3Menu  Gl4Menu
   BaUpMenu  Bm1Menu  Cb1Menu  MastMenu
-  ContMenu  PassWrds MenuPass   
+  ContMenu  MenuPass   
 )
 
 set (billofmaterial_list 
@@ -124,9 +124,9 @@ set (stock_list
   StReLoRp  StRepair  StRpAcIq  StRpRgRp  StRpStIq  StSGmRp   StSplit   StStQyMt
   StTariRp  StTranLy  StTrans   StTrChMt  StTrDuMt  StTrDuRp  StValuRp
 )
-#foreach (name ${company_list})
-# cobol_module(${name})
-#endforeach()
+foreach (name ${company_list})
+ cobol_module(${name})
+endforeach()
 #foreach (name ${menu_list})
 #  cobol_module(${name})
 #endforeach()

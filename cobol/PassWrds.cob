@@ -144,7 +144,8 @@
               PERFORM CHECK-PRINTER-SERVER-REMOTE.
 
       * SECTION WHERE WS-OVER-RIDE = Y.
-          IF WS-CO-NUMBER = 1 OR 2 OR 4 OR 5 OR 6 OR 9 OR 10 OR 11 OR 12
+          IF WS-CO-NUMBER = 1 OR = 2 OR =  3 OR =  4 OR =  5 OR =  6
+                       OR = 7 OR = 8 OR =  9 OR = 10 OR = 11 OR = 12
            IF WS-SERVER-REMOTE = 1
                PERFORM READ-NEXT-PRINTER
                GO TO CONTROL-005
@@ -527,7 +528,15 @@
            "3=CTN PRINTING, 7=SFJ PRINTING & 8=CSC PRINTING. [ ]"
             AT POS           
             MOVE 3060 TO POS
-           ACCEPT WS-SERVER-REMOTE AT POS.
+           
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 59        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-SERVER-REMOTE.
            
            IF WS-SERVER-REMOTE NOT = 1 AND NOT = 3
                            AND NOT = 7 AND NOT = 8
