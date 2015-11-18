@@ -258,7 +258,7 @@
            03  FILLER           PIC X(2) VALUE " ".
            03  PL-TYPE          PIC X(22) VALUE " ".
            03  FILLER           PIC X(14) VALUE " ".
-           03  PL-NAME          PIC X(98).
+           03  PL-NAME          PIC X(94).
            03  PLCR-CHAR2       PIC X.
        01  LASER-PLINE1.
            03  PL1-CHAR         PIC X(2) VALUE " ".
