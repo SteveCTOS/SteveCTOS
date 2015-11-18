@@ -511,7 +511,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMPANY-UPDATE.
 
-      *     ACCEPT WS-COMPANY-UPDATE AT POS.
            IF W-ESCAPE-KEY = 3
               EXIT PROGRAM.
            IF WS-COMPANY-UPDATE = " "
@@ -554,7 +553,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-UPDATE.
 
-      *     ACCEPT WS-UPDATE AT POS.
         IF W-ESCAPE-KEY = 4
                GO TO SB-005.
         IF WS-UPDATE NOT = "N" AND NOT = "Y"
@@ -620,7 +618,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO GET-010
            ELSE
@@ -640,7 +637,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -672,7 +668,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *     ACCEPT WS-RANGE3 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-010.
            IF WS-RANGE3 NOT = "N" AND NOT = "Y" AND NOT = "D"
@@ -697,7 +692,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE4.
 
-      *     ACCEPT WS-RANGE4 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-030.
            IF WS-RANGE4 NOT = "N" AND NOT = "Y"
@@ -722,7 +716,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE5.
 
-      *     ACCEPT WS-RANGE5 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-035.
            IF WS-RANGE5 NOT = "N" AND NOT = "Y"
@@ -957,6 +950,9 @@
        RNSC-007.
           IF WS-RANGE3 = "N"
               GO TO RNSC-005.
+              
+          CALL "C$SLEEP" USING 5.
+    
        RNSC-020.
           DELETE STOCKCHANGE-MASTER
               INVALID KEY NEXT SENTENCE.
