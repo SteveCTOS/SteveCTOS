@@ -92,41 +92,29 @@
            03  WS-SALESCOSTYTD       PIC S9(7)V99.
            03  WS-SALESCOSTLAST      PIC S9(7)V99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1          PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1        PIC 99.
-      *     03  WS-OUTORD-ST2        PIC 9(2) COMP-X.
+           03  WS-OUTORD-ST1         PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC 9(2) COMP-X.
+           03  WS-BO-ST1             PIC 99.
        01  WS-IMPRECEIPT-STATUS.
            03  WS-IMPRECEIPT-ST1     PIC 99.
-      *     03  WS-IMPRECEIPT-ST2     PIC 9(2) COMP-X.
        01  WS-STKRECEIPT-STATUS.
-           03  WS-STKRECEIPT-ST1    PIC 99.
-      *     03  WS-STKRECEIPT-ST2    PIC 99 COMP-X.
+           03  WS-STKRECEIPT-ST1     PIC 99.
        01  WS-STKRECEIPTSLY-STATUS.
-           03  WS-STKRECEIPTSLY-ST1    PIC 99.
-      *     03  WS-STKRECEIPTSLY-ST2    PIC 99 COMP-X.
+           03  WS-STKRECEIPTSLY-ST1  PIC 99.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1   PIC 99.
-      *     03  WS-STCHANGE-ST2   PIC 9(2) COMP-X.
+           03  WS-STCHANGE-ST1       PIC 99.
        01  WS-MENU-STATUS.
-           03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9(2) COMP-X.
+           03  WS-MENU-ST1           PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC 9(2) COMP-X.
+           03  WS-TOOLKIT-ST1        PIC 99.
        01  WS-STBRCAT-STATUS.
-           03  WS-STBRCAT-ST1     PIC 99.
-      *     03  WS-STBRCAT-ST2     PIC 9(2) COMP-X.
+           03  WS-STBRCAT-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 9.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1          PIC 99.
        01  WS-DATA-STATUS.
-           03  WS-DATA-ST1       PIC 99.
-      *     03  WS-DATA-ST2       PIC 9(2) COMP-X.
+           03  WS-DATA-ST1           PIC 99.
        01 COMANIES-NAME-LIST.
          02  COMPANIES-LIST OCCURS 20.
            03  LIST-NAME        PIC X(40) VALUE " ".
@@ -727,7 +715,7 @@
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 23        TO CDA-ROW.
+           MOVE 20        TO CDA-ROW.
            MOVE 46        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
