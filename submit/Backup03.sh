@@ -25,6 +25,8 @@ cp /ctools/data10/* /media/ctools/BACKUPUSB/data10
 cp /ctools/data11/* /media/ctools/BACKUPUSB/data11
 cp /ctools/data12/* /media/ctools/BACKUPUSB/data12
 
+rm /ctools/lock/*
+
 Submit MainCont TapeBackup.Sub01
 
 lp -d ctj-splXtra /ctools/dev/source/print/Compressed.Key
