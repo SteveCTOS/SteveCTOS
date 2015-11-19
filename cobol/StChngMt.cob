@@ -949,10 +949,8 @@
              PERFORM REWRITE-STOCK-RECORD.
        RNSC-007.
           IF WS-RANGE3 = "N"
+      *        CALL "C$SLEEP" USING 5
               GO TO RNSC-005.
-              
-          CALL "C$SLEEP" USING 5.
-    
        RNSC-020.
           DELETE STOCKCHANGE-MASTER
               INVALID KEY NEXT SENTENCE.
