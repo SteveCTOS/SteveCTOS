@@ -26,14 +26,13 @@ cp /ctools/data11/* /media/ctools/BACKUPUSB/data11
 cp /ctools/data12/* /media/ctools/BACKUPUSB/data12
 
 #cd /ctools/ps01
-
 #echo TapebackupvolMessage2 
 #Zip Weekend1.Zip *-*
-
 #rm *-*
-
 #rm /ctools/spl/*
 #cd /ctools/bin
+rm /ctools/lock/*
+rm /ctools/spl/*
 
 Submit MainCont TapeBackupVol.Sub01
 
@@ -43,8 +42,9 @@ lp -d ctj-splXtra /ctools/dev/source/print/Compressed.Key
 lp -d ctj-splXtra /ctools/spl/ctj-aa1
 lp -d ctj-splXtra /ctools/spl/ctj-aa2
 
-echo COPYING DATA TO BACKUP DISK ON SERVER
+echo COPYING COMPANY DATA TO BACKUP DISK ON SERVER
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/
 
+echo COPYING COMPLETE DRIVES DATA TO BACKUP DISK ON SERVER
 cp -a /ctools/* /media/ctools/BACKUPHDD/ctools/
 
