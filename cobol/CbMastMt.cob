@@ -538,10 +538,10 @@
            IF NEW-GLNO = "Y"
                GO TO DSR-999.
        DSR-010.
-           MOVE "DELETE NOT ALLOWED, PRESS 'ESC' TO CLEAR."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO DSR-999.
+      *     MOVE "DELETE NOT ALLOWED, PRESS 'ESC' TO CLEAR."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         GO TO DSR-999.
            DELETE CB-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-CB-ST1 NOT = 0
