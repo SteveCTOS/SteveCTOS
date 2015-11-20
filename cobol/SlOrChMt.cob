@@ -442,6 +442,11 @@
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-010.
             IF WS-BO-ST1 NOT = 0
+               MOVE "ST-BORDERS STATUS NOT = 0 , ESC TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-BO-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
        PRR-005.

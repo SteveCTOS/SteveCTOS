@@ -252,7 +252,7 @@
        01 WS-OTH-LINE.
           05  WS-DELIM-O             PIC  X.
           05  WS-DATA-O              PIC  X(133).
-          05  WS-DELIM-END2          PIC  X(1).
+          05  WS-DELIM-END2          PIC  X(1). 
        01  LASER-PCREDITLINE.
            03  PLCR-CHAR1       PIC X(2).
            03  FILLER           PIC X(2) VALUE " ".
