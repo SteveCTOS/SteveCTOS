@@ -34,6 +34,7 @@
        77  WS-READY             PIC S9(6) VALUE 0.
        77  WS-NEWPRICE          PIC S9(6)V99 VALUE 0.
        77  WS-PERC              PIC S9(4)V99 VALUE 0.
+       77  WS-CLOSE-CNT         PIC 9(6) VALUE 0.
        77  WS-PENDING-DISPLAY   PIC Z(5)9.
        77  WS-READY-DISPLAY     PIC Z(5)9.
        77  WS-RANGE1            PIC X(15) VALUE " ".
@@ -415,6 +416,9 @@
       *     PERFORM ERROR-MESSAGE
       *     PERFORM ERROR1-020
 
+           ADD 12 TO WS-CLOSE-CNT
+           MOVE 2650 TO POS
+           DISPLAY WS-CLOSE-CNT AT POS.
            CALL "C$SLEEP" USING 1
            CLOSE STOCK-TRANS-FILE.
        CPAT-999.
@@ -607,6 +611,9 @@
                 PERFORM ERROR-000
                 GO TO PRR-500.
        PRR-900.
+           ADD 12 TO WS-CLOSE-CNT
+           MOVE 2650 TO POS
+           DISPLAY WS-CLOSE-CNT AT POS.
           CALL "C$SLEEP" USING 1
            CLOSE STOCK-TRANS-FILE.
        PRR-999.
