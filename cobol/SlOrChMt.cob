@@ -416,10 +416,12 @@
       *     PERFORM ERROR-MESSAGE
       *     PERFORM ERROR1-020
 
-           ADD 12 TO WS-CLOSE-CNT
-           MOVE 2650 TO POS
+           ADD 1 TO WS-CLOSE-CNT
+           MOVE 2520 TO POS
+           DISPLAY "LOCK COUNT:" AT POS
+           ADD 12 TO POS
            DISPLAY WS-CLOSE-CNT AT POS.
-           CALL "C$SLEEP" USING 1
+      *     CALL "C$SLEEP" USING 1
            CLOSE STOCK-TRANS-FILE.
        CPAT-999.
            EXIT.
@@ -611,10 +613,13 @@
                 PERFORM ERROR-000
                 GO TO PRR-500.
        PRR-900.
-           ADD 12 TO WS-CLOSE-CNT
-           MOVE 2650 TO POS
+           ADD 1 TO WS-CLOSE-CNT
+           MOVE 2520 TO POS
+           DISPLAY "LOCK COUNT:" AT POS
+           ADD 12 TO POS
            DISPLAY WS-CLOSE-CNT AT POS.
-          CALL "C$SLEEP" USING 1
+
+      *     CALL "C$SLEEP" USING 1
            CLOSE STOCK-TRANS-FILE.
        PRR-999.
            EXIT.
