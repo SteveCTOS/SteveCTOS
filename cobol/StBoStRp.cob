@@ -264,6 +264,9 @@
                AT END NEXT SENTENCE.
             IF WS-BO-ST1 = 10
                GO TO PRR-999.
+            IF WS-BO-ST1 = 23
+             IF WS-RANGE3 = "R"
+                GO TO PRR-980.
             IF WS-BO-ST1 NOT = 0
                MOVE "STTRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
