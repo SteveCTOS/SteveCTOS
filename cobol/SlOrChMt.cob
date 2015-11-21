@@ -329,7 +329,7 @@
       *
        CHECK-PREVIOUS-ALLOC-TOTAL SECTION.
        CPAT-000.
-      *      PERFORM OPEN-010.
+            PERFORM OPEN-010.
             MOVE 0 TO WS-STTR-ORDERQTY
                       WS-STTR-SHIPQTY
                       WS-NEW-SHIPQTY
@@ -422,7 +422,7 @@
            ADD 12 TO POS
            DISPLAY WS-CLOSE-CNT AT POS.
       *     CALL "C$SLEEP" USING 1
-      *     CLOSE STOCK-TRANS-FILE.
+           CLOSE STOCK-TRANS-FILE.
        CPAT-999.
            EXIT.
       *
@@ -476,7 +476,7 @@
       *
        READ-TRANSACTIONS SECTION.
        PRR-000.
-      *     PERFORM OPEN-010.
+           PERFORM OPEN-010.
            MOVE 0 TO WS-NEW-SHIPQTY
                      SUB-1.
        PRR-001.
@@ -620,7 +620,7 @@
            DISPLAY WS-CLOSE-CNT AT POS.
 
       *     CALL "C$SLEEP" USING 1
-      *     CLOSE STOCK-TRANS-FILE.
+           CLOSE STOCK-TRANS-FILE.
        PRR-999.
            EXIT.
       *
