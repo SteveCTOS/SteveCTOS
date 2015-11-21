@@ -226,7 +226,7 @@
             START STOCK-MASTER KEY NOT < ST-KEY
                  INVALID KEY NEXT SENTENCE.
             IF WS-ST-ST1 NOT = 0
-               MOVE "ST-TRANS BUSY ON START, 'ESC' TO EXIT."
+               MOVE "STOCK MASTER BUSY ON START, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
@@ -237,9 +237,18 @@
                MOVE 0 TO WS-ST-ST1
                GO TO RSN-999.
             IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+               MOVE "ST-MASTER BUSY ON READ-NEXT, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RSN-010.
             IF ST-STOCKNUMBER < WS-RANGE1
+
+      *      MOVE "ST < RANGE" TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE ST-STOCKNUMBER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+
                GO TO RSN-010.
             IF ST-STOCKNUMBER > WS-RANGE2
                GO TO RSN-999.
@@ -248,6 +257,15 @@
             MOVE 1844 TO POS
             DISPLAY ST-STOCKNUMBER AT POS.
             IF ST-QTYONBORDER = 0
+            
+      *      MOVE "ST-QTYONBO = 0" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      MOVE ST-STOCKNUMBER TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE ST-QTYONBORDER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+            
                  GO TO RSN-010.
        RSN-050.
             MOVE 2610 TO POS
@@ -315,9 +333,11 @@
                       WS-AVE-ALLOC
                       WS-SHIPQTY-ALLOC
                       WS-SHIPQTY-ALLOC-NO-CHNG.
+                      
             PERFORM CLEAR-UNALLOCATED-NUMBERS.
+            
             MOVE " "            TO STTR-ST-COMPLETE
-            MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER.
+            MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER
             START STOCK-TRANS-FILE KEY NOT < STTR-STOCK-NUMBER
                  INVALID KEY NEXT SENTENCE.
             IF WS-BO-ST1 NOT = 0
@@ -334,8 +354,22 @@
             IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
                GO TO CPAT-900.
             IF STTR-TYPE NOT = 4 AND NOT = 7
+            
+      *      MOVE "STTR-TYPE NOT =4 OR 7" TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE STTR-TYPE TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+            
                GO TO CPAT-002.
             IF STTR-ST-COMPLETE = "L" OR = "Y" OR = "R"
+            
+      *      MOVE "STTR-ST-COMPLETE = L, Y, OR R" TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE STTR-ST-COMPLETE TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+            
                GO TO CPAT-002.
        CPAT-005.
       ******************************************************************
@@ -364,6 +398,15 @@
 
            GO TO CPAT-002.
        CPAT-900.
+      *     MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-STTR-ORDERQTY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     MOVE WS-STTR-SHIPQTY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020
+
+           CALL "C$SLEEP" USING 0.5
            CLOSE STOCK-TRANS-FILE.
        CPAT-999.
            EXIT.
@@ -375,11 +418,11 @@
            ADD 1 TO SUB-1.
            IF WS-TYPE (SUB-1) = 0
               GO TO CUN-900.
-           MOVE 0 TO WS-TYPE (SUB-1)
-                     WS-REF (SUB-1)
-                     WS-TRANS (SUB-1)
+           MOVE 0   TO WS-TYPE (SUB-1)
+                       WS-REF (SUB-1)
+                       WS-TRANS (SUB-1)
            MOVE " " TO WS-BRANCH (SUB-1)
-                       B-SPECIAL (SUB-1).
+                        B-SPECIAL (SUB-1).
            IF SUB-1 < 200
                GO TO CUN-010.
        CUN-900.
@@ -555,6 +598,7 @@
                 PERFORM ERROR-000
                 GO TO PRR-500.
        PRR-900.
+           CALL "C$SLEEP" USING 0.5
            CLOSE STOCK-TRANS-FILE.
        PRR-999.
            EXIT.
