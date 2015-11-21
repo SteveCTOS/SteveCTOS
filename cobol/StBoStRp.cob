@@ -248,8 +248,11 @@
             IF WS-RANGE3 = "P"
                MOVE "B/ORDERS READY TO INV"  TO H1-TYPE.
             IF WS-RANGE1 = "    "
-               MOVE "/" TO WS-RANGE1.
-            MOVE "N"       TO STTR-ST-COMPLETE
+               MOVE "/"    TO WS-RANGE1.
+            IF WS-RANGE3 = "R"
+               MOVE " "       TO STTR-ST-COMPLETE
+            ELSE
+               MOVE "N"       TO STTR-ST-COMPLETE.
             MOVE WS-RANGE1 TO STTR-STOCK-NUMBER.
             START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                INVALID KEY NEXT SENTENCE.
@@ -265,7 +268,8 @@
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
                
-            IF STTR-ST-COMPLETE NOT = "N"
+            IF WS-RANGE3 NOT = "R"
+             IF STTR-ST-COMPLETE NOT = "N"
                GO TO PRR-999.
             IF STTR-STOCK-NUMBER < WS-RANGE1
                GO TO PRR-002.
