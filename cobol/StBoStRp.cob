@@ -438,6 +438,12 @@
                MOVE 0 TO STTR-SHIPQTY.
              IF STTR-SHIPPEDQTY = " "
                MOVE 0 TO STTR-SHIPPEDQTY.
+               
+           MOVE STTR-DATE               TO SPLIT-DATE.
+           PERFORM CONVERT-DATE-FORMAT
+           MOVE DISPLAY-DATE            TO D-DATE
+           DISPLAY D-DATE AT 2735.
+               
            REWRITE STOCK-TRANS-REC
                 INVALID KEY NEXT SENTENCE.
            IF WS-BO-ST1 NOT = 0
