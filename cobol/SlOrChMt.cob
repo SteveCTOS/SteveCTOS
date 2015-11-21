@@ -406,7 +406,7 @@
       *     PERFORM ERROR-MESSAGE
       *     PERFORM ERROR1-020
 
-           CALL "C$SLEEP" USING 0.5
+           CALL "C$SLEEP" USING 2
            CLOSE STOCK-TRANS-FILE.
        CPAT-999.
            EXIT.
@@ -598,7 +598,7 @@
                 PERFORM ERROR-000
                 GO TO PRR-500.
        PRR-900.
-           CALL "C$SLEEP" USING 0.5
+           CALL "C$SLEEP" USING 2
            CLOSE STOCK-TRANS-FILE.
        PRR-999.
            EXIT.
