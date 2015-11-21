@@ -248,14 +248,17 @@
             IF WS-RANGE3 = "P"
                MOVE "B/ORDERS READY TO INV"  TO H1-TYPE.
             IF WS-RANGE1 = "    "
-               MOVE "/"    TO WS-RANGE1.
-            IF WS-RANGE3 = "R"
-               MOVE " "       TO STTR-ST-COMPLETE
-            ELSE
-               MOVE "N"       TO STTR-ST-COMPLETE.
-            MOVE WS-RANGE1 TO STTR-STOCK-NUMBER.
+               MOVE "/"       TO WS-RANGE1.
+            MOVE "N"          TO STTR-ST-COMPLETE.
+            MOVE WS-RANGE1    TO STTR-STOCK-NUMBER.
             START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                INVALID KEY NEXT SENTENCE.
+            IF WS-BO-ST1 NOT = 0
+               MOVE "STTRANS FILE BUSY ON START, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-BO-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE.
        PRR-002.
             READ STOCK-TRANS-FILE NEXT WITH LOCK
                AT END NEXT SENTENCE.
@@ -264,8 +267,9 @@
             IF WS-BO-ST1 NOT = 0
                MOVE "STTRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-BO-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
                
             IF WS-RANGE3 NOT = "R"
@@ -276,17 +280,16 @@
             IF STTR-STOCK-NUMBER > WS-RANGE2
                GO TO PRR-999.
 
-            IF WS-RANGE3 = "R"
-               GO TO PRR-980.
-               
-            IF STTR-TYPE NOT = 4 AND NOT = 7
-               GO TO PRR-002.
-
             MOVE 2610 TO POS
             DISPLAY "STOCK NUMBER BEING READ:" AT POS
             ADD 25 TO POS
             DISPLAY STTR-STOCK-NUMBER AT POS.
 
+            IF WS-RANGE3 = "R"
+               GO TO PRR-980.
+               
+            IF STTR-TYPE NOT = 4 AND NOT = 7
+               GO TO PRR-002.
             MOVE STTR-STOCK-NUMBER TO SPLIT-STOCK.
             IF SP-1STCHAR = "*"
                GO TO PRR-002.
