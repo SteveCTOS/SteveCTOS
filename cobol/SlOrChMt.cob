@@ -239,6 +239,8 @@
             IF WS-ST-ST1 NOT = 0
                MOVE "ST-MASTER BUSY ON READ-NEXT, 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE ST-STOCKNUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-010.
             IF ST-STOCKNUMBER < WS-RANGE1
