@@ -345,7 +345,7 @@
             IF WS-BO-ST1 NOT = 0
                GO TO CPAT-900.
        CPAT-002.
-            READ STOCK-TRANS-FILE NEXT
+            READ STOCK-TRANS-FILE NEXT WITH LOCK
                AT END NEXT SENTENCE.
             IF WS-BO-ST1 = 10
                MOVE 0 TO WS-BO-ST1
@@ -383,6 +383,13 @@
       *THIS DONE AS IN SLORDERS.INT TO FIX DIFFERENCES IN THE SL19 &   *
       *GL GROSS PROFIT FIGURES.                                        *
       ******************************************************************
+           IF STTR-ORDERQTY = " "
+              MOVE 0 TO STTR-ORDERQTY.
+           IF STTR-SHIPQTY = " "
+              MOVE 0 TO STTR-SHIPQTY.
+           IF STTR-SHIPPEDQTY = " "
+              MOVE 0 TO STTR-SHIPPEDQTY.
+              
            IF STTR-SHIPQTY NOT = STTR-ORDERQTY - STTR-SHIPPEDQTY
              COMPUTE WS-AVE-ALLOC = WS-AVE-ALLOC + 
                  (STTR-SHIPQTY * STTR-COST-VALUE)
