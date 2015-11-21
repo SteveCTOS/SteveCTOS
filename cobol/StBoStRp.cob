@@ -41,16 +41,12 @@
        77  WS-KIT-BO-TOT        PIC S9(7)V99 VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC X.
        01  WS-STOCK-STATUS.
            03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
        01  WS-STTRANS-STATUS.
            03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1        PIC 99.
-      *     03  WS-INCR-ST2        PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -201,13 +197,16 @@
             MOVE 1510 TO POS.
             DISPLAY "OR 'A' FOR ALL ORDERS, (B/O & PENDING)," AT POS.
             MOVE 1610 TO POS.
+            DISPLAY "OR 'R' TO RESET ALL QTY FIELDS = ' '     "
+                  AT POS.
+            MOVE 1710 TO POS.
             DISPLAY "OR 'P' FOR PENDING ORDERS ONLY, QTY > 0 : [ ]"
                   AT POS.
             ADD 43 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 13         TO CDA-ROW.
+           MOVE 14         TO CDA-ROW.
            MOVE 52        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -221,9 +220,9 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-020.
             IF WS-RANGE3 NOT = "Y" AND NOT = "N"
-                     AND NOT = "A" AND NOT = "P"
+                     AND NOT = "A" AND NOT = "P" AND NOT = "R"
                MOVE 1810 TO POS
-               DISPLAY "ENTER ONLY Y, N, A OR P" AT POS
+               DISPLAY "ENTER ONLY Y, N, A P, OR R." AT POS
                GO TO GET-020.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO GET-030
@@ -255,7 +254,7 @@
             START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                INVALID KEY NEXT SENTENCE.
        PRR-002.
-            READ STOCK-TRANS-FILE NEXT
+            READ STOCK-TRANS-FILE NEXT WITH LOCK
                AT END NEXT SENTENCE.
             IF WS-BO-ST1 = 10
                GO TO PRR-999.
@@ -272,6 +271,10 @@
                GO TO PRR-002.
             IF STTR-STOCK-NUMBER > WS-RANGE2
                GO TO PRR-999.
+
+            IF WS-RANGE3 = "R"
+               GO TO PRR-980.
+               
             IF STTR-TYPE NOT = 4 AND NOT = 7
                GO TO PRR-002.
 
@@ -419,6 +422,24 @@
            WRITE PRINT-REC FROM DETAIL-LINE AFTER 1
            MOVE " " TO PRINT-REC
            ADD 1 TO LINE-CNT
+           GO TO PRR-002.
+           
+       PRR-980.
+             IF STTR-ORDERQTY = " "
+               MOVE 0 TO STTR-ORDERQTY.
+             IF STTR-SHIPQTY = " "
+               MOVE 0 TO STTR-SHIPQTY.
+             IF STTR-SHIPPEDQTY = " "
+               MOVE 0 TO STTR-SHIPPEDQTY.
+           REWRITE STOCK-TRANS-REC
+                INVALID KEY NEXT SENTENCE.
+           IF WS-BO-ST1 NOT = 0
+                MOVE 0 TO WS-BO-ST1
+                MOVE "ST-TRANS BUSY ON REWRITE FOR 'R', 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR-000
+                GO TO PRR-980.
+           
            GO TO PRR-002.
        PRR-999.
            EXIT.
