@@ -26,7 +26,6 @@
            03  SP-REST        PIC X(14) VALUE " ".
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1   PIC 99.
-      *     03  WS-STTRANS-ST2   PIC 9(2) COMP-X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -1952,6 +1951,11 @@
             DELETE STOCK-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-STTRANS-ST1 NOT = 0
+               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-STTRANS-ST1
                GO TO DO-010.
        DO-999.
