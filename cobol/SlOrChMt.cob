@@ -9,6 +9,7 @@
         FILE-CONTROL.
          Copy "SelectStMaster".
          Copy "SelectStTrans".
+         Copy "SelectStTrans2".
          Copy "SelectSlRegister".
          Copy "SelectSlDaily".
       *
@@ -16,6 +17,7 @@
         FILE SECTION.
            COPY ChlfdStock.
            COPY ChlfdStTrans.
+           COPY ChlfdStTrans2.
            COPY ChlfdDaily.
            COPY ChlfdRegister.
       *
@@ -57,16 +59,14 @@
        77  WS-SALE-DISPLAY      PIC Z(6)9.99.
        01  WS-STOCK-STATUS.
            03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
        01  WS-STTRANS-STATUS.
            03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC X.
+       01  WS-STTRANS2-STATUS.
+           03  WS-BO2-ST1       PIC 99.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC 9(2) COMP-X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -329,7 +329,7 @@
       *
        CHECK-PREVIOUS-ALLOC-TOTAL SECTION.
        CPAT-000.
-            PERFORM OPEN-010.
+      *      PERFORM OPEN-010.
             MOVE 0 TO WS-STTR-ORDERQTY
                       WS-STTR-SHIPQTY
                       WS-NEW-SHIPQTY
@@ -422,7 +422,7 @@
            ADD 12 TO POS
            DISPLAY WS-CLOSE-CNT AT POS.
       *     CALL "C$SLEEP" USING 1
-           CLOSE STOCK-TRANS-FILE.
+      *     CLOSE STOCK-TRANS-FILE.
        CPAT-999.
            EXIT.
       *
@@ -476,7 +476,7 @@
       *
        READ-TRANSACTIONS SECTION.
        PRR-000.
-           PERFORM OPEN-010.
+      *     PERFORM OPEN-010.
            MOVE 0 TO WS-NEW-SHIPQTY
                      SUB-1.
        PRR-001.
@@ -620,7 +620,7 @@
            DISPLAY WS-CLOSE-CNT AT POS.
 
       *     CALL "C$SLEEP" USING 1
-           CLOSE STOCK-TRANS-FILE.
+      *     CLOSE STOCK-TRANS-FILE.
        PRR-999.
            EXIT.
       *
@@ -732,15 +732,23 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-000.
-           GO TO OPEN-016.
+      *     GO TO OPEN-016.
        OPEN-010.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-BO-ST1 NOT = 0 
-              MOVE 0 TO WS-BO-ST1
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-010.
+       OPEN-012.
+           OPEN I-O STOCK2-TRANS-FILE.
+           IF WS-BO2-ST1 NOT = 0 
+              MOVE "ST-TRANS2 FILE BUSY ON OPEN, 'ESC' TO RETRY." 
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-BO2-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO OPEN-012.
        OPEN-016.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
@@ -786,7 +794,8 @@
        END-500.
             CLOSE STOCK-MASTER
                   INCR-REGISTER
-                  STOCK-TRANS-FILE.
+                  STOCK-TRANS-FILE
+                  STOCK2-TRANS-FILE.
             EXIT PROGRAM.
       *      STOP RUN.
        END-999.
