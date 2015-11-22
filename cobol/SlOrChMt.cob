@@ -339,37 +339,37 @@
                       
             PERFORM CLEAR-UNALLOCATED-NUMBERS.
             
-            MOVE " "            TO STTR-ST-COMPLETE
-            MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER
-            START STOCK-TRANS-FILE KEY NOT < STTR-STOCK-NUMBER
+            MOVE " "            TO STTR2-ST-COMPLETE
+            MOVE ST-STOCKNUMBER TO STTR2-STOCK-NUMBER
+            START STOCK2-TRANS-FILE KEY NOT < STTR2-STOCK-NUMBER
                  INVALID KEY NEXT SENTENCE.
-            IF WS-BO-ST1 NOT = 0
+            IF WS-BO2-ST1 NOT = 0
                GO TO CPAT-900.
        CPAT-002.
-            READ STOCK-TRANS-FILE NEXT WITH LOCK
+            READ STOCK2-TRANS-FILE NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-BO-ST1 = 10
-               MOVE 0 TO WS-BO-ST1
+            IF WS-BO2-ST1 = 10
+               MOVE 0 TO WS-BO2-ST1
                GO TO CPAT-900.
-            IF WS-BO-ST1 NOT = 0
-               MOVE 0 TO WS-BO-ST1
+            IF WS-BO2-ST1 NOT = 0
+               MOVE 0 TO WS-BO2-ST1
                GO TO CPAT-002.
-            IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
+            IF STTR2-STOCK-NUMBER NOT = ST-STOCKNUMBER
                GO TO CPAT-900.
-            IF STTR-TYPE NOT = 4 AND NOT = 7
+            IF STTR2-TYPE NOT = 4 AND NOT = 7
             
-      *      MOVE "STTR-TYPE NOT =4 OR 7" TO WS-MESSAGE
+      *      MOVE "STTR2-TYPE NOT =4 OR 7" TO WS-MESSAGE
       *      PERFORM ERROR1-000
-      *      MOVE STTR-TYPE TO WS-MESSAGE
+      *      MOVE STTR2-TYPE TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE
       *      PERFORM ERROR1-020
             
                GO TO CPAT-002.
-            IF STTR-ST-COMPLETE = "L" OR = "Y" OR = "R"
+            IF STTR2-ST-COMPLETE = "L" OR = "Y" OR = "R"
             
-      *      MOVE "STTR-ST-COMPLETE = L, Y, OR R" TO WS-MESSAGE
+      *      MOVE "STTR2-ST-COMPLETE = L, Y, OR R" TO WS-MESSAGE
       *      PERFORM ERROR1-000
-      *      MOVE STTR-ST-COMPLETE TO WS-MESSAGE
+      *      MOVE STTR2-ST-COMPLETE TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE
       *      PERFORM ERROR1-020
             
@@ -384,35 +384,35 @@
       *THIS DONE AS IN SLORDERS.INT TO FIX DIFFERENCES IN THE SL19 &   *
       *GL GROSS PROFIT FIGURES.                                        *
       ******************************************************************
-           IF STTR-ORDERQTY = " "
-              MOVE 0 TO STTR-ORDERQTY.
-           IF STTR-SHIPQTY = " "
-              MOVE 0 TO STTR-SHIPQTY.
-           IF STTR-SHIPPEDQTY = " "
-              MOVE 0 TO STTR-SHIPPEDQTY.
+           IF STTR2-ORDERQTY = " "
+              MOVE 0 TO STTR2-ORDERQTY.
+           IF STTR2-SHIPQTY = " "
+              MOVE 0 TO STTR2-SHIPQTY.
+           IF STTR2-SHIPPEDQTY = " "
+              MOVE 0 TO STTR2-SHIPPEDQTY.
               
-           IF STTR-SHIPQTY NOT = STTR-ORDERQTY - STTR-SHIPPEDQTY
+           IF STTR2-SHIPQTY NOT = STTR2-ORDERQTY - STTR2-SHIPPEDQTY
              COMPUTE WS-AVE-ALLOC = WS-AVE-ALLOC + 
-                 (STTR-SHIPQTY * STTR-COST-VALUE)
-             ADD STTR-SHIPQTY TO WS-SHIPQTY-ALLOC
+                 (STTR2-SHIPQTY * STTR2-COST-VALUE)
+             ADD STTR2-SHIPQTY TO WS-SHIPQTY-ALLOC
            ELSE
-             ADD STTR-SHIPQTY TO WS-SHIPQTY-ALLOC-NO-CHNG.
+             ADD STTR2-SHIPQTY TO WS-SHIPQTY-ALLOC-NO-CHNG.
                  
            COMPUTE WS-STTR-ORDERQTY =
-                   WS-STTR-ORDERQTY + (STTR-ORDERQTY - STTR-SHIPPEDQTY).
+                WS-STTR-ORDERQTY + (STTR2-ORDERQTY - STTR2-SHIPPEDQTY).
            COMPUTE WS-STTR-SHIPQTY =
-                   WS-STTR-SHIPQTY + STTR-SHIPQTY.
+                WS-STTR-SHIPQTY + STTR2-SHIPQTY.
                  
-           IF STTR-SHIPQTY NOT = STTR-ORDERQTY - STTR-SHIPPEDQTY
+           IF STTR2-SHIPQTY NOT = STTR2-ORDERQTY - STTR2-SHIPPEDQTY
               PERFORM ENTER-UNALLOCATED-NUMBERS.
 
            GO TO CPAT-002.
        CPAT-900.
-      *     MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
+      *     MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
       *     PERFORM ERROR1-000
-      *     MOVE WS-STTR-ORDERQTY TO WS-MESSAGE
+      *     MOVE WS-STTR2-ORDERQTY TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE
-      *     MOVE WS-STTR-SHIPQTY TO WS-MESSAGE
+      *     MOVE WS-STTR2-SHIPQTY TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE
       *     PERFORM ERROR1-020
 
@@ -459,9 +459,9 @@
            IF WS-TYPE (SUB-1) NOT = 0
               ADD 1 TO SUB-1
               GO TO EON-010.
-           MOVE STTR-TYPE               TO WS-TYPE (SUB-1)
-           MOVE STTR-REFERENCE1         TO WS-REF (SUB-1)
-           MOVE STTR-TRANSACTION-NUMBER TO WS-TRANS (SUB-1).
+           MOVE STTR2-TYPE               TO WS-TYPE (SUB-1)
+           MOVE STTR2-REFERENCE1         TO WS-REF (SUB-1)
+           MOVE STTR2-TRANSACTION-NUMBER TO WS-TRANS (SUB-1).
            IF INCR-PRINTED = "S"
                MOVE WS-ALLOC-TO-SUSP    TO WS-SUSPEND (SUB-1).
            IF INCR-SALES = 53
@@ -699,8 +699,8 @@
       *
        READ-REGISTER SECTION.
        RIR-000.
-           MOVE STTR-REFERENCE1 TO INCR-INVOICE.
-           MOVE STTR-TYPE       TO INCR-TRANS.
+           MOVE STTR2-REFERENCE1 TO INCR-INVOICE.
+           MOVE STTR2-TYPE       TO INCR-TRANS.
            START INCR-REGISTER KEY NOT < INCR-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
