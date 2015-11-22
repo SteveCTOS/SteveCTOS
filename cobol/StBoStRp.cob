@@ -139,7 +139,10 @@
            PERFORM OPEN-FILES
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
-           PERFORM PRINT-ROUTINE.
+           IF WS-RANGE3 NOT = "R"
+              PERFORM PRINT-ROUTINE
+           ELSE
+              PERFORM PRINT-RESET.
            PERFORM END-OFF.
       *
        GET-DATA SECTION.
@@ -458,6 +461,73 @@
            
            GO TO PRR-002.
        PRR-999.
+           EXIT.
+      *
+       PRINT-RESET SECTION.
+       PREST-000.
+            MOVE 1          TO STTR-TYPE
+                               STTR-REFERENCE1
+                               STTR-TRANSACTION-NUMBER.
+            START STOCK-TRANS-FILE KEY NOT < STTR-KEY
+               INVALID KEY NEXT SENTENCE.
+            IF WS-BO-ST1 NOT = 0
+               MOVE "STTRANS RESET FILE BUSY ON START, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-BO-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE.
+       PREST-002.
+            READ STOCK-TRANS-FILE NEXT WITH LOCK
+               AT END NEXT SENTENCE.
+            IF WS-BO-ST1 = 10
+               GO TO PREST-999.
+            IF WS-BO-ST1 = 23
+                GO TO PREST-980.
+            IF WS-BO-ST1 NOT = 0
+           MOVE "STTRANS RESET FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-BO-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO PREST-002.
+
+            MOVE 2610 TO POS
+            DISPLAY "STTR NUMBER BEING READ:" AT POS
+            ADD 25 TO POS
+            DISPLAY STTR-KEY AT POS.
+            
+            GO TO PREST-985.
+       PREST-980.
+            IF STTR-ORDERQTY = " "
+              MOVE 0 TO STTR-ORDERQTY.
+            IF STTR-SHIPQTY = " "
+              MOVE 0 TO STTR-SHIPQTY.
+            IF STTR-SHIPPEDQTY = " "
+              MOVE 0 TO STTR-SHIPPEDQTY.
+
+            MOVE STTR-COMPLETE TO STTR-ST-COMPLETE
+                                  STTR-AC-COMPLETE.
+            MOVE STTR-DATE     TO STTR-ST-DATE
+                                  STTR-AC-DATE.
+               
+           MOVE STTR-DATE               TO SPLIT-DATE.
+           PERFORM CONVERT-DATE-FORMAT
+           MOVE DISPLAY-DATE            TO D-DATE
+           DISPLAY D-DATE AT 2735.
+        PREST-985.
+           REWRITE STOCK-TRANS-REC
+                INVALID KEY NEXT SENTENCE.
+           IF WS-BO-ST1 NOT = 0
+                MOVE "ST-TRANS BUSY ON REWRITE FOR 'R', 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR-000
+                MOVE WS-BO-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                GO TO PREST-980.
+           
+           GO TO PREST-002.
+       PREST-999.
            EXIT.
       *
        SUB-TOTAL-LINE SECTION.
