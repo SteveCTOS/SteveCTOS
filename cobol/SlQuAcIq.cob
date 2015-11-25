@@ -285,7 +285,7 @@
        RDTR-005.
            MOVE "Q"               TO STTR-AC-COMPLETE
            MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER
-           MOVE 0                 TO STTR-AC-DATE.
+           MOVE WS-SALEDATE       TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-BORDER-ST1 NOT = 0
@@ -441,7 +441,7 @@
            OPEN OUTPUT PRINT-FILE.
            MOVE "Q"               TO STTR-AC-COMPLETE
            MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER
-           MOVE 0                 TO STTR-AC-DATE.
+           MOVE WS-SALEDATE       TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
             IF WS-BORDER-ST1 NOT = 0
