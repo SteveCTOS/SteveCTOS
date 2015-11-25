@@ -290,6 +290,10 @@
       * READING TO SEE WHERE THE ACTUAL DATA STARTS, WHEN THIS IS TRUE *
       * NEXT LINE IS THE ACTUAL START OF INFO.                         *
       ******************************************************************
+        MOVE 2001 TO POS
+        DISPLAY BANK-CAMS-REC AT POS
+        PERFORM ERROR-010.
+        
            IF WS-CAMS-DATA-START = "N"
             IF BANK-CAMS-STATEMENT-DATE NOT = "  DATE    "
               GO TO RTFD-001

@@ -61,18 +61,14 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-BORDER-STATUS.
            03  WS-BORDER-ST1    PIC 99.
-      *     03  WS-BORDER-ST2    PIC 99 COMP-X.
        01  WS-PRINT-STATUS.
-           03  WS-PRINT-ST1    PIC 99.
+           03  WS-PRINT-ST1     PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -243,6 +239,7 @@
        RDTR-005.
            MOVE "Q"            TO STTR-ST-COMPLETE.
            MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER.
+           MOVE 0              TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-BORDER-ST1 NOT = 0
@@ -251,7 +248,7 @@
        RDTR-010.
            READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-BORDER-ST1 = 10
+           IF WS-BORDER-ST1 = 10 OR = 23
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
@@ -393,8 +390,9 @@
       *     MOVE WS-PRINTERSELECTED TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
            
-           MOVE "Q"            TO STTR-ST-COMPLETE.
-           MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER.
+           MOVE "Q"            TO STTR-ST-COMPLETE
+           MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER
+           MOVE 0              TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
             IF WS-BORDER-ST1 NOT = 0
@@ -403,10 +401,16 @@
        PRR-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-            IF WS-BORDER-ST1 = 10
+            IF WS-BORDER-ST1 = 10 OR = 23
                MOVE 0 TO WS-BORDER-ST1
                GO TO PRR-900.
             IF WS-BORDER-ST1 NOT = 0
+               MOVE 2910 TO POS
+               MOVE "Be Patient, Status not = 0, Re-reading."
+               TO WS-MESSAGE
+               DISPLAY WS-MESSAGE AT POS
+               ADD 40 TO POS
+               DISPLAY WS-BORDER-ST1 AT POS
                MOVE 0 TO WS-BORDER-ST1
                GO TO PRR-002.
            IF STTR-ST-COMPLETE NOT = "Q"

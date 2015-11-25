@@ -52,13 +52,10 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC 9(2) COMP-X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC 9(2) COMP-X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-BORDER-STATUS.
            03  WS-BORDER-ST1    PIC 99.
-      *     03  WS-BORDER-ST2    PIC 99 COMP-X.
        01  WS-SALEDATE.
            03 WS-SALEYY         PIC 9999.
            03 WS-SALEMM         PIC 99.
@@ -286,8 +283,9 @@
        RDTR-001.
            MOVE 1 TO F-INDEX.
        RDTR-005.
-           MOVE "Q"               TO STTR-AC-COMPLETE.
-           MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
+           MOVE "Q"               TO STTR-AC-COMPLETE
+           MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER
+           MOVE 0                 TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-BORDER-ST1 NOT = 0
@@ -296,7 +294,7 @@
        RDTR-010.
            READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-BORDER-ST1 = 10
+           IF WS-BORDER-ST1 = 10 OR = 23
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
@@ -441,8 +439,9 @@
            MOVE 66 TO LINE-CNT.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
-           MOVE "Q"               TO STTR-AC-COMPLETE.
-           MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
+           MOVE "Q"               TO STTR-AC-COMPLETE
+           MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER
+           MOVE 0                 TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
             IF WS-BORDER-ST1 NOT = 0
@@ -451,7 +450,7 @@
        PRR-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-            IF WS-BORDER-ST1 = 10
+            IF WS-BORDER-ST1 = 10 OR = 23
                MOVE 0 TO WS-BORDER-ST1
                GO TO PRR-900.
             IF WS-BORDER-ST1 NOT = 0
