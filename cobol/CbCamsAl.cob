@@ -1155,7 +1155,7 @@
             MOVE "AMOUNT" TO F-FIELDNAME
             MOVE 6        TO F-CBFIELDNAME
             MOVE " "      TO F-NAMEFIELD
-            MOVE 8        TO F-CBFIELDLENGTH
+            MOVE 12       TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
             GO TO CLEAR-002.
