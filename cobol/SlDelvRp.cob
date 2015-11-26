@@ -59,20 +59,16 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1    PIC 99.
-      *     03  WS-INCR-LY-ST2    PIC X.
+           03  WS-INCR-LY-ST1   PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-RANDOM-STATUS.
-           03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
+           03  WS-RANDOM-ST1    PIC 99.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR      PIC X.
-           03  SP-REST         PIC X(14).
+           03  SP-1STCHAR       PIC X.
+           03  SP-REST          PIC X(14).
        01  HEAD1.
            03  FILLER           PIC X(5) VALUE "DATE".
            03  H1-DATE          PIC X(10).
@@ -415,11 +411,13 @@
        RTWR-005.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
               GO TO RTWR-999.
            IF WS-INCR-ST1 NOT = 0
             MOVE "INVOICE LOCKED BY ANOTHER TERMINAL, CANCEL' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RTWR-005.
 
@@ -490,7 +488,7 @@
        RTWR-005.
            READ INCR-LY-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-LY-ST1 = 10
+           IF WS-INCR-LY-ST1 = 10 OR = 23
               GO TO RTWR-999.
            IF WS-INCR-LY-ST1 NOT = 0
            MOVE "INVOICE LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
@@ -565,7 +563,7 @@
        RTWRP-005.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
               GO TO RTWRP-999.
            IF WS-INCR-ST1 NOT = 0
             MOVE "P/SLIP LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
@@ -640,7 +638,7 @@
        RTWRP-005.
            READ INCR-LY-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-LY-ST1 = 10
+           IF WS-INCR-LY-ST1 = 10 OR = 23
               GO TO RTWRP-999.
            IF WS-INCR-LY-ST1 NOT = 0
             MOVE "P/SLIP LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
@@ -710,7 +708,7 @@
        PRR-005.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
               GO TO PRR-900.
            IF WS-INCR-ST1 NOT = 0
             MOVE "INVOICE LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
@@ -811,7 +809,7 @@
        PLY-005.
            READ INCR-LY-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
               GO TO PLY-000.
            IF WS-INCR-ST1 NOT = 0
            MOVE "INVOICE-LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
@@ -908,7 +906,7 @@
        PR-005.
            READ RANDOM-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-RANDOM-ST1 = 10
+           IF WS-RANDOM-ST1 = 10 OR = 23
               PERFORM PRINT-TOTALS
               GO TO PR-999.
            IF WS-RANDOM-ST1 NOT = 0
@@ -1010,7 +1008,7 @@
        PRLY-005.
            READ RANDOM-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-RANDOM-ST1 = 10
+           IF WS-RANDOM-ST1 = 10 OR = 23
               PERFORM PRINT-TOTALS
               GO TO PRLY-999.
            IF WS-RANDOM-ST1 NOT = 0
