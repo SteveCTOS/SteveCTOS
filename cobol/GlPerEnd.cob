@@ -63,26 +63,19 @@
            03  SPLIT-FIL2       PIC X.
            03  SPLIT-SC         PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1   PIC 99.
-      *     03  WS-GLTRANS-ST2   PIC 9(2) COMP-X.
+           03  WS-GLTRANS-ST1     PIC 99.
        01  WS-GLTRANS-LY-STATUS.
-           03  WS-GLTRANS-LY-ST1   PIC 99.
-      *     03  WS-GLTRANS-LY-ST2   PIC 9(2) COMP-X.
+           03  WS-GLTRANS-LY-ST1  PIC 99.
        01  WS-GLJRN-STATUS.
-           03  WS-GLJRN-ST1   PIC 99.
-      *     03  WS-GLJRN-ST2   PIC 9(2) COMP-X.
+           03  WS-GLJRN-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
-      *     03  WS-GLPARAMETER-ST2   PIC 9(2) COMP-X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC 9(2) COMP-X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1   PIC 99.
-      *     03  WS-GL-LY-ST2   PIC 9(2) COMP-X.
+           03  WS-GL-LY-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1       PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -142,7 +135,6 @@
                PERFORM CTOS-ACCEPT
                MOVE CDA-DATA TO WS-ANSWER2.
 
-      *         ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-ANSWER2 = "Y"
@@ -183,7 +175,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FACTOR-ACCEPT.
 
-      *     ACCEPT WS-FACTOR-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-010.
            MOVE WS-FACTOR-ACCEPT TO ALPHA-RATE.
@@ -208,7 +199,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BU-ACT.
 
-      *     ACCEPT WS-BU-ACT AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-040.
            IF WS-BU-ACT NOT = "B" AND NOT = "A"
@@ -227,6 +217,10 @@
                DISPLAY "There Are 4 Data Files To Process." AT POS.
            PERFORM CHECK-GLPERIODS.
            PERFORM DELETE-GLJRNS.
+           
+           GO TO CONTROL-600.
+           
+           
            IF WS-MONTH-YEAR = "Y"
               PERFORM WRITE-GLMASTER-TO-LAST-YEAR
               PERFORM WRITE-TRANS-TO-LAST-YEAR.
@@ -259,7 +253,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 1 OR 2
                GO TO CONTROL-900
            ELSE
@@ -428,7 +421,9 @@
             PERFORM WRITE-DAILY.
            PERFORM OPEN-005.
            MOVE 1410 TO POS
-           DISPLAY " 1. GlJrns File Being Processed.          " AT POS
+           DISPLAY " 1. GlJrns File Being Processed.          " AT POS.
+           
+           MOVE " " TO GLJRN-REFERENCE.
            START GLJRN-FILE KEY NOT < GLJRN-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-GLJRN-ST1 NOT = 0
@@ -444,6 +439,15 @@
            DISPLAY "      GlJrn Being Processed:" AT POS.
            ADD 30 TO POS.
            DISPLAY GLJRN-REFERENCE AT POS.
+           
+           PERFORM ERROR-010.
+           
+           MOVE GLJRN-ACTION TO WS-MESSAGE
+           PERFORM ERROR1-000
+           MOVE GLJRN-COMPLETE TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+           
+           
            IF GLJRN-ACTION = "R"
             IF GLJRN-COMPLETE = "Y"
                MOVE "P" TO GLJRN-COMPLETE
@@ -454,6 +458,9 @@
                GO TO DGLJ-800.
            GO TO DGLJ-010.
        DGLJ-800.
+           MOVE "GOING TO DELETE THIS JRN" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+
            DELETE GLJRN-FILE
                INVALID KEY
                 MOVE "GLJRN TRANS RECORD N"  TO WS-DAILY-1ST
@@ -463,6 +470,9 @@
                 PERFORM WRITE-DAILY.
            GO TO DGLJ-010.
        DGLJ-850.
+           MOVE "GOING TO REWRITE THIS JRN" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+
            REWRITE GLJRN-REC
                INVALID KEY
                 MOVE "GLJRN TRANS RECORD N"  TO WS-DAILY-1ST
@@ -1173,7 +1183,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
-       Copy "WriteDailyExcep1".
        Copy "Error1Message".
+       Copy "WriteDailyExcep1".
        Copy "CTOSCobolAccept".
       * END-OF-JOB

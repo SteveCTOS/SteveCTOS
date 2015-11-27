@@ -255,8 +255,8 @@
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 10
-                MOVE "75-020-25-05" TO WS-NEXT-NUMBER1
-                MOVE "75-020-25-15" TO WS-NEXT-NUMBER2
+                MOVE "75-020-25-00" TO WS-NEXT-NUMBER1
+                MOVE "75-020-25-99" TO WS-NEXT-NUMBER2
                 MOVE 0 TO WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN

@@ -37,14 +37,11 @@
        77  WS-NORM-CNT          PIC 9(4) VALUE 0.
        77  WS-REC-CNT           PIC 9(4) VALUE 0.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
-       01  WS-GLJRN-STATUS.
-           03  WS-GLJRN-ST1  PIC 99.
-      *     03  WS-GLJRN-ST2  PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
+       01  WS-GLJRN-STATUS.  
+          03  WS-GLJRN-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -136,7 +133,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -162,7 +158,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-HEAD-COMMENT.
 
-      *     ACCEPT WS-HEAD-COMMENT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
