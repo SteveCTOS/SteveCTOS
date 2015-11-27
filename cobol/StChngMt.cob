@@ -394,31 +394,31 @@
                PERFORM ERROR-MESSAGE
                GO TO RBC-010.
        RBC-020.
-           MOVE DATA-NAME      TO WS-STOCK.
+           MOVE DATA-NAME         TO WS-STOCK.
            
-           MOVE WS-CBSTTRANS TO DATA-NUMBER.
+           MOVE WS-CBSTTRANS      TO DATA-NUMBER.
            PERFORM RBC-010
-           MOVE DATA-NAME  TO WS-STTRANS.
+           MOVE DATA-NAME         TO WS-STTRANS.
            
-           MOVE WS-CBSTORDERS TO DATA-NUMBER.
+           MOVE WS-CBSTORDERS     TO DATA-NUMBER.
            PERFORM RBC-010
-           MOVE DATA-NAME  TO WS-STORDERS.
+           MOVE DATA-NAME         TO WS-STORDERS.
            
-           MOVE WS-CBSTIMPORTS TO DATA-NUMBER.
+           MOVE WS-CBSTIMPORTS    TO DATA-NUMBER.
            PERFORM RBC-010
-           MOVE DATA-NAME  TO WS-STIMPORTS.
+           MOVE DATA-NAME         TO WS-STIMPORTS.
            
-           MOVE WS-CBSTRECEIPTS TO DATA-NUMBER.
+           MOVE WS-CBSTRECEIPTS   TO DATA-NUMBER.
            PERFORM RBC-010
-           MOVE DATA-NAME  TO WS-STRECEIPT.
+           MOVE DATA-NAME         TO WS-STRECEIPT.
            
            MOVE WS-CBSTRECEIPTSLY TO DATA-NUMBER.
            PERFORM RBC-010
-           MOVE DATA-NAME  TO WS-STRECEIPTLY
+           MOVE DATA-NAME         TO WS-STRECEIPTLY
            
-           MOVE WS-CBTOOLKIT TO DATA-NUMBER.
+           MOVE WS-CBTOOLKIT      TO DATA-NUMBER.
            PERFORM RBC-010
-           MOVE DATA-NAME  TO WS-TOOLKIT.
+           MOVE DATA-NAME         TO WS-TOOLKIT.
        RBC-900.
            CLOSE DATA-FILE.
        RBC-999.
@@ -1040,7 +1040,7 @@
            MOVE STCH-STOCKNUMBER TO ST-STOCKNUMBER WS-OLDSTOCKNUMBER.
            PERFORM READ-STOCK-VALID.
            IF NEW-STOCKNO = "Y"
-               MOVE "GONE" TO WS-OLDSTOCKNUMBER.
+               MOVE "GONE"        TO WS-OLDSTOCKNUMBER.
            MOVE STCH-DESCRIPTION1 TO ST-STOCKNUMBER
                                      WS-NEWSTOCKNUMBER.
            PERFORM READ-STOCK-VALID.
@@ -1126,7 +1126,8 @@
              READ STOCK-MASTER WITH LOCK
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
-                MOVE SPACES TO STOCK-RECORD
+                PERFORM FILL-NEW-RECORD-WITH-BLANKS
+      *          MOVE SPACES TO STOCK-RECORD
                 MOVE "Y" TO NEW-STOCKNO
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
@@ -1139,6 +1140,70 @@
        R-ST-999.
              EXIT.
       *
+       FILL-NEW-RECORD-WITH-BLANKS SECTION.
+       FNRWB-005.
+            MOVE SPACES TO  ST-DESCRIPTION1
+                            ST-DESCRIPTION2
+                            ST-CATEGORY
+                            ST-SUPPLIER
+                            ST-CURRENCY
+                            ST-UNITOFMEASURE
+                            ST-BINLOCATION
+                            ST-ANALYSIS
+                            ST-PERMIT.
+                              
+            MOVE 0      TO  ST-FOREIGNCOST
+                           ST-SUPPLIERDISC
+                           ST-CURRENCY-RATE
+                           ST-PRICE
+                           ST-OLDPRICE
+                           ST-MIN-PERC
+                           ST-DISCOUNT1
+                           ST-DISCOUNT2
+                           ST-DISCOUNT3
+                           ST-DISCOUNT4
+                           ST-DISCOUNT5
+                           ST-DISCOUNT6
+                           ST-DISCOUNT7
+                           ST-DISCOUNT8
+                           ST-DISCOUNT9
+                           ST-AVERAGECOST
+                           ST-LASTCOST
+                           ST-MINBUYQTY
+                           ST-DEL-DELAY
+                           ST-MAXIMUMLEVEL
+                           ST-MINIMUMLEVEL
+                           ST-QTYONHAND
+                           ST-QTYONRESERVE
+                           ST-QTYONORDER
+                           ST-QTYONBORDER
+                           ST-QTY-ST-TAKE
+                           ST-DATE-CREATED
+                           ST-LASTPRICECHANGE
+                           ST-LASTSALEDATE
+                           ST-LASTRECEIPTDATE
+                           ST-LASTORDERDATE
+                           ST-QTYRECMTD
+                           ST-QTYRECYTD
+                           ST-QTYRECLAST
+                           ST-QTYADJMTD
+                           ST-QTYADJYTD
+                           ST-QTYADJLAST
+                           ST-SALESUNITMTD
+                           ST-SALESUNITSYTD
+                           ST-SALESUNITSLAST
+                           ST-SALESRANDSMTD
+                           ST-SALESRANDSYTD
+                           ST-SALESRANDSLAST
+                           ST-SALESCOSTMTD
+                           ST-SALESCOSTYTD
+                           ST-SALESCOSTLAST
+                           ST-DUTYPERCENT
+                           ST-DUTYTARIFF
+                           ST-SURCHARGE.
+       FNRWB-999.
+             EXIT.
+      *
        READ-STOCK-VALID SECTION.
        RSTV-000.
              START STOCK-MASTER KEY NOT < ST-KEY
@@ -1148,6 +1213,7 @@
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 MOVE SPACES TO STOCK-RECORD
+      *          PERFORM FILL-NEW-RECORD-WITH-BLANKS
                 MOVE "Y" TO NEW-STOCKNO
                 GO TO RSTV-999.
              IF WS-STOCK-ST1 NOT = 0

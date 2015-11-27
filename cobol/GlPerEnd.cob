@@ -218,9 +218,6 @@
            PERFORM CHECK-GLPERIODS.
            PERFORM DELETE-GLJRNS.
            
-           GO TO CONTROL-600.
-           
-           
            IF WS-MONTH-YEAR = "Y"
               PERFORM WRITE-GLMASTER-TO-LAST-YEAR
               PERFORM WRITE-TRANS-TO-LAST-YEAR.
@@ -334,7 +331,6 @@
                 PERFORM CTOS-ACCEPT
                 MOVE CDA-DATA TO WS-ANSWER3
 
-      *          ACCEPT WS-ANSWER3 AT POS
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
@@ -362,7 +358,6 @@
                 PERFORM CTOS-ACCEPT
                 MOVE CDA-DATA TO WS-ANSWER3
                 
-      *          ACCEPT WS-ANSWER3 AT POS
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
@@ -390,7 +385,6 @@
                 PERFORM CTOS-ACCEPT
                 MOVE CDA-DATA TO WS-ANSWER3
 
-      *          ACCEPT WS-ANSWER3 AT POS
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
@@ -439,15 +433,6 @@
            DISPLAY "      GlJrn Being Processed:" AT POS.
            ADD 30 TO POS.
            DISPLAY GLJRN-REFERENCE AT POS.
-           
-           PERFORM ERROR-010.
-           
-           MOVE GLJRN-ACTION TO WS-MESSAGE
-           PERFORM ERROR1-000
-           MOVE GLJRN-COMPLETE TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-           
-           
            IF GLJRN-ACTION = "R"
             IF GLJRN-COMPLETE = "Y"
                MOVE "P" TO GLJRN-COMPLETE
@@ -458,9 +443,6 @@
                GO TO DGLJ-800.
            GO TO DGLJ-010.
        DGLJ-800.
-           MOVE "GOING TO DELETE THIS JRN" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-
            DELETE GLJRN-FILE
                INVALID KEY
                 MOVE "GLJRN TRANS RECORD N"  TO WS-DAILY-1ST
@@ -470,9 +452,6 @@
                 PERFORM WRITE-DAILY.
            GO TO DGLJ-010.
        DGLJ-850.
-           MOVE "GOING TO REWRITE THIS JRN" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-
            REWRITE GLJRN-REC
                INVALID KEY
                 MOVE "GLJRN TRANS RECORD N"  TO WS-DAILY-1ST
