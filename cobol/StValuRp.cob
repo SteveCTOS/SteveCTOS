@@ -425,7 +425,7 @@
                      WS-MAXREPCOSTTOT
                      WS-MAXMARGINAVE
                      WS-MAXMARGINREP.
-           IF WS-CAT = "ZZZ"
+           IF ST-CATEGORY = "ZZZ"
             IF WS-CAT-ONLY = "Y"
               PERFORM END-000.
            MOVE ST-CATEGORY TO WS-CAT.

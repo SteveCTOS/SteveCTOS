@@ -3,6 +3,8 @@
         AUTHOR.    CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -41,6 +43,7 @@
        77  WS-ADD-TOGETHER      PIC X VALUE " ".
        77  Ws-EnterOption       PIC X VALUE " ".
        77  WS-PRINT-NUM         PIC 9.
+       77  WS-TYPE-OF-DOCUMENT  PIC 9.
        77  WS-NUMBER            PIC 9(6) VALUE 0.
        77  WS-RANGE1            PIC 9(6) VALUE 0.
        77  WS-RANGE2            PIC 9(6) VALUE 0.
@@ -61,23 +64,17 @@
        77  WS-TRANS-DISPLAY     PIC Z(5)9.
        77  WS-EMAIL-NUMBER      PIC X(50) VALUE " ".
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTRANSLY-ST1     PIC 99.
-      *     03  WS-STTRANSLY-ST2     PIC X.
+           03  WS-STTRANSLY-ST1   PIC 99.
        01  WS-INCR-LY-STATUS.
            03  WS-INCR-LY-ST1     PIC 99.
-      *     03  WS-INCR-LY-ST2     PIC X.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-PRINTFILE-STATUS.
-           03  WS-PF-ST1     PIC 99.
-      *     03  WS-PF-ST2     PIC 9(2) COMP-X.
+           03  WS-PF-ST1          PIC 99.
        01  WS-LASERFILE-STATUS.
-           03  WS-LF-ST1     PIC 99.
-      *     03  WS-LF-ST2     PIC 9(2) COMP-X.
+           03  WS-LF-ST1          PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -226,8 +223,9 @@
            03  P-ADD2           PIC Z(7)9.99.
            03  FILLER           PIC X(12) VALUE " ".
            03  P-ADD3           PIC Z(7)9.99.
-           03  FILLER           PIC X(17) VALUE " ".
-           03  P-ADD4           PIC Z(7)9.99.
+           03  FILLER           PIC X(13) VALUE " ".
+           03  P-CURRENCY       PIC X(5) VALUE " ".
+           03  P-ADD4           PIC Z(6)9.99.
            03  FILLER           PIC X(14) VALUE " ".
        01  P-CONTINUED.
            03  FILLER           PIC X(40) VALUE " ".
@@ -254,17 +252,17 @@
           05  WS-DELIM-END2          PIC  X(1).
        01  LASER-PCREDITLINE.
            03  PLCR-CHAR1       PIC X(2).
-           03  FILLER           PIC X(1) VALUE " ".
-           03  PL-NAME          PIC X(131).
+           03  FILLER           PIC X(2) VALUE " ".
+           03  PL-TYPE          PIC X(22) VALUE " ".
+           03  FILLER           PIC X(14) VALUE " ".
+           03  PL-NAME          PIC X(94).
            03  PLCR-CHAR2       PIC X.
        01  LASER-PLINE1.
            03  PL1-CHAR         PIC X(2) VALUE " ".
-           03  FILLER           PIC X(11) VALUE " ".
-           03  PL-GSTNO         PIC X(18) VALUE " ".
+           03  FILLER           PIC X(6) VALUE " ".
+           03  PL-GSTNO         PIC X(23) VALUE " ".
            03  PL-ACCNO         PIC X(7).
-           03  FILLER           PIC X(18) VALUE " ".
-           03  PL-TYPE          PIC X(20) VALUE " ".
-           03  FILLER           PIC X(13) VALUE " ".
+           03  FILLER           PIC X(51) VALUE " ".
            03  PL-ADDNAME       PIC X(45).
            03  PL1-2            PIC X(1) VALUE " ".
        01  LASER-PLINE2.
@@ -347,8 +345,9 @@
            03  PL-ADD2           PIC Z(7)9.99.
            03  FILLER            PIC X(16) VALUE " ".
            03  PL-ADD3           PIC Z(7)9.99.
-           03  FILLER            PIC X(16) VALUE " ".
-           03  PL-ADD4           PIC Z(7)9.99.
+           03  FILLER            PIC X(15) VALUE " ".
+           03  PL-CURRENCY       PIC X(5) VALUE " ".
+           03  PL-ADD4           PIC Z(6)9.99.
            03  PLADD-CHAR2       PIC X(1) VALUE " ".
        01  PL-CONTINUED.
            03  PLCONT-CHAR     PIC X(2) VALUE " ".
@@ -378,18 +377,27 @@
            PERFORM GET-DATA
            PERFORM READ-COMM-FILE
            PERFORM READ-PARAMETER.
+           MOVE 2820 TO POS
+           DISPLAY "PRINTING IN PROGRESS......." AT POS.
        CONT-030.
            MOVE 1 TO SUB-1.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
        CONT-031.
+      *1=MASTER PRINTER - DOT MATRIX
            IF WS-PRINT-NUM = 1
-               GO TO CONT-032.
+             IF WS-PrinterNumber (sub-1) = 1
+               MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
+               Move Ws-PrinterChars (Sub-1) To Ws-Print-Chars
+               GO TO CONT-035.
+      *         GO TO CONT-032.
+      *2=COUNTER PRINTER - DOT MATRIX
            IF WS-PRINT-NUM = 2
             IF WS-PrinterNumber (sub-1) = 7
                MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
                Move Ws-PrinterChars (Sub-1) To Ws-Print-Chars
                GO TO CONT-035.
+      *3=STORES PRINTER - DOT MATRIX
            IF WS-PRINT-NUM = 3
             IF WS-PrinterNumber (sub-1) = 4
                MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
@@ -406,27 +414,69 @@
            If Sub-1 < 11
              add 1 to Sub-1
              Go To CONT-031.
-           Move "Can't Find a PrinterNumber, 'ESC' TO EXIT."
-            TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+           Move "Can't Find a PrinterNumber" To Ws-Message
+           Perform Error-Message.
+           PERFORM END-OFF.
+      *1=MASTER PRINTER - DOT MATRIX
+           IF WS-PRINT-NUM = 1
+             IF WS-PrinterNumber (sub-1) = 1
+               MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
+               Move Ws-PrinterChars (Sub-1) To Ws-Print-Chars
+               GO TO CONT-035.
+      *         GO TO CONT-032.
+      *2=COUNTER PRINTER - DOT MATRIX
+           IF WS-PRINT-NUM = 2
+            IF WS-PrinterNumber (sub-1) = 7
+               MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
+               Move Ws-PrinterChars (Sub-1) To Ws-Print-Chars
+               GO TO CONT-035.
+      *3=STORES PRINTER - DOT MATRIX
+           IF WS-PRINT-NUM = 3
+            IF WS-PrinterNumber (sub-1) = 4
+               MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
+               Move Ws-PrinterChars (Sub-1) To Ws-Print-Chars
+               GO TO CONT-035.
+               
+      *4=LASER PRINTER
+           IF WS-PRINT-NUM = 4
+               GO TO CONT-032.
+      *5=WRITE EMAIL RECORD
+           IF WS-PRINT-NUM = 5
+               GO TO CONT-050.
+               
+           If Sub-1 < 11
+             add 1 to Sub-1
+             Go To CONT-031.
+           Move "Can't Find a PrinterNumber" To Ws-Message
+           Perform Error-Message.
            PERFORM END-OFF.
        CONT-032.
-           IF WS-INVCRED = "I" OR = "P" OR = "Q"
-               MOVE "/ctools/spl/InPrintCo" TO WS-PRINTER
-           ELSE
-               MOVE "/ctools/spl/CrPrintCo" TO WS-PRINTER.
+           IF WS-INVCRED NOT = "D"
+               PERFORM WORK-OUT-PRINT-FILE-NAME
+               GO TO CONT-035.
+      *     IF WS-INVCRED = "I" OR = "P" OR = "Q"
+      *         MOVE "/ctools/spl/InPrintCo" TO WS-PRINTER
+      *     ELSE
+      *         MOVE "/ctools/spl/CrPrintCo" TO WS-PRINTER.
            IF WS-INVCRED = "D"
-               MOVE "/ctools/spl/DBPrintCo" TO WS-PRINTER.
+               MOVE "/ctools/spl/DBPrintCo" TO WS-PRINTER
+               MOVE WS-PRINTER   TO ALPHA-RATE
+               MOVE 22           TO SUB-1
+               MOVE WS-CO-NUMBER TO WS-COMPANY-DIGITS
+               MOVE WS-CO-DIG1   TO AL-RATE (22)
+               MOVE WS-CO-DIG2   TO AL-RATE (23)
+               MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME
+               OPEN OUTPUT PRINT-FILE
                
-           MOVE WS-PRINTER   TO ALPHA-RATE
-           MOVE 20           TO SUB-1
-           MOVE WS-CO-NUMBER TO WS-COMPANY-DIGITS
-           MOVE WS-CO-DIG1   TO AL-RATE (20)
-           MOVE WS-CO-DIG2   TO AL-RATE (21)
-           MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
+      *         MOVE "HERE AT OPEN D TYPE PRINT FILE" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+               GO TO CONT-036.
        CONT-035.
            IF WS-PRINT-NUM NOT = 4 AND NOT = 5
-               OPEN OUTPUT PRINT-FILE
+               PERFORM GET-USER-PRINT-NAME
+               OPEN OUTPUT PRINT-FILE.
+           IF WS-PRINT-NUM NOT = 4 AND NOT = 5
             IF WS-PF-ST1 NOT = 0
                MOVE 
            "PRINT FILE LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
@@ -441,52 +491,97 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO CONT-035.
+                
            IF WS-INVCRED = "D"
                GO TO CONT-036.
-           IF WS-PRINT-NUM = 1
-               MOVE WTELL-PAUSE TO PRINT-REC
-               WRITE PRINT-REC
-               MOVE " " TO PRINT-REC
-               WRITE PRINT-REC BEFORE PAGE.
+      *     IF WS-PRINT-NUM = 1
+      *         MOVE WTELL-PAUSE TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE " " TO PRINT-REC
+      *         WRITE PRINT-REC BEFORE PAGE.
            IF WS-PRINT-NUM = 4
               PERFORM ZL1-LASER-HEADINGS.
+                
+      *     MOVE "LASER HEADINGS NOW OPENED" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
                
            IF WS-INVCRED = "P"
                MOVE WS-RANGE1 TO WS-NUMBER.
        CONT-036.
            PERFORM READ-DATA.
            IF WS-FOUND = " "
+            IF WS-INVCRED NOT = "D"
                MOVE "NOTHING TO PRINT IN THAT RANGE!!!" TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
            IF WS-INVCRED = "D"
-               GO TO CONT-038.
-           IF WS-PRINT-NUM = 1
-               MOVE " " TO PRINT-REC
-               WRITE PRINT-REC BEFORE PAGE
-               MOVE W-NULL TO PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               WRITE PRINT-REC
-               MOVE WTELL-PAUSE TO PRINT-REC
-               WRITE PRINT-REC
-               MOVE " " TO PRINT-REC.
+               CLOSE PRINT-FILE
+               PERFORM END-OFF.
+      *         GO TO CONT-038.
+      *     IF WS-PRINT-NUM = 1
+      *         MOVE " " TO PRINT-REC
+      *         WRITE PRINT-REC BEFORE PAGE
+      *         MOVE W-NULL TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE WTELL-PAUSE TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE " " TO PRINT-REC.
        CONT-038.
            IF WS-PRINT-NUM NOT = 4
                CLOSE PRINT-FILE
            ELSE
                CLOSE LASER-FILE.
        CONT-040.
-           IF WS-INVCRED = "D"
+      * WS-PRINT-NUM = 5.  EMAIL PRINTOUT  SEE CONT-036 NEW ENTRY
+      *     IF WS-INVCRED = "D"
+      *        PERFORM END-OFF.
+      *     IF WS-PRINT-NUM = 1 OR = 4
+      *     IF WS-PRINT-NUM = 1
+      *      IF WS-FOUND NOT = " "
+      *        PERFORM CHECK-SPOOLER
+      *        PERFORM END-OFF.
+           IF WS-PRINT-NUM = 1 OR = 2 OR = 3
+              PERFORM SEND-REPORT-TO-PRINTER
               PERFORM END-OFF.
-           IF WS-PRINT-NUM = 1 OR = 4
-            IF WS-FOUND NOT = " "
-              PERFORM CHECK-SPOOLER.
+           MOVE 1 TO SUB-1.
+       CONT-041.
+      * ALL NOW WS-PRINT-NUM = 4.    LASER INVOICE / CREDIT PRINTING
+           IF WS-PRINT-NUM = 4
+            IF WS-PrinterNumber (SUB-1) NOT = 15
+                ADD 1 TO SUB-1 
+                GO TO CONT-041.
+           MOVE Ws-PrinterName (SUB-1) TO WS-PRINTER-SAVE.
+           MOVE 1 TO SUB-1.
+                
+      *     MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           IF WS-PRINT-NUM = 4
+            IF WS-INVCRED = "I" OR = "P" OR = "Q"
+                
+      *      MOVE "SET UP INVOICE TO PDF" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+           
+               PERFORM SETUP-INVOICE-FOR-PDF
+            ELSE
+               PERFORM SETUP-CREDIT-FOR-PDF.
+                
+      *      MOVE "SET UP 2 INVOICE TO PDF" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+
+      *      PERFORM SEND-REPORT-TO-PRINTER.
+
+      *      MOVE "SENT REPORT TO PRINTER" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+
            PERFORM END-OFF.
            
            GO TO CONT-999.
        CONT-050.
+      * EMAIL SECTION ONLY.
            IF WS-INVCRED = "I" OR = "P" OR = "Q"
                MOVE WS-RANGE1        TO WS-EINVOICE
                MOVE WS-EMAIL-INVOICE TO WS-PRINTER W-FILENAME.
@@ -502,6 +597,64 @@
            PERFORM END-OFF.
        CONT-999.
            EXIT.
+      *
+       WORK-OUT-PRINT-FILE-NAME SECTION.
+       WOPFN-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+           
+      *     MOVE "IN WOPFN-001." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-005.
+           MOVE "/ctools/spl/" TO ALPHA-RATE.
+           MOVE WS-USERNAME    TO DATA-RATE.
+           MOVE 13 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOPFN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-010.
+       WOPFN-020.
+      *     MOVE "IN WOPFN-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES TO DATA-RATE.
+           IF WS-INVCRED = "I" OR = "P" OR = "Q"
+               MOVE "InPrintCo" TO DATA-RATE
+           ELSE
+               MOVE "CrPrintCo" TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOPFN-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-025.
+       WOPFN-030.
+           MOVE SPACES TO DATA-RATE.
+           MOVE WS-CO-NUMBER TO DATA-RATE.
+  
+           MOVE 1  TO SUB-2.
+
+      *     MOVE "IN WOPFN-030." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-035.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPFN-035.
+           MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
+           
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+      *     MOVE W-FILENAME TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPFN-999.
+            EXIT.
       *
        READ-DATA SECTION.
        RD-000.
@@ -531,6 +684,11 @@
               PERFORM LASER-PRINT-INVOICE.
            IF WS-PRINT-NUM = 5
               PERFORM EMAIL-PRINT-INVOICE.
+
+           IF WS-PROG-TYPE = 3
+               MOVE 1 TO WS-TYPE-OF-DOCUMENT.
+           IF WS-PROG-TYPE = 2
+               MOVE 2 TO WS-TYPE-OF-DOCUMENT.
            
            GO TO RD-010.
        RD-999.
@@ -663,13 +821,18 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             MOVE WS-PROG-TYPE TO F-NAMEFIELD.
             PERFORM WRITE-FIELD-ALPHA.
+            
+            IF WS-PROG-TYPE = 1 OR = 3
+              MOVE 1 TO WS-TYPE-OF-DOCUMENT
+            ELSE
+              MOVE 2 TO WS-TYPE-OF-DOCUMENT.
        GET-030.
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "RANGE1" TO F-FIELDNAME.
             MOVE 6 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
-               GO TO GET-010.
+               GO TO GET-025.
             MOVE 6 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
@@ -725,7 +888,16 @@
             MOVE 2910 TO POS
             DISPLAY "ENTER 'Y' TO CONTINUE, 'N' TO EXIT [ ]" AT POS
             ADD 36 TO POS
-            ACCEPT WS-COMPLETE AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 45        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-COMPLETE.
+            
             IF WS-COMPLETE NOT = "Y" AND NOT = "N"
                GO TO GET-900.
             IF WS-COMPLETE = "N"
@@ -993,6 +1165,7 @@
            MOVE WS-SUBTOTAL      TO P-ADD3.
            IF WS-INVCRED = "P"
               COMPUTE WS-INVOICETOTAL = WS-SUBTOTAL + WS-TAXAMT.
+           MOVE "ZAR"            TO P-CURRENCY.
            MOVE WS-INVOICETOTAL  TO P-ADD4.
            WRITE PRINT-REC        FROM P-ADDLINE.
        P-036.
@@ -1041,6 +1214,24 @@
   
            MOVE " "     TO LASER-REC
            MOVE "´¶"    TO PLCR-CHAR1
+           IF WS-INVCRED = "P"
+              MOVE "    PROFORMA INVOICE  " TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "I"
+            IF WS-TYPE-OF-DOCUMENT = 1
+              MOVE "      TAX INVOICE     " TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "I"
+            IF WS-TYPE-OF-DOCUMENT = 2
+              MOVE "SUPPLIER DELIVERY NOTE" TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "I"
+            IF WS-TYPE-OF-DOCUMENT = 3
+              MOVE "CUSTOMER DELIVERY NOTE" TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "C"
+              MOVE "     TAX CREDIT NOTE  " TO PL-TYPE.
+       LP-011.
            MOVE PA-NAME TO PL-NAME.
            WRITE LASER-REC FROM LASER-PCREDITLINE.
            MOVE " "     TO LASER-REC.
@@ -1048,8 +1239,6 @@
            MOVE "¶"                      TO PL1-CHAR
            MOVE INCR-LY-GSTNO            TO PL-GSTNO
            MOVE INCR-LY-ACCOUNT          TO PL-ACCNO
-           IF WS-INVCRED = "P"
-              MOVE "*PROFORMA INVOICE *" TO PL-TYPE.
            MOVE PA-ADD1                  TO PL-ADDNAME
            WRITE LASER-REC FROM LASER-PLINE1.
            
@@ -1294,10 +1483,61 @@
            MOVE WS-SUBTOTAL      TO PL-ADD3.
            IF WS-INVCRED = "P"
               COMPUTE WS-INVOICETOTAL = WS-SUBTOTAL + WS-TAXAMT.
+           MOVE "ZAR"            TO PL-CURRENCY.
            MOVE WS-INVOICETOTAL  TO PL-ADD4.
            WRITE LASER-REC        FROM LASERPL-ADDLINE.
        LP-036.
            MOVE " " TO LASERPL-ADDLINE LASER-REC.
+           
+      * TO DETERMINE WHAT HEADING FOR THE DOCUMENT TO PRINT SEE BELOW:
+      * WS-PROG-TYPE: 1=INVOICE ONLY
+      *               2=D/NOTES ONLY
+      *               3=INVOICE & D/NOTES
+      *               4=CREDIT NOTES
+      
+      *PRINT INVOICE / C/NOTE ONLY
+           IF WS-PROG-TYPE = 1 OR = 4
+               GO TO LP-999.
+               
+      *PRINT DELIVERY NOTES ONLY
+           IF WS-PROG-TYPE = 2
+            IF WS-TYPE-OF-DOCUMENT = 2
+               MOVE 3 TO WS-TYPE-OF-DOCUMENT
+               CLOSE STOCK-TRANSLY-FILE
+               PERFORM OPEN-005
+               
+      *         MOVE "GOING FOR THE 2ND RUN" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               MOVE WS-INVOICE TO INCR-LY-INVOICE
+               MOVE 1          TO INCR-LY-TRANS
+      *          WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+           
+      *         MOVE 1 TO STTR-REFERENCE1
+      *         MOVE 1 TO STTR-TRANSACTION-NUMBER
+           
+      *         START STOCK-TRANS-FILE KEY NOT < STTR-KEY
+      *         MOVE "2ND START ON ST-TRANS FILE" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+               GO TO LP-000.
+               
+           IF WS-PROG-TYPE = 2
+            IF WS-TYPE-OF-DOCUMENT = 3
+               GO TO LP-999.
+               
+      *PRINT INVOICE & DELIVERY NOTES
+           IF WS-PROG-TYPE = 3
+            IF WS-TYPE-OF-DOCUMENT < 3
+               ADD 1 TO WS-TYPE-OF-DOCUMENT
+               CLOSE STOCK-TRANSLY-FILE
+               PERFORM OPEN-005
+               MOVE WS-INVOICE TO INCR-LY-INVOICE
+               MOVE 1          TO INCR-LY-TRANS
+               GO TO LP-000.
+           IF WS-PROG-TYPE = 2 OR = 3
+            IF WS-TYPE-OF-DOCUMENT = 3
+               GO TO LP-999.
        LP-999.
            EXIT.
       *
@@ -2070,7 +2310,16 @@
            "EMail :[                                                  ]"
               AT POS.
               MOVE 3018 TO POS
-           ACCEPT WS-EMAIL-NUMBER AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 50        TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 17        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-EMAIL-NUMBER.
+ 
            IF WS-EMAIL-NUMBER NOT > " "
               PERFORM ERROR1-020
               PERFORM ERROR-020
@@ -2223,7 +2472,12 @@
       *
        END-OFF SECTION.
        END-000.
-      *     STOP RUN.
+           MOVE 2820 TO POS
+           DISPLAY "                                      " AT POS.
+           CLOSE DEBTOR-MASTER
+                 STOCK-TRANSLY-FILE 
+                 INCR-LY-REGISTER
+                 PARAMETER-FILE
            EXIT PROGRAM.
        END-999.
            EXIT.
@@ -2241,6 +2495,11 @@
        Copy "Z1LaserHeadings".
        Copy "Z1EMailHeadings".
        Copy "GetSystemY2KDate".
+       Copy "CTOSCobolAccept".
+       Copy "SetupInvoiceForPDF".
+       Copy "SetupCreditForPDF".
+       Copy "GetUserPrintName".
+       Copy "SendReportToPrinter".
       ******************
       *Mandatory Copies*
       ******************

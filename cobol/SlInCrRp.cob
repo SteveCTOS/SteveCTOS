@@ -816,7 +816,7 @@
             MOVE 6 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
-               GO TO GET-010.
+               GO TO GET-025.
             MOVE 6 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
@@ -2329,7 +2329,16 @@
            "EMail :[                                                  ]"
               AT POS.
               MOVE 3018 TO POS
-           ACCEPT WS-EMAIL-NUMBER AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 50        TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 17        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-EMAIL-NUMBER.
+ 
            IF WS-EMAIL-NUMBER NOT > " "
               PERFORM ERROR1-020
               PERFORM ERROR-020
@@ -2481,7 +2490,6 @@
       *
        END-OFF SECTION.
        END-000.
-      *     STOP RUN.
            MOVE 2820 TO POS
            DISPLAY "                                      " AT POS.
            CLOSE DEBTOR-MASTER
