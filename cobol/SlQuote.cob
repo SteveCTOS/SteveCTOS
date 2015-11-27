@@ -626,7 +626,7 @@
            MOVE 0 TO COPY-CNT
                      WS-PRICETOTAL.
            MOVE " " TO PRINT-REC.
-           PERFORM READ-PARAMETER.               
+           PERFORM READ-PARAMETER.
            IF WS-ANSWER = "1" OR = "2"
                MOVE WS-PRINTER-DOT TO WS-MESSAGE
                PERFORM GET-USER-PRINT-NAME.
@@ -7582,7 +7582,6 @@
        Copy "WriteFieldAmount".
        Copy "WriteField9Mil".
        Copy "WriteFieldAmount1".
-       
        Copy "WriteFieldAmountDis".
        Copy "WriteFieldNumeric".
        Copy "WriteFieldQty".

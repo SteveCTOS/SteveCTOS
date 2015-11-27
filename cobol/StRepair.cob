@@ -3,6 +3,8 @@
        AUTHOR.  CHRISTENSEN.
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
           CRT STATUS IS W-CRTSTATUS.
        SOURCE-COMPUTER. B20.
@@ -145,7 +147,12 @@
        77  WS-REPRINT           PIC X VALUE " ".
        77  WS-ACCEPT            PIC X VALUE " ".
        77  WS-ERR               PIC XXX VALUE " ".
-       01  W-READ-KEY           PIC X.
+       77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
+       77  WS-PRINTER-DOT       PIC X(100) VALUE " ".
+       77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
+       77  WS-PRINTER-FAX       PIC X(100) VALUE " ".
+       01  W-READ-KEY           PIC X(11).
        01  W-CRTSTATUS           PIC 9(4) value 0.
        01  WS-STDESC.
            03  WS-DESC1          PIC X(20) VALUE " ".
@@ -153,41 +160,29 @@
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY        PIC X OCCURS 11.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC 99 COMP-X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1        PIC 99.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
+           03  WS-SALES-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC 9(2) COMP-X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
+           03  WS-INCR-ST1        PIC 99.
        01  WS-SBREP-STATUS.
-           03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC X.
+           03  WS-SBREP-ST1       PIC 99.
        01  WS-FAX-STATUS.
-           03  WS-FAX-ST1     PIC 99.
-      *     03  WS-FAX-ST2     PIC X.
+           03  WS-FAX-ST1         PIC 99.
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1   PIC 99.
-      *     03  WS-STDISC-ST2   PIC X.
+           03  WS-STDISC-ST1      PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1    PIC 99.
-      *     03  WS-TOOLKIT-ST2    PIC X.
+           03  WS-TOOLKIT-ST1     PIC 99.
        01  WS-QUOTE-CHECK.
            03  WS-O-C           PIC X OCCURS 25.
        01  WS-NAME-LENGTH.
@@ -234,6 +229,12 @@
            03  WS-QUOTE-MM      PIC 99.
            03  WS-FIL-Y         PIC X.
            03  WS-QUOTE-YY      PIC 99.
+       01  WSF-MAIL-QUOTE.
+           03  WSF-Q-FIL        PIC X(15) VALUE "/ctools/equote/".
+           03  WSF-QUOTE        PIC X(7).
+       01  WSF-FAX-QUOTE.
+           03  WSF-F-FIL        PIC X(12) VALUE "/ctools/fax/".
+           03  WSF-FAX          PIC X(10).
        01  WS-SP-PRINT.
            03  WS-1ST-11CHAR    PIC X(11).
            03  WS-REST          PIC X(20).
@@ -343,6 +344,29 @@
            03  SPLIT-MN           PIC 99.
            03  SPLIT-MN-FIL       PIC X.
            03  SPLIT-SC           PIC 99.
+       01  WS-HYLA-TO-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-TO-NAME    PIC X(25) VALUE " ".
+       01 WS-HYLA-FROM-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-FROM-NAME  PIC X(25) VALUE " ".
+           03  FILLER             PIC X(28) VALUE " ".
+           03  WS-HYLA-PAGE       PIC Z9 VALUE " ".
+       01  WS-HYLA-TYPE-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-TYPE       PIC X(30) VALUE "*REPAIR QUOTE*".
+           03  WS-HYLA-DATE       PIC X(30) VALUE " ".
+       01  WS-HYLA-COMMENT-LINE.
+           03  FILLER             PIC X(15) VALUE " ".
+           03 WS-HYLA-COMM-DESC   PIC X(23) VALUE
+              "OUR REPAIR REFERENCE #:".
+           03 WS-HYLA-COMMENT     PIC X(17) VALUE " ".
+       01  WS-HYLA-TYPE-LINE2.
+           03  FILLER             PIC X(15) VALUE " ".
+           03  WS-HYLA-TYPE2      PIC X(30) VALUE "*REPAIR QUOTE*".
+       01 WS-HYLA-FROM-LINE2.
+           03  FILLER             PIC X(4) VALUE " ".
+           03  WS-HYLA-PAGE2      PIC Z9 VALUE " ".
        01  HEAD1.
            03  HEAD1-D1               PIC X(19).
            03  HEAD1-NAME             PIC X(40).
@@ -385,6 +409,21 @@
                05  WSW-PRICE              PIC Z(6)9.99 BLANK WHEN ZERO.
                05  FILLER                 PIC X(1).
                05  WSW-DISCOUNT           PIC Z9.99 BLANK WHEN ZERO.
+       01  WSF-STOCK-LINE.
+           03  WSF-STOCKNUMBER        PIC X(15).
+           03  WSF-REMAINDER.
+               05  WSF-INSTOCK        PIC X.
+               05  WSF-DESCRIPTION    PIC X(20).
+               05  WSF-DESCRIPTION2   PIC X(20).
+               05  WSF-QUANTITY       PIC Z(4)9.
+               05  WSF-RAND           PIC X.
+               05  WSF-PRICE          PIC Z(6)9.99.
+               05  FILLER             PIC X(1).
+               05  WSF-DISCOUNT       PIC Z9.99 BLANK WHEN ZERO.
+               05  FILLER             PIC X(8).
+       01  WS-FILE-NAME-FOR-FAX.
+           03  WS-FOLDER-NAME         PIC X(12) VALUE "/ctools/fax/".
+           03  WS-QUOTE-REFERENCE     PIC X(15) VALUE " ".
        01  WS-DATE-LINE.
            03  FILLER                 PIC X(2) VALUE "*".
            03  FILLER                 PIC X(6) VALUE "DATE:".
@@ -397,6 +436,21 @@
            03  FILLER                 PIC X(5) VALUE "PAGE:".
            03  WSD-PAGE               PIC Z9.
            03  FILLER                 PIC X(2) VALUE " *".
+       01  WSF-DATE-LINE.
+           03  H5-1                   PIC XX.
+           03  FILLER                 PIC X(2) VALUE "*".
+           03  FILLER                 PIC X(6) VALUE "DATE:".
+           03  WSF-DATE               PIC X(10).
+           03  FILLER                 PIC X(12) VALUE " ".
+           03  FILLER                 PIC X(22) VALUE
+            "OUR QUOTE REFERENCE#:".
+           03  WSF-QUOTEREF           PIC X(13).
+           03  FILLER                 PIC X(4) VALUE " ".
+           03  FILLER                 PIC X(5) VALUE "PAGE:".
+           03  WSF-PAGE               PIC Z9.
+           03  FILLER                 PIC X(2) VALUE " *".
+           03  FILLER                 PIC X(8).
+           03  H5-2                   PIC X.
        01  WS-SALESMAN-LINE.
            03  WSS-SALES-DESC         PIC X(20).
            03  WSS-SALESMAN           PIC X(30).
@@ -411,6 +465,23 @@
            03  FILLER         PIC X(20) VALUE "Continued to Page #".
            03  W-NEW-PAGE     PIC Z9.
            03  FILLER         PIC X(15).
+       01  WF-UNDERLINE.
+           03  H7-UNDER.
+              05  FILLER         PIC X(61).
+              05  WF-UNDER-DESC  PIC X(11).
+              05  FILLER         PIC X(6).
+           03  FILLER            PIC X(8).
+       01  WF-CONTINUE-LINE.
+           03  H8-1            PIC XX.
+           03  FILLER          PIC X(36).
+           03  FILLER          PIC X(20) VALUE "Continued to Page #".
+           03  WF-NEWF-PAGE    PIC Z9.
+           03  FILLER          PIC X(28).
+           03  H8-2            PIC X.
+       01  WF-COMMENT-LINE.
+           03  H9-1            PIC XX.
+           03  WF-COMMENT-DESC PIC X(86).
+           03  H9-2            PIC X.
        Copy "WsDateInfo".
        Copy "FaxInfo".
       *
@@ -475,6 +546,25 @@
        CONT-999.
            EXIT.
       *
+       REMOVE-SPACES-IN-FAX-NAME SECTION.
+       RSIFN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           MOVE WS-FILE-NAME-FOR-FAX TO ALPHA-RATE.
+           MOVE 1 TO SUB-45.
+       RSIFN-010.
+           IF AL-RATE (SUB-45) NOT = " "
+              ADD 1 TO SUB-45 
+              GO TO RSIFN-010.
+           MOVE "-" TO AL-RATE (SUB-45).
+           ADD 1 TO SUB-45.
+           IF PAGE-CNT = 1 
+              MOVE 1 TO AL-RATE (SUB-45)
+           ELSE 
+              MOVE 2 TO AL-RATE (SUB-45).
+           MOVE ALPHA-RATE TO WS-PRINTER.
+       RSIFN-999.
+           EXIT.
+      *
        WRITE-ROUTINE SECTION.
        PR-005.
            MOVE 1 TO SUB-1 SUB-2
@@ -482,26 +572,30 @@
            MOVE 0 TO COPY-CNT
                      WS-PRICETOTAL.
            MOVE " " TO PRINT-REC.
-           PERFORM READ-PARAMETER
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-               MOVE "[QFax]" TO WS-PRINTER.
-           PERFORM GET-USER-PRINT-NAME.
+           PERFORM READ-PARAMETER.
+           IF WS-ANSWER = "1" OR = "2"
+               MOVE WS-PRINTER-DOT TO WS-MESSAGE
+               PERFORM GET-USER-PRINT-NAME.
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *         MOVE "[QFax]" TO WS-PRINTER.
+      *     PERFORM GET-USER-PRINT-NAME.
+      *     OPEN OUTPUT PRINT-FILE.
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *         WRITE PRINT-REC FROM WS-XQS-LINE (1)
+      *         WRITE PRINT-REC FROM WS-XQS-LINE (2)
+      *         WRITE PRINT-REC FROM WS-XQS-LINE (3)
+      *         WRITE PRINT-REC FROM WS-XQS-LINE (4)
+      *         WRITE PRINT-REC FROM WS-XQS-LINE (5).
            OPEN OUTPUT PRINT-FILE.
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-               WRITE PRINT-REC FROM WS-XQS-LINE (1)
-               WRITE PRINT-REC FROM WS-XQS-LINE (2)
-               WRITE PRINT-REC FROM WS-XQS-LINE (3)
-               WRITE PRINT-REC FROM WS-XQS-LINE (4)
-               WRITE PRINT-REC FROM WS-XQS-LINE (5).
        WR-001.
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-                GO TO WR-001X.
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *          GO TO WR-001X.
            MOVE " " TO WS-STOCK-LINE HEAD1 PRINT-REC
            MOVE ALL "*" TO HEAD1-D1 HEAD1-D2
 
@@ -634,18 +728,18 @@
            WRITE PRINT-REC
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC.
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-               MOVE 3 TO LINE-CNT
-            ELSE
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *         MOVE 3 TO LINE-CNT
+      *      ELSE
                MOVE 7 TO LINE-CNT.
        WR-005.
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-                ADD 10 TO LINE-CNT
-            ELSE
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *          ADD 10 TO LINE-CNT
+      *      ELSE
                 ADD 21 TO LINE-CNT
            MOVE 1 TO SUB-1.
        WR-010.
@@ -681,16 +775,16 @@
            MOVE " " TO WS-STOCK-LINE PRINT-REC.
        WR-020.
            ADD 1 TO SUB-1 LINE-CNT.
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-             IF LINE-CNT > 48
-              ADD 1 TO PAGE-CNT
-              MOVE PAGE-CNT TO W-NEW-PAGE
-              WRITE PRINT-REC FROM W-CONTINUE-LINE
-              MOVE " " TO PRINT-REC
-              WRITE PRINT-REC BEFORE PAGE
-              PERFORM WR-003.
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *       IF LINE-CNT > 48
+      *        ADD 1 TO PAGE-CNT
+      *        MOVE PAGE-CNT TO W-NEW-PAGE
+      *        WRITE PRINT-REC FROM W-CONTINUE-LINE
+      *        MOVE " " TO PRINT-REC
+      *        WRITE PRINT-REC BEFORE PAGE
+      *        PERFORM WR-003.
               
            IF WS-ANSWER = "1" OR = "2" OR = "3" OR = "W"
             IF LINE-CNT > 58
@@ -702,21 +796,25 @@
               PERFORM WR-002 THRU WR-003.
               
            IF SUB-1 > 200
+              MOVE 
+              "200 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
               GO TO WR-500.
            IF B-STOCKNUMBER (SUB-1) = " "
               GO TO WR-500.
            GO TO WR-010.
        WR-500.
-           IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
-             IF LINE-CNT > 32
-              ADD 1 TO PAGE-CNT
-              MOVE PAGE-CNT TO W-NEW-PAGE
-              WRITE PRINT-REC FROM W-CONTINUE-LINE
-              MOVE " " TO PRINT-REC
-              WRITE PRINT-REC BEFORE PAGE
-              PERFORM WR-003.
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *       IF LINE-CNT > 32
+      *        ADD 1 TO PAGE-CNT
+      *        MOVE PAGE-CNT TO W-NEW-PAGE
+      *        WRITE PRINT-REC FROM W-CONTINUE-LINE
+      *        MOVE " " TO PRINT-REC
+      *        WRITE PRINT-REC BEFORE PAGE
+      *        PERFORM WR-003.
               
            IF WS-ANSWER = "1" OR = "2" OR = "3" OR = "W"
             IF LINE-CNT > 52
@@ -841,11 +939,11 @@
       ********************************************
       * FAX-JOBNUMBER IS ONLY FOR EPS TYPE FAXES *
       ********************************************
-           IF FAX-JOBNUMBER NOT = 0
-               MOVE " JOB No#:"      TO WSS-DIS
-               MOVE F-NAMEFIELDJOB   TO WSS-DISCOUNT
-               WRITE PRINT-REC FROM  WS-SALESMAN-LINE
-               MOVE " " TO PRINT-REC WS-SALESMAN-LINE.
+      *     IF FAX-JOBNUMBER NOT = 0
+      *         MOVE " JOB No#:"      TO WSS-DIS
+      *         MOVE F-NAMEFIELDJOB   TO WSS-DISCOUNT
+      *         WRITE PRINT-REC FROM  WS-SALESMAN-LINE
+      *         MOVE " " TO PRINT-REC WS-SALESMAN-LINE.
            ADD  1 TO COPY-CNT
            MOVE 0 TO WS-PRICETOTAL.
            IF WS-ANSWER = "1" OR = "N" OR = "W"
@@ -861,15 +959,476 @@
               MOVE 1 TO PAGE-CNT
               GO TO WR-001.
        WR-700.
+      *     IF Fax-PaNumber = 3
+      *      IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
+      *               AND NOT = "W"
+      *          PERFORM GET-USER-MAIL-NAME
+      *          PERFORM GET-REPORT-Y2K-DATE
+      *          PERFORM PRINT-REPORT-INFO.
+           CLOSE PRINT-FILE.
+           IF WS-ANSWER = "1" OR = "2"
+               PERFORM SEND-REPORT-TO-PRINTER.
+
+      * In the PrintQuote1 shell script:
+      * #1 = WS-CO-NUMBER
+      * #2 = WS-PRINTER-SAVE (THE PRINTER NAME) E.G. MP140
+      * #3 = WS-REFERENCE-NUMBER E.G. Q90555.05.15-1
+       WR-999.
+           EXIT.
+      *
+       WRITE-FAX-ROUTINE SECTION.
+       WR-FAX-000.
+           MOVE 1 TO SUB-1 SUB-2
+                     PAGE-CNT.
+           MOVE 0 TO COPY-CNT
+                     WS-PRICETOTAL.
+           MOVE " " TO PRINT-REC.
+           PERFORM READ-PARAMETER.
+      * Fax-PaNumber = 1 is CTOS Fax SLICE - OLD STYLE
+      * Fax-PaNumber = 2 is Murata CTOS Fax
+      * Fax-PaNumber = 3 is XQS CTOS fax
+      * Fax-PaNumber = 4 is Hylafax Linux Fax
            IF Fax-PaNumber = 3
-            IF WS-ANSWER NOT = "1" AND NOT = "2" AND NOT = "3"
-                     AND NOT = "W"
+               MOVE "[QFax]" TO WS-PRINTER.
+               
+           IF Fax-PaNumber = 4
+               MOVE WS-QUOTEREF TO WS-QUOTE-REFERENCE
+               PERFORM REMOVE-SPACES-IN-FAX-NAME
+               MOVE WS-PRINTER TO WS-PRINTER-PAGE1.
+           
+      *     MOVE "IN WRITE FAX SECTION" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-PRINTER-SAVE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     PERFORM ERROR1-020.
+      *     MOVE WS-PRINTER-FAX TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
+               
+           OPEN OUTPUT PRINT-FILE.
+           IF Fax-PaNumber = 3
+               WRITE PRINT-REC FROM WS-XQS-LINE (1)
+               WRITE PRINT-REC FROM WS-XQS-LINE (2)
+               WRITE PRINT-REC FROM WS-XQS-LINE (3)
+               WRITE PRINT-REC FROM WS-XQS-LINE (4)
+               WRITE PRINT-REC FROM WS-XQS-LINE (5).
+               
+           IF Fax-PaNumber = 4
+               PERFORM GET-REPORT-Y2K-DATE
+               MOVE PBRET          TO WS-REPORT-DATE
+               MOVE WS-REPORT-DATE TO WS-HYLA-DATE
+               MOVE PAGE-CNT       TO WS-HYLA-PAGE
+               
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC AFTER 11
+               WRITE PRINT-REC FROM WS-HYLA-TO-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC FROM WS-HYLA-FROM-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC FROM WS-HYLA-COMMENT-LINE
+               MOVE SPACES TO PRINT-REC
+               WRITE PRINT-REC
+               WRITE PRINT-REC.
+       WRFAX-001.
+           MOVE "POSTAL ADDRESS"   TO HEAD3-ADD
+           MOVE "DELIVERY ADDRESS" TO HEAD3-DEL
+           WRITE PRINT-REC FROM HEAD3
+           MOVE " "                TO HEAD3 PRINT-REC.
+
+           MOVE "ACCOUNT #:"      TO HEAD3-ACC
+           MOVE WS-ACCOUNT-NUMBER TO HEAD3-NUMBER
+           WRITE PRINT-REC FROM HEAD3
+           MOVE " "               TO HEAD3 PRINT-REC.
+
+           MOVE WS-NAME     TO HEAD3-ADD
+           MOVE WS-DELADD1  TO HEAD3-DEL
+           WRITE PRINT-REC FROM HEAD3
+           MOVE " "         TO HEAD3 PRINT-REC.
+
+           MOVE WS-ADD1     TO HEAD3-ADD
+           MOVE WS-DELADD2  TO HEAD3-DEL
+           WRITE PRINT-REC FROM HEAD3
+           MOVE " "         TO HEAD3 PRINT-REC.
+
+           MOVE WS-ADD2     TO HEAD3-ADD
+           MOVE WS-DELADD3  TO HEAD3-DEL
+           WRITE PRINT-REC FROM HEAD3
+           MOVE " "         TO HEAD3 PRINT-REC.
+
+           IF WS-ADD3 NOT = " "
+               MOVE WS-ADD3     TO HEAD3-ADD
+               WRITE PRINT-REC FROM HEAD3
+               MOVE " "         TO HEAD3 PRINT-REC.
+
+           MOVE WS-POSTCODE TO HEAD3-ADD
+           WRITE PRINT-REC FROM HEAD3
+           MOVE " "         TO HEAD3 PRINT-REC.
+ 
+           MOVE "TELEPHONE NUMBER    :" TO HEAD2-PH-REQU
+           MOVE WS-PHONE                TO HEAD2-DEL
+           WRITE PRINT-REC FROM HEAD2
+           MOVE " "                     TO PRINT-REC HEAD2.
+
+           MOVE "TENDER/QUOTE REQUEST:" TO HEAD2-PH-REQU
+           MOVE WS-POORDERNO            TO HEAD2-DEL
+           WRITE PRINT-REC FROM HEAD2
+           MOVE " "                     TO PRINT-REC HEAD2.
+
+           MOVE "CUSTOMER FAX NUMBER :" TO HEAD2-PH-REQU
+           MOVE WS-FAX-NUMBER           TO HEAD2-DEL
+           WRITE PRINT-REC FROM HEAD2
+           MOVE " "                     TO PRINT-REC HEAD2.
+       WRFAX-003.
+           MOVE
+           "STOCKNUMBER     DESCRIPTION                          " &
+           "     QTY LIST PRICE DISC%" TO PRINT-REC
+           WRITE PRINT-REC
+           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC.
+           MOVE 14 TO LINE-CNT.
+       WRFAX-005.
+           ADD 17 TO LINE-CNT
+           MOVE 1 TO SUB-1.
+       WRFAX-010.
+           MOVE B-STOCKNUMBER (SUB-1) TO SPLIT-STOCK.
+           IF SP-1STCHAR = "*"
+              MOVE " "                   TO PRINT-REC WSF-STOCK-LINE
+              MOVE B-STOCKNUMBER (SUB-1) TO WSF-STOCKNUMBER
+              MOVE C-LINE (SUB-1)        TO WSF-REMAINDER
+              GO TO WRFAX-015.
+           IF WS-NEWORDER = "N"
+            IF SP-1STCHAR NOT = "/"
+              MOVE B-STOCKNUMBER (SUB-1)    TO ST-STOCKNUMBER
+              PERFORM CHECK-STOCK
+            IF B-ORDERQTY (SUB-1) NOT > ST-QTYONHAND
+                 MOVE "*"                   TO B-INSTOCK (SUB-1).
+           MOVE B-STOCKNUMBER (SUB-1)       TO WSF-STOCKNUMBER
+           MOVE B-INSTOCK (SUB-1)           TO WSF-INSTOCK
+           MOVE B-STOCKDESCRIPTION (SUB-1)  TO WSF-DESCRIPTION
+           MOVE B-STOCKDESCRIPTION2 (SUB-1) TO WSF-DESCRIPTION2
+           MOVE B-ORDERQTY (SUB-1)          TO WSF-QUANTITY
+           MOVE B-STOCKPRICE (SUB-1)        TO WSF-PRICE
+           MOVE B-DISCOUNTPERITEM (SUB-1)   TO WSF-DISCOUNT
+              
+           ADD B-NETT (SUB-1)               TO WS-PRICETOTAL.
+       WRFAX-015.
+           WRITE PRINT-REC FROM WSF-STOCK-LINE
+           MOVE " " TO PRINT-REC WSF-STOCK-LINE.
+        WRFAX-020.
+           ADD 1 TO SUB-1 LINE-CNT.
+           IF Fax-PaNumber = 3
+            IF LINE-CNT > 48
+              ADD 1 TO PAGE-CNT
+              MOVE PAGE-CNT TO WF-NEWF-PAGE
+              WRITE PRINT-REC FROM WF-CONTINUE-LINE
+              MOVE " " TO PRINT-REC
+              WRITE PRINT-REC BEFORE PAGE
+              GO TO WRFAX-003.
+           IF Fax-PaNumber = 4
+            IF LINE-CNT > 50
+               ADD 1 TO PAGE-CNT
+               MOVE PAGE-CNT TO WF-NEWF-PAGE
+               WRITE PRINT-REC FROM WF-CONTINUE-LINE
+               MOVE " " TO PRINT-REC
+             IF PAGE-CNT = 2
+                 CLOSE PRINT-FILE
+                 PERFORM REMOVE-SPACES-IN-FAX-NAME
+                 MOVE WS-PRINTER TO WS-PRINTER-PAGE2
+                 OPEN OUTPUT PRINT-FILE
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT       TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 PERFORM WRFAX-003
+             ELSE
+                 MOVE " " TO PRINT-REC
+                 WRITE PRINT-REC BEFORE PAGE
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 PERFORM WRFAX-003.
+              
+           IF SUB-1 > 200
+              MOVE 
+              "200 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+              GO TO WRFAX-500.
+           IF B-STOCKNUMBER (SUB-1) = " "
+              GO TO WRFAX-500.
+           GO TO WRFAX-010.
+       WRFAX-500.
+           IF Fax-PaNumber = 3
+            IF LINE-CNT > 32
+              ADD 1 TO PAGE-CNT
+              MOVE PAGE-CNT TO WF-NEWF-PAGE
+              WRITE PRINT-REC FROM WF-CONTINUE-LINE
+              MOVE " " TO PRINT-REC
+              WRITE PRINT-REC BEFORE PAGE.
+           IF Fax-PaNumber = 4
+            IF LINE-CNT > 45
+               ADD 1 TO PAGE-CNT
+               MOVE PAGE-CNT TO WF-NEWF-PAGE
+               WRITE PRINT-REC FROM WF-CONTINUE-LINE
+               MOVE " " TO PRINT-REC
+             IF PAGE-CNT = 2
+                 PERFORM REMOVE-SPACES-IN-FAX-NAME
+                 OPEN OUTPUT PRINT-FILE
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 PERFORM WRFAX-003
+             ELSE
+                 MOVE " " TO PRINT-REC
+                 WRITE PRINT-REC BEFORE PAGE
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC AFTER 2
+                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC.
+              
+           MOVE " " TO WS-STOCK-LINE PRINT-REC
+           WRITE PRINT-REC
+           MOVE WS-COMMENTLINE TO PRINT-REC
+           WRITE PRINT-REC.
+           IF WS-COMMENT1 > " "
+              MOVE WS-COMMENT1 TO PRINT-REC
+              WRITE PRINT-REC.
+           IF WS-COMMENT2 > " "
+              MOVE WS-COMMENT2 TO PRINT-REC
+              WRITE PRINT-REC.
+           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC.
+           IF WS-PRINT-TOTALS = "N"
+              MOVE 1 TO SUB-1
+              GO TO WRFAX-600.
+       WRFAX-550.
+           MOVE "      *GROSS QUOTE T" TO WSF-DESCRIPTION
+           MOVE "OTAL EXCLUDING VAT *" TO WSF-DESCRIPTION2
+           COMPUTE WS-WORKTOTAL = WS-SUBTOTAL + WS-DISCOUNTREG
+           MOVE WS-WORKTOTAL           TO WSF-PRICE
+           MOVE "R"                    TO WSF-RAND
+           WRITE PRINT-REC FROM WSF-STOCK-LINE
+
+           MOVE "      ***** LESS TOT" TO WSF-DESCRIPTION
+           MOVE "AL DISCOUNT AMOUNT *" TO WSF-DESCRIPTION2
+           MOVE WS-DISCOUNTREG         TO WSF-PRICE
+           MOVE "R"                    TO WSF-RAND
+           WRITE PRINT-REC FROM WSF-STOCK-LINE
+           MOVE " "                    TO WF-UNDERLINE
+           MOVE ALL "-"                TO WF-UNDER-DESC
+           WRITE PRINT-REC FROM WF-UNDERLINE
+           
+           MOVE "      * NETT QUOTE T" TO WSF-DESCRIPTION
+           MOVE "OTAL EXCLUDING VAT *" TO WSF-DESCRIPTION2
+           MOVE WS-SUBTOTAL            TO WSF-PRICE
+           MOVE "R"                    TO WSF-RAND
+           WRITE PRINT-REC FROM WSF-STOCK-LINE.
+           
+           IF WS-MISCADDON > 0
+               MOVE "      ************MI" TO WSF-DESCRIPTION
+               MOVE "SCELLANEOUS ADD ON *" TO WSF-DESCRIPTION2
+               MOVE WS-MISCADDON           TO WSF-PRICE
+               MOVE "R"                    TO WSF-RAND
+               WRITE PRINT-REC FROM WSF-STOCK-LINE.
+           
+           IF WS-POSTADDON > 0
+               MOVE "      **************" TO WSF-DESCRIPTION
+               MOVE "**POST & PACKAGING *" TO WSF-DESCRIPTION2
+               MOVE WS-POSTADDON           TO WSF-PRICE
+               MOVE "R"                    TO WSF-RAND
+               WRITE PRINT-REC FROM WSF-STOCK-LINE.
+           
+           IF WS-HANDADDON > 0
+               MOVE "      **************" TO WSF-DESCRIPTION
+               MOVE "******LABOUR ADDON *" TO WSF-DESCRIPTION2
+               MOVE WS-HANDADDON           TO WSF-PRICE
+               MOVE "R"                    TO WSF-RAND
+               WRITE PRINT-REC FROM WSF-STOCK-LINE.
+           
+           IF WS-ADDONFREIGHT > 0
+               MOVE "      **************" TO WSF-DESCRIPTION
+               MOVE "***FREIGHT CHARGES *" TO WSF-DESCRIPTION2
+               MOVE WS-ADDONFREIGHT        TO WSF-PRICE
+               MOVE "R"                    TO WSF-RAND
+               WRITE PRINT-REC FROM WSF-STOCK-LINE.
+           
+            MOVE " " TO WS-STOCK-LINE PRINT-REC
+            MOVE "      **************" TO WSF-DESCRIPTION
+            MOVE "PLUS V.A.T. AMOUNT *" TO WSF-DESCRIPTION2
+            MOVE WS-TAXAMT              TO WSF-PRICE
+            MOVE "R"                    TO WSF-RAND
+            WRITE PRINT-REC FROM WSF-STOCK-LINE.
+           
+            MOVE " "                    TO WF-UNDERLINE
+            MOVE ALL "-"                TO WF-UNDER-DESC
+            WRITE PRINT-REC FROM WF-UNDERLINE.
+               
+            MOVE " " TO WS-STOCK-LINE PRINT-REC
+            MOVE "      **************" TO WSF-DESCRIPTION
+            MOVE "TOTAL QUOTE AMOUNT *" TO WSF-DESCRIPTION2
+            MOVE WS-INVOICETOTAL        TO WSF-PRICE
+            MOVE "R"                    TO WSF-RAND
+            WRITE PRINT-REC FROM WSF-STOCK-LINE.
+            
+            MOVE " "                    TO WF-UNDERLINE
+            MOVE ALL "="                TO WF-UNDER-DESC
+            WRITE PRINT-REC FROM WF-UNDERLINE.
+
+           MOVE " " TO WS-STOCK-LINE WSF-STOCK-LINE PRINT-REC
+           WRITE PRINT-REC.
+           MOVE 1 TO SUB-1.
+       WRFAX-600.
+           IF WS-QUOTE-TERM (SUB-1) = " "
+              GO TO WRFAX-605.
+           MOVE WS-QUOTE-TERM (SUB-1) TO PRINT-REC
+           WRITE PRINT-REC.
+           IF SUB-1 < 10
+             ADD 1 TO SUB-1
+             GO TO WRFAX-600.
+           MOVE 1 TO SUB-1.
+       WRFAX-605.
+           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC.
+           IF WS-PRINT-SUF-COMMENT = "Y"
+              MOVE
+              "'*' IN FRONT OF DESCRIPTION = SUFFICIENT STOCK ON HAND"
+              TO PRINT-REC
+              WRITE PRINT-REC
+              MOVE
+              "    AT PRESENT TO FULFILL QUOTE, SUBJECT TO PRIOR SALE."
+              TO PRINT-REC
+              WRITE PRINT-REC
+              MOVE " " TO PRINT-REC.
+           WRITE PRINT-REC
+           MOVE "REPAIR RECV'D BY :" TO WSS-SALES-DESC
+           MOVE WS-SALESMAN          TO WSS-SALESMAN
+           WRITE PRINT-REC FROM WS-SALESMAN-LINE
+           MOVE " " TO PRINT-REC WS-SALESMAN-LINE
+           WRITE PRINT-REC.
+      *********************************************************
+      * FAX-JOBNUMBER IS ONLY FOR EPS TYPE FAXES - CODE 1 & 2 *
+      *********************************************************
+           IF FAX-JOBNUMBER NOT = 0
+               MOVE " JOB No#:"      TO WSS-DIS
+               MOVE F-NAMEFIELDJOB   TO WSS-DISCOUNT
+               WRITE PRINT-REC FROM  WS-SALESMAN-LINE
+               MOVE " " TO PRINT-REC WS-SALESMAN-LINE.
+           ADD  1 TO COPY-CNT
+           MOVE 0 TO WS-PRICETOTAL.
+       WRFAX-700.
+           IF Fax-PaNumber = 3 OR = 4
                 PERFORM GET-USER-MAIL-NAME
                 PERFORM GET-REPORT-Y2K-DATE
                 PERFORM PRINT-REPORT-INFO.
+
            CLOSE PRINT-FILE.
-           PERFORM SEND-REPORT-TO-PRINTER.
-       WR-999.
+
+      * In the PrintQuote1 shell script:
+      * #1 = WS-CO-NUMBER
+      * #2 = WS-PRINTER-SAVE (THE PRINTER NAME) E.G. MP140
+      * #3 = WS-REFERENCE-NUMBER E.G. Q90555.05.15-1
+
+           IF Fax-PaNumber = 4
+            IF PAGE-CNT = 1
+                 PERFORM WORK-OUT-PDF-FILE-NAMES
+                 MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
+                 PERFORM FIND-PDF-TYPE-PRINTER
+                 PERFORM SETUP-QUOTE-FOR-PDF
+            ELSE
+                 PERFORM WORK-OUT-PDF-FILE-NAMES
+                 MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
+                 PERFORM FIND-PDF-TYPE-PRINTER
+                 PERFORM SETUP-QUOTE-FOR-PDF
+                 MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
+                 PERFORM SETUP-QUOTE2-FOR-PDF
+                 PERFORM SETUP-MERGE-QUOTE-FOR-PDF.
+       WRFAX-999.
+           EXIT.
+      *
+       FIND-PDF-TYPE-PRINTER SECTION.
+       FPTP-040.
+           MOVE 1 TO SUB-45.
+       FPTP-045.
+           IF WS-PRINTERNAME (SUB-45) = " "
+              MOVE 
+           "NO PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO FPTP-999.
+           IF WS-PRINTERNUMBER (SUB-45) = 15
+               MOVE WS-PRINTERNAME (SUB-45)  TO WS-PRINTER-SAVE
+                                                WS-PRINTER-PDF
+               GO TO FPTP-999.
+           IF SUB-45 < 25
+             ADD 1 TO SUB-45
+             GO TO FPTP-045.
+           MOVE 
+           "CAN'T FIND A PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+             TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       FPTP-999.
+            EXIT.           
+      *
+       WORK-OUT-PDF-FILE-NAMES SECTION.
+       WOPFN-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+           MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 1  TO SUB-46.
+       WOPFN-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-010.
+           MOVE DATA-RATE TO WS-PRINTER-PAGE1.
+           
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE
+           MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 1  TO SUB-46.
+       WOPFN-015.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-015.
+           MOVE DATA-RATE        TO WS-PRINTER-PAGE2.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       WOPFN-999.
            EXIT.
       *
        CHANGE-PORDER SECTION.
@@ -1063,13 +1622,13 @@
                 PERFORM ERROR1-020
                 PERFORM FIND-INFO
                 GO TO GET-150.
-           IF F-EXIT-CH = X"19" OR = X"9B"
+           IF F-EXIT-CH = X"19" OR = X"9B" OR = X"C7"
             IF WS-NEWORDER = "P"
                 MOVE "AN ORDER WITH THIS REF. HAS BEEN ENTERED ALREADY."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO GET-010.
-           IF F-EXIT-CH = X"19" OR = X"9B"
+           IF F-EXIT-CH = X"19" OR = X"9B" OR = X"C7"
             IF WS-NEWORDER = "Y"
                 MOVE "REPAIR NOT FOUND IN THE SYSTEM, CAN'T DISPLAY."
                 TO WS-MESSAGE
@@ -2011,7 +2570,7 @@
            MOVE 6            TO F-CBFIELDLENGTH.
            PERFORM WRITE-FIELD-NUMERIC.
 
-           MOVE WS-QUOTATION TO WS-QUOTEREF.
+           MOVE WS-QUOTATION TO WS-QUOTEREF WSF-QUOTEREF.
            MOVE "Y" TO WS-BELOW-BODY.
        FINAL-ENTRY-056.
             PERFORM CLEAR-010.
@@ -2306,6 +2865,24 @@
               PERFORM WRITE-ROUTINE
               PERFORM ERROR1-020
               GO TO FINAL-ENTRY-950.
+      *******************************************
+      *fax routine for Linux Hylfax FAX SYSTEM **
+      *******************************************
+           MOVE 3010 TO POS.
+          IF Fax-PaNumber = 4
+           IF WS-ANSWER NOT = "W"
+              DISPLAY "SENDING QUOTE BY HylaFax......         " AT POS.
+           IF Fax-PaNumber = 4
+              PERFORM ERROR1-020
+              MOVE 2910 TO POS
+              DISPLAY "GETTING HYLAFAX DETAILS...." AT POS
+              PERFORM ENTER-XQS-DETAILS
+              PERFORM ERROR1-020
+              MOVE 2910 TO POS
+              DISPLAY "PERFORMING WRITE-ROUTINE..." AT POS
+              PERFORM WRITE-FAX-ROUTINE
+              PERFORM ERROR1-020
+              GO TO FINAL-ENTRY-950.
       **************************************************************
       *fax routine for MURATA SYSTEM & WRITE TO <FX> FOR WORD-PRO **
       **************************************************************
@@ -2410,7 +2987,7 @@
                 GO TO FILL-010.
 
       *<CODE-GO> = INSERT THE FOLLOWING MESSAGE
-           IF F-EXIT-CH = X"9B"
+           IF F-EXIT-CH = X"9B" OR = X"C7"
             IF WS-REPAIR-ITEM = "P"
                 MOVE "*** ITEMS SENT "     TO B-STOCKNUMBER (SUB-1)
                 MOVE "IN FOR REPAIR ***"   TO C-LINE (SUB-1)
@@ -2422,7 +2999,7 @@
                 PERFORM SCROLL-COMMENT
                 ADD 1 TO SUB-1 F-INDEX
                 GO TO FILL-005.
-           IF F-EXIT-CH = X"9B"
+           IF F-EXIT-CH = X"9B" OR = "C7"
             IF WS-REPAIR-ITEM = "R"
                 MOVE "*** ITEMS USED "      TO B-STOCKNUMBER (SUB-1)
                 MOVE "TO DO THE REPAIR ***" TO C-LINE (SUB-1)
@@ -2701,7 +3278,7 @@
       * NEW SECTION TO CALL UP TOOLKIT LIST AND QUOTE. <CODE-GO>*
       * IN LINUX = <ALT-G>
       ***********************************************************
-            IF F-EXIT-CH = X"9B"
+            IF F-EXIT-CH = X"9B" OR = X"C7"
              IF SP-1STCHAR NOT = "/"
                 MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER
                                               WS-TOOLKIT-NUMBER
@@ -3647,12 +4224,13 @@
            PERFORM GET-USER-MAIL-NAME.
            MOVE WS-pbValue TO WS-XQS-SNAME
                               WS-XQS-ENAME
-                              WS-XQS-FROM-NAME.
+                              WS-XQS-FROM-NAME
+                              WS-HYLA-FROM-NAME.
        XQS-001.
            MOVE " "           TO ALPHA-RATE WS-FAX-CHECK
            MOVE WS-XQS-BEG    TO ALPHA-RATE
            MOVE 10            TO SUB-1
-           MOVE WS-CONTACT    TO WS-FAX-CHECK
+           MOVE WS-CONTACT    TO WS-FAX-CHECK WS-HYLA-TO-NAME
            MOVE 40            TO SUB-2.
        XQS-002.
            IF WS-F-C (SUB-2) = " "
@@ -6205,6 +6783,9 @@
        Copy "PrintReportInfo".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
+       Copy "SetupQuoteForPDF".
+       Copy "SetupQuote2ForPDF".
+       Copy "SetupMergeQuoteForPDF".
       *
       ******************
       *Mandatory Copies*
