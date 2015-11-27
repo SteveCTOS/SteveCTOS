@@ -380,6 +380,8 @@
            PERFORM GET-DATA
            PERFORM READ-COMM-FILE
            PERFORM READ-PARAMETER.
+           MOVE 2820 TO POS
+           DISPLAY "PRINTING IN PROGRESS......." AT POS.
        CONT-030.
            MOVE 1 TO SUB-1.
            MOVE " " TO WS-MESSAGE.
@@ -655,6 +657,11 @@
               PERFORM LASER-PRINT-INVOICE.
            IF WS-PRINT-NUM = 5
               PERFORM EMAIL-PRINT-INVOICE.
+
+           IF WS-PROG-TYPE = 3
+               MOVE 1 TO WS-TYPE-OF-DOCUMENT.
+           IF WS-PROG-TYPE = 2
+               MOVE 2 TO WS-TYPE-OF-DOCUMENT.
            
            GO TO RD-010.
        RD-999.
@@ -2475,6 +2482,8 @@
        END-OFF SECTION.
        END-000.
       *     STOP RUN.
+           MOVE 2820 TO POS
+           DISPLAY "                                      " AT POS.
            CLOSE DEBTOR-MASTER
                  STOCK-TRANS-FILE 
                  INCR-REGISTER
