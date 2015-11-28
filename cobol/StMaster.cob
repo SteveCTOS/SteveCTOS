@@ -31,17 +31,13 @@
        77  WS-OLDPRICE        PIC 9(6)V99.
        77  WS-QUES-MU-GP-PERC PIC X VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1   PIC 99.
-      *     03  WS-STCHANGE-ST2   PIC X.
+           03  WS-STCHANGE-ST1     PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC 9(2) COMP-X.
+           03  WS-TOOLKIT-ST1      PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -3566,7 +3562,7 @@
            READ TOOLKITS NEXT WITH LOCK
                AT END NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 = 10
-               GO TO DT-999.
+               GO TO DT-900.
            IF WS-TOOLKIT-ST1 NOT = 0
                MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "TOOLKITS BUSY ON READ-DELETE, 'ESC' TO RETRY."
@@ -3575,7 +3571,7 @@
                GO TO DT-020.
            IF TO-TOOLKIT-NUMBER = WS-STOCKNUMBER
                GO TO DT-050.
-           GO TO DT-999.
+           GO TO DT-900.
        DT-050.
            DELETE TOOLKITS
                INVALID KEY NEXT SENTENCE.
@@ -3588,6 +3584,9 @@
                PERFORM ERROR-MESSAGE
                GO TO DT-050.
            GO TO DT-020.
+       DT-900.
+           MOVE 2910 TO POS
+           DISPLAY "                                        " AT POS.
        DT-999.
            EXIT.
       *

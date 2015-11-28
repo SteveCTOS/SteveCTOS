@@ -8,12 +8,14 @@
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
           Copy "SelectStMaster".
+          Copy "SelectStMasterAlpha".
           Copy "SelectStChanges".
           Copy "SelectSlParameter".
       *
         DATA DIVISION.
         FILE SECTION.
            COPY ChlfdStock.
+           COPY ChlfdStockAlpha.
            COPY ChlfdStockChanges.
            COPY ChlfdParam.
       *
@@ -32,13 +34,10 @@
        77  WS-NUMERIC-DISPLAY   PIC Z(7)9.999.
        01  WS-STOCK-STATUS.
            03  WS-ST-ST1            PIC 99.
-      *     03  WS-ST-ST2            PIC X.
        01  WS-STCHANGE-STATUS.
            03  WS-STCHANGE-ST1      PIC 99.
-      *     03  WS-STCHANGE-ST2      PIC X.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1   PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -52,11 +51,9 @@
            DISPLAY "** STOCK FIELD CHANGE PROGRAM **" AT POS.
        CONTROL-005.
            MOVE 401 TO POS
-      *     DISPLAY "ÿAF" AT POS.
            ADD 5 TO POS.
            DISPLAY "FIELDS TO CHANGE:" AT POS WITH REVERSE-VIDEO
            ADD 17 TO POS.
-      *     DISPLAY "ÿAA" AT POS.
            MOVE 501 TO POS
            DISPLAY "ST-DESCRIPTION1/DESCRIPTION2" AT POS
            MOVE 601 TO POS
@@ -105,6 +102,8 @@
            DISPLAY "ST-DEL-DELAY" AT POS
            MOVE 2701 TO POS
            DISPLAY "ST-QTYONHAND/ST-QTYONRESERVE" AT POS
+           MOVE 2801 TO POS
+           DISPLAY "ST-FIELDFIX               " AT POS
            MOVE 535 TO POS
            DISPLAY "FROM STOCK NUMBER :[               ]" AT POS
            MOVE 735 TO POS
@@ -125,14 +124,17 @@
            MOVE " " TO WS-BEG-STOCK WS-END-STOCK WS-FIELD WS-NEW-DATA.
        CONTROL-010.
            MOVE " " TO WS-MESSAGE
-           MOVE 2501 TO POS
+      *     MOVE 2501 TO POS
            DISPLAY WS-MESSAGE AT POS.
            PERFORM OPEN-FILES.
            
            MOVE "N" TO WS-CHANGE-FILE.
        CONTROL-015.
            PERFORM GET-DATA.
-           PERFORM PRINT-ROUTINE.
+           IF WS-WHAT-TYPE = "F"
+              PERFORM PRINT-ALPHA-ROUTINE
+           ELSE
+              PERFORM PRINT-ROUTINE.
            MOVE " " TO WS-MESSAGE
            MOVE 2701 TO POS
            DISPLAY WS-MESSAGE AT POS
@@ -154,9 +156,8 @@
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-BEG-STOCK
+           MOVE CDA-DATA TO WS-BEG-STOCK.
 
-      *      ACCEPT WS-BEG-STOCK AT POS.
             IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -179,7 +180,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-END-STOCK.
 
-      *      ACCEPT WS-END-STOCK AT POS.
             IF W-ESCAPE-KEY = 7
                MOVE WS-BEG-STOCK TO WS-END-STOCK
                DISPLAY WS-END-STOCK AT POS
@@ -210,7 +210,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FIELD.
 
-      *      ACCEPT WS-FIELD AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-FIELD = " "
@@ -224,6 +223,9 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-015.
         GET-0155.
+            IF WS-FIELD = "ST-FIELDFIX"
+                MOVE "F" TO WS-WHAT-TYPE
+                GO TO GET-500.
             IF WS-FIELD = "ST-DESCRIPTION1"  OR = "ST-DESCRIPTION2"
                       OR = "ST-CATEGORY"      OR = "ST-SUPPLIER"
                       OR = "ST-UNITOFMEASURE" OR = "ST-BINLOCATION"
@@ -264,7 +266,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FIELD-MUST-MATCH.
 
-      *      ACCEPT WS-FIELD-MUST-MATCH AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-015.
             IF WS-FIELD-MUST-MATCH NOT = "Y" AND NOT = "N"
@@ -293,7 +294,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MATCH-FIELD.
 
-      *      ACCEPT WS-MATCH-FIELD AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-016.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -333,7 +333,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-NEW-DATA.
 
-      *     ACCEPT WS-NEW-DATA AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-016.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -371,7 +370,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHANGE-FILE.
 
-      *     ACCEPT WS-CHANGE-FILE AT POS.
            IF WS-CHANGE-FILE NOT = "N" AND NOT = "Y"
                MOVE "THIS FIELD MUST BE 'N' OR 'Y' RE-ENTER."
                TO WS-MESSAGE
@@ -754,6 +752,145 @@
        PRR-999.
            EXIT.
       *
+       PRINT-ALPHA-ROUTINE SECTION.
+       PRA-000.
+            MOVE WS-BEG-STOCK TO ST-AL-STOCKNUMBER.
+            START STOCK-ALPHA-MASTER KEY NOT < ST-AL-KEY
+               INVALID KEY NEXT SENTENCE.
+       PRA-002.
+            READ STOCK-ALPHA-MASTER NEXT WITH LOCK
+               AT END NEXT SENTENCE.
+            IF WS-ST-ST1 = 10
+               MOVE 0 TO WS-ST-ST1
+               GO TO PRA-999.
+            IF WS-ST-ST1 NOT = 0
+               MOVE "STOCK-FILE BUSY, NUMBER:" TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE 2935 TO POS
+               DISPLAY ST-AL-STOCKNUMBER AT POS
+               MOVE WS-ST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO PRA-002.
+            IF ST-AL-STOCKNUMBER < WS-BEG-STOCK
+               GO TO PRA-002.
+            IF ST-AL-STOCKNUMBER > WS-END-STOCK
+               MOVE ST-STOCKNUMBER TO WS-BEG-STOCK
+               GO TO PRA-999.
+               
+            MOVE 3125 TO POS
+            DISPLAY "StockNumber Being Changed:" AT POS
+            ADD 27 TO POS
+            DISPLAY ST-AL-STOCKNUMBER AT POS.
+            
+            IF WS-MESSAGE NOT = " "
+               PERFORM ERROR-020.
+            MOVE 1701 TO POS
+            DISPLAY WS-MESSAGE AT POS
+            MOVE 1801 TO POS
+            DISPLAY WS-MESSAGE AT POS
+            MOVE 1901 TO POS
+            DISPLAY WS-MESSAGE AT POS
+            MOVE 2001 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+               
+       PRA-025.
+            MOVE 1740 TO POS
+            DISPLAY ST-AL-MINBUYQTY AT POS
+            MOVE 1840 TO POS
+            DISPLAY ST-AL-DEL-DELAY AT POS
+            MOVE 1940 TO POS
+            DISPLAY ST-AL-MAXIMUMLEVEL AT POS
+            MOVE 2040 TO POS
+            DISPLAY ST-AL-QTY-ST-TAKE AT POS
+            MOVE 2140 TO POS
+            DISPLAY ST-AL-QTYRECMTD AT POS
+            MOVE 2240 TO POS
+            DISPLAY ST-AL-QTYRECYTD AT POS.
+            MOVE 2340 TO POS
+            DISPLAY ST-AL-SALESRANDSMTD AT POS
+            MOVE 2440 TO POS
+            DISPLAY ST-AL-SALESRANDSYTD AT POS
+            MOVE 2540 TO POS
+            DISPLAY ST-AL-SALESRANDSLAST AT POS
+            MOVE 2640 TO POS
+            DISPLAY ST-AL-SALESCOSTMTD AT POS
+            MOVE 2740 TO POS
+            DISPLAY ST-AL-SALESCOSTYTD AT POS
+            MOVE 2840 TO POS
+            DISPLAY ST-AL-SALESCOSTLAST AT POS
+       
+            IF ST-AL-MINBUYQTY = " "
+               MOVE "000000" TO ST-AL-MINBUYQTY.
+            IF ST-AL-DEL-DELAY = " "
+               MOVE "00" TO ST-AL-DEL-DELAY.
+            IF ST-AL-MAXIMUMLEVEL = " "
+               MOVE "000000" TO ST-AL-MAXIMUMLEVEL.
+            IF ST-AL-MINIMUMLEVEL = " "
+               MOVE "000000" TO ST-AL-MINIMUMLEVEL.
+            IF ST-AL-QTY-ST-TAKE = " "
+               MOVE "000000" TO ST-AL-QTY-ST-TAKE.
+            IF ST-AL-DATE-CREATED = " "
+               MOVE "000000" TO ST-AL-DATE-CREATED.
+            IF ST-AL-LASTPRICECHANGE = " "
+               MOVE "00000000" TO ST-AL-LASTPRICECHANGE.
+            IF ST-AL-LASTSALEDATE = " "
+               MOVE "00000000" TO ST-AL-LASTSALEDATE.
+            IF ST-AL-LASTRECEIPTDATE = " "
+               MOVE "00000000" TO ST-AL-LASTRECEIPTDATE.
+            IF ST-AL-LASTORDERDATE = " "
+               MOVE "00000000" TO ST-AL-LASTORDERDATE.
+            IF ST-AL-QTYRECMTD = " "
+               MOVE "000000" TO ST-AL-QTYRECMTD.
+            IF ST-AL-QTYRECYTD = " "
+               MOVE "000000" TO ST-AL-QTYRECYTD.
+            IF ST-AL-QTYRECLAST = " "
+               MOVE "000000" TO ST-AL-QTYRECLAST.
+            IF ST-AL-QTYADJMTD = " "
+               MOVE "000000" TO ST-AL-QTYADJMTD.
+            IF ST-AL-QTYADJYTD = " "
+               MOVE "000000" TO ST-AL-QTYADJYTD.
+            IF ST-AL-QTYADJLAST = " "
+               MOVE "000000" TO ST-AL-QTYADJLAST.
+            IF ST-AL-SALESUNITMTD = " "
+               MOVE "000000" TO ST-AL-SALESUNITMTD.
+            IF ST-AL-SALESUNITSYTD = " "
+               MOVE "000000" TO ST-AL-SALESUNITSYTD.
+            IF ST-AL-SALESUNITSLAST = " "
+               MOVE "000000" TO ST-AL-SALESUNITSLAST.
+            IF ST-AL-SALESRANDSMTD = " "
+               MOVE "000000000" TO ST-AL-SALESRANDSMTD.
+            IF ST-AL-SALESRANDSYTD = " "
+               MOVE "000000000" TO ST-AL-SALESRANDSYTD.
+            IF ST-AL-SALESRANDSLAST = " "
+               MOVE "000000000" TO ST-AL-SALESRANDSLAST.
+            IF ST-AL-SALESCOSTMTD = " "
+               MOVE "000000000" TO ST-AL-SALESCOSTMTD.
+            IF ST-AL-SALESCOSTYTD = " "
+               MOVE "000000000" TO ST-AL-SALESCOSTYTD.
+            IF ST-AL-SALESCOSTLAST = " "
+               MOVE "000000000" TO ST-AL-SALESCOSTLAST.
+       PRA-050.
+            REWRITE STOCK-ALPHA-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-ST-ST1 NOT = 0
+                MOVE "STOCK ALPHA RECORD BUSY ON RE-WRITE" TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE ST-AL-STOCKNUMBER TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-ST-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                GO TO PRA-050.
+           PERFORM ERROR-020.
+       PRA-900.
+           IF INVQUES-STOCK-CHANGE = "Y"
+            IF WS-CHANGE-FILE = "Y"
+               PERFORM WRITE-STOCK-CHANGES.
+           GO TO PRA-002.
+       PRA-999.
+           EXIT.
+      *
        READ-INVQUES-FILE SECTION.
        RINVQUES-000.
             MOVE 1 TO PA-RECORD.
@@ -783,6 +920,14 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-000.
+       OPEN-001.
+            OPEN I-O STOCK-ALPHA-MASTER.
+            IF WS-ST-ST1 NOT = 0
+               MOVE 0 TO WS-ST-ST1
+               MOVE "STOCK ALPHA FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO OPEN-001.
        OPEN-005.
             OPEN I-O STOCKCHANGE-MASTER.
             IF WS-STCHANGE-ST1 NOT = 0
@@ -810,6 +955,7 @@
        END-OFF SECTION.
        END-000.
             CLOSE STOCK-MASTER
+                  STOCK-ALPHA-MASTER
                   STOCKCHANGE-MASTER.
        END-900.
             EXIT PROGRAM.
