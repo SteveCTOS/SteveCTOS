@@ -117,7 +117,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -139,7 +138,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 = " "
@@ -171,7 +169,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ALLOC-TO-SUSP.
 
-      *      ACCEPT WS-ALLOC-TO-SUSP AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-ALLOC-TO-SUSP NOT = "A" AND NOT = "N" AND NOT = "P"
@@ -197,7 +194,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ALLOC-TO-BM.
 
-      *      ACCEPT WS-ALLOC-TO-BM AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-ALLOC-TO-BM NOT = "N" AND NOT = "Y"
@@ -344,16 +340,36 @@
             START STOCK2-TRANS-FILE KEY NOT < STTR2-STOCK-NUMBER
                  INVALID KEY NEXT SENTENCE.
             IF WS-BO2-ST1 NOT = 0
+            
+      *      MOVE "BO2 START NOT GOOD" TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+            
                GO TO CPAT-900.
        CPAT-002.
             READ STOCK2-TRANS-FILE NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-BO2-ST1 = 10
+            IF WS-BO2-ST1 = 10 OR = 23
                MOVE 0 TO WS-BO2-ST1
                GO TO CPAT-900.
-            IF WS-BO2-ST1 NOT = 0
+               
+            IF WS-BO2-ST1 NOT = 0 
+            
+      *      MOVE "WS-BO2 NOT 0 ON READNEXT" TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      MOVE WS-BO2-ST1 TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      MOVE STTR2-KEY TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+            
                MOVE 0 TO WS-BO2-ST1
                GO TO CPAT-002.
+               
             IF STTR2-STOCK-NUMBER NOT = ST-STOCKNUMBER
                GO TO CPAT-900.
             IF STTR2-TYPE NOT = 4 AND NOT = 7
@@ -405,6 +421,13 @@
                  
            IF STTR2-SHIPQTY NOT = STTR2-ORDERQTY - STTR2-SHIPPEDQTY
               PERFORM ENTER-UNALLOCATED-NUMBERS.
+
+      *      MOVE "FINISHED ABOVE CPAT-900, GOING TO CPAT-002" 
+      *      TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
 
            GO TO CPAT-002.
        CPAT-900.
