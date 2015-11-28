@@ -15,8 +15,9 @@ cp /ctools/spl/DrLaserCo05 /ctools/orx/drlaserco05
 cp /ctools/orx/sl11 /ctools/spl/orxdrage
 cp /ctools/spl/DBPrintCo05 /ctools/orx/DBPrintCo05
 
-echo Backing up data05 information......
 mkdir /media/ctools/USB/data05
+
+echo The After MonthEnd Backup is Being Run.....
 #cp /ctools/data01/* /media/ctools/USB/data01
 #cp /ctools/data02/* /media/ctools/USB/data02
 #cp /ctools/data03/* /media/ctools/USB/data03

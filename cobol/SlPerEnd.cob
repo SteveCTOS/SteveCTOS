@@ -1520,8 +1520,10 @@
            IF WS-ANSWER1 = "Y"
                PERFORM DELETE-STRANSLY-FILE
                PERFORM OPEN-056.
-           MOVE "Y" TO STTR-COMPLETE.
-           START STOCK-TRANS-FILE KEY NOT < STTR-COMPLETE
+      *     MOVE "Y" TO STTR-COMPLETE.
+      *     START STOCK-TRANS-FILE KEY NOT < STTR-COMPLETE
+           MOVE 0  TO STTR-KEY.
+           START STOCK-TRANS-FILE KEY NOT < STTR-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
                GO TO CST-900.
@@ -1529,18 +1531,28 @@
             READ STOCK-TRANS-FILE NEXT WITH LOCK
                AT END
                GO TO CST-900.
+           IF WS-STTRANS-ST1 = 10 OR = 23
+               GO TO CST-900.
+               
             MOVE 2910 TO POS.
             DISPLAY "St-Trans Being Processed" AT POS.
             ADD 26 TO POS.
             DISPLAY STTR-REFERENCE1 AT POS.
+            ADD 10 TO POS
+            DISPLAY STTR-TYPE AT POS
+            ADD 10 TO POS
+            DISPLAY STTR-COMPLETE AT POS
+            ADD 10 TO POS
+            DISPLAY STTR-DATE AT POS.
+            
+      *      IF STTR-COMPLETE NOT = "Y"
+      *         GO TO CST-900.
             IF WS-STTRANS-ST1 = 91
               MOVE 3010 TO POS
               DISPLAY "WS-STTRANS-ST1 = 9" AT POS
               PERFORM CST-900
               PERFORM CST-005
               GO TO CST-010.
-            IF STTR-COMPLETE NOT = "Y"
-               GO TO CST-900.
        CST-020.
       ******************************************************************
       * FEB 2003.                                                      *
@@ -1559,12 +1571,18 @@
                GO TO CST-010.
            IF WS-ANSWER1 = "Y"
             IF STTR-TYPE = 4
+             IF STTR-COMPLETE = "Y"
                GO TO CST-600.
 
            IF WS-ANSWER1 = "Y"
             IF STTR-TYPE = 1 OR = 6 OR = 7
+             IF STTR-COMPLETE = "Y"
                PERFORM WRITE-STTRANS-LY
-               GO TO CST-800.
+               GO TO CST-800
+           ELSE 
+               GO TO CST-010.
+
+           GO TO CST-010.
        CST-600.
            MOVE STTR-DATE TO WS-PORDER-DATE.   
            COMPUTE WS-WORK-PO-MM = WS-PO-MM + 6.

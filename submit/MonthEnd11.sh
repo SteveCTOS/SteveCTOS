@@ -17,6 +17,8 @@ cp /ctools/spl/DrLaserCo11 /ctools/hky/drlaserco11
 cp /ctools/spl/DBPrintCo11 /ctools/hky/DBPrintCo11
 
 mkdir /media/ctools/USB/data11
+
+echo The After MonthEnd Backup is Being Run.....
 #cp /ctools/data01/* /media/ctools/USB/data01
 #cp /ctools/data02/* /media/ctools/USB/data02
 #cp /ctools/data03/* /media/ctools/USB/data03
