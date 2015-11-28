@@ -1336,7 +1336,7 @@
            IF WS-INCR-ST1 NOT = 0
                GO TO DIR-900.
        DIR-010.
-           READ INCR-REGISTER NEXT WITH LOCK
+           READ INCR-REGISTER NEXT
                AT END
                GO TO DIR-900.
            IF WS-INCR-ST1 = 11 OR = 23
@@ -1345,13 +1345,18 @@
            DISPLAY "Register Being Processed" AT POS.
            ADD 26 TO POS.
            DISPLAY INCR-INVOICE AT POS.
+           ADD 10 TO POS 
+           DISPLAY INCR-PRINTED AT POS.
+           ADD 10 TO POS 
+           DISPLAY INCR-DATE AT POS.
+
+           IF INCR-PRINTED NOT = "Y"
+               GO TO DIR-900.
            IF WS-INCR-ST1 = 91
               PERFORM DIR-900
               PERFORM DIR-005
               PERFORM DIR-006
               GO TO DIR-010.
-           IF INCR-PRINTED NOT = "Y"
-               GO TO DIR-900.
        DIR-020.
       ******************************************************************
       * FEB 2003.                                                      *

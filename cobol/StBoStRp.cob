@@ -161,7 +161,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -183,7 +182,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 = " "
@@ -216,7 +214,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *      ACCEPT WS-RANGE3 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-RANGE3 = " "
