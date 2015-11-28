@@ -39,8 +39,7 @@
        77  WS-REPVALUE          PIC Z(7)9.99.
        77  WS-DATE-ZERO         PIC X VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC X.
-           03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-DATE-ENTER.
            03  WS-YYE           PIC 9999.
            03  WS-MME           PIC 99.
@@ -295,14 +294,15 @@
        PRR-005.
            READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-STOCK-ST1 = 10
+           IF WS-STOCK-ST1 = 10 OR = 23
                PERFORM PRR-025
                GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-STOCK-ST1
               GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
               GO TO PRR-005.

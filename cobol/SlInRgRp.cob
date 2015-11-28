@@ -371,7 +371,7 @@
               PERFORM ERROR-MESSAGE
               GO TO PR-002.
            IF WS-INCR-ST1 NOT = 0
-             MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
+             MOVE "RECORD LOCKED PR AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
@@ -650,13 +650,14 @@
        RBD-003.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
               PERFORM ERROR-020
               MOVE 2210 TO POS
               DISPLAY WS-MESSAGE AT POS
               GO TO RBD-900.
            IF WS-INCR-ST1 NOT = 0
-             MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
+             MOVE 
+           "RECORD LOCKED RBD AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE

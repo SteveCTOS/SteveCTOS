@@ -124,26 +124,19 @@
            03  WS-GRTOT-90DAY       PIC S9(8)V99 VALUE 0.
            03  WS-GRTOT-120DAY      PIC S9(8)V99 VALUE 0.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
+           03  WS-SALES-ST1         PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1          PIC 99.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1           PIC 99.
-      *     03  WS-DISTRIBUTION-ST2           PIC X.
+           03  WS-DISTRIBUTION-ST1  PIC 99.
        01  WS-RANDOM-STATUS.
            03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1   PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC X.
+           03  WS-DRTRANS-ST1       PIC 99.
        01  WEEK-DATE.
            03  WEEK-YY         PIC 9999.
            03  WEEK-MM         PIC 99.
@@ -473,7 +466,8 @@
               PERFORM ERROR-MESSAGE
               GO TO PREG-002.
            IF WS-INCR-ST1 NOT = 0
-             MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
+             MOVE
+           "RECORD PREG LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
@@ -483,6 +477,8 @@
              PERFORM ERROR-010
              PERFORM ERROR1-020
              PERFORM ERROR-020
+             MOVE WS-INCR-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
              GO TO PREG-003.
            MOVE INCR-INVOICE TO D-INVNO.
        PREG-010.
@@ -562,14 +558,15 @@
        RBD-003.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
               PERFORM ERROR-020
               MOVE 2210 TO POS
               DISPLAY WS-MESSAGE AT POS
               PERFORM ERROR-000
               GO TO RBD-900.
            IF WS-INCR-ST1 NOT = 0
-             MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
+             MOVE 
+         "RECORD RBD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
@@ -579,6 +576,8 @@
              PERFORM ERROR-010
              PERFORM ERROR1-020
              PERFORM ERROR-020
+             MOVE WS-INCR-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
              GO TO RBD-003.
            MOVE INCR-INVOICE TO D-INVNO.
            IF INCR-TRANS NOT = 1 AND NOT = 6

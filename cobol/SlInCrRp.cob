@@ -1883,12 +1883,12 @@
        RDUR-055.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-INCR-ST1
-               GO TO RDUR-055.
-           IF WS-INCR-ST1 = 10
+           IF WS-INCR-ST1 = 10 OR = 23
                MOVE "Y" TO WS-COMPLETE
                GO TO RDUR-999.
+           IF WS-INCR-ST1 = 35 OR 49 OR 51
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RDUR-055.
            IF INCR-TRANS NOT = 1 AND NOT = 6
               GO TO RDUR-055.
               
