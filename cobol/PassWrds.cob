@@ -48,6 +48,8 @@
        77  SUB-10                PIC 9(4) VALUE 0.
        77  SUB-30                PIC 9(4) VALUE 0.
        77  SUB-35                PIC 9(4) VALUE 0.
+       77  SUB-40                PIC 9(4) VALUE 0.
+       77  SUB-46                PIC 9(4) VALUE 0.
        77  POS                   PIC 9(4) VALUE 0.
        77  WS-DATA-NAME          PIC X(60) VALUE "CoDataName".
        77  WS-MESSAGE            PIC X(70) VALUE " ".
@@ -607,7 +609,7 @@
                PERFORM ERROR-MESSAGE
                GO TO RC-010.
            ADD 1 TO SUB-4.
-       RC-900.
+          RC-900.
            CLOSE DATA-FILE.
        RC-999.
            EXIT.
@@ -622,7 +624,7 @@
            MOVE WS-VOL-DIR TO ALPHA-RATE.
        CDN-015.
            ADD 1 TO SUB-1.
-           IF SUB-1 NOT > 68
+           IF SUB-1 NOT > 65
             IF AL-RATE (SUB-1) NOT = " "
             GO TO CDN-015.
        CDN-020.
@@ -632,7 +634,7 @@
            MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
            ADD 1 TO SUB-1 SUB-2.
            IF DAT-RATE (SUB-2) NOT = " "
-            IF SUB-1 NOT > 68
+            IF SUB-1 NOT > 65
               GO TO CDN-025.
        CDN-030.
            MOVE ALPHA-RATE TO WS-DATA.
@@ -659,8 +661,8 @@
            MOVE DATA-NAME TO DATA-RATE
            PERFORM CDN-025
            PERFORM CHECK-DATA-NAME-POSITION           
-           PERFORM CDN-031
-
+           PERFORM CDN-031.
+               
            GO TO CDN-040.
        CDN-900.
            PERFORM ERROR-020.

@@ -32,14 +32,14 @@
                 ADD 1 TO SUB-35
                 GO TO CMI-010.
        CMI-020.
-             COMPUTE SUB-5 = SUB-35 / 2.
+             COMPUTE SUB-40 = SUB-35 / 2.
        CMI-030.
-             MOVE 1     TO SUB-30
-             MOVE SUB-5 TO SUB-3.
+             MOVE 1      TO SUB-30
+             MOVE SUB-40 TO SUB-46.
        CMI-035.
-             MOVE MES-AL-RATE (SUB-30) TO MES-DAT-RATE (SUB-3)
-             IF SUB-3 < 79
-                 ADD 1 TO SUB-30 SUB-3
+             MOVE MES-AL-RATE (SUB-30) TO MES-DAT-RATE (SUB-46)
+             IF SUB-46 < 79
+                 ADD 1 TO SUB-30 SUB-46
                  GO TO CMI-035.
        CMI-050.
              MOVE MES-DATA-RATE TO WS-MESSAGE.

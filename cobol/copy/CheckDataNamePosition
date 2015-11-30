@@ -135,5 +135,9 @@
             Move Alpha-Rate to Ws-CrMasterOld.
            If Sub-4 = 67
             Move Alpha-Rate to Ws-CoPrintersRemote.
+           If Sub-4 = 68
+            Move Alpha-Rate to Ws-StTransTemp.
+           If Sub-4 = 69
+            Move Alpha-Rate to Ws-SlRegTemp.
        CDNN-999.
            Exit.

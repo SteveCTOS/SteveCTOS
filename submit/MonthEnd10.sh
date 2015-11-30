@@ -10,7 +10,7 @@ rm /ctools/ps10/*
 cd /ctools/bin
 
 cp /ctools/spl/DrStateCo10 /ctools/qtm/drstateco10
-cp /ctools/spl/DrLaserCo10 /ctools/qtm/drlaserco10
+cp /ctools/spl/ctoolsDrLaserCo10 /ctools/qtm/drlaserco10
 #cp /ctools/spl/drnomalco10 /ctools/qtm/drnomalco10
 #cp /ctools/spl/dremailco10 /ctools/qtm/dremailco10
 #cp /ctools/qtm/sl11 /ctools/spl/qtmdrage
