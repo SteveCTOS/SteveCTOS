@@ -32,6 +32,8 @@ cp -a /ctools/data12/* /media/ctools/USB/data12
 #rm *-*
 #rm /ctools/spl/*
 #cd /ctools/bin
+
+echo Removing Spl and Lock files.....
 rm /ctools/lock/*
 rm /ctools/spl/*
 
