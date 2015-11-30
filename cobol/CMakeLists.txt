@@ -107,7 +107,7 @@ set (sales_list
   SlPSlpIq SlPsPuMt SlPuByMt SlPuByRp SlQuAcIq SlQuRgRp SlQuote  SlQuStIq
   SlRgAcRp SlRgName SlRgNaIq SlRgNaMy SlRgNaLy SlRgLyMt SlRgChLy SlRgAcLy
   SlRgChMt SlSBChMt SlSaleRp SlSManRp SlSoByMt SlSoByRp SlSpecRp SlSRepMt
-  SlTermMt
+  SlTermMt SlRegisterMv
 )
 
 set (stock_list 
@@ -128,9 +128,9 @@ set (stock_list
 #foreach (name ${company_list})
 # cobol_module(${name})
 #endforeach()
-#foreach (name ${menu_list})
-#  cobol_module(${name})
-#endforeach()
+foreach (name ${menu_list})
+  cobol_module(${name})
+endforeach()
 #foreach (name ${billofmaterial_list})
 # cobol_module(${name})
 #endforeach()
@@ -149,6 +149,6 @@ set (stock_list
 foreach (name ${sales_list})
  cobol_module(${name})
 endforeach()
-#foreach (name ${stock_list})
-# cobol_module(${name})
-#endforeach()
+foreach (name ${stock_list})
+ cobol_module(${name})
+endforeach()
