@@ -33,7 +33,7 @@ set (copy_list
   MonthEnd.Sub06
   MonthEnd.Sub07
   MonthEnd2.Sub07
-  MonthEnd.Sub08
+  MonthEnd.Sub08 
   MonthEnd2.Sub08
   MonthEnd.Sub09
   MonthEnd2.Sub09

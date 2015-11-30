@@ -48,14 +48,11 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC 9(2) COMP-X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1    PIC 99.
-      *     03  WS-INCR-LY-ST2    PIC 9(2) COMP-X.
+           03  WS-INCR-LY-ST1   PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC 9(2) COMP-X.
        01  WS-ACCOUNT-CHECK.
            03  WS-1ST-3      PIC 9(3).
            03  WS-LAST-4     PIC 9(4).
@@ -465,6 +462,8 @@
        RDTR-010.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
+           IF WS-INCR-ST1 = 10 OR = 23
+               GO TO RDTR-999.
            IF WS-NEWINPUT = "Y"
                PERFORM CLEAR-TRANSACTIONS
                MOVE " " TO F-EXIT-CH

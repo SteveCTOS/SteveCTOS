@@ -38,7 +38,7 @@ function (cobol_module name)
 endfunction()
 
 set (executable_list 
-  MainCont TestMenu TestStuff 
+  MainCont TestMenu TestStuff
 )
 
 foreach (name ${executable_list})
@@ -123,7 +123,9 @@ set (stock_list
   StQyChRp  StReDtRp  StReduRp  StReImMt  StReImRp  StReLoIq  StReLoMt
   StReLoRp  StRepair  StRpAcIq  StRpRgRp  StRpStIq  StSGmRp   StSplit   StStQyMt
   StTariRp  StTranLy  StTrans   StTrChMt  StTrDuMt  StTrDuRp  StValuRp
+  StTransMv
 )
+<<<<<<< HEAD
 foreach (name ${company_list})
  cobol_module(${name})
 endforeach()
@@ -145,6 +147,29 @@ endforeach()
 foreach (name ${general_list})
   cobol_module(${name})
 endforeach()
+=======
+#foreach (name ${company_list})
+# cobol_module(${name})
+#endforeach()
+#foreach (name ${menu_list})
+#  cobol_module(${name})
+#endforeach()
+#foreach (name ${billofmaterial_list})
+#  cobol_module(${name})
+#endforeach()
+#foreach (name ${cashbook_list})
+#  cobol_module(${name})
+#endforeach()
+#foreach (name ${creditors_list})
+#  cobol_module(${name})
+#endforeach()
+#foreach (name ${debtors_list})
+#  cobol_module(${name})
+#endforeach()
+#foreach (name ${general_list})
+#  cobol_module(${name})
+#endforeach()
+>>>>>>> c54b3b8b02b8015a64e473bf65ceb6095fd47cda
 foreach (name ${sales_list})
  cobol_module(${name})
 endforeach()

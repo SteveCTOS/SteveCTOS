@@ -14,7 +14,8 @@
        77  SUB-25               PIC S9(3) VALUE 0.
        77  SUB-30               PIC S9(3) VALUE 0.
        77  SUB-35               PIC S9(3) VALUE 0.
-       77  SUB-40               PIC 9(2) VALUE 0.
+       77  SUB-40               PIC S9(3) VALUE 0.
+       77  SUB-46               PIC S9(3) VALUE 0.
        77  POS                  PIC 9(4) VALUE 0.
        77  WS-MESSAGE           PIC X(79) VALUE " ".
        77  WS-ANSWER            PIC XX VALUE " ".

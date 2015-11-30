@@ -207,7 +207,7 @@
        READ-NEXT-COMPANY SECTION.
        RNC-005.
            OPEN I-O COMPANY-MENU.
-           IF WS-MENU-STATUS NOT = 00
+           IF WS-MENU-STATUS NOT = 0
                MOVE "COMPANY FILE BUSY ON OPEN, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -221,7 +221,7 @@
            MOVE 1 TO PTY-NUMBER.
            START COMPANY-MENU KEY NOT < PTY-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-MENU-STATUS NOT = 00
+           IF WS-MENU-STATUS NOT = 0
                MOVE "STATUS ON START IS NOT = 00" TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RNC-995.
@@ -230,7 +230,7 @@
            READ COMPANY-MENU NEXT
                AT END
                GO TO RNC-900.
-           IF WS-MENU-STATUS NOT = 00
+           IF WS-MENU-STATUS NOT = 0
                MOVE "COMPANY FILE BUSY ON READ-NEXT, GOING TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR-000

@@ -16,9 +16,9 @@
        77  SUB-25               PIC S9(3) VALUE 0.
        77  SUB-30               PIC S9(3) VALUE 0.
        77  SUB-35               PIC S9(3) VALUE 0.
-       77  SUB-40               PIC 9(2) VALUE 0.
-       77  SUB-45               PIC 9(2) VALUE 0.
-       77  SUB-46               PIC 9(2) VALUE 0.
+       77  SUB-40               PIC S9(3) VALUE 0.
+       77  SUB-45               PIC S9(3) VALUE 0.
+       77  SUB-46               PIC S9(3) VALUE 0.
        77  WS-PRINTER           PIC X(100) VALUE " ".
        77  WS-PRINTER-SAVE      PIC X(100) VALUE " ".
        77  WS-CALC-PERIOD       PIC 9(2) VALUE 0.
