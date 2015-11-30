@@ -10,7 +10,7 @@ rm /ctools/ps03/*
 
 cp /ctools/spl/DrStateCo03 /ctools/ctn/drstateco03
 cp /ctools/spl/DrLaserCo03 /ctools/ctn/drlaserco03
-cp /ctools/spl/DrNoMalCo03 /ctools/ctn/drnomalco03
+cp /ctools/spl/ctoolsDrNoMalCo03 /ctools/ctn/drnomalco03
 cp /ctools/spl/DrEMailCo03 /ctools/ctn/dremailco03
 cp /ctools/ctn/sl11 /ctools/spl/ctndrage
 cp /ctools/spl/DBPrintCo03 /ctools/ctn/dbprintco03

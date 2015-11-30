@@ -9,7 +9,7 @@ cat /ctools/ps05/* >> /ctools/orx/slp22
 rm /ctools/ps05/*
 
 cp /ctools/spl/DrStateCo05 /ctools/orx/drstateco05
-cp /ctools/spl/DrLaserCo05 /ctools/orx/drlaserco05
+cp /ctools/spl/ctoolsDrLaserCo05 /ctools/orx/drlaserco05
 #cp /ctools/spl/drnomalco05 /ctools/orx/drnomalco05
 #cp /ctools/spl/dremailco05 /ctools/orx/dremailco05
 cp /ctools/orx/sl11 /ctools/spl/orxdrage

@@ -1,6 +1,6 @@
-rm /ctools/sfj/*
+#rm /ctools/sfj/*
 
-Submit MainCont MonthEnd.Sub07
+#Submit MainCont MonthEnd.Sub07
 
 Submit MainCont MonthEnd2.Sub07
 
@@ -10,7 +10,7 @@ rm /ctools/ps07/*
 
 cp /ctools/spl/DrStateCo07 /ctools/sfj/drstateco07
 cp /ctools/spl/DrLaserCo07 /ctools/sfj/drlaserco07
-cp /ctools/spl/DrNoMalCo07 /ctools/sfj/drnomalco07
+cp /ctools/spl/ctoolsDrNoMalCo07 /ctools/sfj/drnomalco07
 cp /ctools/spl/DrEMailCo07 /ctools/sfj/dremailco07
 cp /ctools/sfj/sl11 /ctools/spl/sfjdrage
 cp /ctools/spl/DBPrintCo07 /ctools/sfj/dbprintco07

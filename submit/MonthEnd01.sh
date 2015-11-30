@@ -11,7 +11,7 @@ rm /ctools/ps01/*
 cp /ctools/spl/DrStateCo01 /ctools/ctj/drstateco01
 cp /ctools/spl/DrLaserCo01 /ctools/ctj/drlaserco01
 cp /ctools/spl/DrNoMalCo01 /ctools/ctj/drnomalco01
-cp /ctools/spl/DrEMailCo01 /ctools/ctj/dremailco01
+cp /ctools/spl/ctoolsDrEMailCo01 /ctools/ctj/dremailco01
 cp /ctools/ctj/sl11 /ctools/spl/ctjdrage
 cp /ctools/spl/DBPrintCo01 /ctools/ctj/dbprintco01
 

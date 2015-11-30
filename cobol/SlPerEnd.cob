@@ -1335,6 +1335,9 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
                GO TO DIR-900.
+               
+      *TEMP FIX DUE TO ERC 23 BELOW WHEN REG HAS BEEN FIXED.
+           GO TO DIR-900.
        DIR-010.
            READ INCR-REGISTER NEXT
                AT END

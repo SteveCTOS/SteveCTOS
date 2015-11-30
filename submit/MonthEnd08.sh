@@ -10,7 +10,7 @@ rm /ctools/ps08/*
 
 cp /ctools/spl/DrStateCo08 /ctools/csc/drstateco08
 cp /ctools/spl/DrLaserCo08 /ctools/csc/drlaserco08
-cp /ctools/spl/DrNoMalCo08 /ctools/csc/drnomalco08
+cp /ctools/spl/ctoolsDrNoMalCo08 /ctools/csc/drnomalco08
 cp /ctools/spl/DrEMailCo08 /ctools/csc/dremailco08
 cp /ctools/csc/sl11 /ctools/spl/cscdrage
 cp /ctools/spl/DBPrintCo08 /ctools/csc/dbprintco08
