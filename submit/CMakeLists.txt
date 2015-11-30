@@ -1,7 +1,7 @@
 project (ctools_submit)
 
 set (copy_list
-  Auto01.sh 
+  Auto01.sh
   Auto03.sh
   Auto07.sh
   Auto08.sh
