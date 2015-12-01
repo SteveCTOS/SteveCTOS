@@ -37,13 +37,15 @@ cd /ctools/spl
 
 cp /ctools/spl/*dr8.txt /media/ctools/RMB
 
-echo  Sending a Copy of DR8 to [SplCheque] for Yvonne
+echo  Sending a Copy of DR8 to CTJ-SplCheque for Yvonne
 
-lp -d ctj-splCheque /ctools/dev/source/print/Compressed.Key
-lp -d ctj-splCheque /ctools/spl/*dr8.txt
-lp -d ctj-splCheque /ctools/spl/*sl11.txt
-lp -d ctj-splCheque /ctools/spl/*sl21.txt
-lp -d ctj-splCheque /ctools/spl/*sl31.txt
-lp -d ctj-splCheque /ctools/spl/*sl32.txt
+lp -d CTJ-SplCheque /ctools/dev/source/print/Compressed.Key
+lp -d CTJ-SplCheque /ctools/spl/*dr8.txt
+lp -d CTJ-SplCheque /ctools/spl/*sl11.txt
+lp -d CTJ-SplCheque /ctools/spl/*sl21.txt
+lp -d CTJ-SplCheque /ctools/spl/*sl31.txt
+lp -d CTJ-SplCheque /ctools/spl/*sl32.txt
+
+cd /ctools/bin
 
 echo FNB Debtor List Submit Routine Finished. 

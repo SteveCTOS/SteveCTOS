@@ -30,6 +30,8 @@ cp -a /ctools/data02/* /media/ctools/USB/data02
 #cp /ctools/data11/* /media/ctools/USB/data11
 #cp /ctools/data12/* /media/ctools/USB/data12
 
-lp -d ctj-spl /ctools/grc/st28*
+lp -d CTJ-SplStr3 /ctools/grc/st28a
+lp -d CTJ-SplStr3 /ctools/grc/st28b
+lp -d CTJ-SplStr3 /ctools/grc/st28c
 
 echo GRC MONTH-END DONE........

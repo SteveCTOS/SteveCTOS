@@ -14,6 +14,7 @@ set (copy_list
   Backup06.sh
   Backup07.sh
   CrMaint.sh
+  Doculogix.sh
   FNBDebtor.sh
   GlGroup.sh
   GlGroupReports.Sub
