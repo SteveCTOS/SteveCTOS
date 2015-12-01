@@ -1337,7 +1337,7 @@
                GO TO DIR-900.
                
       *TEMP FIX DUE TO ERC 23 BELOW WHEN REG HAS BEEN FIXED.
-           GO TO DIR-900.
+      *     GO TO DIR-900.
        DIR-010.
            READ INCR-REGISTER NEXT
                AT END
@@ -1373,12 +1373,14 @@
             IF INCR-TRANS = 1 OR = 3 OR = 4 OR = 6 OR = 7 OR = 8
                GO TO DIR-010.
            IF WS-ANSWER1 = "Y"
+      * Quotes
             IF INCR-TRANS = 3
                GO TO DIR-010.
+      * P/Slip
            IF WS-ANSWER1 = "Y"
             IF INCR-TRANS = 4
                GO TO DIR-600.
-
+      * Inv, C/Note & BM
            IF WS-ANSWER1 = "Y"
             IF INCR-TRANS = 1 OR = 6 OR = 7
                PERFORM WRITE-REG-LY

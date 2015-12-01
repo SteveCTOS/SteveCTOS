@@ -35,7 +35,7 @@ cp /ctools/csc/sl32 /ctools/spl/cscsl32.txt
 
 cd /ctools/spl
 
-cp /ctools/spl/*dr8.txt /media/ctools/RMB
+cp /ctools/spl/*dr8.txt /media/ctools/USB
 
 echo  Sending a Copy of DR8 to CTJ-SplCheque for Yvonne
 
