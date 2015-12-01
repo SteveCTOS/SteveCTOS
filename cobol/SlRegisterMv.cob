@@ -148,7 +148,8 @@
              DISPLAY WS-COUNT
              GO TO BE-EXIT.
                
-           DISPLAY INCR-KEY AT 1505.
+           DISPLAY INCR-KEY  AT 1505.
+           DISPLAY INCR-DATE AT 1520
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
 
@@ -156,9 +157,14 @@
         BE-010.
            WRITE INCR1-REC
                  INVALID KEY
-             DISPLAY "INVALID WRITE FOR INCR1 FILE...."
-             DISPLAY WS-STAT1
-             EXIT PROGRAM.
+             MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-STAT1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+      *       DISPLAY "INVALID WRITE FOR INCR1 FILE...."
+      *       DISPLAY WS-STAT1
+      *       EXIT PROGRAM.
 
              GO TO BE-005.
         BE-EXIT.
@@ -172,19 +178,23 @@
 
            MOVE INCR1-REC  TO INCR-REC.
            
-           DISPLAY INCR-INVOICE AT 1505
+           DISPLAY INCR1-KEY  AT 1505
+           DISPLAY INCR1-DATE AT 1520
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
 
         BI-010.
            WRITE INCR-REC
                  INVALID KEY
-             DISPLAY "INVALID WRITE FOR ISAM FILE..."
-             DISPLAY WS-STAT1
-             CLOSE INCR-REGISTER
-                   INCR1-REGISTER
-             CALL "C$SLEEP" USING 3
-             EXIT PROGRAM.
+             MOVE "INVALID WRITE FOR ISAM FILE..." TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-STAT1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+      *       CLOSE INCR-REGISTER
+      *             INCR1-REGISTER
+      *       CALL "C$SLEEP" USING 3
+      *       EXIT PROGRAM.
            GO TO BI-005.
         BI-EXIT.
            EXIT.
@@ -201,4 +211,5 @@
        Copy "MenuClearScreen".
        Copy "CTOSCobolAccept".
        COPY "ErrorMessage".
+       COPY "Error1Message".
       * END-OF-JOB.

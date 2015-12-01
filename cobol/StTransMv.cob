@@ -152,7 +152,8 @@
              DISPLAY WS-COUNT
              GO TO BE-EXIT.
                
-           DISPLAY STTR-KEY AT 1505
+           DISPLAY STTR-KEY  AT 1505
+           DISPLAY STTR-DATE AT 1520
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
 
@@ -160,9 +161,14 @@
         BE-010.
            WRITE STOCK1-TRANS-REC
                  INVALID KEY
-             DISPLAY "INVALID WRITE FOR ASCII FILE...."
-             DISPLAY WS-STAT1
-               EXIT PROGRAM.
+             MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-STAT1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+      *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
+      *       DISPLAY WS-STAT1
+      *         EXIT PROGRAM.
       *       STOP RUN.
 
            GO TO BE-005.
@@ -176,6 +182,7 @@
              GO TO BI-EXIT.
                
            DISPLAY STTR1-KEY AT 1505
+           DISPLAY STTR1-DATE AT 1520
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
            
@@ -183,12 +190,17 @@
         BI-010.
            WRITE STOCK-TRANS-REC
                  INVALID KEY
-             DISPLAY "INVALID WRITE FOR ISAM FILE..."
-             DISPLAY WS-STAT1
-             CLOSE STOCK-TRANS-FILE
-                   STOCK1-TRANS-FILE
-             CALL "C$SLEEP" USING 3
-               EXIT PROGRAM.
+             MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-STAT1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+      *       DISPLAY "INVALID WRITE FOR ISAM FILE..."
+      *       DISPLAY WS-STAT1
+      *       CLOSE STOCK-TRANS-FILE
+      *             STOCK1-TRANS-FILE
+      *       CALL "C$SLEEP" USING 3
+      *         EXIT PROGRAM.
       *       STOP RUN.
       
       *      MOVE SPACES TO STOCK-TRANS-REC.
@@ -209,4 +221,5 @@
        Copy "MenuClearScreen".
        Copy "CTOSCobolAccept".
        COPY "ErrorMessage".
+       COPY "Error1Message".
       * END-OF-JOB.
