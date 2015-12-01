@@ -155,8 +155,6 @@
            DISPLAY STTR-KEY AT 1505
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
-           
-           ADD 1 TO WS-COUNT.
 
            MOVE STOCK-TRANS-REC    TO STOCK1-TRANS-REC.
         BE-010.
