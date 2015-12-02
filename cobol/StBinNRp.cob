@@ -28,7 +28,6 @@
        77  WS-RANGE2            PIC X(15) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1        PIC 99.
-      *     03  WS-STOCK-ST2        PIC X.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -94,7 +93,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -117,7 +115,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 = " "

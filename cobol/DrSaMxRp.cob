@@ -153,7 +153,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TOP.
 
-      *      ACCEPT WS-TOP AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF WS-TOP = "    "
@@ -195,7 +194,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PERIOD.
 
-      *      ACCEPT WS-PERIOD AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
             IF WS-PERIOD NOT = "T" AND NOT = "L" AND NOT = "B"
@@ -221,7 +219,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MARGIN-SALES.
 
-      *      ACCEPT WS-MARGIN-SALES AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-025.
             IF WS-MARGIN-SALES NOT = "P" AND NOT = "S"
@@ -250,7 +247,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALESMAN.
 
-      *      ACCEPT WS-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-025.
             IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -721,9 +717,11 @@
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H1-DATE
-           OPEN OUTPUT PRINT-FILE
            MOVE Ws-Co-Name To Co-Name.
            
+           PERFORM GET-USER-PRINT-NAME.
+           OPEN OUTPUT PRINT-FILE
+
            GO TO OPEN-036.
        OPEN-035.
            OPEN I-O RANDOM-FILE.
