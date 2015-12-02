@@ -233,7 +233,9 @@
            IF WS-MENU-STATUS NOT = 0
                MOVE "COMPANY FILE BUSY ON READ-NEXT, GOING TO RE-TRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE WS-MENU-STATUS TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RNC-010.
            MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-1)
            MOVE PTY-NUMBER  TO LIST-NUMBER (SUB-1)
