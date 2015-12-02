@@ -78,7 +78,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REMIT-PERIOD.
 
-      *     ACCEPT WS-REMIT-PERIOD AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
        CONTROL-006.
@@ -88,7 +87,7 @@
            "                  ENTER L=LOCAL, F=FOREIGN : [ ]" AT POS
            ADD 46 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'L'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 5         TO CDA-ROW.
            MOVE 55        TO CDA-COL.
@@ -97,7 +96,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REMIT-F-L.
 
-      *     ACCEPT WS-REMIT-F-L AT POS.
            IF WS-REMIT-F-L NOT = "F" AND NOT = "L"
               MOVE "FOREIGN / LOCAL FIELD MUST BE F OR L, RE-ENTER"
               TO WS-MESSAGE
@@ -325,6 +323,8 @@
        FILL-001.
             IF WS-END = "Y"
                   GO TO FILL-999.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
         FILL-040.
             MOVE 1 TO SUB-1 F-INDEX.
             PERFORM SCROLL-PREVIOUS.
