@@ -32,10 +32,8 @@
        77  WS-ACCEPT          PIC X.
        01  WS-CRCAMSTRANS-STATUS.
            03  WS-CRCAMSTRANS-ST1   PIC 99.
-      *     03  WS-CRCAMSTRANS-ST2   PIC X.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1   PIC 99.
        01  WS-DOWNLOAD-FILE.
            03  WS-VOL-DIR     PIC X(12) VALUE "/ctools/spl/".
            03  WS-DL-NAME     PIC X(10) VALUE " ".
@@ -138,7 +136,6 @@
 
            IF W-ESCAPE-KEY = 3
                PERFORM END-900.
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF WS-ANSWER1 = " "
               MOVE "PLEASE ENTER A VALID FILE NAME. IT CANNOT BE BLANK."
                TO WS-MESSAGE
@@ -172,7 +169,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SWAP.
 
-      *     ACCEPT WS-SWAP AT POS.
            IF WS-SWAP NOT = "Y" AND NOT = "N"
               MOVE "PLEASE ENTER EITHER 'Y' OR 'N'." TO WS-MESSAGE
               PERFORM ERROR-000
@@ -196,7 +192,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT.
 
-      *     ACCEPT WS-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-005.
            IF W-ESCAPE-KEY = 3
@@ -219,6 +214,7 @@
        RONX-001.
            MOVE 2910 TO POS
            DISPLAY "READING CAMS TRANSACTIONS FOR ACCOUNT...." AT POS.
+           MOVE 0 TO CR-CAMS-TRANS-KEY.
            START CR-CAMS-TRANS-FILE KEY NOT < CR-CAMS-TRANS-KEY
                  INVALID KEY NEXT SENTENCE.
            IF WS-CRCAMSTRANS-ST1 NOT = 0
