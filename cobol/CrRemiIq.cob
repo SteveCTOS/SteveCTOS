@@ -544,7 +544,7 @@
                 MOVE WS-NUMBER TO CRREM-ACC-NUMBER
                 GO TO R-GL-999.
              IF WS-REMI-ST1 NOT = 0
-                MOVE "CRREM RECORD BUSY ON READ, 'ESC' TO RETRY"
+                MOVE "CRREMIT RECORD BUSY ON READ, 'ESC' TO RETRY"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO R-GL-010.
@@ -601,6 +601,8 @@
            IF WS-REMI-ST1 = 23 OR 35 OR 49 OR 51
                MOVE "CRREMIT BUSY ON READ-NEXT-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-REMI-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-005.
            IF WS-REMI-ST1 NOT = 0
