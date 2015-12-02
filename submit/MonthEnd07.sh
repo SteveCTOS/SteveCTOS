@@ -1,6 +1,6 @@
-#rm /ctools/sfj/*
+rm /ctools/sfj/*
 
-#Submit MainCont MonthEnd.Sub07
+Submit MainCont MonthEnd.Sub07
 
 Submit MainCont MonthEnd2.Sub07
 

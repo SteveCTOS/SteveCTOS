@@ -66,7 +66,7 @@ cd /ctools/krs
 zip /ctools/company/$1MonthEnd12.Zip *
 
 cd /ctools/dr
-zip /ctools/drzip/$2DrPay.Zip
+zip /ctools/drzip/$2DrPay.Zip *
 
 rm *
 

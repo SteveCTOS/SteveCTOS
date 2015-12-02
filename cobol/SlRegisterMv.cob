@@ -147,7 +147,7 @@
                AT END 
              DISPLAY WS-COUNT
              GO TO BE-EXIT.
-               
+              
            DISPLAY INCR-KEY  AT 1505.
            DISPLAY INCR-DATE AT 1520
            ADD 1 TO WS-COUNT
