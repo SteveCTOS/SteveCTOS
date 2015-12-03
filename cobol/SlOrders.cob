@@ -6562,6 +6562,8 @@
                                           STTR-STOCK-NUMBER.
             MOVE WS-ACCOUNT-NUMBER     TO STTR-ACCOUNT-NUMBER
             MOVE WS-INVOICEDATE        TO STTR-DATE
+                                          STTR-AC-DATE
+                                          STTR-ST-DATE.
             MOVE B-INVOICED (SUB-1)    TO STTR-INV-NO.
 
             IF B-NEWLINE (SUB-1) NOT = "Y" AND NOT = "L" AND NOT = "R"

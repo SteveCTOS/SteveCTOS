@@ -4302,7 +4302,9 @@
                                           STTR-STOCK-NUMBER.
             MOVE WS-ACCOUNT-NUMBER     TO STTR-ACCOUNT-NUMBER.
             MOVE WS-INVOICE            TO STTR-INV-NO.
-            MOVE WS-INVOICEDATE        TO STTR-DATE.
+            MOVE WS-INVOICEDATE        TO STTR-DATE
+                                          STTR-AC-DATE
+                                          STTR-ST-DATE.
             MOVE "Y"                   TO STTR-COMPLETE
                                           STTR-ST-COMPLETE
                                           STTR-AC-COMPLETE.
