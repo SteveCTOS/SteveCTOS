@@ -251,6 +251,7 @@
                MOVE "/"       TO WS-RANGE1.
             MOVE "N"          TO STTR-ST-COMPLETE.
             MOVE WS-RANGE1    TO STTR-STOCK-NUMBER.
+            MOVE 0            TO STTR-ST-DATE.
             START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                INVALID KEY NEXT SENTENCE.
             IF WS-BO-ST1 NOT = 0
@@ -493,7 +494,7 @@
             ADD 25 TO POS
             DISPLAY STTR-KEY AT POS.
             
-            GO TO PREST-985.
+      *      GO TO PREST-985.
        PREST-980.
             IF STTR-ORDERQTY = " "
               MOVE 0 TO STTR-ORDERQTY.
@@ -507,14 +508,14 @@
             MOVE STTR-DATE     TO STTR-ST-DATE
                                   STTR-AC-DATE.
                
-           MOVE STTR-DATE               TO SPLIT-DATE.
-           PERFORM CONVERT-DATE-FORMAT
-           MOVE DISPLAY-DATE            TO D-DATE
-           DISPLAY D-DATE AT 2735.
+            MOVE STTR-DATE               TO SPLIT-DATE.
+            PERFORM CONVERT-DATE-FORMAT
+            MOVE DISPLAY-DATE            TO D-DATE
+            DISPLAY D-DATE AT 2735.
         PREST-985.
-           REWRITE STOCK-TRANS-REC
+            REWRITE STOCK-TRANS-REC
                 INVALID KEY NEXT SENTENCE.
-           IF WS-BO-ST1 NOT = 0
+            IF WS-BO-ST1 NOT = 0
                 MOVE "ST-TRANS BUSY ON REWRITE FOR 'R', 'ESC' TO RETRY."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
@@ -523,7 +524,7 @@
                 PERFORM ERROR1-020
                 GO TO PREST-980.
            
-           GO TO PREST-002.
+            GO TO PREST-002.
        PREST-999.
            EXIT.
       *
