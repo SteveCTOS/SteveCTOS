@@ -40,7 +40,8 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
-       77  WS-LABELPRINTER      PIC X(12) VALUE " ".
+       77  WS-LABELPRINTER      PIC X(100) VALUE " ".
+       77  WS-DOTPRINTER        PIC X(100) VALUE " ".
        77  WS-NEWORDER          PIC X VALUE " ".
        77  WS-SUFFICIENT-STOCK  PIC X VALUE " ".
        77  WS-STOCKNUMBER       PIC X(15).
@@ -294,6 +295,9 @@
            DISPLAY "*******************************" AT POS.
        CONTROL-003.
            Copy "PrinterAccept".
+           MOVE WS-PRINTER TO WS-DOTPRINTER.
+           MOVE 2510 TO POS
+           DISPLAY "Program loading....." AT POS.
        CONTROL-010.
            PERFORM OPEN-FILES
            PERFORM CLEAR-SCREEN
@@ -356,7 +360,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-YN.
 
-      *     ACCEPT WS-YN AT POS.
            IF WS-YN NOT = "Y" AND NOT = "N"
                 GO TO CONTROL-960.
            IF WS-YN = "N"
@@ -409,6 +412,7 @@
        PR-005.
            MOVE 1 TO WS-PAGE SUB-1 SUB-2.
            MOVE " " TO PRINT-REC.
+           MOVE WS-DOTPRINTER TO WS-PRINTER-SAVE.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
        PR-010.
@@ -557,7 +561,9 @@
       *
        PRINT-LABELS SECTION.
        PRLB-000.
+           MOVE WS-LABELPRINTER TO WS-PRINTER-SAVE.
            PERFORM GET-USER-PRINT-NAME.
+           MOVE WS-PRINTER TO WS-LABELPRINTER.
            OPEN OUTPUT LABEL-PRINT.
            IF WS-Spl-ST1 NOT = 0
                MOVE "Print File Open error, 'ESC' To RE-TRY."
@@ -576,8 +582,17 @@
             MOVE 2910 TO POS
             DISPLAY "WHAT STARTING POS FOR THE 1ST LABEL :[ ]" AT POS
             ADD 38 TO POS
-            ACCEPT WS-YN AT POS.
-            IF WS-YN NOT = "1" AND NOT = "2" AND NOT = "3" AND NOT = "4"
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
+           IF WS-YN NOT = "1" AND NOT = "2" AND NOT = "3" AND NOT = "4"
                GO TO PRLB-001.
            MOVE WS-YN TO WS-START-POS.
            
@@ -2204,7 +2219,9 @@
                                                STTR-AC-COMPLETE
                                                B-NEWLINE (SUB-1)
            MOVE 0                           TO STTR-INV-NO
-           MOVE WS-INVOICEDATE              TO STTR-DATE.
+           MOVE WS-INVOICEDATE              TO STTR-DATE
+                                               STTR-AC-DATE
+                                               STTR-ST-DATE.
            MOVE B-ORDERQTY (SUB-1)          TO STTR-ORDERQTY
            MOVE B-SHIPQTY (SUB-1)           TO STTR-SHIPQTY
            MOVE B-SHIPPEDQTY (SUB-1)        TO STTR-SHIPPEDQTY
@@ -2799,6 +2816,8 @@
            MOVE B-STOCKNUMBER (SUB-1) TO SPLIT-STOCK
            MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER
            MOVE WS-INVOICEDATE        TO STTR-DATE
+                                         STTR-AC-DATE
+                                         STTR-ST-DATE
            MOVE 7777777               TO STTR-ACCOUNT-NUMBER.
        WST-010.
       *************************
