@@ -4706,7 +4706,9 @@
                                                STTR-AC-COMPLETE.
             
            MOVE 0                           TO STTR-INV-NO
-           MOVE WS-INVOICEDATE              TO STTR-DATE.
+           MOVE WS-INVOICEDATE              TO STTR-DATE
+                                               STTR-AC-DATE
+                                               STTR-ST-DATE.
             IF SP-1STCHAR = "*"
                 GO TO WNT-TRANS-600.
            MOVE B-ORDERQTY (SUB-1)          TO STTR-ORDERQTY

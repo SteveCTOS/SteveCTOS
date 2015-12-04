@@ -5312,6 +5312,8 @@
                                           STTR-STOCK-NUMBER.
             MOVE WS-ACCOUNT-NUMBER     TO STTR-ACCOUNT-NUMBER
             MOVE WS-INVOICEDATE        TO STTR-DATE
+                                          STTR-AC-DATE
+                                          STTR-ST-DATE
             MOVE B-INVOICED (SUB-1)    TO STTR-INV-NO
             MOVE B-REPAIR (SUB-1)      TO STTR-COMPLETE
                                           STTR-ST-COMPLETE

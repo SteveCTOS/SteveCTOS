@@ -2701,6 +2701,8 @@
             MOVE B-STOCKNUMBER (SUB-1)       TO STTR-STOCK-NUMBER
             MOVE WS-ACCOUNT-NUMBER           TO STTR-ACCOUNT-NUMBER
             MOVE WS-INVOICEDATE              TO STTR-DATE
+                                                STTR-AC-DATE
+                                                STTR-ST-DATE
             MOVE "Y"                         TO STTR-COMPLETE
                                                 STTR-ST-COMPLETE
                                                 STTR-AC-COMPLETE.
