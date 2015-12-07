@@ -339,8 +339,8 @@
            ADD 1 TO SUB-15.
            MOVE 2910 TO POS
            DISPLAY "READING TRANSACTIONS FOR ACCOUNT...." AT POS.
-           MOVE WS-TRANS-NUM (SUB-15) TO CR-CAMS-TRANS-NUM
            PERFORM START-TRANS.
+           MOVE WS-TRANS-NUM (SUB-15) TO CR-CAMS-TRANS-NUM.
            IF WS-CRCAMSTRANS-ST1 NOT = 0
               GO TO RONX-999.
        RONX-005.
@@ -411,8 +411,7 @@
              IF CR-CAMS-TRANS-PAID = "Y"
               GO TO RALL-005.
        RALL-010.
-            MOVE CR-CAMS-TRANS-NUM TO WS-TRANS-NUM (SUB-25) WS-MESSAGE
-            PERFORM ERROR-MESSAGE.
+            MOVE CR-CAMS-TRANS-NUM TO WS-TRANS-NUM (SUB-25).
        RALL-020.
             IF SUB-25 < 501
                ADD 1 TO SUB-25
