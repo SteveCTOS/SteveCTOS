@@ -13,11 +13,15 @@ set (copy_list
   Backup05.sh
   Backup06.sh
   Backup07.sh
+  Branch01.Sub
+  Branch01.sh
   CrMaint.sh
   Doculogix.sh
   FNBDebtor.sh
   GlGroup.sh
   GlGroupReports.Sub
+  GlJrnReports.Sub
+  GlJrnReports.sh
   GlMonthly.sh
   GlMonthly.Sub
   GlMonthTemp
