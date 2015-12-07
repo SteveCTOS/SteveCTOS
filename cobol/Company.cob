@@ -29,7 +29,6 @@
            03  WS-NU2           PIC X.
        01  WS-MENU-STATUS.
            03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9(2) COMP-X.
        Copy "WsDateInfo".
       *
       **************************************************************
