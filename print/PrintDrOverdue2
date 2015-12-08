@@ -8,7 +8,7 @@ if [ "$4" = "02" ] && [ "$6" = "P" ]
 
 if [ "$4" = "02" ] && [ "$5" = "Y" ]
    then
-     sendfax -n -d $7 /ctools/fax/$1DrOverdue$3.pdf
+     sendfax -n -d $7 /ctools/fax/$1DrOverdue$3-2.pdf
  fi
 
 #FORMAT FOR PRINTING IS:
