@@ -408,7 +408,7 @@
            PERFORM ERROR-020.
        CONTROL-017.
       *     MOVE 2910 TO POS.
-      *     DISPLAY "PRINTING OF FAX FILE TO:                   " AT POS.
+      *     DISPLAY "PRINTING OF FAX FILE TO:                   " AT POS
       *     ADD 24 TO POS
       *     DISPLAY WS-PRINTER AT POS.
            MOVE WS-ORDER-NUMBER TO OO-ORDER-NUMBER.

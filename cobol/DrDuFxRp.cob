@@ -34,6 +34,7 @@
        77  WS-PRINTER-TYPE       PIC X.
        77  WS-VALID-LINE-PRINTED PIC X.
        77  WS-FOUND             PIC X VALUE " ".
+       77  WS-DOTPRINTER        PIC X(100) VALUE " ".
        77  WS-NOTIFY            PIC X VALUE " ".
        77  WS-ENTERD            PIC X VALUE " ".
        77  WS-ANSWER            PIC X VALUE " ".
@@ -277,7 +278,7 @@
            Copy "PrinterAcceptDr".
            MOVE 3010 TO POS.
            DISPLAY "The Debtor Due Fax Program is being loaded." AT POS.
-           MOVE Ws-Printer TO WS-PRINTER-SAVE.
+           MOVE Ws-Printer TO WS-DOTPRINTER WS-PRINTER-SAVE.
            PERFORM OPEN-DATA-FILES.
            PERFORM CLEAR-SCREEN.
        CONT-010.
@@ -624,7 +625,7 @@
            IF WS-PRINT-Y-N = "N"
                MOVE "P" TO WS-AUTO-FAX
                GO TO RDM-021.
-           MOVE Ws-Printer-Save TO WS-PRINTER.
+           MOVE Ws-DOTPrinter TO WS-PRINTER.
            IF WS-AUTO-FAX = "Y"
                MOVE "P" TO WS-AUTO-FAX.
            IF WS-AUTO-FAX = "N"
@@ -727,6 +728,8 @@
       *        CALL "&DELAY" USING
       *                       W-ERROR
       *                       W-DELAY.
+           MOVE " " TO WS-PRINTER.
+           MOVE WS-DOTPRINTER TO WS-PRINTER.
            GO TO RDM-010.
        RDM-999.
            EXIT.
@@ -735,11 +738,19 @@
        PR-000.
            MOVE "N" TO WS-VALID-LINE-PRINTED.
            PERFORM GET-USER-PRINT-NAME.
+           
+      *     MOVE " IN PRINT-ROUTINE" TO WS-MESSAGE
+      *     PERFORM ERROR1-000 
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
            OPEN OUTPUT PRINT-FILE.
            IF WS-SPL-ST1 NOT = 0
                CLOSE PRINT-FILE
                MOVE "SPOOLER STATUS NOT = 0 ON OPEN, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SPL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO PR-000.
            MOVE DR-ACCOUNT-NUMBER TO DRTR-ACC-KEY.
@@ -906,12 +917,19 @@
                MOVE WS-HYLA-COMMENT TO WS-QUOTE-REFERENCE
                PERFORM REMOVE-SPACES-IN-FAX-NAME
                MOVE WS-PRINTER TO WS-PRINTER-PAGE1.
+           
+      *     MOVE " IN XQS PRINT-ROUTINE" TO WS-MESSAGE
+      *     PERFORM ERROR1-000 
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
                
            OPEN OUTPUT PRINT-FILE.
            IF WS-SPL-ST1 NOT = 0
                CLOSE PRINT-FILE
-               MOVE "SPOOLER STATUS NOT = 0, 'ESC' TO RE-TRY"
+               MOVE "SPOOLER STATUS NOT = 0, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SPL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO PRXQS-000.
            IF Fax-PaNumber = 3
@@ -1126,16 +1144,25 @@
            ADD 2 TO LINE-CNT
            GO TO PRXQS-002.
        PRXQS-900.
+      *      MOVE "HERE AT PRXQS-900" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+       
            CLOSE PRINT-FILE.
 
            IF Fax-PaNumber = 4
-            IF WS-ANSWER = "P"
+            IF WS-ANSWER = "P" OR = "Y"
              IF PAGE-CNT = 1
+      *           MOVE "HERE PAGE-CNT = 1" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE                 
+                 
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-OVERDUE-FOR-PDF
              ELSE
+      *           MOVE "HERE PAGE-CNT = 2" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE                 
+                 
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
@@ -1182,6 +1209,12 @@
                GO TO WOPFN-010.
            MOVE DATA-RATE TO WS-PRINTER-PAGE1.
            
+      *     WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE "PRN-PAGE1 FILE NAME IS ABOVE" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020
+           
            MOVE SPACES           TO ALPHA-RATE DATA-RATE
            MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
            MOVE 13 TO SUB-45
@@ -1192,6 +1225,13 @@
            IF AL-RATE (SUB-45) NOT = " "
                GO TO WOPFN-015.
            MOVE DATA-RATE        TO WS-PRINTER-PAGE2.
+         
+      *     WS-MESSAGE  
+      *     PERFORM ERROR1-000
+      *     MOVE "PRN-PAGE2 FILE NAME IS ABOVE" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
+           
            MOVE SPACES           TO ALPHA-RATE DATA-RATE.
        WOPFN-999.
            EXIT.

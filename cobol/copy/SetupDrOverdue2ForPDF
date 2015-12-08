@@ -15,10 +15,9 @@
           CONCATENATE('PrintDrOverdue2 ', ' ',
               WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE), ' ',
                 TRIM(WS-PRINTER)) TO WS-COMMAND-LINE.
-      *          TO WS-COMMAND-LINE.
       
-          MOVE WS-COMMAND-LINE TO  WS-MESSAGE
-          PERFORM ERROR-MESSAGE.
+      *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
 
       *     DISPLAY WS-COMMAND-LINE  AT 2810
       *     ACCEPT W-ENTER.
@@ -40,6 +39,9 @@
       *$3 = The Printername to print the file to e.g. MP250
       *$4 = The Print file name which will replace
       *                /ctools/spl/InPrintCo01 when specified in COBOL
+      *$5 = WS-AUTO-FAX. IF = Y then send by fax
+      *$6 = WS-ANSWER. If = P then print PDF.
+      *$7 = WS-fax-number.  Used ONLY if sending by fax.
 
       *****************************************************************
       * printing routine - sends disk file to printer....

@@ -1,5 +1,4 @@
 text2pdf /ctools/fax/$3 -fCourier-Bold -x588 -y828 -l66 -c88 -V16 -H41 > /ctools/fax/$1Quote.temp1.pdf
-#text2pdf /ctools/fax/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/fax/$1Quote.temp1.pdf
 pdftk /ctools/fax/$1Quote.temp1.pdf background /ctools/dev/source/print/$1QuoteOverlay1.pdf output /ctools/fax/$1Quote$3.pdf
 
 if [ "$4" = "01" ] && [ "$6" = "P" ]
