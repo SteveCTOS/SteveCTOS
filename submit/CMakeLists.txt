@@ -16,6 +16,7 @@ set (copy_list
   Branch01.Sub
   Branch01.sh
   CrMaint.sh
+  DataTestAll.sh
   Doculogix.sh
   FNBDebtor.sh
   GlGroup.sh
