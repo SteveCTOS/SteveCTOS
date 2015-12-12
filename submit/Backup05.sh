@@ -57,9 +57,13 @@ lp -d ctj-splXtra /ctools/dev/source/print/Compressed.Key
 lp -d ctj-splXtra /ctools/spl/ctj-aa1
 lp -d ctj-splXtra /ctools/spl/ctj-aa2
 
+echo Moving Faxes to FaxSent folder......
+cp /ctools/fax/*.pdf /ctools/faxsent/
+rm /ctools/fax/*
+
 echo COPYING COMPANY DATA TO BACKUP DISK ON SERVER
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools
 
 echo COPYING COMPLETE DRIVES DATA TO BACKUP DISK ON SERVER
-cp -a /ctools/* /media/ctools/BACKUPHDD/ctools/
+cp -a /ctools/* /media/ctools/BACKUPHDD/ctools
 
