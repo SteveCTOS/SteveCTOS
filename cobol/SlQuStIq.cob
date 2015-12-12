@@ -253,12 +253,13 @@
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
            IF WS-BORDER-ST1 NOT = 0
-               MOVE 2910 TO POS
-               MOVE "Be Patient, Status not = 0, Re-reading."
+               MOVE 
+            "ST-TRANS BUSY ON READ NEXT, SEE NEXT LINE, <ESC> TO RETRY."
                TO WS-MESSAGE
-               DISPLAY WS-MESSAGE AT POS
-               ADD 40 TO POS
-               DISPLAY WS-BORDER-ST1 AT POS
+               PERFORM ERROR1-000
+               MOVE WS-BORDER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RDTR-010.
            IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
                MOVE 1 TO F-INDEX
@@ -330,6 +331,13 @@
                 MOVE "UNKNOWN" TO ST-DESCRIPTION1
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
+               MOVE 
+            "STOCK BUSY READ, NEXT LINE, <ESC> TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                 GO TO RS-010.
        RS-999.
             EXIT.
@@ -350,6 +358,12 @@
              IF WS-STOCK-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
+               MOVE "STOCK BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STOCK-ST1
                  PERFORM START-STOCK
                  GO TO R-ST-NX-005.
@@ -405,13 +419,13 @@
                MOVE 0 TO WS-BORDER-ST1
                GO TO PRR-900.
             IF WS-BORDER-ST1 NOT = 0
-               MOVE 2910 TO POS
-               MOVE "Be Patient, Status not = 0, Re-reading."
+               MOVE 
+            "ST-TRANS PRINT BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
                TO WS-MESSAGE
-               DISPLAY WS-MESSAGE AT POS
-               ADD 40 TO POS
-               DISPLAY WS-BORDER-ST1 AT POS
-               MOVE 0 TO WS-BORDER-ST1
+               PERFORM ERROR1-000
+               MOVE WS-BORDER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PRR-002.
            IF STTR-ST-COMPLETE NOT = "Q"
                GO TO PRR-900.

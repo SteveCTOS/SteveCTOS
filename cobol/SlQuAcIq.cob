@@ -299,12 +299,13 @@
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
            IF WS-BORDER-ST1 NOT = 0
-               MOVE 2910 TO POS
-               MOVE "Be Patient, Status not = 0, Re-reading."
+               MOVE 
+            "ST-TRANS BUSY ON READ NEXT, SEE NEXT LINE, <ESC> TO RETRY."
                TO WS-MESSAGE
-               DISPLAY WS-MESSAGE AT POS
-               ADD 40 TO POS
-               DISPLAY WS-BORDER-ST1 AT POS
+               PERFORM ERROR1-000
+               MOVE WS-BORDER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RDTR-010.
            IF STTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
                MOVE 1 TO F-INDEX
@@ -387,7 +388,10 @@
             IF WS-DEBTOR-ST1 NOT = 0
                 MOVE "DR RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RD-010.
        RD-999.
             EXIT.
@@ -406,9 +410,16 @@
              IF WS-DEBTOR-ST1 = 0
                  GO TO R-DR-NX-999
              ELSE
-                 MOVE 0 TO WS-DEBTOR-ST1
-                 PERFORM START-DEBTOR
-                 GO TO R-DR-NX-005.
+               MOVE 
+            "DEBTOR BUSY ON READ NEXT, SEE NEXT LINE, <ESC> TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               PERFORM START-DEBTOR
+               GO TO R-DR-NX-005.
        R-DR-NX-999.
              EXIT.
       *
@@ -454,9 +465,13 @@
                MOVE 0 TO WS-BORDER-ST1
                GO TO PRR-900.
             IF WS-BORDER-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "STTRANS RECORD BUSY, RE-READING." AT POS
-               MOVE 0 TO WS-BORDER-ST1
+               MOVE 
+            "ST-TRANS PRINT BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-BORDER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PRR-002.
             IF STTR-AC-COMPLETE NOT = "Q"
                GO TO PRR-900.

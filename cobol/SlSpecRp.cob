@@ -201,7 +201,12 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            IF WS-TOT-ONLY NOT = "Y"
-               MOVE WS-PRINT-THAT-SB TO SP-INITIALS.
+               MOVE WS-PRINT-THAT-SB TO SP-INITIALS
+           ELSE
+               MOVE 0                TO SP-INITIALS.
+           MOVE 0                    TO SP-INVOICE-NUMBER
+           MOVE " "                  TO SP-STOCK.
+           
            START SPECIALS-FILE KEY NOT < SP-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-SPECIALS-ST1 NOT = 0

@@ -87,14 +87,11 @@
        77  WS-LAST              PIC 9(7)9V99 VALUE 0.
        77  WS-COST              PIC 9(7)9V99 VALUE 0.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC X.
-           03  WS-ST-ST2        PIC X.
+           03  WS-ST-ST1           PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC X.
-           03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-RANDOM-STATUS.
-           03  WS-RANDOM-ST1        PIC X.
-           03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
+           03  WS-RANDOM-ST1       PIC 99.
        01  WS-DATE-ENTER.
            03  WS-YYE           PIC 9999.
            03  WS-MME           PIC 99.
@@ -241,7 +238,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TYPE.
 
-      *     ACCEPT WS-TYPE AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-005.
            IF WS-TYPE NOT = "S" AND NOT = "U"
@@ -271,7 +267,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -298,7 +293,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-005.
             IF WS-RANGE2 = " "
@@ -333,7 +327,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-OVER-BELOW.
 
-      *     ACCEPT WS-OVER-BELOW AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-010.
            IF WS-OVER-BELOW NOT = "O" AND NOT = "B" AND NOT = "D"
@@ -367,7 +360,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-M-UP.
 
-      *     ACCEPT WS-M-UP AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-015.
            IF WS-OVER-BELOW = "M"
@@ -408,7 +400,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DATE-ACCEPT.
 
-      *     ACCEPT WS-DATE-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
             IF WS-OVER-BELOW = "M"
                GO TO GET-015
@@ -454,7 +445,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DATE-PRICE.
 
-      *     ACCEPT WS-DATE-PRICE AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-040.
            IF WS-DATE-PRICE = " "
@@ -494,7 +484,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-DISC.
 
-      *     ACCEPT WS-PRINT-DISC AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-045.
            IF WS-PRINT-DISC NOT = "N" AND NOT = "Y"
@@ -517,7 +506,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-QTY.
 
-      *     ACCEPT WS-PRINT-QTY AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-050.
            IF WS-PRINT-QTY NOT = "N" AND NOT = "Y"
@@ -539,7 +527,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TOP.
 
-      *     ACCEPT WS-TOP AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-060.
            IF WS-TOP = " "
@@ -579,7 +566,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RAND-UNIT.
 
-      *     ACCEPT WS-RAND-UNIT AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-080.
            IF WS-RAND-UNIT NOT = "R" AND NOT = "U"
@@ -606,7 +592,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PERIOD.
 
-      *     ACCEPT WS-PERIOD AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-085.
            IF WS-PERIOD NOT = "T" AND NOT = "L" AND NOT = "M"
@@ -649,6 +634,9 @@
                PERFORM TOTALS
                GO TO PRR-999.
             IF WS-ST-ST1 NOT = 0
+               MOVE "STOCK BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-ST-ST1
                GO TO PRR-002.
             IF WS-TYPE = "S"

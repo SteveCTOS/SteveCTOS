@@ -56,31 +56,23 @@
        77  WS-BARE-STOCK        PIC X(20) VALUE " ".
        01  W-READ-KEY           PIC X.
        01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY          PIC X OCCURS 11.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-STOCK1-STATUS.
-           03  WS-STOCK1-ST1   PIC 99.
-      *     03  WS-STOCK1-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK1-ST1      PIC 99.
        01  WS-STOCK2-STATUS.
-           03  WS-STOCK2-ST1   PIC 99.
-      *     03  WS-STOCK2-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK2-ST1      PIC 99.
        01  WS-STOCK3-STATUS.
-           03  WS-STOCK3-ST1   PIC 99.
-      *     03  WS-STOCK3-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK3-ST1      PIC 99.
        01  WS-STOCK4-STATUS.
-           03  WS-STOCK4-ST1   PIC 99.
-      *     03  WS-STOCK4-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK4-ST1      PIC 99.
        01  WS-MENU-STATUS.
-           03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9(2) COMP-X.
+           03  WS-MENU-ST1        PIC 99.
        01  WS-DATA-STATUS.
-           03  WS-DATA-ST1       PIC 99.
-      *     03  WS-DATA-ST2       PIC 9(2) COMP-X.
+           03  WS-DATA-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1   PIC 99.
-      *     03  WS-SLPARAMETER-ST2   PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  COMPANIES-LIST-NAMES.
          02  COMPANIES-LIST OCCURS 20.
            03  LIST-NAME        PIC X(40).
@@ -149,7 +141,7 @@
            03  FILLER         PIC X(60) VALUE
            "STOCK NUMBER      DESCRIPTION".
            03  FILLER         PIC X(41) VALUE
-           "   MAX   HAND  ORDER    B/O    DATE".
+           "   MIN   HAND  ORDER    B/O    DATE".
            03  H42-CO1        PIC X(3).
            03  FILLER         PIC X(5) VALUE " ".
            03  H42-CO2        PIC X(3).
@@ -235,7 +227,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -257,7 +248,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-ANSWER2 = " "
@@ -282,7 +272,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BELOW-OVER.
 
-      *    ACCEPT WS-BELOW-OVER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-012.
            IF WS-BELOW-OVER = " "
@@ -313,7 +302,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CAT-ONLY.
 
-      *     ACCEPT WS-CAT-ONLY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-CAT-ONLY NOT = "Y" AND NOT = "N"
@@ -346,7 +334,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SEL-TYPE.
 
-      *     ACCEPT WS-SEL-TYPE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-SEL-TYPE NOT = "Y" AND NOT = "N"
@@ -372,7 +359,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-F-L.
 
-      *     ACCEPT WS-F-L AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-025.
            IF WS-F-L NOT = "F" AND NOT = "L" AND NOT = "A"
@@ -403,7 +389,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHECK-GROUP.
 
-      *     ACCEPT WS-CHECK-GROUP AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-027.
            IF WS-CHECK-GROUP NOT = "N" AND NOT = "Y"
@@ -459,6 +444,8 @@
            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-005.
@@ -606,8 +593,15 @@
            IF WS-STOCK-ST1 = 10
                GO TO PGR-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              GO TO PGR-005.
+               MOVE
+             "GROUP STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO PGR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
               GO TO PGR-005.
            IF ST-STOCKNUMBER > WS-ANSWER2
@@ -665,7 +659,10 @@
                WRITE PRINT-REC BEFORE PAGE.
             WRITE PRINT-REC FROM COMPANY-LINE.
             MOVE " " TO PRINT-REC.
-            WRITE PRINT-REC FROM HEAD1
+            IF WS-BELOW-OVER = "B"
+                WRITE PRINT-REC FROM HEAD1
+            ELSE
+                WRITE PRINT-REC FROM HEAD1-1.
             MOVE " " TO PRINT-REC.
             WRITE PRINT-REC FROM HEAD2.
             MOVE " " TO PRINT-REC.
@@ -820,9 +817,8 @@
              IF WS-STOCK1-ST1 NOT = 0
                 MOVE "STOCK RECORD1 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
-                GO TO RBRST-100.
+                PERFORM ERROR-MESSAGE
+                GO TO RBRST-110.
              MOVE ST1-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST1-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
              MOVE ST1-QTYONORDER   TO WS-BRANCH-ONORDER (SUB-1)
@@ -848,8 +844,7 @@
              IF WS-STOCK2-ST1 NOT = 0
                 MOVE "STOCK RECORD2 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
+                PERFORM ERROR-MESSAGE
                 GO TO RBRST-210.
              MOVE ST2-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST2-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
@@ -876,8 +871,7 @@
              IF WS-STOCK3-ST1 NOT = 0
                 MOVE "STOCK RECORD3 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
+                PERFORM ERROR-MESSAGE
                 GO TO RBRST-310.
              MOVE ST3-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST3-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
@@ -904,8 +898,7 @@
              IF WS-STOCK4-ST1 NOT = 0
                 MOVE "STOCK RECORD4 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
+                PERFORM ERROR-MESSAGE
                 GO TO RBRST-410.
              MOVE ST4-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST4-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)

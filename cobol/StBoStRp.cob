@@ -274,6 +274,13 @@
                PERFORM ERROR1-000
                MOVE WS-BO-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE "STTRANS STTR-KEY SHOWN NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE STTR-ST-KEY TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PRR-002.
                
             IF WS-RANGE3 NOT = "R"

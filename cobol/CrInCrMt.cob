@@ -692,8 +692,11 @@
             IF WS-NEWBATCH = "Y"
                 PERFORM CLEAR-FIELDS
                 GO TO GET-015.
+      ************************************************************
+      * 'ESC' = X"07"; 'CODE-CANCEL' = X"87" ; 'ALT-F10' = X"9F" *
+      ************************************************************
            IF WS-NEWBATCH = "P"
-            IF F-EXIT-CH NOT = X"9F"
+            IF F-EXIT-CH NOT = X"9F" OR = X"87"
                MOVE
               "THIS BATCH HAS ALREADY BEEN POSTED, USE A NEW NUMBER"
                TO WS-MESSAGE
@@ -705,7 +708,7 @@
              AT POS.
             MOVE 2815 TO POS.
             DISPLAY
-             "OR PRESS <ALT-CANCEL> TO CANCEL THIS INVOICE BATCH."
+             "OR PRESS <ALT-F10> TO CANCEL THIS INVOICE BATCH."
              AT POS.
        GET-015.
             MOVE "BATCH"     TO F-FIELDNAME.
@@ -830,7 +833,7 @@
                 MOVE 2915 TO POS
                 DISPLAY WS-MESSAGE AT POS
                 GO TO GET-999.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
              IF WS-NEWBATCH NOT = "P"
                 MOVE 2915 TO POS
                 DISPLAY
@@ -1078,7 +1081,7 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-080.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
              IF WS-NEWINVOICE = "Y"
                 PERFORM CLEAR-HEAD-DETAILS
                 PERFORM CLEAR-FIELDS
@@ -1350,7 +1353,7 @@
        DIS-KEY-FUNC-010.
            MOVE 2910 TO POS.
            DISPLAY
-           "PRESS 'ALT-CANCEL' TO DELETE THIS ENTRY.                  "
+           "PRESS 'ALT-F10' TO DELETE THIS ENTRY.                  "
            AT POS.
        DIS-KEY-FUNC-050.
            MOVE 2910 TO POS.
@@ -1476,7 +1479,7 @@
            IF F-EXIT-CH = X"07"
                AND CRJRN-GLACC (SUB-1) = " "
                GO TO FILL-010.
-           IF F-EXIT-CH = X"87"
+           IF F-EXIT-CH = X"87" OR = X"9F"
                MOVE SUB-1 TO SUB-7
                PERFORM CANCEL-TRANSACTION
                MOVE 1 TO SUB-1
