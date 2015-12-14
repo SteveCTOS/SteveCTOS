@@ -52,13 +52,10 @@
        77  WS-COLUMN3-ASSETS         PIC S9(8)V99 VALUE 0.
        01  WS-GLMAST-STATUS.
            03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1   PIC 99.
        01  WS-MENU-STATUS.
-           03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9(2) COMP-X.
+           03  WS-MENU-ST1          PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
                05  WS-HEADER   PIC X(2).
@@ -705,7 +702,7 @@
                 WRITE PRINT-REC FROM DETAIL-LINE
                 MOVE " " TO PRINT-REC DETAIL-LINE
                 MOVE "75-020-30-10" TO WS-NEXT-NUMBER1
-                MOVE "75-020-50-00" TO WS-NEXT-NUMBER2
+                MOVE "75-020-50-99" TO WS-NEXT-NUMBER2
                 MOVE 0 TO WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN
@@ -1007,8 +1004,8 @@
                 MOVE "75-020-20-99" TO WS-NEXT-NUMBER2
                 GO TO GET-MEM-999.
             IF SUB-1 = 10
-                MOVE "75-020-25-05" TO WS-NEXT-NUMBER1
-                MOVE "75-020-25-15" TO WS-NEXT-NUMBER2
+                MOVE "75-020-25-00" TO WS-NEXT-NUMBER1
+                MOVE "75-020-25-99" TO WS-NEXT-NUMBER2
                 GO TO GET-MEM-999.
             IF SUB-1 = 11
                 MOVE "75-020-30-10" TO WS-NEXT-NUMBER1
@@ -1026,6 +1023,7 @@
                 MOVE "75-030-30-05" TO WS-NEXT-NUMBER1
                 MOVE "75-030-30-99" TO WS-NEXT-NUMBER2
                 GO TO GET-MEM-999.
+
             IF SUB-1 = 15
                 MOVE "75-040-05-00" TO WS-NEXT-NUMBER1
                 MOVE "75-040-99-99" TO WS-NEXT-NUMBER2
