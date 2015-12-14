@@ -696,7 +696,7 @@
       * 'ESC' = X"07"; 'CODE-CANCEL' = X"87" ; 'ALT-F10' = X"9F" *
       ************************************************************
            IF WS-NEWBATCH = "P"
-            IF F-EXIT-CH NOT = X"9F" OR = X"87"
+            IF F-EXIT-CH NOT = X"9F" AND NOT = X"87"
                MOVE
               "THIS BATCH HAS ALREADY BEEN POSTED, USE A NEW NUMBER"
                TO WS-MESSAGE
@@ -1041,7 +1041,7 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-080.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
              IF WS-NEWINVOICE = "Y"
                 PERFORM CLEAR-HEAD-DETAILS
                 PERFORM CLEAR-FIELDS

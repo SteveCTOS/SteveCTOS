@@ -340,6 +340,16 @@
             MOVE STTR-UNIT TO F-NAMEFIELD
             MOVE 4         TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
+            
+            MOVE 2720 TO POS
+            DISPLAY "STOCK ALT KEY:" AT POS
+            ADD 15 TO POS
+            DISPLAY STTR-ST-KEY AT POS
+            MOVE 2820 TO POS
+            DISPLAY "ACCNT ALT KEY:" AT POS
+            ADD 15 TO POS
+            DISPLAY STTR-AC-KEY AT POS.
+            
         GET-006.
             GO TO GET-999.
         GET-050.
