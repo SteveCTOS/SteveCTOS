@@ -324,6 +324,12 @@
                MOVE STTR-AC-KEY TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
+               MOVE "STTRANS MAIN KEY SHOWN NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE STTR-KEY TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
 
