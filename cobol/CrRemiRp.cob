@@ -919,7 +919,8 @@
            MOVE 3010 TO POS
            DISPLAY "READING CR-TRANS FOR ACCOUNT......         " AT POS.
            MOVE CR-ACCOUNT-NUMBER TO CRTR-ACC-NUMBER.
-           START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER
+           MOVE 0                 TO CRTR-DATE.
+           START CRTR-FILE KEY NOT < CRTR-ACC-DATE
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 = 23 OR 35 OR 49
                GO TO RDT-999.
@@ -981,6 +982,7 @@
        DCFLR-005.
            MOVE 3010 TO POS
            DISPLAY "DELETING CHEQUES FROM LAST RUN.....       " AT POS.
+           MOVE 0 TO CRCH-ACC-NUMBER.
            START CRCH-FILE KEY NOT < CRCH-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-CRCHEQUE-ST1 = 23 OR 35 OR 49 OR 91
@@ -1193,7 +1195,8 @@
        READ-CRJRN-TRANSACTIONS SECTION.
        RCINV-005.
            MOVE CRTR-INV-NO TO CRJRN-INV-NO.
-           START CRJRN-FILE KEY NOT < CRJRN-INV-NO.
+           START CRJRN-FILE KEY NOT < CRJRN-INV-NO
+              INVALID KEY NEXT SENTENCE.
        RCINV-010.
            READ CRJRN-FILE NEXT WITH LOCK
               AT END NEXT SENTENCE.
@@ -1206,10 +1209,13 @@
               MOVE 23 TO WS-CRJRN-ST1
               GO TO RCINV-999.
            IF WS-CRJRN-ST1 NOT = 0
-              MOVE 0 TO WS-CRJRN-ST1
               MOVE "CR-JRN BUSY ON READ-NEXT-LOCK, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CRJRN-ST1
               GO TO RCINV-010.
            IF CRJRN-INV-NO > CRTR-INV-NO
               MOVE 23 TO WS-CRJRN-ST1
@@ -2034,7 +2040,9 @@
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC BEFORE PAGE.
             MOVE 0 TO WS-NO-ACCS CR-ACCOUNT-NUMBER CRTR-ACC-NUMBER.
-            START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER.
+            MOVE 0 TO CRTR-DATE.
+            START CRTR-FILE KEY NOT < CRTR-ACC-DATE
+                INVALID KEY NEXT SENTENCE.
        PRR-002.
             READ CRTR-FILE NEXT
                AT END NEXT SENTENCE.

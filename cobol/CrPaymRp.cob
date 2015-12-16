@@ -146,7 +146,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -158,7 +157,7 @@
             MOVE WS-RANGE1 TO ALPHA-RATE.
             PERFORM DATE-CHECKING.
             IF SIGN-FOUND = 9
-               move "1st CHECK" TO WS-MESSAGE
+               MOVE "1st CHECK" TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO GET-000.
             MOVE WS-NEW-DATE     TO WS-CH-DATE CONVERT-DATE.
@@ -192,7 +191,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *    ACCEPT WS-RANGE2 AT POS.
           IF W-ESCAPE-KEY = 4
                GO TO GET-000.
           IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -215,7 +213,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *     ACCEPT WS-RANGE3 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-020.
            IF WS-RANGE3 = " "
@@ -241,7 +238,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FOR-LOC.
 
-      *     ACCEPT WS-FOR-LOC AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF WS-FOR-LOC NOT = "F" AND NOT = "L" AND NOT = " "
@@ -267,7 +263,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-ONLY.
 
-      *     ACCEPT WS-PRINT-ONLY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-025.
       *     IF WS-PRINT-ONLY NOT = "Y" AND NOT = "N"
@@ -297,7 +292,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHEQUE-ACCEPT.
 
-      *     ACCEPT WS-CHEQUE-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-030.
            IF WS-CHEQUE-ACCEPT = "     "
@@ -332,7 +326,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BATCH.
 
-      *     ACCEPT WS-BATCH AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-040.
            IF WS-BATCH = "     "
@@ -357,7 +350,7 @@
             MOVE 0 TO WS-NO-ACCS CR-ACCOUNT-NUMBER 
                       CRTR-DATE CRTR-ACC-NUMBER.
             MOVE WS-RANGE2 TO CRTR-ACC-NUMBER
-            START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER
+            START CRTR-FILE KEY NOT < CRTR-ACC-DATE
                INVALID KEY NEXT SENTENCE.
        PRR-002.
             READ CRTR-FILE NEXT
@@ -436,6 +429,10 @@
            PERFORM PRINT-TOTAL-LINE
            PERFORM READ-CREDITOR
            MOVE CR-ACCOUNT-NUMBER  TO WS-ACCNUMBER
+           IF CR-TERMS = "2"
+               MOVE "**TERMS=2**"           TO T-ERR1.
+           IF CR-PAY-METHOD = "M"
+               MOVE "**TYPE=M**"            TO T-ERR2.
            MOVE CRTR-ACC-NUMBER    TO H-ACC
            MOVE CR-NAME            TO H-NAME
            WRITE PRINT-REC FROM HEAD3 AFTER 1
@@ -473,10 +470,6 @@
        PT-005.
            IF WS-NO-ACCS = 0
                 GO TO PT-999.
-           IF CR-TERMS = "2"
-               MOVE "**TERMS=2**" TO T-ERR1.
-           IF CR-PAY-METHOD = "M"
-               MOVE "**TYPE=M**"  TO T-ERR2.
            MOVE "Total to pay for Account:" TO T-NAME
            MOVE WS-ACCTOTAL                 TO T-AMT
            MOVE WS-ACCDISC                  TO T-DISC.
@@ -491,8 +484,11 @@
       *
        WRITE-TRANSACTIONS SECTION.
        WTR-000.
-            MOVE 0 TO WS-NO-ACCS CR-ACCOUNT-NUMBER CRTR-ACC-NUMBER.
-            START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER.
+            MOVE 0 TO WS-NO-ACCS CR-ACCOUNT-NUMBER 
+                               CRTR-DATE
+                               CRTR-ACC-NUMBER.
+            START CRTR-FILE KEY NOT < CRTR-ACC-DATE
+                INVALID KEY NEXT SENTENCE.
        WTR-002.
             READ CRTR-FILE NEXT
                AT END NEXT SENTENCE.
