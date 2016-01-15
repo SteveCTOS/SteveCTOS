@@ -20,7 +20,7 @@
        WORKING-STORAGE SECTION.
        77  WS-CATEGORY        PIC X(3) VALUE " ".
        77  NEW-STOCKNO        PIC X VALUE " ".      
-       77  WS-STOCK-CHANGE    PIC X VALUE " ".      
+       77  WS-STOCK-CHANGE    PIC X VALUE " ".
        77  WS-END             PIC X VALUE " ".      
        77  WS-ALL-ENTERED     PIC X VALUE " ".
        77  WS-STOCKNUMBER     PIC X(15) VALUE " ".

@@ -421,7 +421,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-900.
            IF WS-ANSWER1 NOT > " "
@@ -484,7 +483,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FOR-LOC.
 
-      *     ACCEPT WS-FOR-LOC AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-015.
            IF WS-FOR-LOC NOT = "F" AND NOT = "L" AND NOT = " "
@@ -510,7 +508,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHEQUE-ACCEPT.
 
-      *     ACCEPT WS-CHEQUE-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-025.
            IF WS-CHEQUE-ACCEPT = "     "
@@ -546,7 +543,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-AUTO-REMIT.
 
-      *     ACCEPT WS-AUTO-REMIT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-040.
            IF WS-AUTO-REMIT NOT = "R" AND NOT = "A"
@@ -609,7 +605,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CAMS-CHEQUE.
 
-      *     ACCEPT WS-CAMS-CHEQUE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-050.
            IF WS-CAMS-CHEQUE NOT = "P" AND NOT = "T"
@@ -639,7 +634,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REMIT-PERIOD.
 
-      *     ACCEPT WS-REMIT-PERIOD AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-065.
            IF WS-REMI-YY = 0
@@ -668,7 +662,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REMI-F-L.
 
-      *     ACCEPT WS-REMI-F-L AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-075.
            IF WS-REMI-F-L NOT = "F" AND NOT = "L"
@@ -688,6 +681,7 @@
       *
        ALLOCATE-ITEMS SECTION.
        AI-001.
+            MOVE 0 TO CR-KEY.
             START CREDITOR-MASTER KEY NOT < CR-KEY.
        AI-005.
            MOVE 0 TO WS-DIST-PAYMENT
@@ -2021,10 +2015,10 @@
            
            IF WS-PRINTERSELECTED = 1
                MOVE "/ctools/spl/CrRemitCo" TO WS-PRINTER
-               MOVE WS-PRINTER            TO ALPHA-RATE
-               MOVE 20                    TO SUB-1
-               MOVE WS-CO-NUMBER          TO AL-RATE (SUB-1)
-               MOVE ALPHA-RATE            TO WS-PRINTER W-FILENAME.
+               MOVE WS-PRINTER              TO ALPHA-RATE
+               MOVE 20                      TO SUB-1
+               MOVE WS-CO-NUMBER            TO AL-RATE (SUB-1)
+               MOVE ALPHA-RATE              TO WS-PRINTER W-FILENAME.
        PRR-001.
             PERFORM GET-USER-PRINT-NAME.
             OPEN OUTPUT PRINT-FILE.

@@ -32,6 +32,7 @@
            03  F-NUMBERFIELD       PIC X(3).
            03  F-NAMEFIELD         PIC X(40).
            03  F-NAMEFIELD60       PIC X(60).
+           03  F-NAMEFIELD79       PIC X(79).
            03  F-NAMEFIELDJOB      PIC Z(3)9.
            03  F-NAMEFIELDNUMNEW   PIC 9(8).
            03  F-NAMEFIELDNUM      PIC 9(11).

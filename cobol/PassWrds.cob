@@ -609,7 +609,7 @@
                PERFORM ERROR-MESSAGE
                GO TO RC-010.
            ADD 1 TO SUB-4.
-          RC-900.
+       RC-900.
            CLOSE DATA-FILE.
        RC-999.
            EXIT.
@@ -624,7 +624,7 @@
            MOVE WS-VOL-DIR TO ALPHA-RATE.
        CDN-015.
            ADD 1 TO SUB-1.
-           IF SUB-1 NOT > 65
+           IF SUB-1 NOT > 60
             IF AL-RATE (SUB-1) NOT = " "
             GO TO CDN-015.
        CDN-020.
@@ -634,7 +634,7 @@
            MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
            ADD 1 TO SUB-1 SUB-2.
            IF DAT-RATE (SUB-2) NOT = " "
-            IF SUB-1 NOT > 65
+            IF SUB-1 NOT > 60
               GO TO CDN-025.
        CDN-030.
            MOVE ALPHA-RATE TO WS-DATA.
@@ -662,7 +662,7 @@
            PERFORM CDN-025
            PERFORM CHECK-DATA-NAME-POSITION           
            PERFORM CDN-031.
-               
+           
            GO TO CDN-040.
        CDN-900.
            PERFORM ERROR-020.
@@ -747,6 +747,7 @@
       * DATA NAME PROGRAM IN THE SYSTEM MANAGERS MENU TO DEFINE WHERE  *
       * ON THE DISK THE FILE IS FOUND LIKE - STMASTER.  THE [WIN]<DATA>*
       * GETS ADDED AUTOMATICALLY BY THE "COMPANY VOL / DIR INFO" PRGRAM*
+      *                                                                *
       *  THEN RE-COMPILE THIS PROGRAM WITH ENTRIES IN FOLLOWING FILES  *
       *  <COPY>CHECKDATANAMEPOSITION & <COPY>CHLFDLINKAGE CHANGED.     *
       ******************************************************************

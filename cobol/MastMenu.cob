@@ -55,8 +55,8 @@
             IF WS-ANSWER NOT = " 1" AND NOT = " 2" AND NOT = " 3"
                      AND NOT = " 4" AND NOT = " 5" AND NOT = " 6"
                      AND NOT = " 7" AND NOT = " 8" AND NOT = " 9"
-                     AND NOT = "10" AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 10, Re-Enter."
+                     AND NOT = "10" AND NOT = "11" AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 11, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -105,6 +105,8 @@
                MOVE "CoStffMt" TO WS-PROGRAM.
            IF WS-ANSWER = "10"
                MOVE "SlBrchMt" TO WS-PROGRAM.
+           IF WS-ANSWER = "11"
+               MOVE "OfNameIq" TO WS-PROGRAM.
            Call Ws-Program Using Ws-Linkage.
            PERFORM CLEAR-SCREEN
            CANCEL WS-PROGRAM

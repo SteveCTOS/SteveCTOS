@@ -106,4 +106,5 @@
           03 WS-COPRINTERSREMOTE  PIC X(40).
           03 WS-STTRANSTEMP       PIC X(40).
           03 WS-SLREGTEMP         PIC X(40).
+          03 WS-OFISDATA          PIC X(40).
       *

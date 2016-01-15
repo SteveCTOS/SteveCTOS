@@ -25,7 +25,7 @@
        01  WS-LINE-PRINT.
            03  FILLER           PIC X(26) VALUE " ".
            03  WS-ADD           PIC X(26) VALUE " ".
-           03  WS-PHONE         PIC X(20) VALUE " ".
+           03  WS-PHONE         PIC X(27) VALUE " ".
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
        01  WS-SPLIT-ACCOUNT.
@@ -226,7 +226,7 @@
             ADD 89 TO SUB-DIS
             MOVE " " TO WS-LINE-PRINT
             DISPLAY WS-LINE-PRINT AT SUB-DIS.
-
+            
             GO TO READ-010.
         READ-999.
             EXIT.

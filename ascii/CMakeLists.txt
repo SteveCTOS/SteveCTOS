@@ -26,7 +26,7 @@ set (bdb_list
   SlDailyEx  SlDistTot SlInvRev SlMaster SlParameter SlRegister SlRegLy SlSbRep SlSoldBy SlSpecials
   StAlternative StBranchCat StCatalogue StChanges StDiscAcc StImports StMaster StNewPrices
   StockLookup StOrderGen StOrders StReceipt StReceiptLy StSpecPr
-  StTrans StTransLy
+  StTrans StTransLy OfisData
   )
 
 foreach (name ${bdb_list})
@@ -46,7 +46,7 @@ set (data_list
   SlDailyExASCII SlDistTotASCII SlInvRevASCII SlMasterASCII SlParameterASCII SlRegisterASCII SlRegLyASCII SlSbRepASCII SlSoldByASCII SlSpecialsASCII
   StAlternativeASCII StBranchCatASCII StCatalogueASCII StChangesASCII StDiscAccASCII StImportsASCII StMasterASCII StNewPricesASCII
   StockLookupASCII StOrderGenASCII StOrdersASCII StReceiptASCII StReceiptLyASCII StSpecPrASCII
-  StTransASCII StTransLyASCII
+  StTransASCII StTransLyASCII OfisDataASCII
   )
 
 foreach (name ${data_list})
@@ -78,7 +78,7 @@ set (source_list
   GLJRNLXX GLMALYXX GLMASTXX GLPARMXX GLTRANXX GLTRLYXX 
   SLDAYEXX SLDISTXX SLINVRXX SLMASTXX SLPARMXX SLREGIXX SLRELYXX SLSBRPXX SLSPECXX SLSOBYXX 
   STALTEXX STBRNCXX STCATAXX STCHANXX STDISCXX STIMPOXX STLOOKXX STMASTXX STNEWPXX STORDEXX
-  STORDGXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX
+  STORDGXX STRECEXX STRELYXX STSPECXX STTRANXX STTRLYXX OFISXX
 )
 
 foreach(name ${source_list})

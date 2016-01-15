@@ -1,3 +1,4 @@
+      *
        OPEN-900.
             CALL "OPENFILE" USING  F-ERROR1
                                    F-FH
@@ -36,3 +37,4 @@
                 MOVE F-ERROR1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 STOP RUN.
+      *
