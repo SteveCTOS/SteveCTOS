@@ -17,20 +17,35 @@ mkdir /media/ctools/USB/data10
 mkdir /media/ctools/USB/data11
 mkdir /media/ctools/USB/data12
 
+echo Copying Data01.....
 cp -a /ctools/data01/* /media/ctools/USB/data01
+echo Copying Data02.....
 cp -a /ctools/data02/* /media/ctools/USB/data02
+echo Copying Data03.....
 cp -a /ctools/data03/* /media/ctools/USB/data03
-cp -a /ctools/data05/* /media/ctools/USB/data04
+echo Copying Data04.....
+cp -a /ctools/data04/* /media/ctools/USB/data04
+echo Copying Data05.....
 cp -a /ctools/data05/* /media/ctools/USB/data05
+echo Copying Data06.....
 cp -a /ctools/data06/* /media/ctools/USB/data06
+echo Copying Data07.....
 cp -a /ctools/data07/* /media/ctools/USB/data07
+echo Copying Data08.....
 cp -a /ctools/data08/* /media/ctools/USB/data08
+echo Copying Data09.....
 cp -a /ctools/data09/* /media/ctools/USB/data09
+echo Copying Data10.....
 cp -a /ctools/data10/* /media/ctools/USB/data10
+echo Copying Data11.....
 cp -a /ctools/data11/* /media/ctools/USB/data11
+echo Copying Data12.....
 cp -a /ctools/data12/* /media/ctools/USB/data12
 
+rm /ctools/lock/*
+
 echo COPYING DATA TO BACKUP DISK ON SERVER
+ll /media/ctools/BACKUPHDD/ctools/*
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/
 
 Submit MainCont TapeBackupMonth.Sub01
@@ -71,3 +86,7 @@ zip /ctools/drzip/$2DrPay.Zip *
 rm *
 
 cd /ctools/bin
+
+echo Moving Faxes to FaxSent folder......
+cp /ctools/fax/*.pdf /ctools/faxsent/
+rm /ctools/fax/*

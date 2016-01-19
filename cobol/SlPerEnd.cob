@@ -443,7 +443,7 @@
 
            PERFORM CHECK-WEEK-END-DONE.
            PERFORM CGP-005 THRU CGP-010.
-           PERFORM CGP-900. 
+           PERFORM CGP-900.
 
            CALL "C$SLEEP" USING 1.
            PERFORM PARAMETERS.

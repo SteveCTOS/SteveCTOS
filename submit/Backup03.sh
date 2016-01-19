@@ -51,4 +51,6 @@ cp /ctools/fax/*.pdf /ctools/faxsent/
 rm /ctools/fax/*
 
 echo COPYING DATA TO BACKUP DISK ON SERVER
+ll /media/ctools/BACKUPHDD/ctools/*
+
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools

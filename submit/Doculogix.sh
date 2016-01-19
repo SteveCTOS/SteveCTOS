@@ -23,6 +23,7 @@ cp DrLaserCo03 /ctools/image/CtnStat
 cp DrEMailCo03 /ctools/estate/$1Co03
 
 cp DBPrintCo05 /ctools/image/InCo05
+cp drlaserco05 /ctools/image/StCo05
 
 cp DBPrintCo07 /ctools/image/InCo07
 cp DrLaserCo07 /ctools/image/StCo07

@@ -527,8 +527,10 @@
                PERFORM SCROLL-NEXT
                PERFORM SCROLL-050
                GO TO FILL-005.
-      ****<CODE-TAB>  USED TO CREATE A SPACE BETWEEN LINES *****
-           IF F-EXIT-CH = X"89" AND SUB-25 < 50
+      ****  USED TO CREATE A SPACE BETWEEN LINES *****      
+      ****<CODE-TAB>=X"89" IN CTOS, <ALT-F8>X"9d" IN LINUX
+           IF F-EXIT-CH = X"89" OR = X"9D"
+                AND SUB-25 < 50
                 PERFORM EMPTY-LINE
                 MOVE SUB-3 TO SUB-1
               IF SUB-1 > 3
