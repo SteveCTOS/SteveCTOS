@@ -18,8 +18,8 @@
            03  F-OPENMODE-MM       PIC X(2) VALUE "mm".
            03  F-FORMNAME          PIC X(20) VALUE SPACES.
            03  F-CBFORMNAME        BINARY-SHORT VALUE 0.
-           03  F-FORM              PIC X(5000) VALUE " ".
-           03  F-CBMAX             BINARY-SHORT VALUE 5000.
+           03  F-FORM              PIC X(6000) VALUE " ".
+           03  F-CBMAX             BINARY-SHORT VALUE 6000.
            03  F-IFRAME            BINARY-SHORT VALUE 0.
            03  F-ICOL              BINARY-SHORT VALUE 0.
            03  F-ILINE             BINARY-SHORT VALUE 0.
@@ -32,7 +32,7 @@
            03  F-NUMBERFIELD       PIC X(3).
            03  F-NAMEFIELD         PIC X(40).
            03  F-NAMEFIELD60       PIC X(60).
-           03  F-NAMEFIELD79       PIC X(79).
+           03  F-NAMEFIELD79       PIC X(78).
            03  F-NAMEFIELDJOB      PIC Z(3)9.
            03  F-NAMEFIELDNUMNEW   PIC 9(8).
            03  F-NAMEFIELDNUM      PIC 9(11).

@@ -58,19 +58,14 @@
            03  SPLIT-SC         PIC 99.
        01  WS-CRTRANS-STATUS.
            03  WS-CRTRANS-ST1   PIC 99.
-      *     03  WS-CRTRANS-ST2   PIC 9(2) COMP-X.
        01  WS-CRJRN-STATUS.
            03  WS-CRJRN-ST1   PIC 99.
-      *     03  WS-CRJRN-ST2   PIC 9(2) COMP-X.
        01  WS-GLPARAMETER-STATUS.
            03  WS-GLPARAMETER-ST1   PIC 99.
-      *     03  WS-GLPARAMETER-ST2   PIC 9(2) COMP-X.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1    PIC 99.
-      *     03  WS-DAILY-ST2    PIC X.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC 9(2) COMP-X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -101,7 +96,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM CONTROL-900.
            IF WS-ANSWER1 NOT = "M" AND NOT = "Y"
@@ -129,7 +123,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-ANSWER2 = "Y"
@@ -154,7 +147,6 @@
        CONTROL-040.
            PERFORM CHECK-CRPERIODS
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE
            MOVE WS-YY  TO SPLIT-DIS-YY
            MOVE ":"    TO SPLIT-DIS-FILD1
            MOVE WS-MM  TO SPLIT-DIS-MM
@@ -253,7 +245,6 @@
                PERFORM CTOS-ACCEPT
                MOVE CDA-DATA TO WS-ANSWER3
 
-      *          ACCEPT WS-ANSWER3 AT POS
               IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
@@ -278,7 +269,6 @@
                PERFORM CTOS-ACCEPT
                MOVE CDA-DATA TO WS-ANSWER3
 
-      *          ACCEPT WS-ANSWER3 AT POS
               IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
@@ -300,6 +290,7 @@
             DISPLAY " 1. Creditors Files Being Processed." AT POS.
             
             PERFORM OPEN-005.
+            MOVE 0 TO CR-KEY.
             START CREDITOR-MASTER KEY NOT < CR-KEY.
        UCR-010.
             READ CREDITOR-MASTER NEXT WITH LOCK
@@ -359,6 +350,9 @@
             PERFORM OPEN-008.
            MOVE 1610 TO POS.
            DISPLAY " 2. CrJrns File Being Processed.          " AT POS.
+           MOVE " " TO CRJRN-REFERENCE
+           MOVE 0   TO CRJRN-TRANS
+                       CRJRN-TYPE.
            START CRJRN-FILE KEY NOT < CRJRN-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-CRJRN-ST1 NOT = 0
@@ -437,6 +431,8 @@
             PERFORM OPEN-010.
            MOVE 1710 TO POS.
            DISPLAY " 3. CrTrans File Being Processed.  " AT POS.
+           MOVE 0   TO CRTR-TYPE
+                       CRTR-TRANS.
            START CRTR-FILE KEY NOT < CRTR-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 NOT = 0

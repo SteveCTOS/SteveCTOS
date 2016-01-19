@@ -108,7 +108,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MONTH-YEAR.
 
-      *     ACCEPT WS-MONTH-YEAR AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM CONTROL-900.
            IF WS-MONTH-YEAR NOT = "M" AND NOT = "Y"
@@ -486,10 +485,12 @@
       *     PERFORM DELETE-TRANS.
            PERFORM OPEN-011.
            PERFORM OPEN-015.
-           START GL-MASTER KEY NOT < GL-NUMBER
+           MOVE " " TO GL-NUMBER.
+           START GL-MASTER KEY NOT < GL-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 NOT = 0
-                MOVE "WE HAVE A PROBLEM IN THE START OF GLMASTER."
+                MOVE 
+           "WE HAVE A PROBLEM IN THE START OF GLMASTER W-GLM-LY-005."
                 TO WS-MESSAGE
                 PERFORM ERROR1-MESSAGE.
            MOVE 1510 TO POS
@@ -631,6 +632,14 @@
             PERFORM WRITE-DAILY.
        GLM-005.
            PERFORM OPEN-015.
+           MOVE " " TO GL-NUMBER.
+           START GL-MASTER KEY NOT < GL-KEY
+                INVALID KEY NEXT SENTENCE.
+           IF WS-GLMAST-ST1 NOT = 0
+                MOVE
+           "WE HAVE A PROBLEM IN THE START OF GLMASTER GLM-005."
+                TO WS-MESSAGE
+                PERFORM ERROR1-MESSAGE.
            IF WS-MONTH-YEAR = "Y"
                MOVE 1710 TO POS
                DISPLAY " 4. GlMaster Files Being Processed." AT POS
@@ -847,13 +856,16 @@
            DISPLAY "UPDATING GL-MASTER FILES..." AT POS.
        UPGL-005.
            MOVE GLTRANS-ACCOUNT-NUMBER TO GL-NUMBER.
-           START GL-MASTER KEY NOT < GL-KEY.
+           START GL-MASTER KEY NOT < GL-KEY
+              INVALAID KEY NEXT SENTENCE.
        UPGL-010.
            READ GL-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "GLMASTER FILE DOES NOT EXIST, CALL YOUR SUPERVISOR"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE GL-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO UPGL-999.
            IF WS-GLMAST-ST1 NOT = 0
@@ -889,13 +901,16 @@
        UPGLH-005.
            MOVE GLTRANS-ACCOUNT-NUMBER TO WS-GLNUMBER.
            MOVE WS-GLHEADER            TO GL-NUMBER.
-           START GL-MASTER KEY NOT < GL-KEY.
+           START GL-MASTER KEY NOT < GL-KEY
+               INVALID KEY NEXT SENTENCE.
        UPGLH-010.
            READ GL-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "GLHEADER FILE DOES NOT EXIST, CALL YOUR SUPERVISOR"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE GL-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO UPGLH-999.
            IF WS-GLMAST-ST1 NOT = 0
@@ -924,13 +939,16 @@
        UPGLSH-005.
            MOVE GLTRANS-ACCOUNT-NUMBER TO WS-GLNUMBER.
            MOVE WS-HEAD-SUB            TO GL-NUMBER.
-           START GL-MASTER KEY NOT < GL-KEY.
+           START GL-MASTER KEY NOT < GL-KEY
+               INVALID KEY NEXT SENTENCE.
        UPGLSH-010.
            READ GL-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "GLSUBHEAD FILE DOES'NT EXIST, CALL YOUR SUPERVISOR"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE GL-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO UPGLSH-999.
            IF WS-GLMAST-ST1 NOT = 0

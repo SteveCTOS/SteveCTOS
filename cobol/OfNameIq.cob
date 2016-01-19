@@ -64,10 +64,13 @@
        Procedure Division Using Ws-Linkage.
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
-           PERFORM OPEN-FILES.
+      *     PERFORM OPEN-FILES.
            PERFORM CLEAR-SCREEN.
        CONTROL-010.
+           MOVE "OfNameIq" TO F-FORMNAME.
+           PERFORM OPEN-010 THRU OPEN-020.
            PERFORM DISPLAY-FORM.
+       CONTROL-020.
            PERFORM GET-DATA.
            PERFORM READ-MASTER-DISPLAY.
            GO TO CONTROL-010.
@@ -198,9 +201,11 @@
                 MOVE 7           TO F-CBFIELDLENGTH
                 PERFORM READ-FIELD-ALPHA.
             MOVE 2910 TO POS.
-            DISPLAY "                                        " AT POS.
+            DISPLAY "                                                 "
+                AT POS.
             MOVE 3020 TO POS.
-            DISPLAY "                                        " AT POS.
+            DISPLAY "                                                 "
+                AT POS.
             IF F-EXIT-CH = X"04"
                 PERFORM END-OFF.
             IF F-EXIT-CH = X"0C"
@@ -226,20 +231,24 @@
                 MOVE F-NAMEFIELD TO ALPHA-RATE
                 PERFORM DECIMALISE-RATE
                 MOVE NUMERIC-RATE TO WS-ACC
-                PERFORM OPEN-020 THRU OPEN-900
+                PERFORM CLEAR-SCREEN
+                MOVE "OfNameMt" TO F-FORMNAME
+                PERFORM OPEN-010 THRU OPEN-020
                 PERFORM DISPLAY-FORM
                 PERFORM GET-OFIS-DATA
-                PERFORM CLEAR-MIDDLE
+                PERFORM END-000
                 MOVE 0 TO F-EXIT-CH
                 MOVE 0 TO SUB-2
                 MOVE 1 TO SUB-3
-                MOVE 800 TO SUB-DIS.
+                MOVE 800 TO SUB-DIS
+                GO TO READ-999.
                 
             IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
                      AND NOT = X"07" AND NOT = 0     AND NOT = 1
                      AND NOT = X"1A"
                 GO TO READ-025.
             ADD 1      TO SUB-DIS.
+   
             MOVE SUB-3 TO WS-LINE.
             MOVE OFIS-NAME  TO WS-LASTNAME.
             DISPLAY WS-LAST AT SUB-DIS WITH REVERSE-VIDEO.
@@ -408,16 +417,96 @@
             PERFORM SCROLL-PREVIOUS.
 
             PERFORM FILL-BODY.
-            IF WS-ABOVE-BODY = "1"
-                GO TO GET-OFIS-001.
+      *      IF WS-ABOVE-BODY = "1"
+      *          GO TO GET-OFIS-001.
        GET-OFIS-999.
             EXIT.
       *
        FILL-BODY SECTION.
-       FILL-000.
+       FILL-006.
+            MOVE "TITLE"     TO F-FIELDNAME.
+            MOVE 5           TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 10          TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD TO OFIS-TITLE.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-006.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-006.
+        FILL-010.
+            MOVE "AFFILIATION"  TO F-FIELDNAME.
+            MOVE 11             TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 10             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-AFFILIATION.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-010.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-010.
+       FILL-450.
             MOVE " " TO WS-ABOVE-BODY
             MOVE 1 TO SUB-1 SUB-2.
-       FILL-005.
+       FILL-455.
             PERFORM ERROR-020.
 
             MOVE 3010 TO POS
@@ -425,7 +514,7 @@
             ADD 15 TO POS
             MOVE SUB-1 TO WS-BODY-LINE
             DISPLAY WS-BODY-LINE AT POS.
-       FILL-010.
+       FILL-500.
       *      IF OFIS-LINE-DESC (SUB-1) NOT = " "
       *          PERFORM SCROLL-050.
                 
@@ -433,7 +522,7 @@
             MOVE "LINE-DESC"   TO F-FIELDNAME
             MOVE 9             TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
-            MOVE 79            TO F-CBFIELDLENGTH
+            MOVE 78            TO F-CBFIELDLENGTH
             PERFORM READ-FIELD79-ALPHA.
             
             MOVE F-NAMEFIELD79 TO OFIS-LINE-DESC (SUB-1).
@@ -441,10 +530,10 @@
             IF F-EXIT-CH = X"0A" OR = X"0B"
              IF F-INDEX = 10
                 PERFORM SCROLL-NEXT
-                GO TO FILL-010
+                GO TO FILL-500
               ELSE
                 ADD 1 TO SUB-1 F-INDEX
-                GO TO FILL-010.
+                GO TO FILL-455.
 
             IF F-EXIT-CH = X"01" AND F-INDEX = 1
                 MOVE "1" TO WS-ABOVE-BODY
@@ -452,25 +541,26 @@
 
             IF F-EXIT-CH = X"01" AND F-INDEX > 1
                 SUBTRACT 1 FROM F-INDEX SUB-1
-                GO TO FILL-005.
+                GO TO FILL-455.
                 
             IF F-EXIT-CH = X"11"
                 PERFORM SCROLL-NEXT
-                GO TO FILL-010.
+                GO TO FILL-500.
             IF F-EXIT-CH = X"0C"
                 PERFORM SCROLL-NEXT-PAGE
-                GO TO FILL-010.
+                GO TO FILL-500.
             IF F-EXIT-CH = X"05"
                 PERFORM SCROLL-PREVIOUS
-                GO TO FILL-010.
+                GO TO FILL-500.
             IF F-EXIT-CH = X"13"
                 PERFORM SCROLL-DOWN
-                GO TO FILL-010.
+                GO TO FILL-500.
       ******************
       * TAB CHARACTER  *
       ******************
             IF F-EXIT-CH = X"09"
                 PERFORM ERROR-020
+                PERFORM REWRITE-OFIS-RECORD
                 GO TO FILL-999.
                 
             ADD 1 TO SUB-1 F-INDEX.
@@ -482,11 +572,11 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-999.
-            IF F-INDEX < 8
-                GO TO FILL-005.
+            IF F-INDEX < 11
+                GO TO FILL-455.
             SUBTRACT 1 FROM SUB-1
             PERFORM SCROLL-NEXT
-            GO TO FILL-010.
+            GO TO FILL-455.
        FILL-999.
             EXIT.
       *
@@ -638,7 +728,7 @@
             ADD 1 TO F-INDEX SUB-1.
             IF SUB-1 > 200  
                 GO TO NEXT-030.
-            IF OFIS-LINE-DESC (SUB-1) = " "
+      *      IF OFIS-LINE-DESC (SUB-1) = " "
             IF F-INDEX < 11
                 GO TO NEXT-010.
        NEXT-030.
@@ -654,7 +744,7 @@
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
             
-            PERFORM FILL-005.
+            PERFORM FILL-455.
        NEXT-999.
              EXIT.
       *
@@ -674,7 +764,7 @@
             ADD 1 TO F-INDEX SUB-1.
             IF SUB-1 > 200
                 GO TO NEXT-PAGE-030.
-            IF OFIS-LINE-DESC (SUB-1) = " "
+      *      IF OFIS-LINE-DESC (SUB-1) = " "
             IF F-INDEX < 10
                 GO TO NEXT-PAGE-010.
        NEXT-PAGE-030.
@@ -692,13 +782,13 @@
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
 
-            PERFORM FILL-005.
+            PERFORM FILL-455.
        NEXT-PAGE-999.
              EXIT.
       *
        SCROLL-PREVIOUS SECTION.
        PREV-000.
-            SUBTRACT 7 FROM SUB-1.
+            SUBTRACT 10 FROM SUB-1.
             MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
                  MOVE 1 TO SUB-1.
@@ -708,8 +798,8 @@
             ADD 1 TO F-INDEX SUB-1.
             IF SUB-1 > 200   
                 GO TO PREV-030.
-            IF OFIS-LINE-DESC (SUB-1) = " "
-            IF F-INDEX < 11
+      *      IF OFIS-LINE-DESC (SUB-1) = " "
+             IF F-INDEX < 11
                 GO TO PREV-010.
        PREV-030.
             MOVE 1 TO F-INDEX.
@@ -717,7 +807,7 @@
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
 
-            PERFORM FILL-005.
+            PERFORM FILL-455.
        PREV-999.
              EXIT.
       *
@@ -733,7 +823,7 @@
             ADD 1 TO F-INDEX SUB-1.
             IF SUB-1 > 200   
                 GO TO SCROLL-DOWN-030.
-            IF OFIS-LINE-DESC (SUB-1) = " "
+     *       IF OFIS-LINE-DESC (SUB-1) = " "
             IF F-INDEX < 11
                 GO TO SCROLL-DOWN-010.
        SCROLL-DOWN-030.
@@ -742,7 +832,7 @@
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
 
-            PERFORM FILL-005.
+            PERFORM FILL-455.
        SCROLL-DOWN-999.
              EXIT.
       *
@@ -754,7 +844,7 @@
             MOVE "LINE-DESC"            TO F-FIELDNAME
             MOVE 9                      TO F-CBFIELDNAME
             MOVE OFIS-LINE-DESC (SUB-1) TO F-NAMEFIELD79
-            MOVE 79                     TO F-CBFIELDLENGTH
+            MOVE 78                     TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD79-ALPHA.
        SCROLL-999.
              EXIT.
@@ -817,40 +907,78 @@
            MOVE 2501 TO POS
            DISPLAY WS-MIDDLE AT POS
            MOVE 2601 TO POS
+           DISPLAY WS-MIDDLE AT POS
+           MOVE 2701 TO POS
            DISPLAY WS-MIDDLE AT POS.
        CM-999.
            EXIT.
       *
        OPEN-FILES SECTION.
        OPEN-0000.
-            GO TO OPEN-010.
+      *      GO TO OPEN-010.
        OPEN-000.
             OPEN I-O OFIS-FILE.
             IF WS-OFIS-ST1 NOT = 0
-               MOVE "OFIS BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+               MOVE "OFIS BUSY ON OPEN, 'ESC' TO RETRY." TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OFIS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-OFIS-ST1
                GO TO  OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.
-           MOVE "OfNameIq"      TO F-FORMNAME
-           MOVE 8               TO F-CBFORMNAME.
-            
-            GO TO OPEN-900.
+           CALL "OPENFILE" USING   F-ERROR1
+                                   F-FH
+                                   F-FILENAME
+                                   F-CBFILENAME
+                                   F-FILENAME
+                                   F-INTEGERZERO
+                                   F-OPENMODE.
+            IF F-ERROR1 NOT = 0
+                DISPLAY "OPEN-FILE FORM @ OPEN-010 ERROR"
+                DISPLAY F-ERROR1
+                STOP RUN.
        OPEN-020.
-            Move Ws-Forms-Name   TO F-FileName
-            Move Ws-cbForms-name TO F-CbFileName.
-            MOVE "OfNameMt"      TO F-FORMNAME
-            MOVE 8               TO F-CBFORMNAME.
-       Copy "OpenForms".
+            MOVE 8 TO F-CBFORMNAME.
+            CALL "OPENFORM" USING  F-ERROR2
+                                   F-FH
+                                   F-FORMNAME
+                                   F-CBFORMNAME
+                                   F-FORM
+                                   F-CBMAX.
+            IF F-ERROR2 NOT = 0
+                MOVE "OPEN-FORM @ OPEN-020 ERROR" TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE F-ERROR2 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                STOP RUN.
+            CALL "CLOSEFILE" USING F-ERROR1
+                                   F-FH.
+            IF F-ERROR1 NOT = 0
+                DISPLAY "CLOSEFILE ERROR"
+                DISPLAY F-ERROR1
+                STOP RUN.
+      * OPEN-010.
+      *      MOVE Ws-Forms-Name   TO F-FILENAME
+      *      MOVE Ws-cbForms-name TO F-CBFILENAME.
+      *      MOVE "OfNameIq"      TO F-FORMNAME
+      *      MOVE 8               TO F-CBFORMNAME.
+      * OPEN-011.
+      *      GO TO OPEN-900.
+      * OPEN-020.
+      *      Move Ws-Forms-Name   TO F-FileName
+      *      Move Ws-cbForms-name TO F-CbFileName.
+      *      MOVE "OfNameMt"      TO F-FORMNAME
+      *      MOVE 8               TO F-CBFORMNAME.
+      * Copy "OpenForms".
        OPEN-999.
            EXIT.
       *
         END-OFF SECTION.
         END-000.
            CLOSE OFIS-FILE.
+        END-900.
       *    STOP RUN.
            EXIT PROGRAM.
         END-999.
