@@ -35,13 +35,10 @@
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1     PIC 99.
-      *     03  WS-CREDITOR-ST2     PIC X.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1     PIC 99.
-      *     03  WS-CRTRANS-ST2     PIC X.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-CRREF.
            03  WS-CRREF5          PIC X(5).
            03  WS-REFREST         PIC X(5).
@@ -92,7 +89,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-900.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -114,7 +110,8 @@
        RCL-001.
            PERFORM SUB-020.
            MOVE 0 TO CR-KEY.
-           START CREDITOR-MASTER KEY NOT < CR-KEY.
+           START CREDITOR-MASTER KEY NOT < CR-KEY
+              INVALID KEY NEXT SENTENCE.
        RCL-010.
            READ CREDITOR-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
@@ -139,8 +136,9 @@
       *
        PRINT-ROUTINE SECTION.
        PR-000.
-           MOVE CR-ACCOUNT-NUMBER TO CRTR-ACC-NUMBER.
-           START CRTR-FILE KEY NOT < CRTR-ACC-NUMBER
+           MOVE CR-ACCOUNT-NUMBER TO CRTR-ACC-NUMBER
+           MOVE 0                 TO CRTR-DATE.
+           START CRTR-FILE KEY NOT < CRTR-ACC-DATE
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 = 23 OR 35 OR 49
                PERFORM SUBTOTALS
