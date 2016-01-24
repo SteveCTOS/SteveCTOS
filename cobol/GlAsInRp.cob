@@ -3,6 +3,8 @@
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -151,7 +153,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-GROWTH-PAYOFF.
 
-      *     ACCEPT WS-GROWTH-PAYOFF AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-005.
            IF WS-GROWTH-PAYOFF NOT = "G" AND NOT = "P"
@@ -170,7 +171,6 @@
               MOVE H3-CAPITAL TO WS-ANSWER.
            IF WS-GROWTH-PAYOFF = "G"
               MOVE H3-CAPITAL TO WS-ANSWER.
-      *        MOVE " "       TO WS-ANSWER.
            MOVE 1010 TO POS.
            DISPLAY "ENTER THE TOTAL CAPITAL AMOUNT : [            ]"
                  AT POS.
@@ -185,7 +185,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-010.
            MOVE WS-ANSWER TO ALPHA-RATE.
@@ -225,7 +224,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-012.
            MOVE WS-ANSWER TO ALPHA-RATE.
@@ -265,7 +263,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FIXED-AMT.
 
-      *     ACCEPT WS-FIXED-AMT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-GROWTH-PAYOFF = "G"
@@ -303,7 +300,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-020.
            MOVE WS-ANSWER TO ALPHA-RATE.
@@ -346,7 +342,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-025.
            MOVE WS-ANSWER TO ALPHA-RATE.
@@ -379,7 +374,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
             IF WS-GROWTH-PAYOFF NOT = "G"
                GO TO CONTROL-025
@@ -421,7 +415,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-030.
            MOVE WS-ANSWER TO ALPHA-RATE.
@@ -459,7 +452,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-035.
            MOVE WS-ANSWER TO ALPHA-RATE.
@@ -494,7 +486,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT.
 
-      *     ACCEPT WS-COMMENT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-037.
            MOVE WS-COMMENT TO H1-COMMENT.
@@ -507,7 +498,6 @@
            MOVE 3010 TO POS
            DISPLAY "The Report is in progress......." AT POS
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H1-DATE
@@ -719,8 +709,6 @@
               MOVE 'F'       TO CDA-ATTR
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-ACCEPT
-
-      *        ACCEPT WS-ACCEPT AT POS
             ELSE
               GO TO CPR-020.
            IF W-ESCAPE-KEY = 3
@@ -824,7 +812,6 @@
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-ACCEPT.
 
-      *        ACCEPT WS-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 3
               GO TO END-900
            ELSE
@@ -864,7 +851,6 @@
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-ACCEPT.
 
-      *        ACCEPT WS-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 3
               GO TO END-900.
            IF WS-PRINTER = "[VID]" OR = "[Vid]"
@@ -875,7 +861,24 @@
            PERFORM PRINT-REPORT-INFO.
        END-500.
            CLOSE PRINT-FILE.
-           PERFORM SEND-REPORT-TO-PRINTER.
+           
+           IF WS-PRINTERNUMBER (21) NOT = 20 AND NOT = 0
+                PERFORM SEND-REPORT-TO-PRINTER
+                GO TO END-900.
+           IF WS-PRINTERNUMBER (21) = 0
+                GO TO END-900.
+           
+            MOVE "When Finished Viewing The Report, Press Q to Quit."
+              TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE. 
+              
+            MOVE 
+            CONCATENATE('less ', ' ', TRIM(WS-PRINTER))
+                TO WS-COMMAND-LINE.
+      
+            CALL "SYSTEM" USING WS-COMMAND-LINE.
+      *        RETURNING W-STATUS.
+      *     PERFORM SEND-REPORT-TO-PRINTER.
            MOVE 66 TO LINE-CNT
            MOVE 0  TO PAGE-CNT
                       WS-CAPITAL

@@ -44,7 +44,6 @@
        77  WS-COST-TOT          PIC S9(7)V99 VALUE 0.
        01  WS-SOLDBY-STATUS.
            03  WS-SOLDBY-ST1    PIC 99.
-      *     03  WS-SOLDBY-ST2    PIC 9(2) COMP-X.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H1-DATE          PIC X(10).
@@ -138,7 +137,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO PRINT-SB.
 
-      *     ACCEPT PRINT-SB AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF PRINT-SB = " " 
@@ -164,7 +162,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-TOT.
 
-      *     ACCEPT WS-PRINT-TOT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-030.
            IF WS-PRINT-TOT NOT = "Y" AND NOT = "N"

@@ -77,16 +77,12 @@
            03  WS-SUPPLY-COUNT PIC 999.
        01  WS-OUTORD-STATUS.
            03  WS-OUTORD-ST1    PIC 99.
-      *     03  WS-OUTORD-ST2    PIC 9(2) COMP-X.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC 9(2) COMP-X.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1    PIC 99.
-      *     03  WS-SLPARAMETER-ST2    PIC 9(2) COMP-X.
        01  WS-GEN-STATUS.
            03  WS-GEN-ST1    PIC 99.
-      *     03  WS-GEN-ST2    PIC 9(2) COMP-X.
        01  SPLIT1-DATE.
            03  SPLIT1-YY        PIC 9999.
            03  SPLIT1-MM        PIC 99.
@@ -231,7 +227,6 @@
            Copy "PrinterAccept".
        CONTROL-020.
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE.
            MOVE WS-DATE TO SPLIT-DATE.
            PERFORM CONVERT-DATE-FORMAT.
            MOVE DISPLAY-DATE TO H-DATE.
@@ -251,7 +246,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -274,7 +268,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-030.
            IF WS-RANGE2 = " "
@@ -299,7 +292,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHECK-ORDERS.
 
-      *     ACCEPT WS-CHECK-ORDERS AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-040.
            IF WS-CHECK-ORDERS NOT = "A" AND NOT = "E" AND NOT = "B"
@@ -362,7 +354,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 1 TO SUB-1 SUB-2
                GO TO CONTROL-050.
@@ -391,7 +382,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 1 TO SUB-1 SUB-2
                GO TO CONTROL-060.
@@ -420,7 +410,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 2 TO SUB-1 SUB-2
                GO TO CONTROL-070.
@@ -449,7 +438,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 3 TO SUB-1 SUB-2
                GO TO CONTROL-080.
@@ -478,7 +466,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 4 TO SUB-1 SUB-2
                GO TO CONTROL-090.
@@ -507,7 +494,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 5 TO SUB-1 SUB-2
                GO TO CONTROL-100.
@@ -536,7 +522,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 6 TO SUB-1 SUB-2
                GO TO CONTROL-150.
@@ -565,7 +550,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 7 TO SUB-1 SUB-2
                GO TO CONTROL-160.
@@ -594,7 +578,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 8 TO SUB-1 SUB-2
                GO TO CONTROL-170.
@@ -623,7 +606,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 9 TO SUB-1 SUB-2
                GO TO CONTROL-180.
@@ -652,7 +634,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE 10 TO SUB-1 SUB-2
                GO TO CONTROL-190.
@@ -685,7 +666,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SEA-AIR-ORDER.
 
-      *     ACCEPT WS-SEA-AIR-ORDER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-200.
            IF WS-SEA-AIR-ORDER NOT = "A" AND NOT = "B"
@@ -716,7 +696,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER.
 
-      *     ACCEPT WS-SUPPLIER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-900.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -741,7 +720,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TEMPORD.
 
-      *     ACCEPT WS-TEMPORD AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-1000.
            IF WS-TEMPORD NOT = "Y" AND NOT = "N"
@@ -769,7 +747,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-VALID-LINES-ONLY.
 
-      *     ACCEPT WS-VALID-LINES-ONLY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-1005.
            IF WS-VALID-LINES-ONLY NOT = "Y" AND NOT = "N"
@@ -1111,11 +1088,12 @@
            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-STOCK TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PR-001.
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
@@ -1130,7 +1108,7 @@
            IF ST-STOCKNUMBER > WS-RANGE2
                PERFORM SUB-LINE
                GO TO PR-900.
-           IF WS-SUPPLIER = "    "
+           IF WS-SUPPLIER = "       "
                GO TO PR-010.
            IF ST-SUPPLIER NOT = WS-SUPPLIER
                GO TO PR-001.
@@ -1314,7 +1292,7 @@
                        ((ST-MAXIMUMLEVEL * 60) / 100).
                        
       * CHANGED 28/11/2006 SO THAT BRANCHES DON'T CARRY A LOT OF STOCK
-      *                 ((ST-MAXIMUMLEVEL * 75) / 100).
+      *                 ((ST-MAXIMUMLEVEL * 60) / 100).
            COMPUTE WS-ORDER-URGENT = WS-RECEIVE-SOON - WS-QTY.
            IF WS-ORDER-URGENT < 0
               MOVE 0 TO WS-ORDER-URGENT.
@@ -1471,11 +1449,11 @@
            IF WS-QTY < ST-MINIMUMLEVEL
                PERFORM COU-010.
            IF WS-QTY + WS-RECEIVE-LATER <
-                    ((ST-MAXIMUMLEVEL * 75) / 100)
+                    ((ST-MAXIMUMLEVEL * 60) / 100)
               PERFORM COU-040.
        QTO-900.
            IF WS-QTY + WS-RECEIVE-LATER <
-                    ((ST-MAXIMUMLEVEL * 75) / 100)
+                    ((ST-MAXIMUMLEVEL * 60) / 100)
             IF WS-SEA-AIR-ORDER = "A"
              IF D-DELETE = "T"
               IF INVQUES-STOCK-TO-MAX = "Y"
@@ -1490,7 +1468,7 @@
                            WS-ORDER-URGENT
                  GO TO QTO-950.
            IF WS-QTY + WS-RECEIVE-LATER <
-                    ((ST-MAXIMUMLEVEL * 75) / 100)
+                    ((ST-MAXIMUMLEVEL * 60) / 100)
             IF WS-SEA-AIR-ORDER = "L"
               COMPUTE WS-ORDER-SEA ROUNDED = ST-MAXIMUMLEVEL -
                  (WS-QTY + WS-RECEIVE-LATER)
@@ -1511,8 +1489,8 @@
               COMPUTE WS-ORDER-SEA ROUNDED = WS-ORDER-SEA / 4
               ADD WS-ORDER-SEA TO WS-ORDER-URGENT
               MOVE 0           TO WS-ORDER-SEA.
-           IF WS-SEA-AIR-ORDER = "S"
-              MOVE 0 TO WS-ORDER-URGENT.
+            IF WS-SEA-AIR-ORDER = "S"
+                MOVE 0 TO WS-ORDER-URGENT.
        QTO-950.
               IF WS-ORDER-URGENT > 0
                   MOVE WS-ORDER-URGENT TO WS-BOX-ORDERED
@@ -1581,6 +1559,12 @@
                MOVE "$"          TO D-ORD-ERR
                GO TO CBQ-999.
        CBQ-020.
+      * NEW IF STATEMENT BELOW.  ADDED 23/1/2016
+      *  THERE SEEMS TO BE AN ERROR IN THE GNUCOBOL FOR THE B-RATE
+      *  SECTION WHERE BOX RDER SOMETIMES COMES BACK AS 0.
+           IF ST-MINBUYQTY = 1
+               MOVE WS-BOX-ORDERED TO WS-BOX-ORDER
+               GO TO CBQ-040.
            COMPUTE WS-BOX-ORDER = WS-BOX-ORDERED / ST-MINBUYQTY.
            IF B-RATE (6) > 3
             IF B-RATE (7) > 1

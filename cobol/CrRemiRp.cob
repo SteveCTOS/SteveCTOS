@@ -2064,12 +2064,18 @@
             GO TO PRR-002.
        PRR-010.
            MOVE CRTR-DUE-DATE TO WS-DUE-DATE.
-           IF WS-DUE-YY > WS-CH-YY
+           IF WS-DUE-DATE > WS-CHECK-DATE
                GO TO PRR-002.
-           IF WS-DUE-MM > WS-CH-MM
-               GO TO PRR-002.
-           IF WS-DUE-DD > WS-CH-DD
-               GO TO PRR-002.
+      * CHANGED ABOVE AND BELOW LINES 22/1/2016 AS THE REMI PART WAS
+      * OMITTING OLDER DATES THAN THE DUE DATE.  ONLY IF DUE = CHECK
+      * THEN IT PRINTED THE ITEM IN REMI BUT IN CASH ALLOC ALWAYS WORKED
+      *     MOVE CRTR-DUE-DATE TO WS-DUE-DATE.
+      *     IF WS-DUE-YY > WS-CH-YY
+      *         GO TO PRR-002.
+      *     IF WS-DUE-MM > WS-CH-MM
+      *         GO TO PRR-002.
+      *     IF WS-DUE-DD > WS-CH-DD
+      *         GO TO PRR-002.
            IF CRTR-ACC-NUMBER = CR-ACCOUNT-NUMBER
                GO TO PRR-060.
        PRR-040.
@@ -2181,9 +2187,9 @@
            MOVE WS-ACCDISC   TO PAYMENT-SETT-DISC
            WRITE PRINT-REC FROM PAYMENT-LINE AFTER 1.
            
-           MOVE WS-CHEQUENO       TO A-SUM-CHEQUE (SUB-10)
-           MOVE WS-ACCTOTAL       TO A-SUM-AMT (SUB-10)
-           MOVE WS-ACCDISC        TO A-SUM-DISC (SUB-10).
+           MOVE WS-CHEQUENO        TO A-SUM-CHEQUE (SUB-10)
+           MOVE WS-ACCTOTAL        TO A-SUM-AMT (SUB-10)
+           MOVE WS-ACCDISC         TO A-SUM-DISC (SUB-10).
            
            IF WS-ACCDISC > 0
               ADD WS-ACCTOTAL TO WS-AMT-SUMMARY
@@ -2261,7 +2267,7 @@
               MOVE SPLIT-DIS-DATE         TO WS-DAILY-4TH-1
               MOVE SPLIT-TIME             TO WS-DAILY-4TH-2.
            IF WS-AUTO-REMIT = "R"
-              MOVE "CREDITOR AUTO REMITT" TO WS-DAILY-1ST
+              MOVE "CREDITOR AUTO REMIT " TO WS-DAILY-1ST
               MOVE "RUN SUCCESSFULLY.   " TO WS-DAILY-2ND
               MOVE "Start of process    " TO WS-DAILY-3RD
               MOVE SPLIT-DIS-DATE         TO WS-DAILY-4TH-1

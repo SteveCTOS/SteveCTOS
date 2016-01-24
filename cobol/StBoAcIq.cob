@@ -224,7 +224,8 @@
            MOVE 1 TO F-INDEX.
        RDTR-005.
            MOVE "N"               TO STTR-AC-COMPLETE.
-           MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
+           MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER
+           MOVE 0                 TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
