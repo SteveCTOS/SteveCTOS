@@ -34,7 +34,6 @@
            03  WS-REST          PIC X(5).
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC 9(2) COMP-X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -63,7 +62,6 @@
            MOVE 3  TO CDA-COLOR
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE.
-      *      ACCEPT WS-RANGE AT POS WITH AUTO.
            IF W-ESCAPE-KEY = 4
               PERFORM END-900.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -86,7 +84,6 @@
            MOVE 3    TO CDA-COLOR
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
-      *     ACCEPT WS-RANGE2 AT POS WITH AUTO.
            IF WS-RANGE2 NOT = "N" AND NOT = "Y"
               GO TO CONTROL-012.
            IF W-ESCAPE-KEY = 4
@@ -169,13 +166,12 @@
               ADD 10 TO POS
               MOVE "  "  TO CDA-DATA
               MOVE 18    TO CDA-ROW
-              MOVE 40    TO CDA-COL
+              MOVE 42    TO CDA-COL
               MOVE 1     TO CDA-DATALEN
               MOVE "A"   TO CDA-ATTR              
               MOVE 3     TO CDA-COLOR
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-ACCEPT
-      *        ACCEPT WS-ACCEPT AT POS
            IF W-ESCAPE-KEY = 3
               PERFORM END-900
            ELSE
@@ -194,13 +190,12 @@
       *        ADD 10 TO POS
               MOVE "  " TO CDA-DATA
               MOVE 18   TO CDA-ROW
-              MOVE 40   TO CDA-COL
+              MOVE 45   TO CDA-COL
               MOVE 1    TO CDA-DATALEN
               MOVE "A"  TO CDA-ATTR
               MOVE 3    TO CDA-COLOR
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-ACCEPT
-      *        ACCEPT WS-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 3
               PERFORM END-900.
            MOVE WS-ACCOUNT-NUM TO WS-ACCOUNT-SAVE.
