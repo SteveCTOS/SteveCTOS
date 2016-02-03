@@ -27,8 +27,7 @@
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  PAGE-CNT             PIC 9(3) VALUE 0.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1        PIC X.
-           03  WS-DAILY-ST2        PIC X.
+           03  WS-DAILY-ST1     PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST     PIC X(20) VALUE " ".
            03  WS-DAILY-2ND     PIC X(20) VALUE " ".
@@ -91,7 +90,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TYPE-OF-PRINT.
 
-      *      ACCEPT WS-TYPE-OF-PRINT AT POS.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2
                 GO TO CONTROL-020
             ELSE
@@ -215,6 +213,7 @@
             IF WS-DAILY-ST1 NOT = 0
                 MOVE 0 TO WS-DAILY-ST1
                 GO TO END-900.
+            MOVE " " TO DAILY-MESSAGE.
             PERFORM GET-USER-PRINT-NAME.
             OPEN OUTPUT PRINT-FILE.
        OPEN-010.

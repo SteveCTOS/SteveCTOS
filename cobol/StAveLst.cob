@@ -21,11 +21,9 @@
        77  WS-TEMP       PIC X.
        77  WS-DEL-DELAY  PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1  PIC 99.
-      *     03  WS-STOCK-ST2  PIC 99 COMP-X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
       *
        Copy "WsDateInfo".
       **************************************************************

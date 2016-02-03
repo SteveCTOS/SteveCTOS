@@ -213,7 +213,7 @@
            IF F-EXIT-CH = X"01"
               GO TO FILL-010.
       **********************************************************
-      * <CANCEL> KEY IF YOU WANT TO IGNORE AN ITEM CALLED UP.  *
+      * <Esc> KEY IF YOU WANT TO IGNORE AN ITEM CALLED UP.  *
       **********************************************************
            IF F-EXIT-CH = X"07"
               GO TO FILL-001.
@@ -402,8 +402,8 @@
               PERFORM READ-NEXT-GLNUMBER
                IF WS-GLMAST-ST1 = 0
                 MOVE GL-NUMBER TO WS-ACCOUNT-NUMBER (SUB-20)
-                                  F-NAMEFIELD
-                MOVE 12 TO F-CBFIELDLENGTH
+                                   F-NAMEFIELD
+                MOVE 12         TO F-CBFIELDLENGTH
                 PERFORM WRITE-FIELD-ALPHA
                 GO TO FILL-023
                ELSE
@@ -904,13 +904,15 @@
                PERFORM START-GL-NEXT
                GO TO RNGL-010.
            IF WS-GLMAST-ST1 NOT = 0
-                MOVE 0 TO WS-GLMAST-ST1
                 MOVE "GLMASTER BUSY ON READ-NEXT, 'ESC' TO RETRY"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 MOVE GL-NUMBER TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
                 PERFORM START-GL-NEXT
+                MOVE 0 TO WS-GLMAST-ST1
                 GO TO RNGL-010.
        RNGL-999.
            EXIT.

@@ -99,43 +99,54 @@ XX
 /ctools/sfj/SL8A
 50
 
+
 8
 XX
 /ctools/sfj/SL8B
 51
+
 
 8
 XX
 /ctools/sfj/SL8C
 52
 
+
 8
 XX
 /ctools/sfj/SL8D
 53
+
 
 8
 XX
 /ctools/sfj/SL8E
 55
 
+
 9
 XX
 /ctools/sfj/SL9A
 1
-NN
+N
+N
+
 
 9
 XX
 /ctools/sfj/SL9B
 2
-NN
+N
+N
+
 
 9
 XX
 /ctools/sfj/SL9C
 3
-NN
+N
+N
+
 
 10
 XX
@@ -176,6 +187,7 @@ A
 ZZZZZ
 Y
 
+
 13
 XX
 /ctools/sfj/SL13
@@ -183,12 +195,15 @@ XX
 ZZZZZ
 Y
 
+
 14
 XX
 /ctools/sfj/SL14
 A
 ZZZZZ
 Y
+
+
 
 15
 0100001
@@ -240,12 +255,15 @@ N
 Y
 4
 
+
 16
 XX
 /ctools/sfj/SL16
 A
 Z
-PY
+P
+Y
+
 
 17
 XX
@@ -254,6 +272,7 @@ A
 ZZZZZZ
 Y
 Y
+
 
 
 #04
@@ -300,6 +319,7 @@ A
 ZZZZZZ
 O
 Y
+
 
 16
 XX

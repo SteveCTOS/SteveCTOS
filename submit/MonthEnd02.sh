@@ -12,14 +12,14 @@ cp /ctools/spl/DrStateCo02 /ctools/grc/drstateco02
 cp /ctools/spl/DrLaserCo02 /ctools/grc/drlaserco02
 cp /ctools/spl/ctoolsDrNoMalCo02 /ctools/grc/drnomalco02
 cp /ctools/spl/DrEMailCo02 /ctools/grc/dremailco02
-#cp /ctools/grc/sl11 /ctools/spl/grcdrage
+cp /ctools/grc/sl11 /ctools/spl/grcdrage
 cp /ctools/spl/DBPrintCo02 /ctools/grc/dbprintco02
 
 mkdir /media/ctools/USB/data02
 
 echo The After MonthEnd Backup is Being Run.....
 #cp /ctools/data01/* /media/ctools/USB/data01
-cp -a /ctools/data02/* /media/ctools/USB/data02
+#cp -a /ctools/data02/* /media/ctools/USB/data02
 #cp /ctools/data03/* /media/ctools/USB/data03
 #cp /ctools/data05/* /media/ctools/USB/data05
 #cp /ctools/data06/* /media/ctools/USB/data06

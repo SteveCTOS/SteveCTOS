@@ -60,6 +60,7 @@ XX
 
 Y
 
+
 6
 XX
 /ctools/csc/Sl6A
@@ -101,28 +102,36 @@ XX
 /ctools/csc/SL8A
 50
 
+
 8
 XX
 /ctools/csc/SL8B
 51
 
+
 9
 XX
 /ctools/csc/SL9A
 1
-NN
+N
+N
+
 
 9
 XX
 /ctools/csc/SL9B
 2
-NN
+N
+N
+
 
 9
 XX
 /ctools/csc/SL9C
 3
-NN
+N
+N
+
 
 10
 XX
@@ -137,6 +146,7 @@ XX
 9999999
 A
 D
+
 
 
 11
@@ -166,6 +176,7 @@ A
 ZZZZZ
 Y
 
+
 13
 XX
 /ctools/csc/SL13
@@ -173,12 +184,14 @@ XX
 ZZZZZ
 Y
 
+
 14
 XX
 /ctools/csc/SL14
 A
 ZZZZZ
 Y
+
 
 15
 0100001
@@ -230,12 +243,17 @@ N
 Y
 4
 
+
+
 16
 XX
 /ctools/csc/SL16
 A
 Z
-PY
+P
+Y
+
+
 
 17
 XX
@@ -244,6 +262,7 @@ A
 ZZZZZZ
 Y
 Y
+
 
 
 #04
@@ -256,17 +275,21 @@ XX
 Y
 Y
 
+
 17
 XX
 /ctools/csc/SL17B
 
 N
 
+
+
 17
 XX
 /ctools/csc/SL17C
 
 Y
+
 
 19
 XX
@@ -288,6 +311,7 @@ A
 ZZZZZZ
 O
 Y
+
 
 16
 XX

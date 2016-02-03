@@ -24,7 +24,7 @@ echo The After MonthEnd Backup is Being Run.....
 #cp -a /ctools/data05/* /media/ctools/USB/data05
 #cp /ctools/data06/* /media/ctools/USB/data06
 #cp /ctools/data07/* /media/ctools/USB/data07
-cp -a /ctools/data08/* /media/ctools/USB/data08
+#cp -a /ctools/data08/* /media/ctools/USB/data08
 #cp /ctools/data09/* /media/ctools/USB/data09
 #cp /ctools/data10/* /media/ctools/USB/data10
 #cp /ctools/data11/* /media/ctools/USB/data11

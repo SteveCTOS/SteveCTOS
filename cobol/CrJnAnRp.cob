@@ -45,13 +45,10 @@
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1     PIC 99.
-      *     03  WS-CREDITOR-ST2     PIC X.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1     PIC 99.
-      *     03  WS-CRJRN-ST2     PIC X.
+           03  WS-CRJRN-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-CHECKDATE.
            03  WS-CHECKYY      PIC 9999.
            03  WS-CHECKMM      PIC 99.
@@ -207,7 +204,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -230,7 +226,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-RANGE2 = " "
@@ -255,7 +250,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-ANSWER = "A" OR = "D" OR = "C"
@@ -284,7 +278,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DATEANSWER.
 
-      *     ACCEPT WS-DATEANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-DATEANSWER = " "
@@ -473,7 +466,8 @@
            MOVE WS-TOT-120DAY    TO TOT-120DAY
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
            MOVE " " TO TOTAL-LINE PRINT-REC.
-           IF WS-TOT-BALANCE NOT = CR-BALANCE
+           IF CR-ACCOUNT-NUMBER NOT = 0 
+            IF WS-TOT-BALANCE NOT = CR-BALANCE
                MOVE "***ACCOUNT IN IM-BALANCE***" TO PRINT-REC
                WRITE PRINT-REC AFTER 1
                MOVE " " TO PRINT-REC

@@ -32,17 +32,13 @@
            03  WS-BATCH-1STCHAR  PIC X(2) VALUE "CB".
            03  WS-BATCH-REST     PIC X(8).
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1   PIC 99.
-      *     03  WS-CBTRANS-ST2   PIC X.
+           03  WS-CBTRANS-ST1     PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1   PIC 99.
-      *     03  WS-CB-ST2   PIC X.
+           03  WS-CB-ST1          PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-TRANS-TYPE.
            03  FILLER        PIC X(7) VALUE "CHQ PAY".
            03  FILLER        PIC X(7) VALUE "MTX PAY".
@@ -116,6 +112,8 @@
        GET-000.
             MOVE " " TO CBTRANS-REC
                         WS-END.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
        GET-002.
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "ACCNO" TO F-FIELDNAME.
@@ -1020,4 +1018,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

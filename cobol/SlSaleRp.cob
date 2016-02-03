@@ -190,25 +190,11 @@
            PERFORM PRINT-ROUTINE.
            PERFORM END-OFF.
       *
-       READ-SBREP SECTION.
-       RSB-020.
-           MOVE WS-REP-NUM (SUB-1) TO SBREP-REP.
-           START SBREP-MASTER KEY NOT < SBREP-KEY
-             INVALID KEY NEXT SENTENCE.
-       RSB-030.
-           READ SBREP-MASTER
-              INVALID KEY NEXT SENTENCE.
-           IF WS-SBREP-ST1 = 23 OR 35 OR 49
-              MOVE "**UNKNOWN**" TO D-SALESMAN
-              GO TO RSB-999.
-           MOVE SBREP-REPNAME TO D-SALESMAN.
-       RSB-999.
-            EXIT.
-      *
        PRINT-ROUTINE SECTION.
        PRR-000.
            MOVE 2210 TO POS
            DISPLAY "Reading ALL Debtors for Salesman Info....." AT POS.
+           MOVE 0 TO DR-SALESMAN.
            START DEBTOR-MASTER KEY NOT < DR-SALESMAN
                INVALID KEY NEXT SENTENCE.
            IF WS-DEBTOR-ST1 NOT = 0
@@ -393,6 +379,21 @@
                GO TO PRR-010.
        PRR-999.
            EXIT.
+      *
+       READ-SBREP SECTION.
+       RSB-020.
+           MOVE WS-REP-NUM (SUB-1) TO SBREP-REP.
+           START SBREP-MASTER KEY NOT < SBREP-KEY
+             INVALID KEY NEXT SENTENCE.
+       RSB-030.
+           READ SBREP-MASTER
+              INVALID KEY NEXT SENTENCE.
+           IF WS-SBREP-ST1 = 23 OR 35 OR 49
+              MOVE "**UNKNOWN**" TO D-SALESMAN
+              GO TO RSB-999.
+           MOVE SBREP-REPNAME TO D-SALESMAN.
+       RSB-999.
+            EXIT.
       *
        PRINT-SALES-ROUTINE SECTION.
        PRS-000.

@@ -36,20 +36,15 @@
        77  WS-CONVERSION-AMT    PIC 9(7)V99.
        77  WS-VALUE             PIC Z(6)9.99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1        PIC 99.
-      *     03  WS-CREDITOR-ST2        PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CRCAMSTRANS-STATUS.
            03  WS-CRCAMSTRANS-ST1  PIC 99.
-      *     03  WS-CRCAMSTRANS-ST2  PIC 9(2) COMP-X.
        01  WS-CRCHEQUE-STATUS.
-           03  WS-CRCHEQUE-ST1  PIC 99.
-      *     03  WS-CRCHEQUE-ST2  PIC X.
+           03  WS-CRCHEQUE-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1    PIC 99.
-      *     03  WS-DAILY-ST2    PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SPOOLER-STATUS.
-           03  WS-SPOOLER-ST1    PIC 99.
-      *     03  WS-SPOOLER-ST2    PIC X.
+           03  WS-SPOOLER-ST1      PIC 99.
        Copy "WsDateInfo".
        Copy "WStore".
        Copy "FormsInfo".
@@ -92,7 +87,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-900.
            IF W-ESCAPE-KEY = 1

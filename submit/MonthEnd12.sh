@@ -29,6 +29,6 @@ echo The After MonthEnd Backup is Being Run.....
 #cp /ctools/data09/* /media/ctools/USB/data09
 #cp /ctools/data10/* /media/ctools/USB/data10
 #cp /ctools/data11/* /media/ctools/USB/data11
-cp -a /ctools/data12/* /media/ctools/USB/data12
+#cp -a /ctools/data12/* /media/ctools/USB/data12
 
 echo KRS MONTH-END DONE........
