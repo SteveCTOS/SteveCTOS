@@ -1,26 +1,19 @@
-8#1D
-1
+8
 CSC-MONTH
 2
 3
 17
 
 
+
+
 #04
 #04
 3
 2
-
 21
 XX
 /ctools/csc/SL21
-
-
-
-
-
-21
-2
 
 
 
@@ -32,6 +25,7 @@ XX
 XX
 /ctools/csc/SL1
 01
+
 
 
 
@@ -68,7 +62,6 @@ XX
 N
 
 
-
 7
 XX
 /ctools/csc/Sl7
@@ -80,18 +73,14 @@ Y
 
 #04
 3
-
 22
 XX
 /ctools/csc/SLP22
 
 
-
-
 3
 D
 Y
-
 
 
 #04
@@ -116,37 +105,36 @@ S
 2
 
 
-14
-XX
-/ctools/csc/DR14C
-5000
-T
-P
-
-
-14
-XX
-/ctools/csc/DR14D
-5000
-T
-S
-
-
-
 #04
 #04
 3
 4
+
 8
 XX
 /ctools/csc/SL8A
 50
 
-
 8
 XX
 /ctools/csc/SL8B
 51
+
+8
+XX
+/ctools/csc/SL8C
+52
+
+8
+XX
+/ctools/csc/SL8D
+53
+
+8
+XX
+/ctools/csc/SL8E
+55
+
 
 
 9
@@ -156,7 +144,6 @@ XX
 N
 N
 
-
 9
 XX
 /ctools/csc/SL9B
@@ -164,14 +151,12 @@ XX
 N
 N
 
-
 9
 XX
 /ctools/csc/SL9C
 3
 N
 N
-
 
 10
 XX
@@ -186,27 +171,6 @@ XX
 9999999
 A
 D
-
-
-
-11
-XX
-/ctools/csc/Sl11A
-0100001
-9999999
-A
-S
-
-
-
-11
-2
-0100001
-9999999
-A
-D
-
-
 
 
 12
@@ -238,7 +202,6 @@ XX
 ZZZZZ
 N
 
-
 14
 XX
 /ctools/csc/SL14
@@ -246,27 +209,25 @@ A
 ZZZZZ
 Y
 
-
 15
 0100001
 5555555
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
 1
 
-
 15
 0100001
 5555555
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -279,7 +240,7 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -292,13 +253,11 @@ Y
 B
 31
 A
-PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
-Y
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
+N
 N
 Y
 4
-
-
 
 16
 XX
@@ -308,21 +267,17 @@ Z
 P
 Y
 
-
-
 17
 XX
 /ctools/csc/SL17A
 A
-ZZZZZZ
+ZZZZZ
+N
 Y
-Y
-
 
 
 #04
 2
-
 15
 XX
 /ctools/csc/SL15
@@ -336,7 +291,6 @@ XX
 /ctools/csc/SL17B
 
 N
-
 
 
 17
@@ -353,7 +307,6 @@ XX
 
 
 
-
 #04
 #04
 2
@@ -367,7 +320,6 @@ ZZZZZZ
 O
 Y
 
-
 16
 XX
 /ctools/csc/ST16
@@ -375,15 +327,14 @@ XX
 Z
 N
 
-
 26
 XX
 /ctools/csc/ST26
 A
 Z
 Y
-
 Y
+
 
 
 
@@ -417,13 +368,13 @@ N
 #04
 1
 2
-
 8
 XX
 /ctools/csc/DR8
 
 9999999
 A
+
 
 
 
@@ -440,8 +391,32 @@ XX
 #04
 #04
 #04
+1
+2
+
+
+14
+XX
+/ctools/csc/DR14A
+500
+T
+P
+
+
+14
+XX
+/ctools/csc/DR14B
+500
+T
+S
+
+
+
+#04
+#04
 3
 4
+
 
 18
 XX
@@ -494,9 +469,48 @@ XX
 9
 
 
+
+19
+Y
+Y
+TRESPASS
+#07
+#07
+
+
+
+
+3
+XX
+/ctools/csc/Sl31
+1
+N
+
+3
+XX
+/ctools/csc/Sl32
+2
+N
+
+3
+XX
+/ctools/csc/Sl3
+
+Y
+
+#04
+#04
+2
+1
+25
+A
+ZZZZZ
+N
+
+
+
 #04
 #04
 #04
 #04
 E
-

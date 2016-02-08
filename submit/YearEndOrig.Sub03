@@ -1,9 +1,9 @@
-3#1D
-1
-CTN-MONTH
+3
+MONTHLY
 2
 3
 17
+
 
 
 
@@ -19,14 +19,11 @@ XX
 
 
 
-21
-2
-
-
-
 
 
 #04
+#04
+3
 4
 
 1
@@ -63,7 +60,6 @@ XX
 
 Y
 
-
 6
 XX
 /ctools/ctn/Sl6A
@@ -71,10 +67,14 @@ XX
 N
 
 
+
+
 7
 XX
 /ctools/ctn/Sl7
 Y
+
+
 
 
 
@@ -92,57 +92,26 @@ D
 Y
 
 
+
 #04
 #04
 1
 2
 14
 XX
-/ctools/ctn/DR14A
+<SPL>DR14A
 5000
 T
 S
 1
 
-
 14
 XX
-/ctools/ctn/DR14B
+<SPL>DR14B
 5000
 T
 S
 2
-
-
-
-14
-XX
-/ctools/ctn/DR14C
-5000
-T
-S
-3
-
-
-
-14
-XX
-/ctools/ctn/DR14D
-5000
-T
-S
-
-
-
-
-14
-XX
-/ctools/ctn/DR14E
-5000
-T
-P
-
-
 
 
 #04
@@ -155,12 +124,10 @@ XX
 /ctools/ctn/SL8A
 50
 
-
 8
 XX
 /ctools/ctn/SL8B
 52
-
 
 9
 XX
@@ -169,7 +136,6 @@ XX
 N
 N
 
-
 9
 XX
 /ctools/ctn/SL9B
@@ -177,50 +143,18 @@ XX
 N
 N
 
-
-9
-XX
-/ctools/ctn/SL9C
-3
-N
-N
-
-
 10
 XX
 /ctools/ctn/SL10
 
 
-
-
 11
 XX
-/ctools/ctn/Sl11
+/ctools/ctn/SL11
 0100001
 9999999
 A
 D
-
-
-
-11
-XX
-/ctools/ctn/Sl11A
-0100001
-9999999
-A
-S
-
-
-
-11
-2
-0100001
-9999999
-A
-D
-
-
 
 12
 XX
@@ -229,14 +163,12 @@ A
 ZZZZZ
 Y
 
-
 12
 XX
 /ctools/ctn/SL12B
 A
 ZZZZZ
 N
-
 
 13
 XX
@@ -245,15 +177,12 @@ XX
 ZZZZZ
 Y
 
-
 13
 XX
 /ctools/ctn/SL13B
 
 ZZZZZ
 N
-
-
 
 14
 XX
@@ -262,14 +191,13 @@ A
 ZZZZZ
 Y
 
-
 15
 0100001
 5555555
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
@@ -281,7 +209,7 @@ N
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -294,7 +222,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -307,13 +235,11 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 Y
 N
 Y
 4
-
-
 
 16
 XX
@@ -323,14 +249,12 @@ Z
 P
 Y
 
-
-
 17
 XX
 /ctools/ctn/SL17A
 A
-ZZZZZZ
-Y
+ZZZZZ
+N
 Y
 
 
@@ -342,21 +266,6 @@ XX
 
 Y
 Y
-
-
-17
-XX
-/ctools/ctj/SL17B
-
-N
-
-
-17
-XX
-/ctools/sfj/SL17C
-
-Y
-
 
 
 #04
@@ -385,8 +294,31 @@ XX
 A
 Z
 Y
-
 Y
+
+
+28
+XX
+/ctools/ctn/ST28A
+A
+ZZZZZ
+200
+R
+T
+N
+
+
+
+28
+XX
+/ctools/ctn/ST28B
+A
+ZZZZZ
+200
+U
+T
+N
+
 
 
 
@@ -403,6 +335,7 @@ A
 
 
 
+
 #04
 1
 16
@@ -413,6 +346,26 @@ XX
 
 #1F
 #04
+#04
+#04
+1
+2
+
+14
+XX
+/ctools/ctn/DR14A
+500
+T
+P
+
+
+14
+XX
+/ctools/ctn/DR14B
+500
+T
+S
+
 #04
 #04
 3
@@ -430,11 +383,105 @@ XX
 
 Y
 
-
 19
 XX
 /ctools/ctn/SL19
 21
+
+
+
+#04
+4
+
+18
+XX
+/ctools/ctn/SL18A
+0
+
+18
+XX
+/ctools/ctn/SL18B
+1
+
+18
+XX
+/ctools/ctn/SL18C
+2
+
+18
+XX
+/ctools/ctn/SL18D
+3
+
+18
+XX
+/ctools/ctn/SL18E
+4
+
+18
+XX
+/ctools/ctn/SL18F
+5
+
+18
+XX
+/ctools/ctn/SL18G
+6
+
+18
+XX
+/ctools/ctn/SL18H
+7
+
+18
+XX
+/ctools/ctn/SL18I
+8
+
+
+
+18
+XX
+/ctools/ctn/SL18J
+9
+
+19
+Y
+Y
+TRESPASS
+#07
+#07
+
+
+
+3
+XX
+/ctools/ctn/Sl31
+1
+N
+
+3
+XX
+/ctools/ctn/Sl32
+2
+N
+
+3
+XX
+/ctools/ctn/Sl3
+
+Y
+
+
+#04
+#04
+2
+1
+25
+A
+ZZZZZ
+N
+
 
 
 #04

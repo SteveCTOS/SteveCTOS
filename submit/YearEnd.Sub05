@@ -1,5 +1,5 @@
 5
-ORYXMONTH
+ORXMONTH
 2
 3
 17
@@ -18,14 +18,20 @@ XX
 
 
 
+21
+2
+
+
+
+
 
 #04
-3
 4
 1
 XX
 /ctools/orx/SL1
 01
+
 
 
 
@@ -53,6 +59,12 @@ XX
 
 Y
 
+6
+XX
+/ctools/orx/Sl6A
+
+N
+
 
 7
 XX
@@ -60,7 +72,7 @@ XX
 Y
 
 
-
+T
 
 
 #04
@@ -75,6 +87,7 @@ D
 Y
 
 
+
 #04
 4
 
@@ -84,9 +97,12 @@ XX
 50
 
 
+
 10
 XX
 /ctools/orx/SL10
+
+
 
 
 11
@@ -97,24 +113,51 @@ XX
 A
 D
 
+
+
 12
 XX
-/ctools/orx/SL12A
+/ctools/orx/SL12
 A
 ZZZZZ
 Y
 
+
+
+15
+0100001
+5555555
+B
+31
+A
+PLEASE DIRECT ALL ACCOUNT QUERIES TO MRS YVONNE WHITEHEAD.
+N
+N
+N
+1
+
+
+
+15
+0100001
+5555555
+B
+31
+A
+PLEASE DIRECT ALL ACCOUNT QUERIES TO MRS YVONNE WHITEHEAD.
+Y
+N
+Y
+2
+
+
+
+
+
 12
 XX
-/ctools/orx/SL12B
+/ctools/orx/SL12
 A
-ZZZZZ
-N
-
-13
-XX
-/ctools/orx/SL13A
-
 ZZZZZ
 Y
 
@@ -122,10 +165,12 @@ Y
 
 13
 XX
-/ctools/orx/SL13B
+/ctools/orx/SL13
 
 ZZZZZ
-N
+Y
+
+
 
 14
 XX
@@ -135,45 +180,15 @@ ZZZZZ
 Y
 
 
-15
-0100001
-5555555
-B
-31
-A
-YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
-N
-N
-N
-1
-
-15
-0100001
-5555555
-B
-31
-A
-YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
-Y
-N
-Y
-2
 
 
 17
 XX
 /ctools/orx/SL17A
 A
-ZZZZZ
-N
+ZZZZZZ
 Y
-
-
-
-18
-XX
-/ctools/orx/SL18A
-A
+Y
 
 
 
@@ -183,6 +198,7 @@ A
 XX
 /ctools/orx/SL19
 21
+
 
 
 #04
@@ -196,46 +212,6 @@ XX
 
 
 #1F
-#04
-#04
-#04
-3
-4
-
-19
-Y
-Y
-TRESPASS
-#07
-#07
-
-
-
-3
-XX
-/ctools/orx/Sl3
-Y
-
-#04
-#04
-2
-1
-25
-A
-ZZZZZ
-N
-
-
-#04
-#04
-3
-2
-17
-XX
-/ctools/orx/SL17
-
-Y
-
 #04
 #04
 #04

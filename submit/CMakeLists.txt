@@ -68,16 +68,26 @@ set (copy_list
   TapeBackupMonth.Sub01
   TapeBackupVol.Sub01
   YearEnd.Sub01
+  YearEnd2.Sub01
   YearEnd.Sub02
+  YearEnd2.Sub02
   YearEnd.Sub03
+  YearEnd2.Sub03
   YearEnd.Sub05
+  YearEnd2.Sub05
   YearEnd.Sub06
   YearEnd.Sub07
+  YearEnd2.Sub07
   YearEnd.Sub08
+  YearEnd2.Sub08
   YearEnd.Sub09
+  YearEnd2.Sub09
   YearEnd.Sub10
+  YearEnd2.Sub10
   YearEnd.Sub11
+  YearEnd2.Sub11
   YearEnd.Sub12
+  YearEnd2.Sub12
   YearEnd01.sh
   YearEnd02.sh
   YearEnd03.sh

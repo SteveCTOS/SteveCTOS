@@ -1,6 +1,24 @@
 9
 SFI-MONTH
 3
+2
+
+21
+XX
+/ctools/sfi/SL21
+
+
+
+
+
+21
+2
+
+
+
+
+
+#04
 4
 
 1
@@ -33,6 +51,8 @@ XX
 XX
 /ctools/sfi/Sl6
 
+Y
+
 
 7
 XX
@@ -40,14 +60,16 @@ XX
 Y
 
 
-
-
+T
 
 #04
 3
+
 22
 XX
 /ctools/sfi/SLP22
+
+
 
 
 3
@@ -57,6 +79,7 @@ Y
 
 #04
 #04
+1
 1
 16
 XX
@@ -92,6 +115,7 @@ N
 N
 1
 
+
 15
 0100001
 5555555
@@ -106,53 +130,14 @@ Y
 
 
 
+
 #04
 2
+
 19
 XX
 /ctools/sfi/SL19
 21
-
-
-
-
-#04
-#04
-1
-16
-XX
-/ctools/sfi/DR16
-XX
-
-
-#1F
-#04
-#04
-#04
-3
-4
-19
-Y
-Y
-TRESPASS
-#07
-#07
-
-
-
-3
-XX
-/ctools/sfi/Sl3
-Y
-
-
-#04
-2
-17
-XX
-/ctools/sfi/SL17
-
-Y
 
 
 

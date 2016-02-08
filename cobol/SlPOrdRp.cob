@@ -300,6 +300,8 @@
       *
        PRINT-TOTALS SECTION.
        PT-000.
+           IF WS-LINE = 66
+               PERFORM PRINT-HEADINGS.
            MOVE "  NUMBER OF INVOICES:" TO TOT-DESC
            MOVE WS-INVNO                TO TOT-INV-NO
            COMPUTE WS-VALUE = WS-VALUE / WS-INVNO

@@ -26,13 +26,10 @@
        77  WS-STDISC-PERCENT    PIC 99V99 VALUE 0.
        01  WS-STDISC-STATUS.
            03  WS-STDISC-ST1   PIC 99.
-      *     03  WS-STDISC-ST2   PIC X.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
+           03  WS-STOCK-ST1    PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS

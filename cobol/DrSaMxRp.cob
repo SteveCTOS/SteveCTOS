@@ -72,13 +72,10 @@
        77  WS-TOTAL-PERC        PIC S9(4)V9999 VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1        PIC 99.
-      *     03  WS-DEBTOR-ST2        PIC 9(2) COMP-X.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1   PIC 99.
        01  WS-RANDOM-STATUS.
            03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).

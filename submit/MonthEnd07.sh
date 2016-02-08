@@ -15,9 +15,9 @@ cp /ctools/spl/DrEMailCo07 /ctools/sfj/dremailco07
 cp /ctools/sfj/sl11 /ctools/spl/sfjdrage
 cp /ctools/spl/DBPrintCo07 /ctools/sfj/dbprintco07
 
-mkdir /media/ctools/BACKUPUSB/data07
+#mkdir /media/ctools/BACKUPUSB/data07
 
-echo The After MonthEnd Backup is Being Run.....
+#echo The After MonthEnd Backup is Being Run.....
 #cp /ctools/data01/* /media/ctools/USB/data01
 #cp /ctools/data02/* /media/ctools/USB/data02
 #cp /ctools/data03/* /media/ctools/USB/data03

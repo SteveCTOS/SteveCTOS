@@ -512,8 +512,9 @@
        CRS-000.
             OPEN I-O INCR-REGISTER.
             MOVE "N" TO WS-STOP-UPDATE.
-            MOVE 0 TO WS-ORDERS WS-INTERNAL-ORDERS.
-            START INCR-REGISTER KEY NOT < INCR-KEY.
+            MOVE 0 TO INCR-KEY WS-ORDERS WS-INTERNAL-ORDERS.
+            START INCR-REGISTER KEY NOT < INCR-KEY
+               INVALID KEY NEXT SENTENCE.
        CRS-010.
             READ INCR-REGISTER NEXT
                AT END
@@ -1830,7 +1831,8 @@
                 INVALID KEY NEXT SENTENCE.
        DQR-005.
            PERFORM OPEN-050.
-           PERFORM OPEN-056.
+           IF WS-ANSWER1 = "Y"
+               PERFORM OPEN-057.
            MOVE 2210 TO POS.
            DISPLAY "14. Quote File Being Processed............." AT POS.
            MOVE 8 TO INCR-TRANS
@@ -1949,7 +1951,8 @@
                 GO TO DRR-900.
        DRR-004.
            PERFORM OPEN-055.
-           PERFORM OPEN-056.
+           IF WS-ANSWER1 = "Y"
+              PERFORM OPEN-057.
            START STOCK-TRANS-FILE KEY NOT < STTR-KEY
                 INVALID KEY NEXT SENTENCE.
        DRR-005.
@@ -1997,8 +2000,9 @@
            GO TO DRR-010.
        DRR-900.
            CLOSE INCR-REGISTER
-           CLOSE STOCK-TRANS-FILE
-           CLOSE STOCK-TRANSLY-FILE.
+           CLOSE STOCK-TRANS-FILE.
+           IF WS-ANSWER1 = "Y"
+               CLOSE STOCK-TRANSLY-FILE.
            MOVE 2310 TO POS
            DISPLAY "15. Repair File Processed.                 " AT POS
            MOVE " " TO WS-MESSAGE
@@ -2069,7 +2073,8 @@
                 GO TO DPSLP-900.
        DPSLP-004.
            PERFORM OPEN-055.
-           PERFORM OPEN-056.
+           IF WS-ANSWER1 = "Y"
+               PERFORM OPEN-057.
            START STOCK-TRANS-FILE KEY NOT < STTR-KEY
                 INVALID KEY NEXT SENTENCE.
        DPSLP-005.
@@ -2117,8 +2122,9 @@
            GO TO DPSLP-010.
        DPSLP-900.
            CLOSE INCR-REGISTER
-           CLOSE STOCK-TRANS-FILE
-           CLOSE STOCK-TRANSLY-FILE
+           CLOSE STOCK-TRANS-FILE.
+           IF WS-ANSWER1 = "Y"
+               CLOSE STOCK-TRANSLY-FILE
            MOVE 2410 TO POS
            DISPLAY "16. Repair File Processed.                 " AT POS
            MOVE " " TO WS-MESSAGE
@@ -2739,10 +2745,17 @@
        OPEN-056.
            OPEN OUTPUT STOCK-TRANSLY-FILE.
            IF WS-STTRANSLY-ST1 NOT = 0
-              MOVE "ST-TRANS-LY FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              MOVE "ST-TRANS-LY FILE BUSY OPEN OUTPUT, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-056.
+       OPEN-057.
+           OPEN I-O STOCK-TRANSLY-FILE.
+           IF WS-STTRANSLY-ST1 NOT = 0
+              MOVE "ST-TRANS-LY FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO OPEN-057.
        OPEN-060.
             OPEN I-O STKRECEIPTS-FILE.
             IF WS-STK-ST1 NOT = 0

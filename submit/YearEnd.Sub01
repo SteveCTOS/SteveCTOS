@@ -20,6 +20,11 @@ XX
 
 
 
+21
+2
+
+
+
 
 #04
 4
@@ -27,7 +32,6 @@ XX
 XX
 /ctools/ctj/SL1
 01
-
 
 
 
@@ -86,7 +90,6 @@ D
 Y
 
 
-
 #04
 #04
 1
@@ -99,6 +102,7 @@ T
 S
 1
 
+
 14
 XX
 /ctools/ctj/DR14B
@@ -106,6 +110,8 @@ XX
 T
 S
 2
+
+
 
 14
 XX
@@ -115,21 +121,26 @@ T
 S
 3
 
+
+
 14
 XX
 /ctools/ctj/DR14D
 5000
 T
 S
-4
+
+
 
 14
 XX
 /ctools/ctj/DR14E
 5000
 T
-S
-5
+P
+
+
+
 
 
 #04
@@ -137,25 +148,34 @@ S
 3
 4
 
+
+
+#04
+4
+
 8
 XX
 /ctools/ctj/SL8A
 50
+
 
 8
 XX
 /ctools/ctj/SL8B
 51
 
+
 8
 XX
 /ctools/ctj/SL8C
 52
 
+
 8
 XX
 /ctools/ctj/SL8D
 53
+
 
 8
 XX
@@ -170,12 +190,14 @@ XX
 N
 N
 
+
 9
 XX
 /ctools/ctj/SL9B
 2
 N
 N
+
 
 9
 XX
@@ -184,12 +206,14 @@ XX
 N
 N
 
+
 9
 XX
 /ctools/ctj/SL9D
 4
 N
 N
+
 
 9
 XX
@@ -199,6 +223,7 @@ N
 N
 
 
+
 9
 XX
 /ctools/ctj/SL9F
@@ -206,10 +231,20 @@ XX
 N
 N
 
+
+
 10
 XX
 /ctools/ctj/SL10
 
+
+
+11
+2
+0100001
+9999999
+A
+D
 
 
 11
@@ -229,6 +264,7 @@ XX
 9999999
 A
 S
+
 
 
 
@@ -263,6 +299,7 @@ ZZZZZ
 N
 
 
+
 14
 XX
 /ctools/ctj/SL14
@@ -270,41 +307,34 @@ A
 ZZZZZ
 Y
 
+
 15
 0100001
 5555555
 B
 31
 A
-YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 N
 1
 
+
+
+
 15
 0100001
 5555555
 B
 31
 A
-YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 N
 N
 Y
 2
 
-15
-0100001
-5555555
-B
-31
-A
-YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
-N
-N
-Y
-3
 
 15
 0100001
@@ -312,11 +342,26 @@ Y
 B
 31
 A
-YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+N
+N
+Y
+3
+
+
+
+15
+0100001
+5555555
+B
+31
+A
+PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
 Y
 N
 Y
 4
+
 
 16
 XX
@@ -326,11 +371,13 @@ Z
 P
 Y
 
+
+
 17
 XX
 /ctools/ctj/SL17A
 A
-ZZZZZ
+ZZZZZZ
 N
 Y
 
@@ -344,125 +391,17 @@ XX
 Y
 Y
 
-
 17
 XX
 /ctools/ctj/SL17B
 
-Y
-
-
-19
-XX
-/ctools/ctj/SL19
-21
-
-
-
-#04
-#04
-2
-2
-2
-XX
-/ctools/ctj/ST2
-A
-ZZZZZZ
-O
-Y
-
-16
-XX
-/ctools/ctj/ST16
-/
-Z
 N
 
-26
+17
 XX
-/ctools/ctj/ST26
-A
-Z
+/ctools/sfj/SL17C
+
 Y
-Y
-
-
-
-28
-XX
-/ctools/ctj/ST28A
-A
-ZZZZZ
-200
-R
-T
-N
-
-
-
-28
-XX
-/ctools/ctj/ST28B
-A
-ZZZZZ
-200
-U
-T
-N
-
-
-
-#04
-#04
-1
-2
-8
-XX
-/ctools/ctj/DR8
-
-9999999
-A
-
-
-
-
-#04
-1
-16
-XX
-/ctools/ctj/DR16
-XX
-
-
-#1F
-#04
-#04
-2
-
-14
-XX
-/ctools/ctj/DR14A
-500
-T
-P
-
-
-14
-XX
-/ctools/ctj/DR14B
-500
-T
-S
-
-#04
-#04
-3
-4
-
-19
-XX
-/ctools/ctj/SL19
-21
 
 
 
@@ -520,43 +459,94 @@ XX
 /ctools/ctj/SL18J
 9
 
+
+
 19
-Y
-Y
-TRESPASS
-#07
-#07
-
-
-3
 XX
-/ctools/ctj/Sl31
-1
-N
-
-3
-XX
-/ctools/ctj/Sl32
-2
-N
+/ctools/ctj/SL19
+21
 
 
-
-3
-XX
-/ctools/ctj/Sl3
-Y
 
 #04
 #04
 2
-1
-25
+2
+2
+XX
+/ctools/ctj/ST2
+A
+ZZZZZZ
+O
+Y
+
+
+16
+XX
+/ctools/ctj/ST16
+/
+Z
+N
+
+
+26
+XX
+/ctools/ctj/ST26
+A
+Z
+Y
+
+Y
+
+
+28
+XX
+/ctools/ctj/ST28A
 A
 ZZZZZ
+200
+R
+T
 N
 
 
+
+28
+XX
+/ctools/ctj/ST28B
+A
+ZZZZZ
+200
+U
+T
+N
+
+
+
+
+
+#04
+#04
+1
+2
+8
+XX
+/ctools/ctj/DR8
+
+9999999
+A
+
+
+
+#04
+1
+16
+XX
+/ctools/ctj/DR16
+XX
+
+
+#1F
 #04
 #04
 #04

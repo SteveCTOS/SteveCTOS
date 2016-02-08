@@ -50,23 +50,17 @@
            03  WS-ST-CODE       PIC X.
            03  WS-ST-TERM       PIC X(11).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *      03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1        PIC 99.
-      *     03  WS-INCR-ST2        PIC X.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTR-ST1        PIC 99.
-      *     03  WS-DRTR-ST2        PIC X.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-STTR-ST1        PIC 99.
-      *     03  WS-STTR-ST2        PIC X.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -105,7 +99,7 @@
            DISPLAY "ENTER OLD ACCOUNT NUMBER : [       ]" AT POS
            ADD 28 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-OLDDEBTORNUMBER TO CDA-DATA.
            MOVE 7         TO CDA-DATALEN.
            MOVE 3         TO CDA-ROW.
            MOVE 37        TO CDA-COL.
@@ -114,7 +108,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-OLDDEBTORNUMBER.
 
-      *     ACCEPT WS-OLDDEBTORNUMBER AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
            MOVE WS-OLDDEBTORNUMBER TO DR-ACCOUNT-NUMBER.
@@ -139,7 +132,7 @@
            DISPLAY "ENTER NEW ACCOUNT NUMBER : [       ]" AT POS
            ADD 28 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-NEWDEBTORNUMBER TO CDA-DATA.
            MOVE 7         TO CDA-DATALEN.
            MOVE 6         TO CDA-ROW.
            MOVE 37        TO CDA-COL.
@@ -148,7 +141,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-NEWDEBTORNUMBER.
 
-      *     ACCEPT WS-NEWDEBTORNUMBER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-010.
            MOVE WS-NEWDEBTORNUMBER TO DR-ACCOUNT-NUMBER.
@@ -173,16 +165,15 @@
            DISPLAY "CHANGE ALL REGISTER RECORDS, Y OR N: [ ]" AT POS
            ADD 38 TO POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 8         TO CDA-ROW.
-           MOVE 47        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-ANSWER1 TO CDA-DATA.
+           MOVE 1          TO CDA-DATALEN.
+           MOVE 8          TO CDA-ROW.
+           MOVE 47         TO CDA-COL.
+           MOVE CDA-WHITE  TO CDA-COLOR.
+           MOVE 'F'        TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-015.
            IF WS-ANSWER1 NOT = "Y" AND NOT = "N"
@@ -206,16 +197,15 @@
            DISPLAY "4=P/SLIP, 6=C/NOTES, 8=QUOTATION" AT POS
            MOVE 1340 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-TYPE   TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 10         TO CDA-ROW.
+           MOVE 10        TO CDA-ROW.
            MOVE 39        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TYPE.
 
-      *     ACCEPT WS-TYPE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-020.
            IF WS-TYPE NOT = "1" AND NOT = "3" AND NOT = "4"
@@ -234,7 +224,7 @@
            DISPLAY "ENTER THE NUMBER OF THE RECORD : [      ]" AT POS
            ADD 34 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-NUMBER TO CDA-DATA.
            MOVE 6         TO CDA-DATALEN.
            MOVE 12        TO CDA-ROW.
            MOVE 43        TO CDA-COL.
@@ -243,7 +233,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-NUMBER.
 
-      *     ACCEPT WS-NUMBER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-030.
            MOVE WS-NUMBER TO ALPHA-RATE
@@ -274,16 +263,15 @@
            AT POS
            MOVE  1755 TO POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 14        TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-ANSWER2 TO CDA-DATA.
+           MOVE 1          TO CDA-DATALEN.
+           MOVE 14         TO CDA-ROW.
+           MOVE 54         TO CDA-COL.
+           MOVE CDA-WHITE  TO CDA-COLOR.
+           MOVE 'F'        TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
             IF WS-ANSWER1 = "Y"
                GO TO GET-020
@@ -310,7 +298,7 @@
            AT POS
            ADD 72 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-SALES-UPDATE TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 17        TO CDA-ROW.
            MOVE 72        TO CDA-COL.
@@ -319,7 +307,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALES-UPDATE.
 
-      *     ACCEPT WS-SALES-UPDATE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-550.
            IF WS-SALES-UPDATE NOT = "Y" AND NOT = "N"

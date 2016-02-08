@@ -1,5 +1,4 @@
-7#1D
-1
+7
 SFJ-MONTH
 2
 3
@@ -19,20 +18,18 @@ XX
 
 
 
-21
-2
-
-
-
 
 
 #04
+#04
+3
 4
 
 1
 XX
 /ctools/sfj/SL1
 01
+
 
 
 
@@ -90,7 +87,6 @@ D
 Y
 
 
-
 #04
 #04
 1
@@ -103,8 +99,6 @@ T
 S
 1
 
-
-
 14
 XX
 /ctools/sfj/DR14B
@@ -114,37 +108,8 @@ S
 2
 
 
-14
-XX
-/ctools/sfj/DR14C
-5000
-T
-S
-3
 
-
-
-14
-XX
-/ctools/sfj/DR14D
-5000
-T
-S
-
-
-
-
-14
-XX
-/ctools/sfj/DR14E
-5000
-T
-P
-
-
-
-
-
+#04
 #04
 3
 4
@@ -154,34 +119,25 @@ XX
 /ctools/sfj/SL8A
 50
 
-
-
 8
 XX
 /ctools/sfj/SL8B
 51
-
-
 
 8
 XX
 /ctools/sfj/SL8C
 52
 
-
-
 8
 XX
 /ctools/sfj/SL8D
 53
 
-
-
 8
 XX
 /ctools/sfj/SL8E
 55
-
 
 
 9
@@ -190,7 +146,6 @@ XX
 1
 N
 N
-
 
 9
 XX
@@ -214,7 +169,6 @@ XX
 
 
 
-
 11
 XX
 /ctools/sfj/Sl11
@@ -222,27 +176,6 @@ XX
 9999999
 A
 D
-
-
-
-11
-XX
-/ctools/sfj/Sl11A
-0100001
-9999999
-A
-S
-
-
-
-11
-2
-0100001
-9999999
-A
-D
-
-
 
 12
 XX
@@ -273,8 +206,6 @@ XX
 ZZZZZ
 N
 
-
-
 14
 XX
 /ctools/sfj/SL14
@@ -282,28 +213,25 @@ A
 ZZZZZ
 Y
 
-
-
 15
 0100001
 5555555
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
 1
 
-
 15
 0100001
 5555555
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -316,7 +244,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 Y
@@ -329,12 +257,11 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
-Y
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
+N
 N
 Y
 4
-
 
 16
 XX
@@ -350,10 +277,9 @@ Y
 XX
 /ctools/sfj/SL17A
 A
-ZZZZZZ
+ZZZZZ
+N
 Y
-Y
-
 
 
 #04
@@ -364,7 +290,6 @@ XX
 
 Y
 Y
-
 
 
 17
@@ -392,7 +317,6 @@ XX
 #04
 2
 2
-
 2
 XX
 /ctools/sfj/ST2
@@ -401,7 +325,6 @@ ZZZZZZ
 O
 Y
 
-
 16
 XX
 /ctools/sfj/ST16
@@ -409,15 +332,85 @@ XX
 Z
 N
 
-
 26
 XX
 /ctools/sfj/ST26
 A
 Z
 Y
-
 Y
+
+
+
+28
+XX
+/ctools/sfj/ST28A
+A
+ZZZZZ
+200
+R
+T
+N
+
+
+
+28
+XX
+/ctools/sfj/ST28B
+A
+ZZZZZ
+200
+U
+T
+N
+
+
+
+
+
+#04
+#04
+1
+2
+8
+XX
+/ctools/sfj/DR8
+
+9999999
+A
+
+
+
+
+#04
+1
+16
+XX
+/ctools/sfj/DR16
+XX
+
+
+#1F
+#04
+#04
+#04
+1
+2
+
+14
+XX
+/ctools/sfj/DR14C
+500
+T
+P
+
+
+14
+XX
+/ctools/sfj/DR14D
+500
+T
+S
 
 
 #04
@@ -475,33 +468,46 @@ XX
 /ctools/sfj/SL18J
 9
 
+19
+Y
+Y
+TRESPASS
+#0
+#07
 
-#04
-#04
+
+
+
+3
+XX
+/ctools/sfj/Sl31
 1
+N
+
+3
+XX
+/ctools/sfj/Sl32
 2
+N
 
-8
+3
 XX
-/ctools/sfj/DR8
+/ctools/sfj/Sl3
 
-9999999
-A
-
-
-
+Y
 
 
 #04
+#04
+2
 1
+25
+A
+ZZZZZ
+N
 
-16
-XX
-/ctools/sfj/DR16
-XX
 
 
-#1F
 #04
 #04
 #04

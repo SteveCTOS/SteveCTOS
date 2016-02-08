@@ -1,31 +1,13 @@
 2
 GRCMONTH
-2
 3
-17
-
-
-
-#04
-#04
-3
-2
-21
-XX
-/ctools/grc/SL21
-
-
-
-
-
-
-#04
 4
 
 1
 XX
 /ctools/grc/SL1
 01
+
 
 
 
@@ -68,7 +50,7 @@ XX
 Y
 
 
-T
+
 
 
 #04
@@ -84,41 +66,79 @@ Y
 
 
 #04
+#04
+1
+2
+14
+XX
+/ctools/grc/DR14A
+5000
+T
+S
+
+
+#04
+#04
+3
 4
+
+6
+XX
+/ctools/grc/SL6a
+
+N
+
+
+9
+XX
+/ctools/grc/SL9A
+F
+N
+N
+
+
 
 9
 XX
 /ctools/grc/SL9F
-F
-NN
+G
+N
+N
+
+
 
 9
 XX
 /ctools/grc/SL9G
-G
-NN
-
-9
-XX
-/ctools/grc/SL9H
 H
-NN
+N
+N
+
+
 
 9
 XX
 /ctools/grc/SL9I
 I
-NN
+N
+N
+
+
 
 9
 XX
-/ctools/grc/SL9J
+/ctools/grc/SL9X
 J
-NN
+N
+N
+
+
 
 10
 XX
 /ctools/grc/SL10
+
+
 
 
 
@@ -130,19 +150,35 @@ XX
 A
 D
 
+
 12
 XX
-/ctools/grc/SL12
+/ctools/grc/SL12A
 A
 ZZZZZ
 Y
 
+12
+XX
+/ctools/grc/SL12B
+A
+ZZZZZ
+N
+
 13
 XX
-/ctools/grc/SL13
+/ctools/grc/SL13A
 
 ZZZZZ
 Y
+
+
+13
+XX
+/ctools/grc/SL13B
+
+ZZZZZ
+N
 
 
 14
@@ -152,15 +188,13 @@ A
 ZZZZZ
 Y
 
-
-
 15
 0100001
 5555555
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE US IF NOT IN AGREEMENT WITH A/C.
 N
 N
 N
@@ -172,7 +206,7 @@ N
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE US IF NOT IN AGREEMENT WITH A/C.
 N
 N
 Y
@@ -184,13 +218,11 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE US IF NOT IN AGREEMENT WITH A/C.
 N
 N
 Y
 3
-
-#07
 
 15
 0100001
@@ -198,7 +230,7 @@ Y
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE US IF NOT IN AGREEMENT WITH A/C.
 Y
 N
 Y
@@ -210,10 +242,14 @@ Y
 XX
 /ctools/grc/SL17A
 A
-ZZZZZZ
-Y
+ZZZZZ
+N
 Y
 
+18
+XX
+/ctools/grc/SL18
+A
 
 
 #04
@@ -233,12 +269,9 @@ XX
 XX
 /ctools/grc/ST2
 A
-ZZZZZ
+ZZZZZZ
 O
 Y
-
-
-
 
 16
 XX
@@ -271,7 +304,6 @@ M
 Y
 
 
-
 #07
 28
 XX
@@ -285,7 +317,6 @@ Y
 
 
 
-
 #07
 #07
 
@@ -295,7 +326,6 @@ XX
 A
 Z
 Y
-
 Y
 
 
@@ -313,6 +343,7 @@ A
 
 
 
+
 #04
 1
 16
@@ -321,21 +352,19 @@ XX
 XX
 
 
-
 #1F
 #04
 #04
 #04
-
 3
 4
+
 19
-M
+Y
 Y
 TRESPASS
 #07
 #07
-
 
 3
 XX
@@ -353,26 +382,30 @@ N
 3
 XX
 /ctools/grc/Sl3
-
 Y
 
 
 #04
+#04
+2
+1
+25
+A
+ZZZZZ
+N
+
+
+#04
+#04
+3
 2
 17
 XX
 /ctools/grc/SL17
 
-9999999
-
-
-A
-
 Y
 
 #04
 #04
 #04
-#04
 E
-

@@ -1,22 +1,6 @@
 12
 KRS-MONTH
 3
-2
-
-21
-XX
-/ctools/krs/SL21
-
-
-
-
-21
-2
-
-
-
-
-#04
 4
 
 1
@@ -58,15 +42,14 @@ XX
 Y
 
 
-T
+
+
 
 #04
 3
 22
 XX
 /ctools/krs/SLP22
-
-
 
 
 3
@@ -77,12 +60,10 @@ Y
 #04
 #04
 1
-1
 16
-XX
+XXXXXXXX
 /ctools/krs/DR16
-XX
-
+XXXXXXXX
 
 
 #1F
@@ -107,13 +88,11 @@ D
 B
 31
 A
-PLEASE DIRECT ALL ACCOUNT QUERIES TO MRS YVONNE WHITEHEAD.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
 1
-
-
 
 15
 0100001
@@ -121,22 +100,37 @@ N
 B
 31
 A
-PLEASE DIRECT ALL ACCOUNT QUERIES TO MRS YVONNE WHITEHEAD.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 Y
 N
 Y
 2
 
 
-
 #04
 2
-
 19
 XX
 /ctools/krs/SL19
 21
 
+
+
+
+
+#04
+4
+19
+Y
+Y
+TRESPASS
+#04
+#04
+
+3
+XX
+/ctools/krs/Sl3
+Y
 
 
 #04

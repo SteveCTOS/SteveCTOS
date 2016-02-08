@@ -1,24 +1,6 @@
 11
 HKY-MONTH
 3
-2
-
-21
-XX
-/ctools/hky/SL21
-
-
-
-
-
-21
-2
-
-
-
-
-
-#04
 4
 
 1
@@ -60,16 +42,14 @@ XX
 Y
 
 
-T
+
 
 
 #04
 3
-
 22
 XX
 /ctools/hky/SLP22
-
 
 
 3
@@ -81,11 +61,10 @@ Y
 #04
 #04
 1
-1
 16
-XX
+XXXX
 /ctools/hky/DR16
-XX
+XXXX
 
 
 #1F
@@ -110,13 +89,11 @@ D
 B
 31
 A
-PLEASE DIRECT ALL ACCOUNT QUERIES TO MRS YVONNE WHITEHEAD.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
 1
-
-
 
 15
 0100001
@@ -124,7 +101,7 @@ N
 B
 31
 A
-PLEASE DIRECT ALL ACCOUNT QUERIES TO MRS YVONNE WHITEHEAD.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 Y
 N
 Y
@@ -135,13 +112,28 @@ Y
 
 #04
 2
-
 19
 XX
 /ctools/hky/SL19
 21
 
 
+
+
+#04
+4
+19
+Y
+Y
+TRESPASS
+#07
+#07
+
+
+3
+XX
+/ctools/hky/Sl3
+Y
 
 #04
 #04

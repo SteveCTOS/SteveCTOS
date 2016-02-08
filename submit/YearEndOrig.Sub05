@@ -1,5 +1,5 @@
 5
-ORXMONTH
+ORYXMONTH
 2
 3
 17
@@ -20,12 +20,12 @@ XX
 
 
 #04
+3
 4
 1
 XX
 /ctools/orx/SL1
 01
-
 
 
 
@@ -53,12 +53,6 @@ XX
 
 Y
 
-6
-XX
-/ctools/orx/Sl6A
-
-N
-
 
 7
 XX
@@ -66,7 +60,7 @@ XX
 Y
 
 
-T
+
 
 
 #04
@@ -81,7 +75,6 @@ D
 Y
 
 
-
 #04
 4
 
@@ -90,10 +83,10 @@ XX
 /ctools/orx/SL8A
 50
 
+
 10
 XX
 /ctools/orx/SL10
-
 
 
 11
@@ -104,22 +97,35 @@ XX
 A
 D
 
-
-
 12
 XX
-/ctools/orx/SL12
+/ctools/orx/SL12A
 A
 ZZZZZ
 Y
 
+12
+XX
+/ctools/orx/SL12B
+A
+ZZZZZ
+N
+
 13
 XX
-/ctools/orx/SL13
+/ctools/orx/SL13A
 
 ZZZZZ
 Y
 
+
+
+13
+XX
+/ctools/orx/SL13B
+
+ZZZZZ
+N
 
 14
 XX
@@ -128,13 +134,14 @@ A
 ZZZZZ
 Y
 
+
 15
 0100001
 5555555
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 N
 N
 N
@@ -146,7 +153,7 @@ N
 B
 31
 A
-PLEASE PHONE 618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+YEAR END - PLEASE ADVISE IF NOT IN AGREEMENT WITH STATEMENT.
 Y
 N
 Y
@@ -157,9 +164,18 @@ Y
 XX
 /ctools/orx/SL17A
 A
-ZZZZZZ
+ZZZZZ
+N
 Y
-Y
+
+
+
+18
+XX
+/ctools/orx/SL18A
+A
+
+
 
 #04
 2
@@ -167,6 +183,7 @@ Y
 XX
 /ctools/orx/SL19
 21
+
 
 #04
 #04
@@ -186,7 +203,7 @@ XX
 4
 
 19
-M
+Y
 Y
 TRESPASS
 #07
@@ -201,15 +218,26 @@ Y
 
 
 #04
+#04
+2
+1
+25
+A
+ZZZZZ
+N
+
+
+#04
+#04
+3
 2
 17
 XX
-/ctool/orx/SL17
+/ctools/orx/SL17
 
 Y
 
-
-
+#04
 #04
 #04
 #04
