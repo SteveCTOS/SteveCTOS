@@ -33,17 +33,14 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC X.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-CRREF.
-           03  WS-CRREF5          PIC X(5).
-           03  WS-REFREST         PIC X(5).
+           03  WS-CRREF5        PIC X(5).
+           03  WS-REFREST       PIC X(5).
        01  WS-TYPES.
            03  FILLER           PIC X(7) VALUE "INVOICE".
            03  FILLER           PIC X(7) VALUE "PAYMENT".
@@ -85,7 +82,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-LAST.
 
-      *      ACCEPT WS-LAST AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-900.
             IF WS-LAST NOT = "N" AND NOT = "Y"
@@ -109,7 +105,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *      ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-900.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5

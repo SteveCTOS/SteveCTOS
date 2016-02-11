@@ -4997,6 +4997,7 @@
             MOVE WS-POORDERNO      TO DRTR-REFERENCE1.
             MOVE WS-INVOICE        TO DRTR-REFERENCE2.
             MOVE WS-INVOICEDATE    TO DRTR-DATE.
+            MOVE 0                 TO DRTR-DEL-DATE.
             MOVE WS-INVOICETOTAL   TO DRTR-AMT-OF-INVOICE
                                       DRTR-AMT-OUTSTANDING.
        WRTR-005.

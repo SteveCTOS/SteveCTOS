@@ -39,11 +39,9 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC X.
+           03  WS-DRTRANS-ST1   PIC 99.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H-DATE           PIC X(10) VALUE " ".

@@ -693,6 +693,8 @@
        END-OFF SECTION.
        END-000.
            PERFORM GRAND-TOTALS.
+           CLOSE PRINT-FILE.
+           PERFORM SEND-REPORT-TO-PRINTER.
        END-900.
            EXIT PROGRAM.
        END-999.

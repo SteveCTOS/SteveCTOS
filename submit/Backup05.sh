@@ -53,9 +53,9 @@ Submit MainCont TapeBackupVol.Sub01
 
 echo Running TapeBackupVol.Sub01 Complete.......
 
-lp -d ctj-splXtra /ctools/dev/source/print/Compressed.Key
-lp -d ctj-splXtra /ctools/spl/ctj-aa1
-lp -d ctj-splXtra /ctools/spl/ctj-aa2
+
+lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa1
+lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa2
 
 echo Moving Faxes to FaxSent folder......
 cp /ctools/fax/*.pdf /ctools/faxsent/

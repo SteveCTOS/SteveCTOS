@@ -418,7 +418,7 @@
       *       COMPUTE SUB-4 = SUB-1 - 1
       *       MOVE WS-ACCOUNT-NUMBER (SUB-4) TO WS-ACCOUNT-NUMBER (SUB-1)
               PERFORM READ-NEXT-GLNUMBER
-              IF WS-GLMAST-ST1 = "0"
+              IF WS-GLMAST-ST1 = 0
                 MOVE GL-NUMBER TO WS-ACCOUNT-NUMBER (SUB-1)
                                   F-NAMEFIELD
                 MOVE 12 TO F-CBFIELDLENGTH

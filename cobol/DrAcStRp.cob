@@ -61,11 +61,9 @@
            03  WS-STRIP2          PIC X(18).
            03  WS-STRIP3          PIC X(3).
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC 9(2) COMP-X.
+           03  WS-DR-ST1          PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1       PIC 99.
        01  HEAD1-SUPPLY.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-SUPP-DATE   PIC X(10).

@@ -8,10 +8,11 @@ if [ "$4" = "02" ] && [ "$6" = "P" ]
 
 if [ "$4" = "02" ] && [ "$5" = "Y" ]
    then
-     sendfax -n -d $7 /ctools/fax/$1DrOverdue$3-2.pdf
+     sendfax -n -d $7 /ctools/fax/$1DrOverdue$3.pdf
+     echo fax-2 queued now .....
  fi
-
-#FORMAT FOR PRINTING IS:
+ 
+ #FORMAT FOR PRINTING IS:
 #lp -d W-PRINTERNAME W-PRINTFILE
 
 #--So far the variables which will be specified from inside the COBOL programs are:

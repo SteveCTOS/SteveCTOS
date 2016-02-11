@@ -42,9 +42,8 @@ rm /ctools/lock/*
 
 Submit MainCont TapeBackupFax.Sub01
 
-lp -d ctj-splXtra /ctools/dev/source/print/Compressed.Key
-lp -d ctj-splXtra /ctools/spl/ctj-aa1
-lp -d ctj-splXtra /ctools/spl/ctj-aa2
+lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa1
+lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa2
 
 echo Moving Faxes to FaxSent folder......
 cp /ctools/fax/*.pdf /ctools/faxsent/
