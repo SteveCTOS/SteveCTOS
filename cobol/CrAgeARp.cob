@@ -466,9 +466,9 @@
            MOVE WS-TOT-90DAY     TO TOT-90DAY
            MOVE WS-TOT-120DAY    TO TOT-120DAY
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
-           IF CR-ACCOUNT-NUMBER NOT = 0 
+           IF CR-ACCOUNT-NUMBER NOT = 0 AND NOT = " "
             IF WS-TOT-BALANCE NOT = CR-BALANCE
-              MOVE "************ ACCOUNT IN IMBALANCE **" TO PRINT-REC
+              MOVE "************ ACCOUNT IN IM-BALANCE **" TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               ADD 1 TO WS-LINE.
            MOVE " " TO TOTAL-LINE PRINT-REC
