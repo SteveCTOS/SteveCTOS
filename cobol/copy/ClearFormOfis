@@ -16,13 +16,16 @@
                          OFIS-ADDRESS4
                          OFIS-ADDRESS5
                          OFIS-ADDRESS6.
-             MOVE 1 TO SUB-40.
+             MOVE 1 TO SUB-25.
        CLSC-005.
-             MOVE " " TO OFIS-LINE-DESC (SUB-40).
-             IF SUB-40 < 200
-                ADD 1 TO SUB-40
+             MOVE " " TO OFIS-LINE-DESC (SUB-25).
+             IF SUB-25 < 200
+                ADD 1 TO SUB-25
                 GO TO CLSC-005.
+                
+             MOVE 1 TO SUB-25.
+             GO TO CLSC-999.
        CLSC-010.
       *     UNLOCK OFIS-FILE.
        CLSC-999.
-           EXIT.
+            EXIT.

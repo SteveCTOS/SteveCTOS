@@ -40,10 +40,10 @@
                    05  WS-TEST1-LAST2    PIC X(3).
                  04  WS-TEST1-LINE.
                    05  WS-TEST1-NAME     PIC X(25).
-                   05  FILLER            PIC X(2).
-                   05  WS-TEST1-FIRST    PIC X(10).
+      *             05  FILLER            PIC X(2).
+                   05  WS-TEST1-FIRST    PIC X(7).
                    05  WS-TEST1-F-NAME   PIC X(25).
-      *         03  FILLER                PIC X(13).
+               03  FILLER                PIC X(6).
            01  WS-TEST2.
                03  WS-TEST2-80CHAR.
                  04  WS-TEST2-NAME-TITLE.

@@ -1040,7 +1040,23 @@
             MOVE 6                  TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-NUMNEG.
 
-      *      IF NUMERIC-RATE = 0
+            IF F-EXIT-CH = X"01"
+             IF B-QUANTITY (SUB-1) < 1
+                MOVE SUB-1 TO SUB-7
+                PERFORM CANCEL-TRANSACTION
+                MOVE 1 TO SUB-1
+                          F-INDEX
+                PERFORM SCROLL-NEXT
+                PERFORM SCROLL-PREVIOUS
+              IF SUB-25 > 11
+                SUBTRACT 5 FROM SUB-25
+                MOVE SUB-25 TO SUB-1
+                PERFORM SCROLL-NEXT
+                ADD 5 TO SUB-25
+                GO TO FILL-005
+              ELSE
+                GO TO FILL-005.
+
             IF B-QUANTITY (SUB-1) = 0
                 MOVE "QUANTITY MUST BE > THAN ZERO !!" TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
@@ -1814,6 +1830,8 @@
            PERFORM CLEAR-010.
            MOVE 2910 TO POS.
            DISPLAY "ENTER THE SUPPLIER: [       ]" AT POS.
+           MOVE 3010 TO POS
+           DISPLAY "(ON STOCK FILE)" AT POS
            MOVE 2931 TO POS.
 
            MOVE ' '       TO CDA-DATA.
@@ -1825,7 +1843,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER.
 
-      *     ACCEPT WS-SUPPLIER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE "2" TO WS-ABOVE-BODY
                GO TO UPRN-999.
@@ -1837,7 +1854,10 @@
        UPRN-001.
            IF WS-SUPPLIER = " "
               GO TO UPRN-000.
-               
+           MOVE " " TO WS-MESSAGE.
+           MOVE 3010 TO POS.
+           DISPLAY WS-MESSAGE AT POS.
+
            PERFORM GET-CREDITOR-INFO.
                
            MOVE 2910 TO POS.
@@ -1857,7 +1877,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-INVNO.
 
-      *     ACCEPT WS-INVNO AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPRN-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -1886,7 +1905,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PORD.
 
-      *     ACCEPT WS-PORD AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPRN-001.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -1919,13 +1937,12 @@
            MOVE ' '       TO CDA-DATA.
            MOVE 60        TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
-           MOVE 30        TO CDA-COL.
+           MOVE 11        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-WRITE-MESSAGE.
 
-      *     ACCEPT WS-MESSAGE AT POS.
            MOVE WS-WRITE-MESSAGE TO WS-COMMENT (SUB-1).
            MOVE " " TO WS-WRITE-MESSAGE.
            IF W-ESCAPE-KEY = 4
@@ -1962,7 +1979,7 @@
            MOVE 2933 TO POS.
 
            MOVE ' '       TO CDA-DATA.
-           MOVE 7         TO CDA-DATALEN.
+           MOVE 20        TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 32        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
@@ -1970,7 +1987,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO F-NAMEFIELD.
 
-      *     ACCEPT F-NAMEFIELD AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPRN-020.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -1993,13 +2009,12 @@
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
+           MOVE 53        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER-ANSWER.
 
-      *     ACCEPT WS-SUPPLIER-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPRN-050.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -2043,7 +2058,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF WS-ANSWER = "I"
                GO TO GET-020.
            IF WS-ANSWER = "G"
@@ -2083,7 +2097,6 @@
            MOVE 2910 TO POS.
            DISPLAY "ENTER THE ORDER NUMBER: [                    ]"
             AT POS.
-      *     MOVE 2935 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 20        TO CDA-DATALEN.
@@ -2094,7 +2107,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ORDERNUMBER.
 
-      *     ACCEPT WS-ORDERNUMBER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE "2" TO WS-ABOVE-BODY
                GO TO GSOOS-999.
@@ -2274,9 +2286,8 @@
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-ANSWER.
+           MOVE CDA-DATA TO WS-ORDERNUMBER.
 
-      *     ACCEPT WS-ORDERNUMBER AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE "2" TO WS-ABOVE-BODY
                GO TO UPOO-999.
@@ -2308,7 +2319,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DELIVERY.
 
-      *     ACCEPT WS-DELIVERY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -2346,7 +2356,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER.
 
-      *     ACCEPT WS-SUPPLIER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-002.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -2378,7 +2387,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT-DATE.
 
-      *     ACCEPT WS-ACCEPT-DATE AT POS.
            IF WS-ACCEPT-DATE = " "
               MOVE 0 TO WS-DUEDATE
               GO TO UPOO-008.
@@ -2427,7 +2435,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-YN.
 
-      *     ACCEPT WS-YN AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -2480,7 +2487,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-WRITE-MESSAGE.
 
-      *     ACCEPT WS-MESSAGE AT POS.
            MOVE WS-WRITE-MESSAGE TO WS-COMMENT (SUB-1).
            MOVE " " TO WS-WRITE-MESSAGE.
            DISPLAY WS-WRITE-MESSAGE AT POS.
@@ -2529,7 +2535,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT-COPIES.
 
-      *     ACCEPT WS-ACCEPT-COPIES AT POS.
            MOVE WS-ACCEPT-COPIES TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
            MOVE NUMERIC-RATE TO WS-SLIP-COPIES.
@@ -2571,7 +2576,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CONFIRMED.
 
-      *     ACCEPT WS-CONFIRMED AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-040.
            IF WS-CONFIRMED NOT = "Y" AND NOT = "N"
@@ -3107,14 +3111,16 @@
            
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
+      * SECOND TIME JUST T GET THE TWO COPIES NEEDED FOR THE GRV
+           PERFORM SEND-REPORT-TO-PRINTER.
            MOVE " "                  TO PRINT-REC SLIP-DETAIL.
-           ADD 1 TO WS-COPIES.
-           IF WS-COPIES NOT = 2
-              MOVE 0 TO SLIP-CNT
-              MOVE 1 TO SUB-1
-              MOVE 66 TO SLIP-LINE
-              OPEN OUTPUT PRINT-FILE
-              GO TO PRS-005.
+      *     ADD 1 TO WS-COPIES.
+      *     IF WS-COPIES NOT = 2
+      *        MOVE 0 TO SLIP-CNT
+      *        MOVE 1 TO SUB-1
+      *        MOVE 66 TO SLIP-LINE
+      *        OPEN OUTPUT PRINT-FILE
+      *        GO TO PRS-005.
            MOVE 0 TO WS-STTRANSNO.
            MOVE 2910 TO POS
            DISPLAY "                                                   "
@@ -4121,8 +4127,8 @@
           IF WS-FREIGHT = 0
               GO TO RWCR-013.
               
-           MOVE "50-090-05-00"      TO CRJRN-GLACC (SUB-1)
-           MOVE CRJRN-GLACC (SUB-1) TO GL-NUMBER
+           MOVE "50-090-05-00"         TO CRJRN-GLACC (SUB-1)
+           MOVE CRJRN-GLACC (SUB-1)    TO GL-NUMBER
            PERFORM READ-GLMASTER.
            IF CRJRN-TYPE = 1
               MOVE WS-FREIGHT          TO CRJRN-GLAMT (SUB-1)
@@ -4135,7 +4141,7 @@
            COMPUTE CRJRN-GLDISC (SUB-1) ROUNDED =
               (CRJRN-GLAMT (SUB-1) * CR-SETT-DISC) / 100.
 
-           ADD CRJRN-GLDISC (SUB-1) TO WS-GLDISC.
+           ADD CRJRN-GLDISC (SUB-1)    TO WS-GLDISC.
        RWCR-013.
       *************
       * SUB-1 = 3 *

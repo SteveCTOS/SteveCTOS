@@ -477,9 +477,10 @@
                      WS-SHIPQTY.
            MOVE 66 TO LINE-CNT.
            PERFORM GET-USER-PRINT-NAME.
-           OPEN OUTPUT PRINT-FILE
+           OPEN OUTPUT PRINT-FILE.
            MOVE "N"            TO STTR-ST-COMPLETE
-           MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER.
+           MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER
+           MOVE 0              TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
             IF WS-STTRANS-ST1 NOT = 0

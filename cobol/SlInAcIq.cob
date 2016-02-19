@@ -37,13 +37,10 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1    PIC 99.
-      *     03  WS-STTRANS-ST2    PIC X.
+           03  WS-STTRANS-ST1   PIC 99.
        01  WS-SALEDATE.
            03 WS-SALEYY         PIC 9999.
            03 WS-SALEMM         PIC 99.
@@ -286,6 +283,7 @@
        RDTR-005.
            MOVE "Y"               TO STTR-AC-COMPLETE
            MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
+           MOVE 0                 TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
@@ -512,6 +510,7 @@
            PERFORM OPEN-005.
            MOVE "Y"               TO STTR-AC-COMPLETE.
            MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
+           MOVE 0                 TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
        PRR-002.

@@ -43,16 +43,12 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1    PIC 99.
-      *     03  WS-STTRANS-ST2    PIC X.
+           03  WS-STTRANS-ST1   PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -334,6 +330,7 @@
        RDTR-005.
            MOVE "Y"            TO STTR-ST-COMPLETE.
            MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER.
+           MOVE 0              TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 = 23 OR 35 OR 49
@@ -489,6 +486,7 @@
               MOVE WS-SPLIT-INPUT-DESC TO STTR-STOCK-NUMBER
            ELSE
               MOVE ST-STOCKNUMBER      TO STTR-STOCK-NUMBER.
+           MOVE 0                      TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0

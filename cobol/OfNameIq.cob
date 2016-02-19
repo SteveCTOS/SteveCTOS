@@ -11,7 +11,7 @@
       *
         DATA DIVISION.
         FILE SECTION.
-            COPY ChlfdOfis.
+         COPY ChlfdOfis.
 
        WORKING-STORAGE SECTION.
        77  WS-SHORTNAME         PIC X(10) VALUE " ".
@@ -21,7 +21,7 @@
        77  SUB-DIS              PIC 9(4) VALUE 0.
        77  WS-MIDDLE            PIC X(79) VALUE " ".
        77  WS-NEWORDER          PIC X VALUE " ".
-       77  WS-OFISNAME          PIC X(25) VALUE " ".
+       77  WS-OFISNAME          PIC X(50) VALUE " ".
        77  WS-END               PIC X VALUE " ".      
        77  WS-BODY-LINE         PIC ZZ9.
        77  NEW-OFISNO           PIC X VALUE " ".      
@@ -77,6 +77,10 @@
       *
        GET-DATA SECTION.
        GET-000.
+            MOVE 2910 TO POS
+            DISPLAY
+           "ENTER A SHORTNAME & <RETURN> OR <F6> TO CREATE A NEW ENTRY."
+               AT POS.       
             MOVE " " TO WS-SPLIT-INPUT-ACC
                         WS-SPLIT-ACCOUNT.
             MOVE "Y" TO WS-1ST.
@@ -88,6 +92,22 @@
             PERFORM ERROR-020.
             MOVE 7           TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
+      * <F6> TO CREATE A NEW RECORD
+            IF F-EXIT-CH = X"1A"
+                MOVE F-NAMEFIELD TO ALPHA-RATE
+                PERFORM DECIMALISE-RATE
+                MOVE NUMERIC-RATE TO WS-ACC
+                PERFORM CLEAR-SCREEN
+                MOVE "OfNameMt" TO F-FORMNAME
+                PERFORM OPEN-010 THRU OPEN-020
+                PERFORM DISPLAY-FORM
+                PERFORM OPEN-000
+                PERFORM GET-OFIS-DATA
+                PERFORM END-000
+                MOVE "OfNameIq" TO F-FORMNAME
+                PERFORM OPEN-010 THRU OPEN-020
+                PERFORM DISPLAY-FORM
+                GO TO GET-000.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"1D"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO GET-000.
@@ -189,23 +209,23 @@
             MOVE OFIS-KEY TO WS-NAME-SEARCH (SUB-3).
         READ-025.
             IF SUB-3 > 20
-                MOVE 2910 TO POS
-                DISPLAY "Press 'PgDn' For More, 'PgUp' For Previous,"
-                  AT POS
-                MOVE 3020 TO POS
-                DISPLAY "Or 'ESC' To Clear The Screen !" AT POS
+                MOVE 2905 TO POS
+                DISPLAY 
+                  "Press 'PgDn' For More, 'PgUp' For Previous, " & 
+                  "'ESC' To Clear The Screen, OR" AT POS
+                MOVE 3015 TO POS 
+                DISPLAY
+                "Enter A Number & Press <GO> To Edit The Entry." AT POS
                 MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
                 MOVE 7           TO F-CBFIELDLENGTH
                 PERFORM WRITE-FIELD-ALPHA
                 PERFORM USER-FILL-FIELD
                 MOVE 7           TO F-CBFIELDLENGTH
                 PERFORM READ-FIELD-ALPHA.
-            MOVE 2910 TO POS.
-            DISPLAY "                                                 "
-                AT POS.
-            MOVE 3020 TO POS.
-            DISPLAY "                                                 "
-                AT POS.
+            
+            PERFORM ERROR1-020.
+            PERFORM ERROR-020.
+            
             IF F-EXIT-CH = X"04"
                 PERFORM END-OFF.
             IF F-EXIT-CH = X"0C"
@@ -226,8 +246,8 @@
                 PERFORM CLEAR-MIDDLE
                 CLOSE OFIS-FILE
                 GO TO READ-999.
-      * <F6>
-            IF F-EXIT-CH = X"1A"
+      * <GO>
+            IF F-EXIT-CH = X"1B"
                 MOVE F-NAMEFIELD TO ALPHA-RATE
                 PERFORM DECIMALISE-RATE
                 MOVE NUMERIC-RATE TO WS-ACC
@@ -245,7 +265,7 @@
                 
             IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
                      AND NOT = X"07" AND NOT = 0     AND NOT = 1
-                     AND NOT = X"1A"
+                     AND NOT = X"1B"
                 GO TO READ-025.
             ADD 1      TO SUB-DIS.
    
@@ -272,6 +292,7 @@
             MOVE " " TO OFIS-RECORD.
             MOVE "N" TO NEW-OFISNO
                         WS-END.
+            MOVE 200 TO SUB-25.
        GET-OFIS-001.
             MOVE SPACES TO F-NAMEFIELD.
 
@@ -287,7 +308,7 @@
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD   TO OFIS-NAME.
             IF F-EXIT-CH = X"0C"
-                MOVE WS-OFISNAME TO OFIS-NAME
+                MOVE WS-OFISNAME TO OFIS-KEY
                 PERFORM START-OFIS
                 PERFORM READ-OFIS-NEXT
              IF WS-END NOT = "Y"
@@ -298,7 +319,42 @@
             IF F-EXIT-CH = X"1B"
                PERFORM REWRITE-OFIS-RECORD
                PERFORM CLEAR-SCREEN-FORM
-              GO TO FILL-999.
+               GO TO GET-OFIS-999.
+            IF F-EXIT-CH = X"05"
+                PERFORM READ-OFIS-PREVIOUS
+             IF WS-END NOT = "Y"
+               GO TO GET-OFIS-003
+             ELSE
+               PERFORM CLSC-010
+               GO TO GET-OFIS-000.
+            IF F-EXIT-CH = X"04"
+               GO TO GET-OFIS-999.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               MOVE "INVALID KEY." TO WS-MESSAGE
+               PERFORM ERROR-000
+               GO TO GET-OFIS-001.
+       GET-OFIS-002.
+            MOVE "FIRSTNAME"   TO F-FIELDNAME.
+            MOVE 9             TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 25            TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD   TO OFIS-FIRSTNAME.
+            IF F-EXIT-CH = X"01"
+               GO TO GET-OFIS-001.
+            IF F-EXIT-CH = X"0C"
+                MOVE WS-OFISNAME TO OFIS-KEY
+                PERFORM START-OFIS
+                PERFORM READ-OFIS-NEXT
+             IF WS-END NOT = "Y"
+               GO TO GET-OFIS-003
+             ELSE
+               PERFORM CLSC-010
+               GO TO GET-OFIS-000.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO GET-OFIS-999.
             IF F-EXIT-CH = X"05"
                 PERFORM READ-OFIS-PREVIOUS
              IF WS-END NOT = "Y"
@@ -319,7 +375,7 @@
             IF NEW-OFISNO = "Y"
                 PERFORM CLSC-010
                 PERFORM FILL-BODY
-                GO TO GET-OFIS-000.
+                GO TO GET-OFIS-999.
                 
       *      GO TO GET-OFIS-005.
        GET-OFIS-003.
@@ -416,6 +472,10 @@
             MOVE 1 TO SUB-1 F-INDEX.
             PERFORM SCROLL-PREVIOUS.
 
+            MOVE 2910 TO POS
+            DISPLAY 
+          "Press <GO> to File the Changes or <Esc> to Clear The Screen."
+                AT POS.
             PERFORM FILL-BODY.
       *      IF WS-ABOVE-BODY = "1"
       *          GO TO GET-OFIS-001.
@@ -423,6 +483,79 @@
             EXIT.
       *
        FILL-BODY SECTION.
+       FILL-002.
+      *      IF NEW-OFISNO NOT = "Y"
+                 GO TO FILL-006.
+       
+            MOVE "NAME"         TO F-FIELDNAME.
+            MOVE 4              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 25             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-NAME.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-002.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-002.
+        FILL-003.
+            MOVE "FIRST-NAME"   TO F-FIELDNAME.
+            MOVE 10             TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 25             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-FIRSTNAME.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-002.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-003.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-003.
+
+            PERFORM ERROR-020.
+            PERFORM READ-OFIS.
+            
+            IF NEW-OFISNO NOT = "Y"
+                PERFORM GET-OFIS-005
+                MOVE 1 TO SUB-1 F-INDEX.
+                PERFORM SCROLL-PREVIOUS.
        FILL-006.
             MOVE "TITLE"     TO F-FIELDNAME.
             MOVE 5           TO F-CBFIELDNAME.
@@ -430,12 +563,14 @@
             MOVE 10          TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO OFIS-TITLE.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
             IF F-EXIT-CH = X"07"
                PERFORM RELEASE-OFIS-RECORD
                PERFORM CLEAR-SCREEN-FORM
                GO TO FILL-999.
             IF F-EXIT-CH = X"01"
-               GO TO FILL-450.
+               GO TO FILL-065.
             IF F-EXIT-CH = X"0C"
                PERFORM REWRITE-OFIS-RECORD
                PERFORM READ-OFIS-NEXT
@@ -467,9 +602,11 @@
             MOVE "AFFILIATION"  TO F-FIELDNAME.
             MOVE 11             TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
-            MOVE 10             TO F-CBFIELDLENGTH.
+            MOVE 25             TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD    TO OFIS-AFFILIATION.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
             IF F-EXIT-CH = X"07"
                PERFORM RELEASE-OFIS-RECORD
                PERFORM CLEAR-SCREEN-FORM
@@ -503,10 +640,475 @@
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
                DISPLAY " " AT 3079 WITH BELL
                GO TO FILL-010.
+        FILL-015.
+            MOVE "CATEGORY"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 25             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-CATEGORY.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-010.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-015.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-015.
+        FILL-020.
+            MOVE "PHONE"        TO F-FIELDNAME.
+            MOVE 5              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 25             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-PHONE.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-015.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-020.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-020.
+        FILL-025.
+            MOVE "PHONE-LABEL"  TO F-FIELDNAME.
+            MOVE 11             TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 10             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-PHONE-LABEL.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-020.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-025.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-025.
+        FILL-030.
+            MOVE "ADDRESS1"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 50             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-ADDRESS1.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-025.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-030.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-030.
+        FILL-035.
+            MOVE "ADDRESS2"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 50             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-ADDRESS2.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-030.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-035.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-035.
+        FILL-040.
+            MOVE "ADDRESS3"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 50             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-ADDRESS3.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-035.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-040.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-040.
+        FILL-045.
+            MOVE "FAX"          TO F-FIELDNAME.
+            MOVE 3              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 25             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-FAX.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-040.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-045.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-045.
+        FILL-050.
+            MOVE "FAX-LABEL"    TO F-FIELDNAME.
+            MOVE 9              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 10             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-FAX-LABEL.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-045.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-050.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-050.
+        FILL-055.
+            MOVE "ADDRESS4"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 50             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-ADDRESS4.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-050.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-055.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-055.
+        FILL-060.
+            MOVE "ADDRESS5"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 50             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-ADDRESS5.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-055.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-060.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-060.
+        FILL-065.
+            MOVE "ADDRESS6"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            MOVE 50             TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD    TO OFIS-ADDRESS6.
+            IF F-EXIT-CH = X"09"
+               GO TO FILL-450.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-NEXT
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"05"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM READ-OFIS-PREVIOUS
+               PERFORM GET-OFIS-003 THRU GET-OFIS-005
+               GO TO FILL-006.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-060.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+            IF F-EXIT-CH = X"1F"
+               PERFORM DELETE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+           IF F-EXIT-CH = X"04"
+               MOVE
+           "Press 'ESC' To Clear The Current Input Before 'END'"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-065.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-065.
        FILL-450.
-            MOVE " " TO WS-ABOVE-BODY
-            MOVE 1 TO SUB-1 SUB-2.
+      *      MOVE " " TO WS-ABOVE-BODY.
+            MOVE 1 TO SUB-1 F-INDEX.
+            PERFORM SCROLL-PREVIOUS.
        FILL-455.
+            MOVE 3010 TO POS
+            DISPLAY "Press <PgDn> to See More Note Fields." AT POS.
             PERFORM ERROR-020.
 
             MOVE 3010 TO POS
@@ -522,7 +1124,7 @@
             MOVE "LINE-DESC"   TO F-FIELDNAME
             MOVE 9             TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
-            MOVE 78            TO F-CBFIELDLENGTH
+            MOVE 80            TO F-CBFIELDLENGTH
             PERFORM READ-FIELD79-ALPHA.
             
             MOVE F-NAMEFIELD79 TO OFIS-LINE-DESC (SUB-1).
@@ -530,14 +1132,14 @@
             IF F-EXIT-CH = X"0A" OR = X"0B"
              IF F-INDEX = 10
                 PERFORM SCROLL-NEXT
-                GO TO FILL-500
+                GO TO FILL-455
               ELSE
                 ADD 1 TO SUB-1 F-INDEX
                 GO TO FILL-455.
 
             IF F-EXIT-CH = X"01" AND F-INDEX = 1
                 MOVE "1" TO WS-ABOVE-BODY
-                GO TO FILL-999.
+                GO TO FILL-065.
 
             IF F-EXIT-CH = X"01" AND F-INDEX > 1
                 SUBTRACT 1 FROM F-INDEX SUB-1
@@ -545,22 +1147,30 @@
                 
             IF F-EXIT-CH = X"11"
                 PERFORM SCROLL-NEXT
-                GO TO FILL-500.
+                GO TO FILL-455.
             IF F-EXIT-CH = X"0C"
                 PERFORM SCROLL-NEXT-PAGE
-                GO TO FILL-500.
+                GO TO FILL-455.
             IF F-EXIT-CH = X"05"
                 PERFORM SCROLL-PREVIOUS
-                GO TO FILL-500.
+                GO TO FILL-455.
             IF F-EXIT-CH = X"13"
                 PERFORM SCROLL-DOWN
-                GO TO FILL-500.
-      ******************
-      * TAB CHARACTER  *
-      ******************
+                GO TO FILL-455.
+            IF F-EXIT-CH = X"07"
+               PERFORM RELEASE-OFIS-RECORD
+               PERFORM CLEAR-SCREEN-FORM
+               GO TO FILL-999.
+      ****************************
+      * <TAB> OR <GO> CHARACTER  *
+      ****************************
             IF F-EXIT-CH = X"09"
+               GO TO FILL-006.
+      
+            IF F-EXIT-CH = X"1B"
                 PERFORM ERROR-020
                 PERFORM REWRITE-OFIS-RECORD
+                PERFORM CLEAR-SCREEN-FORM
                 GO TO FILL-999.
                 
             ADD 1 TO SUB-1 F-INDEX.
@@ -616,6 +1226,10 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RSR-010.
+              
+      *    MOVE "REWRITE DONE." TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+              
           GO TO RSR-999.
        RSR-020.
           WRITE OFIS-RECORD
@@ -626,34 +1240,40 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RSR-020.
+              
+      *    MOVE "WRITE DONE." TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+              
        RSR-999.
           EXIT.
       *
        READ-OFIS SECTION.
        R-ST-000.
-             MOVE OFIS-NAME TO WS-OFISNAME.
+             MOVE OFIS-KEY TO WS-OFISNAME.
              START OFIS-FILE KEY NOT < OFIS-KEY
                  INVALID KEY NEXT SENTENCE.
        R-ST-010.
              READ OFIS-FILE WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-             IF WS-OFIS-ST1 = 23 OR 35 OR 49
+             IF WS-OFIS-ST1 = 23 OR = 35 OR = 49 OR = 51
                 PERFORM CLEAR-SCREEN-FORM
                 MOVE "Y" TO NEW-OFISNO
-                MOVE WS-OFISNAME TO OFIS-NAME
+                MOVE WS-OFISNAME TO OFIS-KEY
                 GO TO R-ST-999.
              IF WS-OFIS-ST1 NOT = 0
-                MOVE 0 TO WS-OFIS-ST1
                 MOVE "OFIS RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-OFIS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-OFIS-ST1
                 GO TO R-ST-010.
        R-ST-999.
              EXIT.
       *
        START-OFIS SECTION.
        ST-ST-000.
-              MOVE WS-OFISNAME TO OFIS-NAME.
+              MOVE WS-OFISNAME TO OFIS-KEY.
               START OFIS-FILE KEY NOT LESS OFIS-KEY.
        ST-ST-999.
              EXIT.
@@ -662,7 +1282,7 @@
        RSN-005. 
            READ OFIS-FILE NEXT WITH LOCK
              AT END 
-               MOVE " " TO OFIS-NAME
+               MOVE " " TO OFIS-KEY
                            WS-OFISNAME
                MOVE "Y" TO WS-END
                MOVE "END OF NEXT PAGE SEQUENCE, ENTER A NEW IDENTIFIER"
@@ -679,7 +1299,7 @@
                MOVE 0 TO WS-OFIS-ST1
                PERFORM START-OFIS
                GO TO RSN-005.
-           MOVE OFIS-NAME TO WS-OFISNAME.
+           MOVE OFIS-KEY TO WS-OFISNAME.
            MOVE "N"       TO NEW-OFISNO.
        RSN-999.
              EXIT.
@@ -688,7 +1308,7 @@
        RSPREV-005. 
            READ OFIS-FILE PREVIOUS WITH LOCK
              AT END 
-               MOVE " " TO OFIS-NAME
+               MOVE " " TO OFIS-KEY
                            WS-OFISNAME
                MOVE "Y" TO WS-END
             MOVE "END OF PREVIOUS PAGE SEQUENCE, ENTER A NEW IDENTIFIER"
@@ -705,7 +1325,7 @@
                MOVE 0 TO WS-OFIS-ST1
                PERFORM START-OFIS
                GO TO RSPREV-005.
-           MOVE OFIS-NAME TO WS-OFISNAME.
+           MOVE OFIS-KEY TO WS-OFISNAME.
            MOVE "N"       TO NEW-OFISNO.
        RSPREV-999.
              EXIT.
@@ -823,7 +1443,7 @@
             ADD 1 TO F-INDEX SUB-1.
             IF SUB-1 > 200   
                 GO TO SCROLL-DOWN-030.
-     *       IF OFIS-LINE-DESC (SUB-1) = " "
+      *       IF OFIS-LINE-DESC (SUB-1) = " "
             IF F-INDEX < 11
                 GO TO SCROLL-DOWN-010.
        SCROLL-DOWN-030.
@@ -844,7 +1464,7 @@
             MOVE "LINE-DESC"            TO F-FIELDNAME
             MOVE 9                      TO F-CBFIELDNAME
             MOVE OFIS-LINE-DESC (SUB-1) TO F-NAMEFIELD79
-            MOVE 78                     TO F-CBFIELDLENGTH
+            MOVE 80                     TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD79-ALPHA.
        SCROLL-999.
              EXIT.
@@ -859,8 +1479,8 @@
 
             MOVE "LINE-DESC"  TO F-FIELDNAME
             MOVE 9            TO F-CBFIELDNAME
-            MOVE " "           TO F-NAMEFIELD79
-            MOVE 79            TO F-CBFIELDLENGTH
+            MOVE " "          TO F-NAMEFIELD79
+            MOVE 80           TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD79-ALPHA.
 
             GO TO CLEAR-002.
