@@ -573,7 +573,7 @@
                      WS-PRICETOTAL.
            MOVE " " TO PRINT-REC.
            PERFORM READ-PARAMETER.
-           IF WS-ANSWER = "1" OR = "2"
+           IF WS-ANSWER = "1" OR = "2" OR = "3"
                MOVE WS-PRINTER-DOT TO WS-MESSAGE
                PERFORM GET-USER-PRINT-NAME.
       *     IF Fax-PaNumber = 3
@@ -966,7 +966,7 @@
       *          PERFORM GET-REPORT-Y2K-DATE
       *          PERFORM PRINT-REPORT-INFO.
            CLOSE PRINT-FILE.
-           IF WS-ANSWER = "1" OR = "2"
+           IF WS-ANSWER = "1" OR = "2" OR = "3"
                PERFORM SEND-REPORT-TO-PRINTER.
 
       * In the PrintQuote1 shell script:
@@ -2583,7 +2583,7 @@
             DISPLAY "Enter N=1, Y=2, T=3, Z=Zero Copies [ ]" AT POS.
             ADD 36 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'T'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 27        TO CDA-ROW.
            MOVE 45        TO CDA-COL.
@@ -2592,7 +2592,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *      ACCEPT WS-ANSWER AT POS.
             IF W-ESCAPE-KEY = 4
                PERFORM ERROR1-020
                PERFORM ERROR-020
@@ -2626,7 +2625,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALESMAN.
 
-      *      ACCEPT WS-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-055.
@@ -2656,7 +2654,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT1.
 
-      *      ACCEPT WS-COMMENT1 AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-060.
@@ -2682,7 +2679,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT2.
 
-      *      ACCEPT WS-COMMENT2 AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-067.
@@ -2717,7 +2713,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-QUOTE-TERM (SUB-1).
 
-      *      ACCEPT WS-QUOTE-TERM (SUB-1) AT POS.
             IF W-ESCAPE-KEY = 4
              IF SUB-1 > 1
                SUBTRACT 1 FROM SUB-1
@@ -2749,7 +2744,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-TOTALS.
 
-      *      ACCEPT WS-PRINT-TOTALS AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE 1 TO SUB-1
                GO TO FINAL-ENTRY-070.
@@ -2780,7 +2774,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-AUTO-FAX.
 
-      *      ACCEPT WS-AUTO-FAX AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-070.
@@ -2819,7 +2812,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FAX-NUMBER.
 
-      *      ACCEPT WS-FAX-NUMBER AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-080.

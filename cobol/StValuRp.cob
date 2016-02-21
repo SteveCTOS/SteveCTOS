@@ -51,10 +51,8 @@
        77  WS-REPVALUE          PIC Z(7)9.99-.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-STTRANS-STATUS.
            03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC X.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -149,7 +147,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BEGSTOCK.
 
-      *     ACCEPT WS-BEGSTOCK AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -171,7 +168,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ENDSTOCK.
 
-      *     ACCEPT WS-ENDSTOCK AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-ENDSTOCK = " "
@@ -196,7 +192,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CAT-ONLY.
 
-      *     ACCEPT WS-CAT-ONLY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-012.
            IF WS-CAT-ONLY NOT = "Y" AND NOT = "N"
@@ -222,12 +217,11 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-NON-STOCK.
 
-      *     ACCEPT WS-NON-STOCK AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            IF WS-NON-STOCK NOT = "Y" AND NOT = "N"
                DISPLAY " " AT 3079 WITH BELL
-               GO TO CONTROL-025.
+               GO TO CONTROL-020.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO CONTROL-025
            ELSE

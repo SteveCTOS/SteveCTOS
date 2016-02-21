@@ -283,7 +283,7 @@
        RDTR-005.
            MOVE "Y"               TO STTR-AC-COMPLETE
            MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
-           MOVE 0                 TO STTR-AC-DATE.
+           MOVE WS-SALEDATE       TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
@@ -510,7 +510,7 @@
            PERFORM OPEN-005.
            MOVE "Y"               TO STTR-AC-COMPLETE.
            MOVE DR-ACCOUNT-NUMBER TO STTR-ACCOUNT-NUMBER.
-           MOVE 0                 TO STTR-AC-DATE.
+           MOVE WS-SALEDATE       TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
        PRR-002.

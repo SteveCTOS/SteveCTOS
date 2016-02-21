@@ -115,15 +115,6 @@ D
 
 
 
-12
-XX
-/ctools/orx/SL12
-A
-ZZZZZ
-Y
-
-
-
 15
 0100001
 5555555
@@ -152,24 +143,42 @@ Y
 
 
 
-
-
 12
 XX
-/ctools/orx/SL12
+/ctools/orx/SL12A
 A
 ZZZZZ
 Y
 
 
 
+12
+XX
+/ctools/orx/SL12B
+A
+ZZZZZ
+N
+
+
+
+
+
 13
 XX
-/ctools/orx/SL13
+/ctools/orx/SL13A
 
 ZZZZZ
 Y
+Y
 
+
+13
+XX
+/ctools/orx/SL13B
+
+ZZZZZ
+N
+Y
 
 
 14

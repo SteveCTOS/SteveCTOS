@@ -330,7 +330,7 @@
        RDTR-005.
            MOVE "Y"            TO STTR-ST-COMPLETE.
            MOVE ST-STOCKNUMBER TO STTR-STOCK-NUMBER.
-           MOVE 0              TO STTR-ST-DATE.
+           MOVE WS-SALEDATE    TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 = 23 OR 35 OR 49
@@ -486,7 +486,7 @@
               MOVE WS-SPLIT-INPUT-DESC TO STTR-STOCK-NUMBER
            ELSE
               MOVE ST-STOCKNUMBER      TO STTR-STOCK-NUMBER.
-           MOVE 0                      TO STTR-ST-DATE.
+           MOVE WS-SALEDATE            TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0

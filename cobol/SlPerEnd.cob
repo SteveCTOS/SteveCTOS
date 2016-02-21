@@ -21,6 +21,7 @@
           Copy "SelectSlRegister".
           Copy "SelectSlRegLy".
           Copy "SelectStReceipt".
+          Copy "SelectStReceiptLy".
           Copy "SelectGlMaster".
           Copy "SelectGlTrans".
           Copy "SelectGlParameter".
@@ -42,6 +43,7 @@
            COPY ChlfdRegister.
            COPY ChlfdRegisterLy.
            COPY ChlfdStkReceipts.
+           COPY ChlfdStkReceiptsLy.
            COPY ChlfdGlMast.
            COPY ChlfdGlTrans.
            COPY ChlfdGlParam.
@@ -122,6 +124,8 @@
            03  WS-INCR-LY-ST1        PIC 99.
        01  WS-STKRECEIPT-STATUS.
            03  WS-STK-ST1            PIC 99.
+       01  WS-STKRECEIPTSLY-STATUS.
+           03  WS-STKLY-ST1          PIC 99.
        01  WS-GLMAST-STATUS.
            03  WS-GLMAST-ST1         PIC 99.
        01  WS-GLTRANS-STATUS.
@@ -850,6 +854,9 @@
             PERFORM WRITE-DAILY.
        DR-005.
             PERFORM OPEN-015.
+            MOVE 0 TO DR-KEY.
+            START DEBTOR-MASTER KEY NOT < DR-KEY
+                INVALID KEY NEXT SENTENCE.
             MOVE 1010 TO POS.
             DISPLAY " 2. Debtor Master Files Being Processed..." AT POS.
        DR-010.
@@ -959,6 +966,9 @@
             PERFORM WRITE-DAILY.
        ST-005.
             PERFORM OPEN-020.
+            MOVE " " TO ST-KEY.
+            START STOCK-MASTER KEY NOT < ST-KEY
+                 INVALID KEY NEXT SENTENCE.
             MOVE 1110 TO POS.
             DISPLAY " 3. Stock Master Files Being Processed...." AT POS.
        ST-010.
@@ -1025,6 +1035,9 @@
             PERFORM WRITE-DAILY.
        DRTR-005.
             PERFORM OPEN-025.
+            MOVE 0 TO DRTR-KEY.
+            START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
+                INVALID KEY NEXT SENTENCE.
             MOVE 1210 TO POS.
             DISPLAY " 4. Debtor Transactions Being Processed.." AT POS.
        DRTR-010.
@@ -1071,6 +1084,9 @@
             PERFORM WRITE-DAILY.
        OO-005.
            PERFORM OPEN-030.
+           MOVE " " TO OO-KEY.
+           START OUTSTANDING-ORDERS KEY NOT < OO-KEY
+                INVALID KEY NEXT SENTENCE.
            MOVE 1310 TO POS
            DISPLAY " 5. Suppliers Order File Being Processed..." AT POS.
        OO-010.
@@ -1115,6 +1131,9 @@
             PERFORM WRITE-DAILY.
        SA-005.
             PERFORM OPEN-035.
+            MOVE 0 TO SA-KEY.
+            START SALES-ANALYSIS KEY NOT < SA-KEY
+                INVALID KEY NEXT SENTENCE.
             MOVE 1410 TO POS.
             DISPLAY " 6. Sales Analysis File Being Processed..." AT POS.
        SA-010.
@@ -1162,6 +1181,9 @@
             PERFORM WRITE-DAILY.
        IMP-005.
             PERFORM OPEN-040.
+            MOVE 0 TO IMRE-KEY.
+            START IMPRECEIPTS-FILE KEY NOT < IMRE-KEY
+                 INVALID KEY NEXT SENTENCE.
             MOVE 1510 TO POS.
             DISPLAY " 7. Import Receipts File Being Processed.." AT POS.
        IMP-010.
@@ -1283,7 +1305,8 @@
            DISPLAY " 9. Sold By File Being Processed..........." AT POS.
        SOLD-BY-007.
            PERFORM OPEN-045.
-           START SOLD-BY KEY NOT < SB-KEY.
+           START SOLD-BY KEY NOT < SB-KEY
+               INVALID KEY NEXT SENTENCE.
            IF WS-SOLDBY-ST1 NOT = 0
                GO TO SOLD-BY-900.
        SOLD-BY-010.
@@ -1689,7 +1712,7 @@
               MOVE "NOT WRITTEN IN PER- " TO WS-DAILY-3RD
               MOVE "END ROUTINE.        " TO WS-DAILY-4TH
               PERFORM WRITE-DAILY.
-        WSTRLY-EXIT.
+        WR-ST-LY-EXIT.
            EXIT.
       *
        DELETE-STOCK-RECEIPTS SECTION.
@@ -1706,16 +1729,15 @@
             PERFORM WRITE-DAILY.
        DSR-005.
            PERFORM OPEN-060.
+           IF WS-ANSWER1 = "Y"
+              PERFORM OPEN-061.
            MOVE 2010 TO POS
            DISPLAY "12. Stock Receipts being processed........." AT POS.
+           MOVE 0 TO STRE-KEY.
            START STKRECEIPTS-FILE KEY NOT < STRE-KEY 
                 INVALID KEY NEXT SENTENCE.
             IF WS-STK-ST1 NOT = 0
                GO TO DSR-900.
-               
-      * ADDED NEXT LINE 1/8/2005. WE DO NOT WANT TO DELETE ANY TRANS
-      * ANYMORE.
-            GO TO DSR-900.
        DSR-010.
             READ STKRECEIPTS-FILE NEXT WITH LOCK
                AT END
@@ -1729,10 +1751,13 @@
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO DSR-010.
-      * REMOVED 1/8/2005.  DECIDED WE SHOULD KEEP ALL STRECEIPTS AS
-      * WE HAVE PLENTY DISK SPACE ON THE SGS'S         
-      *      IF STRE-TRANSACTION-CODE NOT = 3
-      *         GO TO DSR-010.
+
+           IF WS-ANSWER1 = "Y"
+               PERFORM WRITE-ST-RECEIPTSLY
+               GO TO DSR-800
+           ELSE 
+               GO TO DSR-010.
+            GO TO DSR-010.
        DSR-800.
             DELETE STKRECEIPTS-FILE
                INVALID KEY
@@ -1744,8 +1769,12 @@
             GO TO DSR-010.
        DSR-900.
            CLOSE STKRECEIPTS-FILE.
+           IF WS-ANSWER1 = "Y"
+              CLOSE STKRECEIPTSLY-FILE.
            MOVE 2010 TO POS
-           DISPLAY "12. Stock Receipts processed.              " AT POS
+           DISPLAY 
+           "12. Stock Receipts processed.                             " 
+           AT POS
            MOVE " " TO WS-MESSAGE
            MOVE 2910 TO POS
            DISPLAY WS-MESSAGE AT POS
@@ -1753,6 +1782,34 @@
            DISPLAY WS-MESSAGE AT POS.
        DSR-999.
             EXIT.
+      *
+       WRITE-ST-RECEIPTSLY SECTION.
+       WRSTKLY-010.
+           MOVE 2010 TO POS
+           DISPLAY
+           "12. Stock Receipts being processed......... - LY WRITE.."
+            AT POS.
+       WRSTKLY-015.
+           MOVE STRE-TRANSACTION-NUMBER  TO STRELY-TRANSACTION-NUMBER
+           MOVE STRE-TRANSACTION-CODE    TO STRELY-TRANSACTION-CODE
+           MOVE STRE-STOCK-NUMBER        TO STRELY-STOCK-NUMBER
+           MOVE STRE-QUANTITY            TO STRELY-QUANTITY
+           MOVE STRE-UNIT-PRICE          TO STRELY-UNIT-PRICE
+           MOVE STRE-TOTAL-PRICE         TO STRELY-TOTAL-PRICE
+           MOVE STRE-REFERENCE-NO        TO STRELY-REFERENCE-NO
+           MOVE STRE-REFERENCE-DATE      TO STRELY-REFERENCE-DATE
+           MOVE STRE-ORDER-NUMBER        TO STRELY-ORDER-NUMBER.
+        WRSTKLY-030.
+           WRITE STOCK-RECEIPTSLY-REC
+              INVALID KEY NEXT SENTENCE.
+           IF WS-STKLY-ST1 NOT = 0
+              MOVE "STK-RECEIPTS TO L/Y " TO WS-DAILY-1ST
+              MOVE STTR-LY-REFERENCE1     TO WS-DAILY-2ND
+              MOVE "NOT WRITTEN IN PER- " TO WS-DAILY-3RD
+              MOVE "END ROUTINE.        " TO WS-DAILY-4TH
+              PERFORM WRITE-DAILY.
+        WRSTKLY-EXIT.
+           EXIT.
       *
        CHANGE-GL-PARAMETER SECTION.
        CGP-000.
@@ -2764,6 +2821,14 @@
                   TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-060.
+       OPEN-061.
+            OPEN OUTPUT STKRECEIPTSLY-FILE.
+            IF WS-STKLY-ST1 NOT = 0
+               MOVE 0 TO WS-STKLY-ST1
+               MOVE "ST-RECEIPTSLY BUSY ON OPEN, PRESS 'ESC' TO RETRY." 
+                  TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO OPEN-061.
        OPEN-065.
            OPEN I-O GLPARAMETER-FILE.
            IF WS-GLPARAMETER-ST1 NOT = 0 
