@@ -64,6 +64,8 @@ set (copy_list
   renamegl.py
   renamegp.py
   renameorig.py
+  StockCheck.Sub01
+  StockCheck.sh
   TapeBackup.Sub01
   TapeBackupFax.Sub01
   TapeBackupMonth.Sub01

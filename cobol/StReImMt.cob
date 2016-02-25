@@ -4079,7 +4079,7 @@
             MOVE 10      TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-DNOTE-NO WS-INV-NO.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
                PERFORM ERROR-020
                PERFORM ERROR1-020
                MOVE 2610 TO POS

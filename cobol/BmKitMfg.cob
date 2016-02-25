@@ -1043,7 +1043,7 @@
             PERFORM WRITE-FIELD-KITQTY.
             Perform Error-020
             Perform Error1-020.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = x"9F"
                PERFORM REVERSE-ENGINEER
                GO TO GET-010.
        GET-222.
