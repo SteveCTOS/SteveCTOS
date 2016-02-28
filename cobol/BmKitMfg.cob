@@ -88,29 +88,29 @@
        77  WS-ST-PRINT-LABELS   PIC X VALUE " ".
        77  WS-1STPRINT          PIC X VALUE " ".
        77  WS-END-OF-FILE       PIC X VALUE " ".
-       77  WS-KITQTY-EACH-ITEM     PIC 99 VALUE 0.
+       77  WS-KITQTY-EACH-ITEM  PIC 99 VALUE 0.
        77  WS-START-POS         PIC 9 VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1     PIC 99.
+           03  WS-STTRANS-ST1      PIC 99.
        01  WS-STKRECEIPT-STATUS.
-           03  WS-STKRECEIPT-ST1     PIC 99.
+           03  WS-STKRECEIPT-ST1   PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
+           03  WS-INCR-ST1         PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-KIT-ST1     PIC 99.
+           03  WS-KIT-ST1          PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1        PIC 99.
+           03  WS-OUTORD-ST1       PIC 99.
        01  WS-Spl-STATUS.
-           03  WS-Spl-ST1       PIC 99.
+           03  WS-Spl-ST1          PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -351,7 +351,7 @@
            DISPLAY "DO YOU WISH TO PRINT STOCK LABELS: [ ]" AT POS
            ADD 36 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'N'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 45        TO CDA-COL.
@@ -715,7 +715,16 @@
            DISPLAY "DO YOU WISH TO CONTINUE WITH THIS B/M  : [ ]"
               AT POS
            ADD 42 TO POS
-           ACCEPT WS-ACCEPT AT POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 51        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-ACCEPT.
+
            IF WS-ACCEPT NOT = "Y" AND NOT = "N"
               DISPLAY " " AT 3079 WITH BELL
               GO TO CTEO-000.
@@ -906,7 +915,6 @@
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-DIS
 
-      *        ACCEPT WS-DIS AT POS
             IF W-ESCAPE-KEY = 0 OR 1 OR 2
                MOVE X"1F" TO F-EXIT-CH
                GO TO GET-012
@@ -1168,6 +1176,10 @@
             PERFORM FILL-BODY.
             IF WS-ABOVE-BODY = "1"
                 GO TO GET-225.
+
+            PERFORM ERROR1-020
+            MOVE 2710 TO POS
+            DISPLAY WS-MESSAGE AT POS.
        GET-290.
            MOVE
            "PRESS 'F5' TO COMPLETE THE KIT-ASSEMBLY & ENTER TO ON-HAND,"
@@ -1963,6 +1975,7 @@
            MOVE 0 TO WS-STTR-ORDERQTY
                      WS-STTR-SHIPQTY.
            MOVE "N"                   TO STTR-ST-COMPLETE
+           MOVE 0                     TO STTR-ST-DATE 
            MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
               INVALID KEY NEXT SENTENCE.
@@ -2295,7 +2308,16 @@
             MOVE 2910 TO POS
             DISPLAY "DO YOU WISH TO CONTINUE : Y/N     [ ]" AT POS
             ADD 35 TO POS
-            ACCEPT WS-DIS AT POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 11        TO CDA-ROW.
+           MOVE 56        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+
             IF WS-DIS NOT = "N" AND NOT = "Y"
                MOVE "ANSWER MUST BE Y OR N, RE-ENTER" TO WS-MESSAGE
                PERFORM ERROR-000
@@ -2749,15 +2771,16 @@
        RSTT-010.
            READ STOCK-TRANS-FILE NEXT
               AT END NEXT SENTENCE.
-           IF WS-STTRANS-ST1 = 10 OR = "9"
+           IF WS-STTRANS-ST1 = 10 OR = 91
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "ST-TRANS RECORD ERROR ON RSTT-010, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
@@ -2883,7 +2906,8 @@
        READ-STOCK SECTION.
        R-ST-000.
            MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER.
-           START STOCK-MASTER KEY NOT < ST-KEY.
+           START STOCK-MASTER KEY NOT < ST-KEY
+               INVALID KEY NEXT SENTENCE.
        R-ST-005.
            READ STOCK-MASTER
                INVALID KEY 
@@ -2943,7 +2967,8 @@
        R-STL-000.
            MOVE "   " TO WS-ERR.
            MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER.
-           START STOCK-MASTER KEY NOT < ST-KEY.
+           START STOCK-MASTER KEY NOT < ST-KEY
+              INVALID KEY NEXT SENTENCE.
        R-STL-005.
            READ STOCK-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
@@ -3152,7 +3177,10 @@
            IF WS-ERR = "ERR"
               MOVE "USS-010, ITEM NOT THERE, NOT ON-HAND, 'ESC' TO EXIT" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE ST-STOCKNUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO USS-020.
            COMPUTE WS-TOT-ONHAND = ST-QTYONHAND + WS-MFGQTY.
            IF ST-QTYONHAND > 0

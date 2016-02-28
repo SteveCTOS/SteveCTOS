@@ -4876,12 +4876,32 @@
            READ STOCK-TRANS-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
+               MOVE 
+          "ST-TRANS BUSY ON CANCEL-TRANS, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
               MOVE 0 TO WS-STTRANS-ST1
               GO TO CAN-TRANS-000.
        CAN-TRANS-002.
             DELETE STOCK-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
+               MOVE 
+          "ST-TRANS BUSY ON DELETE, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
               MOVE 0 TO WS-STTRANS-ST1
               GO TO CAN-TRANS-002.
        CAN-TRANS-999.
@@ -4902,11 +4922,12 @@
               MOVE 0 TO WS-STTRANS-ST1
               MOVE "BAD START ON CHANGE-ST-TRANS, GOING TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-INVOICE TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE B-STTRANS (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO CHGE-TRANS-000.
        CHGE-TRANS-002.
            IF F-NAMEFIELDRED1 = "D"
@@ -5064,8 +5085,9 @@
               GO TO RALI-999.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "STOCK TRANS-RECORD BUSY!!" TO WS-MESSAGE
-              PERFORM ERROR-000
+              MOVE "READ-NEXT STOCK TRANS-RECORD BUSY, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               GO TO RALI-010.
       ******************************************************************
       *NEW SECTION TO TAKE CARE OF HAVING THE SAME STOCKNUMBER         *
@@ -5548,12 +5570,13 @@
            IF WS-INCR-ST1 NOT = 0
                MOVE "P/SLIP LOCKED @ ANOTHER TERMINAL."
                 TO WS-MESSAGE
-               PERFORM ERROR1-MESSAGE
+               PERFORM ERROR1-000
                MOVE "CRS-060 ERROR IN READ. 'ESC' TO VIEW ERC CODES."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
                GO TO CRS-060.
            IF INCR-ACCOUNT = WS-ACCOUNT-NUMBER
@@ -6201,11 +6224,12 @@
               MOVE 
             "ST-TRANS BUSY REPAIR-READ-FOR WRITE, 'ESC TO SEE INFO."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE B-STOCKNUMBER (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE STTR-TRANSACTION-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RWREPST-005.
               
            IF STTR-REFERENCE1 NOT = WS-REPAIR
@@ -6283,11 +6307,12 @@
               MOVE 0 TO WS-STTRANS-ST1
               MOVE "RWREPST-018 ERC ON REPAIR, NOTIFY THE SUPERVISOR."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE B-STOCKNUMBER (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE STTR-TRANSACTION-NUMBER TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        RWREPST-020.
             ADD 1 TO SUB-1.
             IF SUB-1 < 201
@@ -6436,7 +6461,10 @@
              IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE ST-STOCKNUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO DST-850.
        DST-900.
@@ -6446,7 +6474,10 @@
               MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS BUSY ON DELETE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
               GO TO DST-900.
        DST-950.
            ADD 1 TO SUB-1.
@@ -6476,7 +6507,10 @@
               MOVE 0 TO WS-STTRANS-ST1
               MOVE "STOCK TRANS-RECORD BUSY ON READ, RSTT-010."
               TO WS-MESSAGE
-              PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
@@ -6553,11 +6587,12 @@
               MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS BUSY ON READ-FOR WRITE, 'ESC' TO SEE INFO."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE B-STOCKNUMBER (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE B-STTRANS (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO WST-005.
        WST-006.
             MOVE B-STOCKNUMBER (SUB-1) TO SPLIT-STOCK
@@ -6628,11 +6663,12 @@
               MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS BUSY AT (WST-018) NOTIFY THE SUPERVISOR."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE B-STOCKNUMBER (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE B-STTRANS (SUB-1) TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
            IF STTR-TRANSACTION-NUMBER = 0
               MOVE
               "ST-TRANS-NO = 0 AT WST-020, ADVISE THE BOSS NOW !"
@@ -7108,6 +7144,8 @@
        RSALES-950.
             CLOSE SALES-ANALYSIS.
             IF WS-SALES-ST1 NOT = 0
+               MOVE "SALES-ANALYSIS BUSY ON CLOSE" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RSALES-950.
        RSALES-999.
             EXIT.
@@ -7384,7 +7422,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "PARAMETER RECORD NOT UPDATED!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."

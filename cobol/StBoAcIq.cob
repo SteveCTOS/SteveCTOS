@@ -218,6 +218,9 @@
        RDTR-000.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0
+              MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
               CLOSE STOCK-TRANS-FILE
               GO TO RDTR-000.
        RDTR-001.
@@ -338,7 +341,8 @@
        READ-DEBTORS SECTION.
        RD-000.
             MOVE DR-ACCOUNT-NUMBER TO WS-ACCOUNTNUMBER.
-            START DEBTOR-MASTER KEY NOT < DR-KEY.
+            START DEBTOR-MASTER KEY NOT < DR-KEY
+                  INVALID KEY NEXT SENTENCE.
        RD-010.
             READ DEBTOR-MASTER
                 INVALID KEY NEXT SENTENCE.
@@ -360,7 +364,8 @@
        START-DEBTOR SECTION.
        DR-DR-000.
               MOVE WS-ACCOUNTNUMBER TO DR-ACCOUNT-NUMBER.
-              START DEBTOR-MASTER KEY NOT LESS DR-KEY.
+              START DEBTOR-MASTER KEY NOT LESS DR-KEY
+                  INVALID KEY NEXT SENTENCE.
        DR-DR-999.
              EXIT.
       *
@@ -378,6 +383,9 @@
                  GO TO R-DR-NX-999
              ELSE
                  MOVE 0 TO WS-DEBTOR-ST1
+                 MOVE "DEBTOR BUSY NEXT-PAGE SEQUENCE, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  PERFORM START-DEBTOR
                  GO TO R-DR-NX-005.
        R-DR-NX-999.
@@ -396,7 +404,7 @@
              IF WS-DEBTOR-ST1 = 0
                  GO TO RPREV-999
              ELSE
-              MOVE "DEBTOR BUSY PREV-PAGE SEQUENCE, <ESC> TO RETRY."
+              MOVE "DEBTOR BUSY PREV-PAGE SEQUENCE, 'ESC' TO RETRY."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                  MOVE 0 TO WS-DEBTOR-ST1
@@ -409,7 +417,8 @@
        ROR-000.
             MOVE STTR-REFERENCE1 TO INCR-INVOICE.
             MOVE STTR-TYPE       TO INCR-TRANS.
-            START INCR-REGISTER KEY NOT < INCR-KEY.
+            START INCR-REGISTER KEY NOT < INCR-KEY
+                 INVALID KEY NEXT SENTENCE.
        ROR-010.
             READ INCR-REGISTER
                 INVALID KEY NEXT SENTENCE.

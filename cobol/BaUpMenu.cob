@@ -230,8 +230,7 @@
            "The Backup Has Been Set On a 30 Min DELAY, You May leave."
             AT POS.
        
-           CALL "C$SLEEP" USING 1800.
-      *     MOVE 18000 TO W-BACKUP-DELAY.
+       *     MOVE 18000 TO W-BACKUP-DELAY.
       *     CALL "&DELAY" USING W-ERC
       *                         W-BACKUP-DELAY.
        CFBP-999.

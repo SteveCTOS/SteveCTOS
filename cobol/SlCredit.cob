@@ -1523,7 +1523,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY." 
@@ -1543,7 +1543,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
@@ -1560,7 +1560,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "PARAMETER RECORD NOT UPDATED!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON REWRITE , 'ESC' TO RETRY." 
@@ -1754,8 +1754,10 @@
               GO TO RSTTLY-900.
            IF WS-STTRANSLY-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "STOCK TRANSLY RECORD BUSY!!" TO WS-MESSAGE
-              PERFORM ERROR-000
+              MOVE 
+              "STOCK TRANSLY RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               GO TO RSTTLY-010.
            IF STTR-LY-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTTLY-900.
@@ -2445,8 +2447,9 @@
                PERFORM WRITE-DAILY.
            IF WS-STOCK-ST1 NOT = 0
                MOVE 0 TO WS-STOCK-ST1
-               MOVE "STOCK RECORD BUSY, BE PATIENT!" TO WS-MESSAGE
-               PERFORM ERROR-000
+               MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO CAN-001.
        CAN-010.
            IF SUB-2 > 200
@@ -2668,7 +2671,7 @@
        WRIC-010.
             WRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
-            IF WS-INCR-ST1 = "0"
+            IF WS-INCR-ST1 = 0
                 MOVE 0 TO WS-INCR-ST1
                 PERFORM ERROR-020
                 GO TO WRIC-999.
@@ -2676,7 +2679,7 @@
                 MOVE 0 TO WS-INCR-ST1
                 MOVE "INV/CR. TRANS BUSY ON REWRITE, 'ESC' TO RETRY."
                  TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR-MESSAGE
                 GO TO WRIC-010.
        WRIC-999.
               EXIT.
@@ -3058,6 +3061,9 @@
            WRITE SOLDBY-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-SOLDBY-ST1 = 0
+               MOVE "SOLDBY NOT REWRITTEN, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-SOLDBY-ST1
               PERFORM ERROR-020.
        SOLD-999.

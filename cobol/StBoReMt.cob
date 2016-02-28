@@ -33,21 +33,17 @@
        77  WS-RUNNING-TOTAL     PIC S9(7)V99 VALUE 0.
        01  WS-STOCK-STATUS.
            03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1        PIC 99.
-      *     03  WS-OUTORD-ST2        PIC X.
+           03  WS-OUTORD-ST1    PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC X.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-DAILY-MESSAGE.
-           03  WS-DAILY-1ST        PIC X(20) VALUE " ".
-           03  WS-DAILY-2ND        PIC X(20) VALUE " ".
-           03  WS-DAILY-3RD        PIC X(20) VALUE " ".
-           03  WS-DAILY-4TH        PIC X(20) VALUE " ".
+           03  WS-DAILY-1ST     PIC X(20) VALUE " ".
+           03  WS-DAILY-2ND     PIC X(20) VALUE " ".
+           03  WS-DAILY-3RD     PIC X(20) VALUE " ".
+           03  WS-DAILY-4TH     PIC X(20) VALUE " ".
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -89,7 +85,6 @@
 
             IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO GET-010
             ELSE
@@ -108,7 +103,7 @@
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
-      *      ACCEPT WS-RANGE2 AT POS.
+
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 = " "
@@ -139,7 +134,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *      ACCEPT WS-RANGE3 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-RANGE2 = " "
@@ -172,6 +166,16 @@
                MOVE 0 TO WS-ST-ST1
                GO TO RSN-999.
             IF WS-ST-ST1 NOT = 0
+               MOVE 
+           "NEXT STOCK FILE BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-ST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-ST-ST1
                GO TO RSN-010.
             IF ST-STOCKNUMBER < WS-RANGE1
@@ -253,6 +257,16 @@
             IF WS-BO-ST1 = 10
                GO TO PRR-999.
             IF WS-BO-ST1 NOT = 0
+               MOVE 
+             "NEXT ST-TRANS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-BO-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
             IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
@@ -283,6 +297,16 @@
             IF WS-OUTORD-ST1 = 10
                GO TO RSQ-999.
             IF WS-OUTORD-ST1 NOT = 0
+               MOVE
+            "NEXT ST-ORDERS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-OUTORD-ST1
                GO TO RSQ-002.
             IF OO-STOCK-NUMBER NOT = ST-STOCKNUMBER
@@ -391,5 +415,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       * END-OF-JOB.

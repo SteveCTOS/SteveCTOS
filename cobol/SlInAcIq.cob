@@ -399,7 +399,8 @@
        RD-000.
            MOVE 0 TO SUB-2.
            MOVE DR-ACCOUNT-NUMBER TO WS-ACCOUNTNUMBER.
-           START DEBTOR-MASTER KEY NOT < DR-KEY.
+           START DEBTOR-MASTER KEY NOT < DR-KEY
+                INVALID KEY NEXT SENTENCE.
        RD-010.
             READ DEBTOR-MASTER
                 INVALID KEY NEXT SENTENCE.
@@ -426,7 +427,8 @@
        START-DEBTOR SECTION.
        DR-DR-000.
               MOVE WS-ACCOUNTNUMBER TO DR-ACCOUNT-NUMBER.
-              START DEBTOR-MASTER KEY NOT LESS DR-KEY.
+              START DEBTOR-MASTER KEY NOT LESS DR-KEY
+                INVALID KEY NEXT SENTENCE.
        DR-DR-999.
              EXIT.
       *
@@ -443,6 +445,9 @@
            ELSE
                MOVE 0 TO SUB-2
                MOVE 0 TO WS-DEBTOR-ST1
+               MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                PERFORM START-DEBTOR
                GO TO R-DR-NX-005.
        R-DR-NX-999.
@@ -461,6 +466,9 @@
            ELSE
                MOVE 0 TO SUB-2
                MOVE 0 TO WS-DEBTOR-ST1
+               MOVE "DEBTOR RECORD BUSY ON READ-PREV, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                PERFORM START-DEBTOR
                GO TO R-DR-PREV-005.
        R-DR-PREV-999.
@@ -468,10 +476,11 @@
       *
        READ-ORDER-REGISTER SECTION.
        ROR-000.
-           MOVE 0 TO SUB-2.
+            MOVE 0 TO SUB-2.
             MOVE STTR-REFERENCE1 TO INCR-INVOICE.
             MOVE STTR-TYPE       TO INCR-TRANS.
-            START INCR-REGISTER KEY NOT < INCR-KEY.
+            START INCR-REGISTER KEY NOT < INCR-KEY
+                INVALID KEY NEXT SENTENCE.
        ROR-010.
             READ INCR-REGISTER
                 INVALID KEY NEXT SENTENCE.
@@ -502,8 +511,9 @@
            MOVE 3010 TO POS
            DISPLAY "Printing In Progress, Please Be Patient." AT POS
            MOVE 0  TO PAGE-CNT
-                     WS-ORDERQTY
-                     WS-SHIPQTY.
+                       SUB-2
+                        WS-ORDERQTY
+                        WS-SHIPQTY.
            MOVE 66 TO LINE-CNT.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
@@ -521,7 +531,7 @@
                GO TO PRR-900.
            IF WS-STTRANS-ST1 NOT = 0
             IF SUB-2 = 10
-               MOVE "ST-TRANS-ST1 NOT = 0 ON READ, 'ESC' TO RE-TRY"
+               MOVE "ST-TRANS BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO SUB-2

@@ -712,11 +712,14 @@
            DELETE INCR-REGISTER
                INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 = 23 OR 35 OR 49
-               MOVE "CREDIT REGISTER NOT DELETED, 'ESC' TO EXIT."
+               MOVE "CREDIT REGISTER NOT DELETED 23, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO UIR-999.
            IF WS-INCR-ST1 NOT = 0
+               MOVE "CREDIT REGISTER NOT DELETED NOT 0, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-INCR-ST1
                GO TO UIR-010.
        UIR-999.
@@ -756,6 +759,9 @@
               MOVE 0 TO SB-INVOICE-NUMBER
               GO TO DSF-999.
            IF WS-SOLDBY-ST1 NOT = 0
+               MOVE "SOLDBY BUSY ON READ-DEL, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-SOLDBY-ST1
               GO TO DSF-010.
            DELETE SOLD-BY
@@ -792,6 +798,9 @@
             IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                 GO TO UPDR-999.
             IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON REWRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                 GO TO UPDR-900.
        UPDR-999.
            EXIT.
@@ -854,6 +863,9 @@
                PERFORM ERROR-MESSAGE
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 = 91
+               MOVE "DEBTOR TRANS NOT DELETED, = 91, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-000.
        UDT-999.
@@ -889,12 +901,13 @@
            IF WS-SPECIALS-ST1 NOT = 0
               MOVE "ERROR IN SPECIALS DELETE, 'ESC' TO SEE CODES"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE "INFORM YOUR SUPERVISOR THAT NO SPECIAL IS WRITTEN."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        D-SPEC-999.
            EXIT.
       *
@@ -982,6 +995,9 @@
            READ STOCK-MASTER WITH LOCK
               INVALID KEY NEXT SENTENCE.
            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-STOCK-ST1
               GO TO UPST-011.
       *

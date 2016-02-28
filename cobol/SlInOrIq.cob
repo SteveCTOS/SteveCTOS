@@ -47,23 +47,18 @@
        77  WS-GST-PERCENT       PIC 99V99 VALUE 0.
        77  WS-PART-ORDERS       PIC X VALUE " ".
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
+           03  WS-STTRANS-ST1   PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1  PIC 99.
-      *     03  WS-DRTRANS-ST2  PIC 9(2) COMP-X.
+           03  WS-DRTRANS-ST1   PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC 9(2) COMP-X.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -445,7 +440,10 @@
            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK RECORD IN USE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE ST-STOCKNUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO R-ST-005.
        R-ST-999.
@@ -479,8 +477,11 @@
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "STOCK TRANS-RECORD BUSY ON READ-NEXT" TO WS-MESSAGE
-              PERFORM ERROR-000
+              MOVE "ST-TRANS-RECORD BUSY ON READ-NEXT" TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.

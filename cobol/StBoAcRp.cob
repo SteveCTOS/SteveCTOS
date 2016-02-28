@@ -502,9 +502,12 @@
               GO TO RR-999.
            IF WS-INCR-ST1 NOT = 0
               MOVE
-              "RECORD LOCKED AT ANOTHER WORKSTATION, 'ESC' TO RETRY."
+              "REGISTER LOCKED AT ANOTHER WORKSTATION, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RR-005.
        RR-999.
            EXIT.
@@ -541,6 +544,7 @@
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H1-DATE.
+           
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
        OPEN-999.

@@ -3551,7 +3551,7 @@
                DISPLAY " " AT 3079 WITH BELL.
             MOVE "SUPPLIER"           TO F-FIELDNAME.
             MOVE 8                    TO F-CBFIELDNAME.
-            IF WS-CREDITOR-ST1 NOT = "1"
+            IF WS-CREDITOR-ST1 NOT = 10
                MOVE CR-ACCOUNT-NUMBER TO F-NAMEFIELD
             ELSE
                MOVE " "               TO F-NAMEFIELD.
@@ -3560,7 +3560,7 @@
 
             MOVE "SUPPLIERNAME"    TO F-FIELDNAME.
             MOVE 12                TO F-CBFIELDNAME.
-            IF WS-CREDITOR-ST1 NOT = "1"
+            IF WS-CREDITOR-ST1 NOT = 10
                MOVE CR-NAME        TO F-NAMEFIELD
             ELSE
                MOVE " "            TO F-NAMEFIELD.
@@ -3635,7 +3635,7 @@
             IF F-EXIT-CH = X"0C"
                 PERFORM READ-NEXT-CREDITOR
                 PERFORM WCIT-062
-             IF WS-CREDITOR-ST1 NOT = "8" AND NOT = "1"
+             IF WS-CREDITOR-ST1 NOT = 88 AND NOT = 10
                 MOVE "Y" TO WS-NEXT
                 GO TO WCIT-080
              ELSE
@@ -3833,6 +3833,9 @@
               MOVE 0 TO WS-CRJRN-ST1
               GO TO RCRI-200.
            IF WS-CRJRN-ST1 NOT = 0
+              MOVE "CR-JRN BUSY ON START READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-CRJRN-ST1
               CLOSE CRJRN-FILE
               PERFORM OPEN-046
@@ -4186,10 +4189,10 @@
            IF WS-CRJRN-ST1 NOT = 0
               MOVE "CRJRN WRITE ERR, RWCR-019. TRANS NOT WRITTEN."
               TO WS-MESSAGE
-              PERFORM ERROR-000
-              MOVE 3070 TO POS
-              DISPLAY WS-CRJRN-ST1 AT POS
-              PERFORM ERROR-010.
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        RWCR-999.
            EXIT.
       *
@@ -4584,7 +4587,7 @@
               ADD 1 TO WS-READS
             IF WS-READS > 10
               MOVE 0 TO WS-SLPARAMETER-ST1
-              MOVE "PARAMETER BUSY ON READ, 'ESC' TO RE-TRY."
+              MOVE "SLPARAMETER BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-READS

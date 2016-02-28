@@ -798,6 +798,9 @@
               CLOSE INV-REV
               GO TO PR-002.
            IF WS-INVREV-ST1 NOT = 0
+              MOVE "INV RE RECORD BUSY ON READ PR-0015, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-INVREV-ST1
               GO TO PR-0015.
            MOVE INV-NO TO WS-INVOICE.
@@ -805,6 +808,9 @@
            DELETE INV-REV
               INVALID KEY NEXT SENTENCE.
            IF WS-INVREV-ST1 NOT = 0
+              MOVE "INV RE RECORD BUSY ON DEL PR-0017, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-INVREV-ST1
               GO TO PR-0017.
            CLOSE INV-REV.
@@ -2876,7 +2882,7 @@
             IF SP-1STCHAR NOT = "/"
                 MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER
                 PERFORM READ-STOCK.
-            IF WS-STOCK-ST1 NOT = "2"
+            IF WS-STOCK-ST1 NOT = 51
                 MOVE ST-QTYONHAND    TO WS-QTYONHAND
                 MOVE ST-QTYONRESERVE TO WS-QTYONRESERVE
                 MOVE ST-QTYONORDER   TO WS-QTYONORDER
@@ -4900,7 +4906,7 @@
            IF WS-STOCK-ST1 = 23 OR 35 OR 49
                GO TO UPST-050.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE " " TO WS-SALES-ST1
+               MOVE 0 TO WS-SALES-ST1
                MOVE "STOCK BUSY ON REWRITE, 'ESC' TO RETRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -4953,7 +4959,7 @@
                MOVE "NO PARAMETER RECORD ON FILE, CALL YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               ADD 1 TO WS-READS
             IF WS-READS > 10

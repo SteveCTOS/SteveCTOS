@@ -239,6 +239,9 @@
        RDTR-000.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0
+              MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
               CLOSE STOCK-TRANS-FILE
               GO TO RDTR-000.
        RDTR-001.
@@ -367,7 +370,8 @@
        READ-STOCK SECTION.
        RS-000.
             MOVE ST-STOCKNUMBER TO WS-STOCKNUMBER.
-            START STOCK-MASTER KEY NOT < ST-KEY.
+            START STOCK-MASTER KEY NOT < ST-KEY
+                  INVALID KEY NEXT SENTENCE.
        RS-010.
             READ STOCK-MASTER
                 INVALID KEY NEXT SENTENCE.
@@ -390,7 +394,8 @@
        START-STOCK SECTION.
        ST-ST-000.
               MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER.
-              START STOCK-MASTER KEY NOT LESS ST-STOCKNUMBER.
+              START STOCK-MASTER KEY NOT LESS ST-STOCKNUMBER
+                  INVALID KEY NEXT SENTENCE.
        ST-ST-999.
              EXIT.
       *
@@ -436,6 +441,13 @@
                  GO TO RPREV-999
              ELSE
                  MOVE 0 TO WS-STOCK-ST1
+               MOVE
+               "STOCK BUSY READ PREVIOUS, NEXT LINE, <ESC> TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  PERFORM START-STOCK
                  GO TO RPREV-005.
        RPREV-999.
@@ -460,6 +472,12 @@
                 MOVE "*REGISTER NOT FOUND*" TO INCR-PORDER
                 GO TO ROR-999.
             IF WS-INCR-ST1 NOT = 0
+               MOVE "REGISTER BUSY READ, NEXT LINE, <ESC> TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-INCR-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                 MOVE 0 TO WS-INCR-ST1
                 GO TO ROR-010.
        ROR-999.

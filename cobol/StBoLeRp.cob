@@ -42,27 +42,22 @@
        77  WS-TOTAL-VALUE       PIC 9(7)V99 VALUE 0.
        77  WS-COMMENT           PIC X(75) VALUE " ".
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC X.
+           03  WS-DR-ST1          PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC 9(2) COMP-X.
+           03  WS-BO-ST1          PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1       PIC 99.
-      *     03  WS-OUTORD-ST2       PIC 9(2) COMP-X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1      PIC 99.
-      *     03  WS-INCR-ST2      PIC X.
+           03  WS-INCR-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR       PIC X.
-           03  SP-REST          PIC X(14).
+           03  SP-1STCHAR     PIC X.
+           03  SP-REST        PIC X(14).
        01  WS-DUE-DATE.
-           03  WS-DUE-YY         PIC 9999.
-           03  WS-DUE-MM         PIC 99.
-           03  WS-DUE-DD         PIC 99.
+           03  WS-DUE-YY      PIC 9999.
+           03  WS-DUE-MM      PIC 99.
+           03  WS-DUE-DD      PIC 99.
        01  NAME1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -171,7 +166,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -194,7 +188,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-       *     ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 < WS-RANGE1
@@ -224,7 +217,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT.
 
-      *      ACCEPT WS-COMMENT AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-COMMENT = " "
@@ -253,7 +245,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALESMAN.
 
-      *      ACCEPT WS-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-020.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -274,6 +265,7 @@
            MOVE "N"       TO WS-ACC-PRINTED
                              STTR-AC-COMPLETE
            MOVE WS-RANGE1 TO STTR-ACCOUNT-NUMBER
+           MOVE 0         TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
        PRR-002.
@@ -285,9 +277,10 @@
            IF WS-BO-ST1 NOT = 0
                MOVE "STTRANS BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-BO-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
            IF STTR-AC-COMPLETE NOT = "N"
@@ -475,6 +468,13 @@
               MOVE "*ORDER NOT FOUND*" TO INCR-PORDER
               GO TO ROR-999.
            IF WS-INCR-ST1 NOT = 0
+              MOVE
+              "REGISTER LOCKED AT ANOTHER WORKSTATION, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-INCR-ST1
               GO TO ROR-020.
        ROR-999.
@@ -496,9 +496,10 @@
            IF WS-OUTORD-ST1 NOT = 0
               MOVE "S-ORDERS BUSY ON READ, 'ESC' TO RE-TRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-OUTORD-ST1
               GO TO RS-020.
            IF OO-STOCK-NUMBER < STTR-STOCK-NUMBER

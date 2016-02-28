@@ -403,7 +403,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TYPE.
 
-      *     ACCEPT WS-TYPE AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-005.
            IF WS-TYPE NOT = "B" AND NOT = "C" AND NOT = "D"
@@ -427,9 +426,8 @@
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-change-soldby.
+           MOVE CDA-DATA TO WS-CHANGE-SOLDBY.
            
-      *     ACCEPT WS-CHANGE-SOLDBY AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-010.
            IF WS-CHANGE-SOLDBY NOT = "Y" AND NOT = "N"
@@ -1310,9 +1308,16 @@
                MOVE 0 TO INCR-INVOICE
                GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "REGISTER FILE BUSY ON READ, GOING TO RETRY."
+               MOVE
+             "NEXT REGISTER BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-INCR-ST1
                GO TO RIR-005.
            IF INCR-TRANS NOT = 4
@@ -1378,9 +1383,16 @@
                MOVE 0 TO INCR-INVOICE
                GO TO RBM-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "REGISTER FILE BUSY ON READ, GOING TO RETRY."
+               MOVE 
+          "NEXT BM-REGISTER BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-INCR-ST1
                GO TO RBM-005.
            IF INCR-TRANS NOT = 7
@@ -1417,6 +1429,16 @@
                MOVE " " TO WS-SALESMAN
                GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
+              MOVE
+                  "DEBTOR BUSY ON READ, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-000.
        RD-010.
@@ -1458,6 +1480,16 @@
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
+              MOVE
+             "NEXT ST-TRANS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
               MOVE 0 TO WS-STTRANS-ST1
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
@@ -1527,6 +1559,15 @@
                MOVE " " TO B-STORE (SUB-1)
                GO TO R-ST-999.
            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON READ, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-STOCK-ST1
                GO TO R-ST-005.
            MOVE ST-BINLOCATION TO B-STORE (SUB-1)
@@ -1674,8 +1715,11 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                MOVE 2710 TO POS
                DISPLAY "NO PARAMETER RECORD!!!!" AT POS
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
+               MOVE "Parameter Busy RP-010, Press 'ESC' To Retry."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO RP-010.
        RP-999.

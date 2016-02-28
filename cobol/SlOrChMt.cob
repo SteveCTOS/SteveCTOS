@@ -234,20 +234,18 @@
                MOVE 0 TO WS-ST-ST1
                GO TO RSN-999.
             IF WS-ST-ST1 NOT = 0
-               MOVE "ST-MASTER BUSY ON READ-NEXT, 'ESC' TO EXIT."
+            MOVE
+           "NEXT STOCK FILE BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE ST-STOCKNUMBER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-ST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                GO TO RSN-010.
             IF ST-STOCKNUMBER < WS-RANGE1
-
-      *      MOVE "ST < RANGE" TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE ST-STOCKNUMBER TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-
                GO TO RSN-010.
             IF ST-STOCKNUMBER > WS-RANGE2
                GO TO RSN-999.
@@ -256,15 +254,6 @@
             MOVE 1844 TO POS
             DISPLAY ST-STOCKNUMBER AT POS.
             IF ST-QTYONBORDER = 0
-            
-      *      MOVE "ST-QTYONBO = 0" TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      MOVE ST-STOCKNUMBER TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE ST-QTYONBORDER TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-            
                  GO TO RSN-010.
        RSN-050.
             MOVE 2610 TO POS
@@ -340,13 +329,6 @@
             START STOCK2-TRANS-FILE KEY NOT < STTR2-STOCK-NUMBER
                  INVALID KEY NEXT SENTENCE.
             IF WS-BO2-ST1 NOT = 0
-            
-      *      MOVE "BO2 START NOT GOOD" TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-            
                GO TO CPAT-900.
        CPAT-002.
             READ STOCK2-TRANS-FILE NEXT WITH LOCK
@@ -356,39 +338,25 @@
                GO TO CPAT-900.
                
             IF WS-BO2-ST1 NOT = 0 
-            
-      *      MOVE "WS-BO2 NOT 0 ON READNEXT" TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      MOVE WS-BO2-ST1 TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      MOVE STTR2-KEY TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-            
+            MOVE
+            "NEXT ST-TRANS2 BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-BO2-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-BO-ST1
                MOVE 0 TO WS-BO2-ST1
                GO TO CPAT-002.
                
             IF STTR2-STOCK-NUMBER NOT = ST-STOCKNUMBER
                GO TO CPAT-900.
             IF STTR2-TYPE NOT = 4 AND NOT = 7
-            
-      *      MOVE "STTR2-TYPE NOT =4 OR 7" TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE STTR2-TYPE TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-            
                GO TO CPAT-002.
             IF STTR2-ST-COMPLETE = "L" OR = "Y" OR = "R"
-            
-      *      MOVE "STTR2-ST-COMPLETE = L, Y, OR R" TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE STTR2-ST-COMPLETE TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-            
                GO TO CPAT-002.
        CPAT-005.
       ******************************************************************
@@ -422,23 +390,8 @@
            IF STTR2-SHIPQTY NOT = STTR2-ORDERQTY - STTR2-SHIPPEDQTY
               PERFORM ENTER-UNALLOCATED-NUMBERS.
 
-      *      MOVE "FINISHED ABOVE CPAT-900, GOING TO CPAT-002" 
-      *      TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-
            GO TO CPAT-002.
        CPAT-900.
-      *     MOVE STTR2-STOCK-NUMBER TO WS-MESSAGE
-      *     PERFORM ERROR1-000
-      *     MOVE WS-STTR2-ORDERQTY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     MOVE WS-STTR2-SHIPQTY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     PERFORM ERROR1-020
-
            ADD 1 TO WS-CLOSE-CNT
            MOVE 2520 TO POS
            DISPLAY "LOCK COUNT:" AT POS
@@ -523,11 +476,16 @@
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-010.
             IF WS-BO-ST1 NOT = 0
-               MOVE "ST-BORDERS STATUS NOT = 0 , ESC TO RETRY"
+            MOVE
+             "NEXT ST-TRANS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR1-000
+               PERFORM ERROR1-000 
                MOVE WS-BO-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-BO-ST1
                GO TO PRR-002.
        PRR-005.
@@ -630,11 +588,18 @@
            REWRITE STOCK-TRANS-REC
                 INVALID KEY NEXT SENTENCE.
            IF WS-BO-ST1 NOT = 0
-                MOVE 0 TO WS-BO-ST1
-                MOVE "ST-TRANS BUSY ON REWRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-000
-                GO TO PRR-500.
+               MOVE
+           "ST-TRANS FILE BUSY ON REWRITE, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-BO-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-BO-ST1
+               GO TO PRR-500.
        PRR-900.
            ADD 1 TO WS-CLOSE-CNT
            MOVE 2520 TO POS
@@ -665,9 +630,17 @@
                GO TO UIR-999.
            IF WS-INCR-ST1 NOT = 0
                MOVE 0 TO WS-INCR-ST1
-               MOVE "REGISTER BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               MOVE 
+             "NEXT REGISTER BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-INCR-ST1
                GO TO UIR-005.
                
            IF INCR-PRINTED = "N" OR = "C"
@@ -737,11 +710,11 @@
            IF WS-INCR-ST1 NOT = 0
                MOVE "REGISTER BUSY <RIR-005>, 'ESC' TO SEE INFO."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE WS-INCR-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
                MOVE INCR-INVOICE TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-INCR-ST1.
        RIR-999.
            EXIT.

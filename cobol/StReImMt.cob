@@ -1674,9 +1674,9 @@
               GO TO RM-010.
            IF WS-STOCK-ST1 NOT = 0
               MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK RECORD BUSY ON READ-NEXT, BE PATIENT!"
+              MOVE "STOCK RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR-MESSAGE
               GO TO RM-010.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -2932,7 +2932,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "PARAMETER RECORD NOT UPDATED!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
                MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER RECORD BUSY ON REWRITE, 'ESC' TO RETRY." 
@@ -3652,7 +3652,7 @@
                DISPLAY " " AT 3079 WITH BELL.
             MOVE "SUPPLIER"           TO F-FIELDNAME.
             MOVE 8                    TO F-CBFIELDNAME.
-            IF WS-CREDITOR-ST1 NOT = "1"
+            IF WS-CREDITOR-ST1 NOT = 10
                MOVE CR-ACCOUNT-NUMBER TO F-NAMEFIELD
             ELSE
                MOVE " "               TO F-NAMEFIELD.
@@ -3661,7 +3661,7 @@
 
             MOVE "SUPPLIERNAME"    TO F-FIELDNAME.
             MOVE 12                TO F-CBFIELDNAME.
-            IF WS-CREDITOR-ST1 NOT = "1"
+            IF WS-CREDITOR-ST1 NOT = 10
                MOVE CR-NAME        TO F-NAMEFIELD
             ELSE
                MOVE " "            TO F-NAMEFIELD.
@@ -4104,7 +4104,7 @@
                DISPLAY " " AT 3079 WITH BELL.
             MOVE "SUPPLIER"           TO F-FIELDNAME.
             MOVE 8                    TO F-CBFIELDNAME.
-            IF WS-CREDITOR-ST1 NOT = "1"
+            IF WS-CREDITOR-ST1 NOT = 10
                MOVE CR-ACCOUNT-NUMBER TO F-NAMEFIELD
             ELSE
                MOVE " "               TO F-NAMEFIELD.
@@ -4113,7 +4113,7 @@
 
             MOVE "SUPPLIERNAME"    TO F-FIELDNAME.
             MOVE 12                TO F-CBFIELDNAME.
-            IF WS-CREDITOR-ST1 NOT = "1"
+            IF WS-CREDITOR-ST1 NOT = 10
                MOVE CR-NAME        TO F-NAMEFIELD
             ELSE
                MOVE " "            TO F-NAMEFIELD.
@@ -4510,7 +4510,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD ON FILE, 'ESC' TO EXIT."
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY"

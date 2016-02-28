@@ -357,7 +357,7 @@
                GO TO RDTR-000.
            IF WS-STTRANS-ST1 NOT = 0
             IF SUB-2 = 10
-               MOVE "ST-TRANS-ST1 NOT = 0 ON READ, 'ESC' TO RE-TRY"
+               MOVE "ST-TRANS BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO SUB-2
@@ -474,9 +474,10 @@
            DISPLAY WS-MESSAGE AT POS
            MOVE 3010 TO POS
            DISPLAY "Printing In Progress, Please Be Patient." AT POS
-           MOVE 0  TO PAGE-CNT SUB-2
-                     WS-ORDERQTY
-                     WS-SHIPQTY.
+           MOVE 0  TO PAGE-CNT 
+                       SUB-2
+                        WS-ORDERQTY
+                        WS-SHIPQTY.
            MOVE 66 TO LINE-CNT.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
@@ -500,9 +501,12 @@
                GO TO PRR-900.
            IF WS-STTRANS-ST1 NOT = 0
             IF SUB-2 = 10
-               MOVE "ST-TRANS-ST1 NOT = 0 ON READ, 'ESC' TO RE-TRY"
+               MOVE "ST-TRANS BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO SUB-2
                GO TO PRR-002
             ELSE

@@ -108,7 +108,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
  
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -130,7 +129,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-ANSWER2 = " "
@@ -165,11 +163,16 @@
            IF WS-STOCK-ST1 = 10
                GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               MOVE
+           "NEXT STOCK FILE BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE 
+               PERFORM ERROR1-000
                MOVE WS-STOCK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
