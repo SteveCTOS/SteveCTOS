@@ -882,7 +882,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMPLETE.
             
-      *      ACCEPT WS-COMPLETE AT POS.
             IF WS-COMPLETE NOT = "Y" AND NOT = "N"
                GO TO GET-900.
             IF WS-COMPLETE = "N"
@@ -2173,9 +2172,12 @@
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "ST-TRANS-RECORD BUSY ON READ-NEXT, GOING TO RETRY."
+              MOVE "ST-TRANS-RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
            

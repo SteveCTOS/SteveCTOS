@@ -637,7 +637,10 @@
            IF WS-RANDOM-ST1 NOT = 0
              MOVE "WE HAVE A PROBLEM @ WRR-005, WRITING RANDOM RECORD."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR1-000
+              MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
               
            GO TO WRR-999.
               

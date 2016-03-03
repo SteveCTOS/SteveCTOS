@@ -320,8 +320,8 @@
                05  PL-BO             PIC Z(4)9.
                05  FILLER            PIC X(2).
                05  PL-SHIPPED        PIC Z(4)9.
-               05  FILLER            PIC X(1).
-               05  PL-PRICE          PIC Z(7)9.99.
+               05  FILLER            PIC X(3).
+               05  PL-PRICE          PIC Z(5)9.99.
                05  FILLER            PIC X(2).
                05  PL-DISCOUNT       PIC Z9.99.
                05  FILLER            PIC X(2).
@@ -339,12 +339,12 @@
        01  LASERPL-ADDLINE.
            03  PLADD-CHAR        PIC X(2) VALUE " ".
            03  FILLER            PIC X(11) VALUE " ".
-           03  PL-PHONE          PIC X(30) VALUE " ".
-           03  PL-ADD1           PIC Z(7)9.99. 
-           03  FILLER            PIC X(15) VALUE " ".
-           03  PL-ADD2           PIC Z(7)9.99.
+           03  PL-PHONE          PIC X(28) VALUE " ".
+           03  PL-ADD1           PIC Z(6)9.99. 
            03  FILLER            PIC X(16) VALUE " ".
-           03  PL-ADD3           PIC Z(7)9.99.
+           03  PL-ADD2           PIC Z(6)9.99.
+           03  FILLER            PIC X(17) VALUE " ".
+           03  PL-ADD3           PIC Z(6)9.99.
            03  FILLER            PIC X(15) VALUE " ".
            03  PL-CURRENCY       PIC X(5) VALUE " ".
            03  PL-ADD4           PIC Z(6)9.99.

@@ -103,48 +103,35 @@
        77  WS-DRTRANS-NO        PIC 9(6).
        77  WS-TERM-SUB          PIC 9 VALUE 0.
        77  WS-DEL-SUB           PIC 9 VALUE 0.
-       01  W-CRTSTATUS           PIC 9(4) value 0.
+       01  W-CRTSTATUS             PIC 9(4) value 0.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
+           03  WS-SALES-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC X.
+           03  WS-DRTRANS-ST1      PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
+           03  WS-STTRANS-ST1      PIC 99.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1     PIC 99.
-      *     03  WS-DISTRIBUTION-ST2     PIC 9 COMP-X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  WS-SOLDBY-STATUS.
-           03  WS-SOLDBY-ST1     PIC 99.
-      *     03  WS-SOLDBY-ST2     PIC 9 COMP-X.
+           03  WS-SOLDBY-ST1       PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC 9 COMP-X.
+           03  WS-INCR-ST1         PIC 99.
        01  WS-SPECIALS-STATUS.
-           03  WS-SPECIALS-ST1       PIC 99.
-      *     03  WS-SPECIALS-ST2       PIC 9 COMP-X.
+           03  WS-SPECIALS-ST1     PIC 99.
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTRANSLY-ST1     PIC 99.
-      *     03  WS-STTRANSLY-ST2     PIC X.
+           03  WS-STTRANSLY-ST1    PIC 99.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1     PIC 99.
-      *     03  WS-INCR-LY-ST2     PIC 9 COMP-X.
+           03  WS-INCR-LY-ST1      PIC 99.
        01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY        PIC X OCCURS 11.
        01  W-READ-KEY           PIC X.
        01  WS-NAMEANDADDRESS.
            03  WS-NAME          PIC X(40) VALUE " ".
@@ -1161,7 +1148,10 @@
                             ST-DESCRIPTION2
                 MOVE 0 TO ST-PRICE
                           ST-AVERAGECOST
-                          ST-DISCOUNT1.
+                          ST-DISCOUNT1
+                MOVE "Y"    TO B-TAX (SUB-1)
+                MOVE "EACH" TO B-UNIT (SUB-1).
+                
             IF SP-1STCHAR NOT = "/"
                AND ST-DESCRIPTION1 = " "
                    MOVE "INVALID STOCK ITEM!!!" TO WS-MESSAGE
@@ -1421,6 +1411,8 @@
                GO TO FILL-080.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO B-TAX (SUB-1).
+
+            MOVE "EACH" TO B-UNIT (SUB-1).
        FILL-090.
       *      MOVE B-STOCKNUMBER (SUB-1) TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE.      
@@ -2718,8 +2710,15 @@
             MOVE B-STOCKDESCRIPTION (SUB-1)  TO STTR-DESC1
             MOVE B-STOCKDESCRIPTION2 (SUB-1) TO STTR-DESC2
             MOVE B-DISCOUNTPERITEM (SUB-1)   TO STTR-ITEMDISC
-            MOVE B-STOCKCOST (SUB-1)         TO STTR-COST-VALUE
-            MOVE B-UNIT (SUB-1)              TO STTR-UNIT
+            MOVE B-STOCKCOST (SUB-1)         TO STTR-COST-VALUE.
+            IF B-UNIT (SUB-1) NOT > " " 
+                MOVE "EACH"                  TO STTR-UNIT
+            ELSE
+                MOVE B-UNIT (SUB-1)          TO STTR-UNIT.
+            IF B-TAX (SUB-1) NOT > " " 
+                MOVE "Y"                     TO STTR-TAX
+            ELSE
+                MOVE B-TAX (SUB-1)           TO STTR-TAX.
             GO TO WST-018.
        WST-015.
             MOVE " "                         TO COM-ORDERQTY

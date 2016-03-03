@@ -74,7 +74,7 @@ set (copy_list
   YearEnd2.Sub01
   YearEnd.Sub02
   YearEnd2.Sub02
-  YearEnd.Sub03
+  YearEnd.Sub03 
   YearEnd2.Sub03
   YearEnd.Sub05
   YearEnd2.Sub05
@@ -90,7 +90,7 @@ set (copy_list
   YearEnd.Sub11
   YearEnd2.Sub11
   YearEnd.Sub12
-  YearEnd2.Sub12
+  YearEnd2.Sub12 
   YearEnd01.sh
   YearEnd02.sh
   YearEnd03.sh

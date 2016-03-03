@@ -29,7 +29,6 @@
        77  WS-STORE             PIC X(17) VALUE " ".
        01  WS-IMPRECEIPT-STATUS.
            03  WS-IMPORT-ST1    PIC 99.
-      *     03  WS-IMPORT-ST2    PIC X.
        01  WS-DATE-RANGE        PIC 9(8).
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
@@ -107,7 +106,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -133,7 +131,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -193,7 +190,10 @@
             IF WS-IMPORT-ST1 NOT = 0
                MOVE "IMPORTS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-IMPORT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-IMPORT-ST1
                GO TO PRR-002.
 
@@ -288,11 +288,14 @@
        OPEN-FILES SECTION.
        OPEN-005.
            OPEN I-O IMPRECEIPTS-FILE.
-           IF WS-IMPORT-ST1 NOT = 0 
-              MOVE 0 TO WS-IMPORT-ST1
+           IF WS-IMPORT-ST1 NOT = 0
               MOVE "IMPORTS FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-IMPORT-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-IMPORT-ST1
               GO TO OPEN-005.
        OPEN-010.
            MOVE Ws-Co-Name TO CO-NAME.
