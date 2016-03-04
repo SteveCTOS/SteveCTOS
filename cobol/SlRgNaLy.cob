@@ -29,8 +29,7 @@
            03  WS-DEL           PIC X(26) VALUE " ".
            03  WS-INV           PIC Z(6).
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1       PIC 99.
-      *     03  WS-INCR-LY-ST2       PIC 9(2) COMP-X.
+           03  WS-INCR-LY-ST1   PIC 99.
        01  WS-SPLIT-ACCOUNT.
            03  WS-SP-1          PIC X VALUE " ".
            03  WS-SP-REST       PIC X(24) VALUE " ".
@@ -163,14 +162,19 @@
                 CLOSE INCR-LY-REGISTER
                 GO TO READ-999.
             IF WS-INCR-LY-ST1 = 91
-                MOVE 0 TO WS-INCR-LY-STATUS
-                CLOSE INCR-LY-REGISTER
                 MOVE "THERE IS A SYSTEM ERROR - ERC91, 'ESC' TO EXIT."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                CLOSE INCR-LY-REGISTER
+                MOVE 0 TO WS-INCR-LY-STATUS
                 GO TO READ-999.
                 
            IF INCR-LY-TRANS = 7
+      *       MOVE 
+      *      "BM TRANS BEING READ, GOING TO READ-NEXT IN 1 SECONDS..."
+      *          TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         CALL "C$SLEEP" USING 1
                GO TO READ-010.
                 
             IF WS-1ST = "Y"
@@ -223,7 +227,7 @@
                 CLOSE INCR-LY-REGISTER
                 GO TO READ-999.
             IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
-                     AND NOT = X"07" AND NOT = 0     AND NOT = 1
+                     AND NOT = X"07" AND NOT = " "   AND NOT = 1
                 GO TO READ-025.
             IF INCR-LY-ACCOUNT = 0
                 GO TO READ-010.
