@@ -1570,7 +1570,7 @@
                 MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER
                 PERFORM READ-STOCK.
                 
-            IF WS-STOCK-ST1 NOT = "2"
+            IF WS-STOCK-ST1 NOT = 51
                 MOVE ST-QTYONHAND    TO WS-KITQTYONHAND
                 MOVE ST-QTYONRESERVE TO WS-KITQTYONRESERVE
                 MOVE ST-QTYONORDER   TO WS-KITQTYONORDER
@@ -1983,13 +1983,17 @@
            READ STOCK-TRANS-FILE NEXT
               AT END NEXT SENTENCE.
            IF WS-STTRANS-ST1 = 10
-              MOVE 0 TO WS-STTRANS-ST1
-              MOVE 0   TO STTR-TYPE
+              MOVE 0 TO   WS-STTRANS-ST1
+              MOVE 0 TO STTR-TYPE
               GO TO RALI-999.
            IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STOCK TRANS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "STOCK TRANS-RECORD BUSY!!" TO WS-MESSAGE
-              PERFORM ERROR-000
               GO TO RALI-010.
            IF STTR-STOCK-NUMBER NOT = B-STOCKNUMBER (SUB-1)
               GO TO RALI-999.
@@ -2057,16 +2061,20 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "CAN-TRANS-000 ST1 NOT = 0, RE-READING" TO WS-MESSAGE
+              MOVE "CAN-TRANS-000 ST1 NOT = 0, RE-READING IN 1 SECOND." 
+              TO WS-MESSAGE
               PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
               GO TO CAN-TRANS-000.
        CAN-TRANS-002.
             DELETE STOCK-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "CAN-TRANS-002 ST1 NOT = 0, RE-DELETE" TO WS-MESSAGE
+              MOVE "CAN-TRANS-002 ST1 NOT = 0, RE-DELETE IN 1 SECOND."
+               TO WS-MESSAGE
               PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
               GO TO CAN-TRANS-002.
        CAN-TRANS-999.
             EXIT.
@@ -2083,8 +2091,10 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE "RES-ST-000 ST1 NOT = 0, RE-READ" TO WS-MESSAGE
+              MOVE "RES-ST-000 ST1 NOT = 0, RE-READ IN 1 SECOND."
+               TO WS-MESSAGE
               PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
               GO TO RES-ST-000.
        RES-ST-002.
            IF F-NAMEFIELDRED1 = "D"
@@ -2892,6 +2902,8 @@
                   INVALID KEY NEXT SENTENCE.
             IF WS-STTRANS-ST1 = 0
                 GO TO WST-020.
+
+            CALL "C$SLEEP" USING 1
             GO TO WST-000.
        WST-020.
             ADD 1 TO SUB-1.
@@ -2918,7 +2930,8 @@
                MOVE " " TO ST-DESCRIPTION1
                GO TO R-ST-999.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK RECORD IN USE ELESWHERE, 'ESC' TO RETRY."
+               MOVE 
+               "STOCK RECORD BUSY ON READ R-ST-005, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-STOCK-ST1
@@ -3132,6 +3145,10 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-STOCK-ST1 = 10
                MOVE " " TO ST-STOCKNUMBER
+               MOVE 
+               "STOCK RECORD AT END ON START, PRESS 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO SFRN-001.
        SFRN-999.
              EXIT.
@@ -3145,6 +3162,7 @@
            IF WS-STOCK-ST1 = 91
                MOVE " " TO ST-STOCKNUMBER
                PERFORM START-FOR-READ-NEXT
+               CALL "C$SLEEP" USING 1
                GO TO RNSI-005.
            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK RECORD IN USE, PRESS 'ESC' TO RETRY."
@@ -3328,7 +3346,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RETRY."
@@ -3347,7 +3365,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."
@@ -3364,7 +3382,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "PARAMETER RECORD NOT UPDATED!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER RECORD BUSY ON REWRITE, 'ESC' TO RETRY."

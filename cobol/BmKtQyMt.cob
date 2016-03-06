@@ -24,11 +24,9 @@
        77  WS-ANSWER1           PIC X(15) VALUE " ".
        77  WS-ANSWER2           PIC X(5) VALUE " ".
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.

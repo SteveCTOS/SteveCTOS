@@ -28,11 +28,9 @@
        77  WS-ANSWER5           PIC X VALUE " ".
        77  WS-ANSWER6           PIC X(15) VALUE " ".
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC 9 COMP-X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC 9 COMP-X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -306,9 +304,10 @@
            IF WS-TOOLKIT-ST1 NOT = 0
                MOVE "TOOLKITS BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-TOOLKIT-ST1
                GO TO RT-010.
            IF TO-TOOLKIT-NUMBER < WS-ANSWER3
@@ -355,7 +354,7 @@
            READ TOOLKITS
                INVALID KEY NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
-               MOVE "8" TO WS-TOOLKIT-ST1
+               MOVE 88 TO WS-TOOLKIT-ST1
                MOVE 1 TO WS-QTY
                GO TO RSI-999.
            IF WS-TOOLKIT-ST1 NOT = 0
@@ -373,6 +372,9 @@
            WRITE TOOL-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
+              MOVE "TOOLKIT RECORD NOT WRITTEN ST23, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               GO TO WRT-020.
            IF WS-TOOLKIT-ST1 NOT = 0
               MOVE 0 TO WS-TOOLKIT-ST1
@@ -385,6 +387,10 @@
            REWRITE TOOL-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
+              MOVE 0 TO WS-TOOLKIT-ST1
+              MOVE "TOOLKIT RECORD NOT RE-WRITTEN ST23, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               GO TO WRT-010.
            IF WS-TOOLKIT-ST1 NOT = 0
               MOVE 0 TO WS-TOOLKIT-ST1
@@ -433,5 +439,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       * END-OF-JOB

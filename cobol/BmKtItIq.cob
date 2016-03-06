@@ -7,21 +7,8 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT STOCK-MASTER ASSIGN TO Ws-Stock
-             ORGANIZATION IS INDEXED
-             LOCK MANUAL
-             ACCESS MODE IS DYNAMIC
-             RECORD KEY IS ST-KEY
-             FILE STATUS IS WS-STOCK-STATUS
-             ALTERNATE RECORD KEY IS ST-ALT-KEY WITH DUPLICATES.
-           SELECT TOOLKITS ASSIGN TO Ws-Toolkit
-             ORGANIZATION IS INDEXED
-             LOCK MANUAL
-             ACCESS MODE IS DYNAMIC
-             RECORD KEY IS TO-KEY
-             FILE STATUS IS WS-KIT-STATUS
-             ALTERNATE RECORD KEY IS TO-COMPONENT-NUMBER
-                     WITH DUPLICATES.
+       Copy "SelectStMaster".
+       Copy "SelectBmMaster".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                 ORGANIZATION IS LINE SEQUENTIAL.
       *
@@ -48,14 +35,12 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
-       01  WS-KIT-STATUS.
-           03  WS-KIT-ST1    PIC 99.
-      *     03  WS-KIT-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
+       01  WS-TOOLKIT-STATUS.
+           03  WS-TOOLKIT-ST1       PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -240,7 +225,14 @@
        READ-TRANSACTIONS SECTION.
        RDTR-000.
            OPEN I-O TOOLKITS.
-           IF WS-KIT-ST1 NOT = 0
+           IF WS-TOOLKIT-ST1 NOT = 0
+              MOVE "TOOLKITS BUSY ON OPEN, GOING TO RETRY IN 1 SECOND"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR-020
+              CALL "C$SLEEP" USING 1
               CLOSE TOOLKITS
               GO TO RDTR-000.
            MOVE 1 TO F-INDEX.
@@ -249,22 +241,34 @@
            MOVE ST-STOCKNUMBER TO TO-COMPONENT-NUMBER.
            START TOOLKITS KEY NOT < TO-COMPONENT-NUMBER
                 INVALID KEY NEXT SENTENCE.
-           IF WS-KIT-ST1 = 23 OR 35 OR 49
+           IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
               CLOSE TOOLKITS
               GO TO RDTR-999.
-           IF WS-KIT-ST1 NOT = 0
+           IF WS-TOOLKIT-ST1 NOT = 0
+              MOVE "TOOLKITS BUSY ON OPEN, GOING TO RETRY IN 1 SECOND"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR-020
+              CALL "C$SLEEP" USING 1
               CLOSE TOOLKITS
               GO TO RDTR-000.
        RDTR-010.
            READ TOOLKITS NEXT
                AT END NEXT SENTENCE.
-           IF WS-KIT-ST1 = 10
+           IF WS-TOOLKIT-ST1 = 10
                MOVE 1 TO F-INDEX
                CLOSE TOOLKITS
                GO TO RDTR-999.
-           IF WS-KIT-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
+           IF WS-TOOLKIT-ST1 NOT = 0
+              MOVE "TOOLKITS BUSY READ-NEXT, GOING TO RETRY IN 1 SECOND"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-020
+              CALL "C$SLEEP" USING 1
                GO TO RDTR-010.
            IF TO-TOOLKIT-NUMBER = " "
                GO TO RDTR-010.
@@ -339,6 +343,13 @@
                 MOVE "UNKNOWN" TO ST-DESCRIPTION1
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
+                MOVE "STOCK BUSY READ, GOING TO RETRY IN 1 SECOND"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR-020
+                CALL "C$SLEEP" USING 1
                 GO TO RS-010.
        RS-999.
             EXIT.
@@ -366,6 +377,13 @@
              IF WS-STOCK-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
+             MOVE
+               "STOCK BUSY ON READ-NEXT - R-ST-NX-010, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STOCK-ST1
                  PERFORM START-STOCK
                  GO TO R-ST-NX-005.
@@ -383,20 +401,34 @@
             MOVE WS-COMPONENT-NUMBER TO TO-COMPONENT-NUMBER.
             START TOOLKITS KEY NOT < TO-COMPONENT-NUMBER
                 INVALID KEY NEXT SENTENCE.
-           IF WS-KIT-ST1 = 23 OR 35 OR 49
+           IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
               CLOSE TOOLKITS
               GO TO PRR-999.
-           IF WS-KIT-ST1 NOT = 0
+           IF WS-TOOLKIT-ST1 NOT = 0
               CLOSE TOOLKITS
+              MOVE "TOOLKITS BUSY ON STARTP, GOING TO RETRY IN 1 SECOND"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR-020
+              CALL "C$SLEEP" USING 1
               GO TO PRR-002.
        PRR-005.
             READ TOOLKITS NEXT
                AT END NEXT SENTENCE.
-            IF WS-KIT-ST1 = 10
-               MOVE 0 TO WS-KIT-ST1
+            IF WS-TOOLKIT-ST1 = 10
+               MOVE 0 TO WS-TOOLKIT-ST1
                GO TO PRR-900.
-            IF WS-KIT-ST1 NOT = 0
-               MOVE 0 TO WS-KIT-ST1
+            IF WS-TOOLKIT-ST1 NOT = 0
+             MOVE "TOOLKITS BUSY READ-NEXT, GOING TO RETRY IN 2 SECONDS"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 2
+               MOVE 0 TO WS-TOOLKIT-ST1
                GO TO PRR-005.
             IF TO-TOOLKIT-NUMBER = " "
                GO TO PRR-005.

@@ -23,11 +23,9 @@
        77  WS-ANSWER1           PIC X VALUE " ".
        77  WS-ANSWER2           PIC X VALUE " ".
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -71,7 +69,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *      ACCEPT WS-ANSWER1 AT POS.
             IF W-ESCAPE-KEY = 3
                PERFORM END-900.
             IF WS-ANSWER1 NOT = "Y" AND NOT = "N"
@@ -97,7 +94,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *      ACCEPT WS-ANSWER2 AT POS.
             IF W-ESCAPE-KEY = 3
                PERFORM END-900.
             IF W-ESCAPE-KEY = 4

@@ -24,11 +24,9 @@
        77  WS-ANSWER3           PIC X(15) VALUE " ".
        77  WS-ANSWER4           PIC X(15) VALUE " ".
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -66,7 +64,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *      ACCEPT WS-ANSWER1 AT POS.
             IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
             IF WS-ANSWER1 = " "
@@ -101,7 +98,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *      ACCEPT WS-ANSWER2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-ANSWER2 = " "
@@ -141,7 +137,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER3.
 
-      *      ACCEPT WS-ANSWER3 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-020.
             IF WS-ANSWER3 = " "
@@ -170,7 +165,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER4.
 
-      *      ACCEPT WS-ANSWER4 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-040.
             IF WS-ANSWER4 = " "
@@ -263,6 +257,11 @@
            REWRITE TOOL-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
+              MOVE "TOOLKIT NOT REWRITTEN, GOING TO RETRY IN 2 SECONDS."
+              TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 2
+              PERFORM ERROR-020   
               GO TO WRT-010.
            IF WS-TOOLKIT-ST1 NOT = 0
               MOVE 0 TO WS-TOOLKIT-ST1
@@ -275,6 +274,11 @@
            WRITE TOOL-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
+              MOVE "TOOLKIT NOT WRITTEN, GOING TO RETRY IN 2 SECONDS."
+              TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 2
+              PERFORM ERROR-020   
               GO TO WRT-005.
            IF WS-TOOLKIT-ST1 NOT = 0
               MOVE 0 TO WS-TOOLKIT-ST1

@@ -33,14 +33,12 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC X.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR      PIC X.
-           03  SP-REST         PIC X(14).
+           03  SP-1STCHAR       PIC X.
+           03  SP-REST          PIC X(14).
        01  HEAD1.
            03  FILLER           PIC X(5) VALUE "DATE".
            03  H1-DATE          PIC X(10).
@@ -126,7 +124,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-ANSWER1 NOT = "R" AND NOT = "I"
@@ -172,6 +169,9 @@
             IF WS-BO-ST1 = 10
                GO TO RT-999.
             IF WS-BO-ST1 NOT = 0
+               MOVE "ST-TRANS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-BO-ST1
                GO TO RT-002.
             IF STTR-REFERENCE1 NOT = INCR-INVOICE

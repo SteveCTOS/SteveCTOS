@@ -34,10 +34,8 @@
        77  WS-STORE             PIC X(15) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1        PIC 99.
-      *     03  WS-TOOLKIT-ST2        PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -131,7 +129,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -154,7 +151,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 = " "
@@ -179,7 +175,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *     ACCEPT WS-RANGE3 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-010.
            IF WS-RANGE3 = " "
@@ -231,12 +226,14 @@
             READ TOOLKITS NEXT
                AT END NEXT SENTENCE.
             IF WS-TOOLKIT-ST1 NOT = 0
+               MOVE TO-TOOLKIT-NUMBER TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE
+               "KIT BUSY AT ANOTHER WORK-STATION, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-TOOLKIT-ST1
-               MOVE 3010 TO POS
-               DISPLAY TO-TOOLKIT-NUMBER AT POS
-               ADD 16 TO POS
-               DISPLAY "KIT BUSY AT ANOTHER WORK-STATION, RE-READING"
-               AT POS
                GO TO PRR-002.
             IF TO-TOOLKIT-NUMBER < WS-RANGE1
                GO TO PRR-002.
@@ -338,11 +335,12 @@
                GO TO RS-999.
           IF WS-ST-ST1 NOT = 0
                MOVE 0 TO WS-ST-ST1
-               MOVE 3010 TO POS
-               DISPLAY ST-STOCKNUMBER AT POS
-               ADD 16 TO POS
-               DISPLAY "BUSY AT ANOTHER WORK-STATION, TRYING TO RE-READ"
-               AT POS
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY." 
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE ST-STOCKNUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-020
                GO TO RS-010.
        RS-999.
            EXIT.

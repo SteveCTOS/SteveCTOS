@@ -26,14 +26,12 @@
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-STOCK-STORE       PIC X(15) VALUE " ".
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST     PIC X(20) VALUE " ".
            03  WS-DAILY-2ND     PIC X(20) VALUE " ".
@@ -139,7 +137,8 @@
        READ-STOCK SECTION.
        R-ST-000.
              MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER.
-             START STOCK-MASTER KEY NOT < ST-KEY.
+             START STOCK-MASTER KEY NOT < ST-KEY
+                INVALID KEY NEXT SENTENCE.
        R-ST-010.
              READ STOCK-MASTER
                  INVALID KEY NEXT SENTENCE.
@@ -197,10 +196,13 @@
                MOVE " " TO WS-STOCKNUMBER
                GO TO RTH-999.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "TOOLKIT HEADER BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-010
+               PERFORM ERROR1-010
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-TOOLKIT-ST1
                GO TO RTH-000.
            MOVE " " TO WS-TOOL-INVALID.
        RTH-999.
@@ -221,9 +223,12 @@
                GO TO RNTH-999.
            IF WS-TOOLKIT-ST1 NOT = 0
                MOVE 0 TO WS-TOOLKIT-ST1
-               MOVE "TOOLKIT HEADER BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "TOOLKIT HEADER BUSY ON READ-NEW, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-010
+               PERFORM ERROR1-010
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RNTH-000.
            MOVE " " TO WS-TOOL-INVALID.
        RNTH-999.
@@ -376,4 +381,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

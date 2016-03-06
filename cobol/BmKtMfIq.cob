@@ -73,26 +73,19 @@
            03  WS-DESC1          PIC X(20) VALUE " ".
            03  WS-DESC2          PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
+           03  WS-INCR-ST1        PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-KIT-ST1     PIC 99.
-      *     03  WS-KIT-ST2     PIC X.
+           03  WS-KIT-ST1         PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1        PIC 99.
-      *     03  WS-OUTORD-ST2        PIC X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -496,7 +489,7 @@
        FILL-011.
             MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER
                 PERFORM READ-STOCK.
-            IF WS-STOCK-ST1 NOT = "2"
+            IF WS-STOCK-ST1 NOT = 51
                 MOVE ST-QTYONHAND    TO WS-QTYONHAND
                 MOVE ST-QTYONRESERVE TO WS-QTYONRESERVE
                 MOVE ST-QTYONORDER   TO WS-QTYONORDER
@@ -564,6 +557,9 @@
        RDNX-005.
            READ INCR-REGISTER NEXT
                INVALID KEY NEXT SENTENCE.
+           IF WS-INCR-ST1 = 10
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RDNX-999.
            IF WS-INCR-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-INCR-ST1
                MOVE "Y" TO WS-NEWORDER
@@ -712,9 +708,10 @@
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "ST-TRANS RECORD BUSY ON READ-NEXT, 'ESC' TO RETTRY."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
@@ -777,6 +774,9 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-STOCK-ST1 = 10
                MOVE " " TO ST-STOCKNUMBER
+               MOVE "STOCK BUSY ON START-FOR-READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO SFRN-001.
        SFRN-999.
              EXIT.
@@ -788,6 +788,9 @@
            IF WS-STOCK-ST1 = 10
                GO TO RNSI-999.
            IF WS-STOCK-ST1 = 91
+               MOVE "STOCK ST=91 READ-NEXT, 'ESC' TO RE-ENTER."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE " " TO ST-STOCKNUMBER
                PERFORM START-FOR-READ-NEXT
                GO TO RNSI-005.
@@ -814,12 +817,12 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR-MESSAGE
               GO TO RP-000.
        RP-999.
            EXIT.

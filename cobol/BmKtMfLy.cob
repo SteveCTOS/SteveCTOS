@@ -73,26 +73,19 @@
            03  WS-DESC1          PIC X(20) VALUE " ".
            03  WS-DESC2          PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTRANSLY-ST1     PIC 99.
-      *     03  WS-STTRANSLY-ST2     PIC 9(2) COMP-X.
+           03  WS-STTRANSLY-ST1   PIC 99.
        01  WS-INCR-LY-STATUS.
            03  WS-INCR-LY-ST1     PIC 99.
-      *     03  WS-INCR-LY-ST2     PIC 9(2) COMP-X.
        01  WS-TOOLKIT-STATUS.
-           03  WS-KIT-ST1     PIC 99.
-      *     03  WS-KIT-ST2     PIC X.
+           03  WS-KIT-ST1         PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1        PIC 99.
-      *     03  WS-OUTORD-ST2        PIC X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -610,6 +603,8 @@
        RDNX-005.
            READ INCR-LY-REGISTER NEXT
                INVALID KEY NEXT SENTENCE.
+           IF WS-INCR-LY-ST1 = 10
+               GO TO RDNX-999.
            IF WS-INCR-LY-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-INCR-LY-ST1
                MOVE "Y" TO WS-NEWORDER
@@ -780,6 +775,9 @@
            START STOCK-MASTER KEY NOT < ST-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-STOCK-ST1 = 10
+               MOVE "STOCK BUSY ON START FOR READ, 'ESC' TO RE-ENTER."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE " " TO ST-STOCKNUMBER
                GO TO SFRN-001.
        SFRN-999.
@@ -818,7 +816,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RETRY."

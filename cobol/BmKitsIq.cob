@@ -41,14 +41,12 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1    PIC 99.
-      *     03  WS-TOOLKIT-ST2    PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -257,6 +255,13 @@
            OPEN I-O TOOLKITS.
            IF WS-TOOLKIT-ST1 NOT = 0
               CLOSE TOOLKITS
+              MOVE "TOOLKITS BUSY ON OPEN, GOING TO RETRY IN 1 SECOND"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR-020
+              CALL "C$SLEEP" USING 1
               GO TO RDTR-000.
            MOVE 1 TO F-INDEX.
            MOVE "Y" TO WS-NEWINPUT.
@@ -269,6 +274,13 @@
               GO TO RDTR-999.
            IF WS-TOOLKIT-ST1 NOT = 0
               CLOSE TOOLKITS
+              MOVE "TOOLKITS BUSY ON START, GOING TO RETRY IN 1 SECOND"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR-020
+              CALL "C$SLEEP" USING 1
               GO TO RDTR-000.
        RDTR-010.
            READ TOOLKITS NEXT
@@ -278,8 +290,12 @@
                CLOSE TOOLKITS
                GO TO RDTR-999.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
+               MOVE "TOOLKIT BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RDTR-010.
            IF TO-COMPONENT-NUMBER = " "
                GO TO RDTR-010.
@@ -345,6 +361,12 @@
                 MOVE "UNKNOWN" TO ST-DESCRIPTION1
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK BUSY ON READ - RS-010, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                 GO TO RS-010.
        RS-999.
             EXIT.
@@ -371,9 +393,20 @@
        R-ST-NX-005. 
              READ STOCK-MASTER NEXT
                  AT END NEXT SENTENCE.
+             IF WS-STOCK-ST1 = 10
+                MOVE ST-STOCKNUMBER TO WS-STOCKNUMBER
+                GO TO R-ST-NX-999.
              IF WS-STOCK-ST1 NOT = 0
-                 MOVE 0 TO WS-STOCK-ST1
+             MOVE
+               "STOCK BUSY ON READ-NEXT - R-ST-NX-010, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  PERFORM START-STOCK
+                 MOVE 0 TO WS-STOCK-ST1
+               ELSE 
                  GO TO R-ST-NX-005.
             MOVE ST-STOCKNUMBER TO WS-STOCKNUMBER.
        R-ST-NX-999.
@@ -425,6 +458,13 @@
                MOVE 0 TO WS-TOOLKIT-ST1
                GO TO PRR-900.
             IF WS-TOOLKIT-ST1 NOT = 0
+            MOVE
+               "TOOLKIT BUSY ON READ-NEXT - PR-002, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                MOVE 0 TO WS-TOOLKIT-ST1
                GO TO PRR-002.
             IF TO-COMPONENT-NUMBER = " "

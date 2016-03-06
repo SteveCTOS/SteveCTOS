@@ -68,6 +68,9 @@
            PERFORM CLEAR-SCREEN.
        CONTROL-010.
            MOVE "OfNameIq" TO F-FORMNAME.
+           
+           PERFORM OPEN-0000.
+           
            PERFORM OPEN-010 THRU OPEN-020.
            PERFORM DISPLAY-FORM.
        CONTROL-020.
@@ -1533,11 +1536,59 @@
        CM-999.
            EXIT.
       *
+       CHECK-FOR-OFISDATA-NAME SECTION.
+       CFODN-000.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+           MOVE WS-OFISDATA TO ALPHA-RATE
+           IF AL-RATE (24) NOT = " "
+      *         MOVE WS-OFISDATA TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               GO TO CFODN-999.
+       CFODN-010.
+           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+      *      MOVE "steve" TO WS-USERNAME.
+           MOVE WS-USERNAME TO WS-MESSAGE.
+           MOVE WS-USERNAME TO DATA-RATE.
+           MOVE 1 TO SUB-1
+           MOVE 24 TO SUB-2.
+           MOVE "_" TO AL-RATE (SUB-2).
+           ADD 1 TO SUB-2.
+       CFODN-015.
+           MOVE DAT-RATE (SUB-1) TO AL-RATE (SUB-2).
+           IF SUB-2 < 60
+               ADD 1 TO SUB-1 SUB-2
+               GO TO CFODN-015.
+
+           MOVE ALPHA-RATE TO WS-OFISDATA.
+      *     MOVE WS-OFISDATA TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       CFODN-999.
+           EXIT.
+      *
        OPEN-FILES SECTION.
        OPEN-0000.
       *      GO TO OPEN-010.
+      *      MOVE WS-OFISDATA TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+            
+            PERFORM CHECK-FOR-OFISDATA-NAME.
        OPEN-000.
             OPEN I-O OFIS-FILE.
+            IF WS-OFIS-ST1 = 35
+               MOVE "OFIS FILE DOESN'T YET EXIST, 'ESC' TO CREATE NEW."
+                TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM OPEN-005.
+               
+            IF WS-OFIS-ST1 NOT = 0
+               MOVE "OFIS BUSY ON OPEN, 'ESC' TO RETRY." TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OFIS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-OFIS-ST1
+               GO TO OPEN-000.
+       OPEN-005.
+            OPEN OUTPUT OFIS-FILE.
             IF WS-OFIS-ST1 NOT = 0
                MOVE "OFIS BUSY ON OPEN, 'ESC' TO RETRY." TO WS-MESSAGE
                PERFORM ERROR1-000

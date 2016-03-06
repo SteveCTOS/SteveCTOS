@@ -29,10 +29,8 @@
            03  WS-BLINK-F10-OFF PIC X(20) VALUE "**  NEW ITEM  ** ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1     PIC 99.
-      *     03  WS-TOOLKIT-ST2     PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST     PIC X(20) VALUE " ".
            03  WS-DAILY-2ND     PIC X(20) VALUE " ".
@@ -396,6 +394,13 @@
            IF WS-TOOLKIT-ST1 = 10
                GO TO RNK-999.
            IF WS-TOOLKIT-ST1 NOT = 0
+           MOVE 
+              "TOOLKIT BUSY ON READ-NEXT - RNK-000, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                MOVE 0 TO WS-TOOLKIT-ST1
                PERFORM START-KIT
                GO TO RNK-000.
@@ -442,7 +447,7 @@
                MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "TOOLKIT HEADER BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-010
+               PERFORM ERROR-MESSAGE
                GO TO RTH-000.
            PERFORM REWRITE-TOOLKIT.
        RTH-999.
@@ -652,7 +657,7 @@
             OPEN I-O TOOLKITS.
             IF WS-TOOLKIT-ST1 NOT = 0
                MOVE 0 TO WS-TOOLKIT-ST1
-               MOVE "TOOL FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "TOOLKIT FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-005.

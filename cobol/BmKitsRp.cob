@@ -67,23 +67,17 @@
            03  WS-DAILY3       PIC X(20).
            03  WS-DAILY4       PIC X(20).
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
+           03  WS-ST-ST1          PIC 99.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1        PIC 99.
-      *     03  WS-TOOLKIT-ST2        PIC X.
+           03  WS-TOOLKIT-ST1     PIC 99.
        01  WS-STNWPR-STATUS.
-           03  WS-STNWPR-ST1     PIC 99.
-      *     03  WS-STNWPR-ST2     PIC 9(2) COMP-X.
+           03  WS-STNWPR-ST1      PIC 99.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1   PIC 99.
-      *     03  WS-STCHANGE-ST2   PIC X.
+           03  WS-STCHANGE-ST1    PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  ACCEPT-DATE.
            03  ACCEPT-YY       PIC 9999.
            03  ACCEPT-MM       PIC 99.
@@ -227,7 +221,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -250,7 +243,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF WS-RANGE2 = " "
@@ -275,7 +267,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *      ACCEPT WS-ANSWER1 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-010.
             IF WS-ANSWER1 NOT = "Y" AND NOT = "N"
@@ -299,7 +290,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TOTAL.
 
-      *      ACCEPT WS-TOTAL AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-020.
             IF WS-TOTAL NOT = "Y" AND NOT = "N"
@@ -323,7 +313,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *      ACCEPT WS-ANSWER2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-025.
             IF WS-ANSWER2 NOT = "Y" AND NOT = "N"
@@ -351,7 +340,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-030.
            IF WS-ANSWER3 NOT = "Y" AND NOT = "N"
@@ -379,7 +367,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER7.
 
-      *     ACCEPT WS-ANSWER7 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-035.
            IF WS-ANSWER7 NOT = "U" AND NOT = "W"
@@ -406,7 +393,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER4.
 
-      *     ACCEPT WS-ANSWER4 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-035.
            IF WS-ANSWER4 NOT = "Y" AND NOT = "N"
@@ -436,7 +422,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER5.
 
-      *     ACCEPT WS-ANSWER5 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-037.
            IF WS-ANSWER5 NOT = "N" AND NOT = "R" AND NOT = "T"
@@ -465,7 +450,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FACTOR-FIELD.
 
-      *     ACCEPT WS-FACTOR-FIELD AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-035.
            IF WS-FACTOR-FIELD = "   "
@@ -511,7 +495,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FACTOR-FIELD.
 
-      *     ACCEPT WS-FACTOR-FIELD AT POS.
            IF W-ESCAPE-KEY = 4
             IF WS-ANSWER3 = "N"
               GO TO GET-035
@@ -560,7 +543,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER6.
 
-      *     ACCEPT WS-ANSWER6 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-150.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -617,6 +599,9 @@
                PERFORM TOTALS
                GO TO PRR-999.
             IF WS-TOOLKIT-ST1 NOT = 0
+               MOVE "TOOLKIT FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-TOOLKIT-ST1
                GO TO PRR-002.
             IF TO-TOOLKIT-NUMBER < WS-RANGE1
@@ -834,6 +819,9 @@
                          ST-LASTCOST
                GO TO RS-999.
           IF WS-ST-ST1 NOT = 0
+               MOVE "STOCK BUSY ON READ, RS-010, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-ST-ST1
                GO TO RS-010.
        RS-999.
@@ -921,6 +909,9 @@
                PERFORM WRITE-DAILY
                GO TO USP-999.
            IF WS-ST-ST1 NOT = 0
+               MOVE "STOCK-LOCK BUSY ON READ, UPS-010, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-ST-ST1
                GO TO USP-010.
            IF WS-ANSWER5 = "R"
@@ -1051,9 +1042,10 @@
            IF WS-StNwPr-ST1 NOT = 0
                MOVE "WRITING OF NEW PRICE LIST IN ERROR"
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STNWPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                GO TO WRITE-020.
            GO TO WRITE-999.
@@ -1066,9 +1058,10 @@
                MOVE
                 "REWRITING OF NEW PRICE LIST IN ERROR, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STNWPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                GO TO WRITE-030.
        WRITE-999.
