@@ -23,11 +23,9 @@
        77  WS-TRACC           PIC 9(7) VALUE 0.
        77  WS-TRINV           PIC X(10) VALUE " ".
        01  WS-REMITTRANS-STATUS.
-           03  WS-REMITTRANS-ST1   PIC 99.
-      *     03  WS-REMITTRANS-ST2   PIC X.
+           03  WS-REMITTRANS-ST1 PIC 99.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -637,9 +635,17 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-REMITTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-REMITTRANS-ST1
-               PERFORM START-TRANS
-               GO TO RONX-005.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-REMITTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-REMITTRANS-ST1
+              PERFORM START-TRANS
+              GO TO RONX-005.
 
            MOVE "N"                 TO NEW-ORDER.
            MOVE CRREMTR-YY          TO WS-TRYY
@@ -671,9 +677,17 @@
               PERFORM ERROR-MESSAGE
               GO TO RDPREV-999.
            IF WS-REMITTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-REMITTRANS-ST1
-               PERFORM START-TRANS
-               GO TO RDPREV-005.
+              MOVE "CR-TRANS BUSY ON READ-PREV, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-REMITTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-REMITTRANS-ST1
+              PERFORM START-TRANS
+              GO TO RDPREV-005.
 
            MOVE "N"                 TO NEW-ORDER.
            MOVE CRREMTR-YY          TO WS-TRYY

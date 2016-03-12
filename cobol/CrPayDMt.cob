@@ -31,17 +31,13 @@
        77  WS-ABOVE-BODY        PIC X VALUE " ".
        77  WS-PAGE              PIC 99 VALUE 0.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1 PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1  PIC 99.
-      *     03  WS-CRJRN-ST2  PIC X.
+           03  WS-CRJRN-ST1    PIC 99.
        01  WS-CRTRANS-STATUS.
            03  WS-CRTRANS-ST1  PIC 99.
-      *     03  WS-CRTRANS-ST2  PIC X.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1    PIC 99.
        01  JOURNAL-DATA.
            03  WS-INV-AMT           PIC S9(7)V99.
            03  WS-UNAPPLIED         PIC S9(7)V99.
@@ -54,7 +50,7 @@
            03  WS-DAILY-3RD        PIC X(20) VALUE " ".
            03  WS-DAILY-4TH        PIC X(20) VALUE " ".
        01  WS-GLNO-CHECK.
-           03  WS-CH          PIC X OCCURS 15.
+           03  WS-CH               PIC X OCCURS 15.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -400,6 +396,14 @@
               MOVE 0 TO WS-CRJRN-ST1
               GO TO RCRI-299.
            IF WS-CRJRN-ST1 NOT = 0
+              MOVE "CRJRN BUSY ON START, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
               MOVE 0 TO WS-CRJRN-ST1
               CLOSE CRJRN-FILE
               PERFORM OPEN-015
@@ -447,6 +451,14 @@
               MOVE 0 TO WS-CRTRANS-ST1
               GO TO RTRANS-999.
            IF WS-CRTRANS-ST1 NOT = 0
+              MOVE "CR-TRANS BUSY ON START, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
               MOVE 0 TO WS-CRTRANS-ST1
               CLOSE CRTR-FILE
               PERFORM OPEN-013
@@ -457,10 +469,15 @@
            IF WS-CRTRANS-ST1 = 10
               GO TO RTRANS-999.
            IF WS-CRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-CRTRANS-ST1
-              MOVE "CR-TRANS BUSY ON READ-NEXT-LOCK, 'ESC' TO RETRY."
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
               GO TO RTRANS-010.
            IF CRTR-INV-NO = WS-INV-NO
             IF CRTR-ACC-NUMBER NOT = WS-CREDITOR

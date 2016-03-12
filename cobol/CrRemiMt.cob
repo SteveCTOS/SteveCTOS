@@ -762,9 +762,10 @@
           IF WS-REMI-ST1 NOT = 0
               MOVE "CRREMI RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-REMI-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE CRREM-KEY TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-REMI-ST1
@@ -776,9 +777,10 @@
           IF WS-REMI-ST1 NOT = 0
               MOVE "CRREMI RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-REMI-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE CRREM-KEY TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE 0 TO WS-REMI-ST1
@@ -868,9 +870,17 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-005.
            IF WS-REMI-ST1 NOT = 0
-               MOVE 0 TO WS-REMI-ST1
-               PERFORM START-CRREMIT
-               GO TO RSN-005.
+              MOVE "CR-REMI BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-REMI-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-REMI-ST1
+              PERFORM START-CRREMIT
+              GO TO RSN-005.
                 
              IF CRREM-F-L NOT = WS-REMIT-F-L
                 GO TO RSN-005.

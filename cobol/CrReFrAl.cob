@@ -44,16 +44,12 @@
            03  WS-REMI-MM          PIC 99.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1     PIC 99.
-      *     03  WS-CREDITOR-ST2     PIC X.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1         PIC 99.
-      *     03  WS-CRTRANS-ST2         PIC X.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-REMITTRANS-STATUS.
-           03  WS-REMITTRANS-ST1        PIC 99.
-      *     03  WS-REMITTRANS-ST2        PIC X.
+           03  WS-REMITTRANS-ST1   PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1      PIC 99.
-      *     03  WS-GLPARAMETER-ST2      PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-PERIOD.
            03  WS-1ST-CHAR         PIC X.
            03  WS-PER              PIC 99.
@@ -396,7 +392,6 @@
                PERFORM ERROR-MESSAGE
                GO TO RALT-010.
                
-               
            IF CRTR-ACC-NUMBER NOT = CR-ACCOUNT-NUMBER
                GO TO RALT-900.
            IF CRTR-TYPE NOT = 1 AND NOT = 6
@@ -432,9 +427,10 @@
            IF WS-REMITTRANS-ST1 = 23 OR 35 OR 49
               MOVE "THE CR-TRANS REC DOES NOT EXIST, 'ESC' FOR NUMBER."
                  TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-000
               MOVE CRTR-TRANS TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RONX-030.
            IF WS-REMITTRANS-ST1 NOT = 0
               MOVE 0 TO WS-REMITTRANS-ST1
@@ -504,9 +500,10 @@
             IF WS-REMITTRANS-ST1 NOT = 0
                 MOVE "CRREMIT-TRANS BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-REMITTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO WCBT-018.
        WCBT-020.
             ADD 1 TO SUB-1.
@@ -556,9 +553,17 @@
              IF WS-CREDITOR-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
-                 MOVE 0 TO WS-CREDITOR-ST1
-                 PERFORM START-CREDITOR
-                 GO TO R-ST-NX-005.
+              MOVE "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
+              PERFORM START-CREDITOR
+              GO TO R-ST-NX-005.
        R-ST-NX-999.
              EXIT.
       *
@@ -758,7 +763,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."

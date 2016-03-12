@@ -27,7 +27,7 @@
            03  WS-ADD           PIC X(26) VALUE " ".
            03  WS-PHONE         PIC X(27) VALUE " ".
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
+           03  WS-CREDITOR-ST1  PIC 99.
        01  WS-SPLIT-ACCOUNT.
            03  WS-SP-1          PIC X VALUE " ".
            03  WS-SP-REST       PIC X(39) VALUE " ".
@@ -108,22 +108,18 @@
                    
             MOVE 0 TO F-EXIT-CH.
             IF WS-CREDITOR-ST1 NOT = 0
-                MOVE 3010 TO POS
-                DISPLAY "RECORD IN USE TRY AGAIN LATER !!!!!" AT POS
-                ADD 30 TO POS
-                DISPLAY WS-CREDITOR-ST1 AT POS
-                MOVE 0 TO WS-CREDITOR-STATUS
-                PERFORM CLEAR-MIDDLE
-                CLOSE CREDITOR-MASTER
-                GO TO READ-999.
-            IF WS-CREDITOR-ST1 = 23 OR 35 OR 49
-                MOVE 3010 TO POS
-                DISPLAY "TRY ENTERING A CREDITOR THAT THAT EXISTS!!!"
-                AT POS
-                MOVE 0 TO WS-CREDITOR-STATUS
-                PERFORM CLEAR-MIDDLE
-                CLOSE CREDITOR-MASTER
-                GO TO READ-999.
+              MOVE "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-STATUS
+              PERFORM CLEAR-MIDDLE
+              CLOSE CREDITOR-MASTER
+              GO TO READ-999.
             MOVE 0 TO SUB-2 SUB-3.
             MOVE 800 TO SUB-DIS.
         READ-010.
@@ -317,4 +313,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

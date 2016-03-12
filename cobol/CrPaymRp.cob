@@ -43,19 +43,19 @@
        77  WS-ACCDISC           PIC S9(7)V99.
        77  WS-NO-ACCS           PIC 9(5) VALUE 0.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1       PIC 99.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1      PIC 99.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-DUE-DATE.
            03  WS-DUE-YY           PIC 9999.
            03  WS-DUE-MM           PIC 99.
            03  WS-DUE-DD           PIC 99.
        01  WS-CHECK-DATE.
-           03  WS-CHECK-YY           PIC 9999.
-           03  WS-CHECK-MM           PIC 99.
-           03  WS-CHECK-DD           PIC 99.
+           03  WS-CHECK-YY         PIC 9999.
+           03  WS-CHECK-MM         PIC 99.
+           03  WS-CHECK-DD         PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE:".
            03  H1-DATE        PIC X(10).
@@ -360,8 +360,16 @@
                PERFORM PRINT-TOTAL-LINE
                GO TO PRR-999.
             IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               GO TO PRR-002.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              GO TO PRR-002.
                
            IF CRTR-ACC-NUMBER < WS-RANGE2
                GO TO PRR-002.
@@ -496,8 +504,16 @@
                MOVE 0 TO WS-CRTRANS-ST1
                GO TO WTR-999.
             IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               GO TO WTR-002.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              GO TO WTR-002.
        WTR-008.
             IF WS-FOR-LOC = " "
                GO TO WTR-010.
@@ -565,11 +581,15 @@
            WRITE CRTR-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 NOT = 0
-              MOVE 3010 TO POS
-              DISPLAY "CRJRN WRITE ERR, RWCR-019. TRANS NOT WRITTEN"
-              AT POS
-              MOVE 2870 TO POS
-              DISPLAY WS-CRTRANS-ST1 AT POS.
+             MOVE "CR-TRANS BUSY ON WRITE -019, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              GO TO RWCR-019.
        RWCR-999.
            EXIT.
       *
@@ -582,7 +602,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD, 'ESC' TO EXIT."
                CALL "LOCKKBD" USING WS-PRINTER
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
@@ -625,7 +645,7 @@
                MOVE "NO GLPARAMETER FILE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
@@ -643,7 +663,7 @@
                MOVE "GLPARAMETER FILE NOT UPDATED, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON RE-WRITE, 'ESC' TO RETRY."

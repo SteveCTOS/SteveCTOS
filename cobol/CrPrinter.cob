@@ -128,7 +128,7 @@
                GO TO CONT-950.
            MOVE WS-PRINTANSWER TO WS-PRINTERSELECTED
            PERFORM CHECK-PRINTER.
-           IF WS-PRNT-ST1 = 8
+           IF WS-PRNT-ST1 = 88
               MOVE "You Must Select a Printer from those Displayed."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

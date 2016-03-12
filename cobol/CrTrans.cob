@@ -21,11 +21,9 @@
        77  WS-TRANSNO         PIC 9(6) VALUE 0.
        77  WS-TYPE            PIC 99 VALUE 0.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1   PIC 99.
-      *     03  WS-CRTRANS-ST2   PIC X.
+           03  WS-CRTRANS-ST1  PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
+           03  WS-CREDITOR-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -957,9 +955,17 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               PERFORM START-TRANS
-               GO TO RONX-005.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              PERFORM START-TRANS
+              GO TO RONX-005.
            MOVE CRTR-TRANS     TO WS-TRANSNO.
            MOVE CRTR-TYPE      TO WS-TYPE.
            MOVE "N" TO NEW-ORDER.
@@ -983,8 +989,16 @@
               GO TO RTPRE-999.
            IF WS-CRTRANS-ST1 NOT = 0
                MOVE 0 TO WS-CRTRANS-ST1
-               PERFORM START-TRANS
-               GO TO RTPRE-005.
+              MOVE "CR-TRANS BUSY ON READ-PREV, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              PERFORM START-TRANS
+              GO TO RTPRE-005.
            MOVE CRTR-TRANS     TO WS-TRANSNO.
            MOVE CRTR-TYPE      TO WS-TYPE.
            MOVE "N" TO NEW-ORDER.

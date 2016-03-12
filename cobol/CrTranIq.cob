@@ -38,9 +38,9 @@
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1    PIC 99.
+           03  WS-CRTRANS-ST1     PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-PERIOD.
            03  WS-1ST-CHAR        PIC X.
            03  WS-PER             PIC 99.
@@ -322,8 +322,14 @@
                CLOSE CRTR-FILE
                GO TO RDTR-999.
            IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
                GO TO RDTR-010.
            IF F-EXIT-CH NOT = 1
             IF CRTR-ACC-NUMBER NOT = CR-ACCOUNT-NUMBER
@@ -412,9 +418,15 @@
            IF WS-CRTRANS-ST1 = 10 OR = 23
                GO TO RALT-900.
            IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
-               MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RALT-010.
+              MOVE "CR-TRANS BUSY ON READ-ALL, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              GO TO RALT-010.
            IF CRTR-ACC-NUMBER NOT = CR-ACCOUNT-NUMBER
                GO TO RALT-900.
            IF WS-PER NOT = 0
@@ -466,9 +478,17 @@
              IF WS-CREDITOR-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
-                 MOVE 0 TO WS-CREDITOR-ST1
-                 PERFORM START-CREDITOR
-                 GO TO R-ST-NX-005.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
+              PERFORM START-CREDITOR
+              GO TO R-ST-NX-005.
        R-ST-NX-999.
              EXIT.
       *
@@ -484,9 +504,17 @@
              IF WS-CREDITOR-ST1 = 0
                  GO TO RDPREV-999
              ELSE
-                 MOVE 0 TO WS-CREDITOR-ST1
-                 PERFORM START-CREDITOR
-                 GO TO RDPREV-005.
+              MOVE "CR-TRANS BUSY ON READ-PREV, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
+              PERFORM START-CREDITOR
+              GO TO RDPREV-005.
        RDPREV-999.
              EXIT.
       *
@@ -511,8 +539,16 @@
                MOVE 0 TO WS-CRTRANS-ST1
                GO TO PRR-900.
            IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               GO TO PRR-002.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              GO TO PRR-002.
            IF CRTR-ACC-NUMBER < CR-ACCOUNT-NUMBER
                GO TO PRR-002.
            IF CRTR-ACC-NUMBER > CR-ACCOUNT-NUMBER
@@ -743,7 +779,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY"

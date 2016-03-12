@@ -79,13 +79,11 @@
        77  WS-TOTAL-SALES       PIC S9(9)V99 VALUE 0.
        77  WS-TOTAL-PERC        PIC S9(4)V9999 VALUE 0.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1        PIC 99.
-      *     03  WS-CREDITOR-ST2        PIC 9(2) COMP-X.
+           03  WS-CREDITOR-ST1  PIC 99.
        01  WS-RANDOM-STATUS.
-           03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
+           03  WS-RANDOM-ST1    PIC 99.
        01  DETAIL-LINE.
-           03  FILLER               PIC X(80) VALUE " ".
+           03  FILLER           PIC X(80) VALUE " ".
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(15).
@@ -489,9 +487,10 @@
                MOVE
            "ACC NUMBER LOCKED AT ANOTHER TERMINAL, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE CR-ACCOUNT-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RAA-005.
            IF WS-PERIOD = "B"
               ADD CR-BALANCE    TO WS-TOTAL-SALES.
@@ -546,9 +545,10 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "BAD START ON RANDOM" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               EXIT PROGRAM.
        RRF-005.
            READ RANDOM-FILE NEXT
@@ -563,7 +563,7 @@
               ADD 20 TO POS
               DISPLAY WS-RANDOM-ST1 AT POS
               ADD 5 TO POS
-              ACCEPT WS-ACCEPT AT POS
+              PERFORM ERROR-010
               GO TO RRF-005.
               
            SUBTRACT 1 FROM HIGH-NUMBER
@@ -611,9 +611,10 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "HIGH RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        WRR-999.
             EXIT.
       *
@@ -703,12 +704,12 @@
             READ CREDITOR-MASTER NEXT
                AT END NEXT SENTENCE.
             IF WS-CREDITOR-ST1 = 10
-               MOVE "CREDITORS BUSY ON XFAX READ-NEXT, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-CREDITOR-ST1
                GO TO PNFR-999.
             IF WS-CREDITOR-ST1 NOT = 0
+               MOVE "CREDITORS BUSY ON XFAX READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-CREDITOR-ST1
                GO TO PNFR-002.
             IF CR-ACCOUNT-NUMBER < WS-RANGE1
@@ -1186,9 +1187,10 @@
               MOVE
              "RANDOM FILE OPEN AT ANOTHER COMPUTER, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-RANDOM-ST1
               GO TO OPEN-035.
        OPEN-036.
@@ -1197,9 +1199,10 @@
               MOVE
            "RANDOM FILE OPEN OUTPUT AT ANOTHER COMPUTER, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-RANDOM-ST1
              GO TO OPEN-036.
        OPEN-0361.
@@ -1210,9 +1213,10 @@
               MOVE
              "HIGH FILE OPEN I-O AT ANOTHER COMPUTER, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
              GO TO OPEN-037.
        OPEN-038.
            OPEN OUTPUT HIGH-FILE.
@@ -1220,9 +1224,10 @@
               MOVE
              "HIGH FILE OPEN OUTPUT AT ANOTHER COMPUTER, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
              GO TO OPEN-038.
        OPEN-999.
             EXIT.

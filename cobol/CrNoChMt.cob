@@ -44,20 +44,15 @@
            03  WS-PURCHASE-YTD          PIC S9(7)V99.
            03  WS-PURCHASE-LAST         PIC S9(7)V99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
+           03  WS-CREDITOR-ST1 PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1        PIC 99.
-      *     03  WS-CRTRANS-ST2        PIC X.
+           03  WS-CRTRANS-ST1  PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1        PIC 99.
-      *     03  WS-CRJRN-ST2        PIC X.
+           03  WS-CRJRN-ST1    PIC 99.
        01  WS-REMI-STATUS.
-           03  WS-REMI-ST1   PIC 99.
-      *     03  WS-REMI-ST2   PIC 9(2) COMP-X.
+           03  WS-REMI-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1    PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -484,9 +479,10 @@
             IF WS-REMI-ST1 NOT = 0
                MOVE "BAD START ON REMIT CHANGE, 'ESC' TO EXIT."
                 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-REMI-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO CRREMIT-999.
        CRREMIT-002.
             READ CRREMIT-FILE NEXT WITH LOCK
@@ -664,9 +660,17 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-005.
            IF WS-CREDITOR-ST1 NOT = 0
-               MOVE 0 TO WS-CREDITOR-ST1
-               PERFORM START-CREDITOR
-               GO TO RSN-005.
+              MOVE "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
+              PERFORM START-CREDITOR
+              GO TO RSN-005.
            MOVE CR-ACCOUNT-NUMBER TO WS-CREDITORNUMBER.
            MOVE "N" TO WS-NEWCREDITORNO.
        RSN-999.
@@ -725,9 +729,10 @@
            IF WS-REMI-ST1 NOT = 0
                MOVE "CRREMIT-FILE BUSY ON OPEN, 'ESC' TO RETRY"
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CRREMIT TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO OPEN-002.
        OPEN-005.
             OPEN I-O CRTR-FILE.

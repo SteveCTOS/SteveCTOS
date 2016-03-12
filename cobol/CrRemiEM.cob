@@ -1438,8 +1438,16 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-005.
            IF WS-REMI-ST1 NOT = 0
-               PERFORM START-CRREMIT
-               GO TO RSN-005.
+              MOVE "CR-REMI BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-REMI-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              PERFORM START-CRREMIT
+              GO TO RSN-005.
                
            IF CRREM-YY < WS-REMI-YY
                GO TO RSN-005.
@@ -1647,9 +1655,10 @@
            IF WS-REMI-ST1 NOT = 0
                MOVE "CR-REMITTANCE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CRREMIT TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO OPEN-000.
         OPEN-001.
             OPEN I-O GLPARAMETER-FILE.

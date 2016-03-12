@@ -57,15 +57,15 @@
            03  SPLIT-FIL2       PIC X.
            03  SPLIT-SC         PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1   PIC 99.
+           03  WS-CRTRANS-ST1     PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1   PIC 99.
+           03  WS-CRJRN-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1    PIC 99.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
+           03  WS-CREDITOR-ST1    PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -206,7 +206,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING W-ERC
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, RP-000, 'ESC' TO RETRY."
@@ -540,9 +540,10 @@
             IF WS-CREDITOR-ST1 NOT = 0
                 MOVE "CREDITORS BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO OPEN-005.
        OPEN-008.
            OPEN I-O CRJRN-FILE.

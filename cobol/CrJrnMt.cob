@@ -1578,7 +1578,7 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
-           IF WS-CRJRN-ST1 NOT = 0=
+           IF WS-CRJRN-ST1 NOT = 0
               MOVE 
                "CR-JRN BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
               TO WS-MESSAGE

@@ -884,9 +884,10 @@
               MOVE 0 TO WS-CRJRN-ST1
               MOVE "CRJRN BUSY ON READ, AP-040 ST1=2, 'ESC' TO EXIT."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE CRJRN-INV-NO TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO AP-010.
             IF CRJRN-UNAPPLIED-AMT NOT <
                    WS-PAYMENT (SUB-1) + WS-DISCOUNT (SUB-1)
@@ -2045,8 +2046,16 @@
                PERFORM PRINT-TOTAL-LINE
                GO TO PRR-999.
             IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               GO TO PRR-002.
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              GO TO PRR-002.
             IF CRTR-UNAPPLIED-AMT = 0
                GO TO PRR-002.
        PRR-008.
@@ -2286,7 +2295,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD, 'ESC' TO EXIT."
                CALL "LOCKKBD" USING WS-PRINTER
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
@@ -2312,7 +2321,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD, 'ESC' TO EXT."
                CALL "LOCKKBD" USING WS-PRINTER
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
@@ -2331,7 +2340,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD, 'ESC' TO RETRY."
                CALL "LOCKKBD" USING WS-PRINTER
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
@@ -2392,17 +2401,19 @@
           WRITE CRREM-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-REMI-ST1 = 23 OR 35 OR 49
-              MOVE "REWRITING CRREM RECORD," TO WS-MESSAGE
-              PERFORM ERROR-000
+              MOVE "REWRITING CRREM BUSY ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               GO TO RSR-015.
           IF WS-REMI-ST1 NOT = 0
               MOVE "CRREM RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-REMI-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE CRREM-ACC-NUMBER  TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSR-020.
        RSR-999.
           EXIT.

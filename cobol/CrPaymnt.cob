@@ -76,32 +76,23 @@
            03  WS-BATCH-1STCHAR  PIC X(2) VALUE "PC".
            03  WS-BATCH-REST     PIC X(8).
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1    PIC 99.
-      *     03  WS-DAILY-ST2    PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1  PIC 99.
-      *     03  WS-CRJRN-ST2  PIC X.
+           03  WS-CRJRN-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1  PIC 99.
-      *     03  WS-GLTRANS-ST2  PIC X.
+           03  WS-GLTRANS-ST1      PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1    PIC 99.
-      *     03  WS-CRTRANS-ST2    PIC X.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1  PIC 99.
-      *     03  WS-CBTRANS-ST2  PIC X.
+           03  WS-CBTRANS-ST1      PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1    PIC 99.
-      *     03  WS-CB-ST2    PIC X.
+           03  WS-CB-ST1           PIC 99.
        01  WS-DIST-TOTALS.
            03  WS-DIST-PAYMENT    PIC S9(7)V99 VALUE 0.
            03  WS-DIST-JOURNALDR  PIC S9(7)V99 VALUE 0.
@@ -1513,9 +1504,10 @@
               MOVE 0 TO WS-CRJRN-ST1
               MOVE "CRJRN-FILE RECORD NOT RE-WRITTEN AS COMPLETE"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE CRJRN-INV-NO TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
            GO TO AP-010.
        AP-999.
            EXIT.
@@ -1532,15 +1524,22 @@
            IF WS-CRJRN-ST1 = 10
               MOVE "NO CR-JRN RECORD, C/NOTE NOT REDUCED, 'ESC' TO EXIT"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE CRJRN-INV-NO TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 10 TO WS-CRJRN-ST1
               GO TO RJNCN-040.
            IF WS-CRJRN-ST1 NOT = 0
+              MOVE "CR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
               MOVE 0 TO WS-CRJRN-ST1
-              MOVE "CR-JRN RECORD ST NOT = 0" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
               GO TO RJNCN-010.
            IF CRJRN-INV-NO > WS-CHEQUENO
               MOVE 23 TO WS-CRJRN-ST1
@@ -1580,9 +1579,10 @@
               MOVE 0 TO WS-CRJRN-ST1
               MOVE "CRJRN-FILE C/NOTE NOT RE-WRITTEN AS COMPLETE."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE CRJRN-INV-NO TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        RJNCN-999.
            EXIT.
       *
@@ -1634,11 +1634,17 @@
                PERFORM OPEN-014
                GO TO RDT-999.
            IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               MOVE "CRTRANS BUSY RDT-010, PRESS 'ESC' TO RETRY" 
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RDT-010.
+              MOVE 
+              "CR-TRANS BUSY ON READ-RDT-010, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              GO TO RDT-010.
            IF CRTR-ACC-NUMBER NOT = WS-ACCOUNT-NUMBER
               GO TO RDT-999.
            IF CRTR-TYPE = 6 OR = 8
@@ -1698,11 +1704,16 @@
                PERFORM OPEN-014
                GO TO RFOC-999.
            IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               MOVE "CRTRANS BUSY RFOC-010, PRESS 'ESC' TO RETRY" 
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RFOC-010.
+              MOVE "CR-TRANS BUSY ON READ-RFOC, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CRTRANS-ST1
+              GO TO RFOC-010.
            IF CRTR-ACC-NUMBER NOT = WS-ACCOUNT-NUMBER
               GO TO RFOC-999.
            IF CRTR-UNAPPLIED-AMT = 0
@@ -2091,9 +2102,15 @@
               MOVE 23 TO WS-CRJRN-ST1
               GO TO RCINV-999.
            IF WS-CRJRN-ST1 NOT = 0
+              MOVE "CRJRN BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
               MOVE 0 TO WS-CRJRN-ST1
-              MOVE "CR-JRN RECORD ST NOT = 0" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
               GO TO RCINV-010.
            IF CRJRN-INV-NO > CRTR-INV-NO
               MOVE 23 TO WS-CRJRN-ST1
@@ -2568,9 +2585,10 @@
                MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLCRED-ACC BUSY ON READ, 'ESC' TO RETRY"
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE GL-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO UGLCA-010.
            ADD WS-RUN-PAYMENTS      TO GL-BALANCE
                                        GL-PER (SUB-3).

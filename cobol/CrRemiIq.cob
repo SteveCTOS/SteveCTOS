@@ -38,10 +38,10 @@
        77  WS-BODY-LINE       PIC ZZ9.
        77  SUB-1-SAVE         PIC S9(5) VALUE 0.
        01  WS-REMIT-PERIOD.
-           03  WS-REMI-YY          PIC 99.
-           03  WS-REMI-MM          PIC 99.
+           03  WS-REMI-YY     PIC 99.
+           03  WS-REMI-MM     PIC 99.
        01  WS-MONTH-BUDGET.
-           03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
+           03  WS-MONTH-BU    PIC S9(8)V99 OCCURS 13.
        01  WS-REMI-STATUS.
            03  WS-REMI-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
@@ -606,9 +606,17 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-005.
            IF WS-REMI-ST1 NOT = 0
-               MOVE 0 TO WS-REMI-ST1
-               PERFORM START-CRREMIT
-               GO TO RSN-005.
+              MOVE "CR-REMI BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-REMI-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-REMI-ST1
+              PERFORM START-CRREMIT
+              GO TO RSN-005.
                 
              IF CRREM-F-L NOT = WS-REMIT-F-L
                 GO TO RSN-005.
@@ -886,10 +894,10 @@
            IF WS-REMI-ST1 NOT = 0
                MOVE "CRREMIT-FILE BUSY ON OPEN, 'ESC' TO RETRY"
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CRREMIT TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-            IF WS-REMI-ST1 NOT = 0
+               PERFORM ERROR1-020
                GO TO OPEN-000.
         OPEN-001.
             OPEN I-O GLPARAMETER-FILE.
