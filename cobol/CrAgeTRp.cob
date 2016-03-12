@@ -33,10 +33,8 @@
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-CRTRANS-STATUS.
            03  WS-CRTRANS-ST1     PIC 99.
-      *     03  WS-CRTRANS-ST2     PIC X.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H-DATE           PIC X(10).
@@ -202,9 +200,11 @@
                GO TO PR-999.
            IF WS-CRTRANS-ST1 NOT = 0
                MOVE 0 TO WS-CRTRANS-ST1
-               MOVE "CR-TRANS BUSY ON READ-NEXT PR-040, GOING TO RETRY."
+               MOVE 
+          "CR-TRANS BUSY ON READ-NEXT, IN 1 SECOND GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                GO TO PR-040.
            IF WS-MESSAGE NOT = " "
                MOVE " " TO WS-MESSAGE

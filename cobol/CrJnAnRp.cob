@@ -319,14 +319,17 @@
            READ CRJRN-FILE NEXT
                AT END NEXT SENTENCE.
            IF WS-CRJRN-ST1 = 10
-                 PERFORM SUBTOTALS
+               PERFORM SUBTOTALS
                GO TO PR-999.
            IF WS-CRJRN-ST1 NOT = 0
-               MOVE "CR-JRN BUSY ON READ, 'ESC' TO RETRY & SEE STATUS."
+               MOVE "CR-JRN BUSY ON READ, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CRJRN-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR-020
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CRJRN-ST1
                GO TO PR-002.
            IF WS-MESSAGE NOT = " "

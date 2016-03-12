@@ -31,8 +31,7 @@
        77  WS-RANGE2            PIC 9(7) VALUE 0.
        77  WS-RANGE3            PIC 9(2) VALUE 0.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC X.
-           03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1  PIC 99.
        01  PLINE1.
            03  FILLER           PIC X(3) VALUE " ".
            03  PNAME1           PIC X(40) VALUE " ".
@@ -205,10 +204,16 @@
                  MOVE "1" TO WS-END-OF-FILE
                  GO TO RM-999.
            IF WS-CREDITOR-ST1 NOT = 0
-              MOVE 0 TO WS-CREDITOR-ST1
-              MOVE "CREDITOR RECORD BUSY ON READ-NEXT, BE PATIENT!"
+              MOVE
+               "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
               GO TO RM-000.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -255,10 +260,16 @@
                              PADD42 PADD43
                  GO TO RM-999.
            IF WS-CREDITOR-ST1 NOT = 0
-              MOVE 0 TO WS-CREDITOR-ST1
-              MOVE "CREDITOR RECORD BUSY ON READ-NEXT, BE PATIENT!"
+              MOVE 
+               "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
               GO TO RM-010.
 
            MOVE 2510 TO POS
@@ -295,10 +306,16 @@
                              PADD43
                  GO TO RM-999.
            IF WS-CREDITOR-ST1 NOT = 0
-              MOVE 0 TO WS-CREDITOR-ST1
-              MOVE "CREDITOR RECORD BUSY ON READ-NEXT, BE PATIENT!"
+              MOVE 
+               "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 0 TO WS-CREDITOR-ST1
               GO TO RM-020.
 
            MOVE 2510 TO POS

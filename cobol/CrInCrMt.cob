@@ -82,10 +82,10 @@
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1        PIC 99.
        01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY           PIC X OCCURS 11.
        01  WS-PRINTER-INFO.
-           03  WS-PRN-FIL     PIC X(8) VALUE " ".
-           03  WS-PRN-NAME    PIC X(12) VALUE " ".
+           03  WS-PRN-FIL          PIC X(8) VALUE " ".
+           03  WS-PRN-NAME         PIC X(12) VALUE " ".
        01  JOURNAL-DATA.
            03  WS-JRN.
                05  WS-JRN-1STCHAR   PIC X(2) VALUE "PI".
@@ -1847,6 +1847,14 @@
               MOVE 0 TO WS-CRJRN-ST1
               GO TO RSTT-299.
            IF WS-CRJRN-ST1 NOT = 0
+              MOVE "CR-TRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
               MOVE 0 TO WS-CRJRN-ST1
               CLOSE CRJRN-FILE
               PERFORM OPEN-015
@@ -1930,6 +1938,15 @@
            IF WS-CRJRN-ST1 NOT = 0
               MOVE 0 TO WS-CRJRN-ST1
               CLOSE CRJRN-FILE
+              MOVE 
+             "CR-JRN BUSY ON START READ-NEXT, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR-020
+              PERFORM ERROR1-020
               PERFORM OPEN-015
               GO TO RCRI-005.
        RCRI-010.
@@ -2025,10 +2042,13 @@
            IF WS-CRJRN-ST1 = 10
               GO TO RNCR-900.
            IF WS-CRJRN-ST1 NOT = 0
-              MOVE 0 TO WS-CRJRN-ST1
-              MOVE "CR-JRN BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              MOVE "CR-JRN BUSY ON READ-NEXT RNCR-010, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CRJRN-ST1
               GO TO RNCR-010.
            IF CRJRN-REFERENCE NOT = WS-JRN
               GO TO RNCR-900.
@@ -2200,10 +2220,9 @@
            IF WS-CRJRN-ST1 NOT = 0
               MOVE "CRJRN WRITE ERR, RWCR-019. TRANS NOT WRITTEN"
               TO WS-MESSAGE
-              PERFORM ERROR-000
-              MOVE 3070 TO POS
-              DISPLAY WS-CRJRN-ST1 AT POS
-              PERFORM ERROR-010.
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE.
            GO TO RWCR-999.
        RWCR-999.
            EXIT.
@@ -2742,7 +2761,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD ON READ, 'ESC' TO RETRY."
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY"
@@ -2760,7 +2779,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD ON READ-LOCK"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
@@ -2777,7 +2796,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "GLPARAMETER RECORD NOT UPDATED ON REWRIE"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."

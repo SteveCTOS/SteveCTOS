@@ -30,10 +30,8 @@
        77  WS-NIL-BAL           PIC X VALUE " ".
        01  WS-CREDITOR-STATUS.
            03  WS-CR-ST1        PIC 99.
-      *     03  WS-CR-ST2        PIC X.
        01  WS-ALIAS-STATUS.
-           03  WS-ALIAS-ST1   PIC 99.
-      *     03  WS-ALIAS-ST2   PIC 9(2) COMP-X.
+           03  WS-ALIAS-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -155,7 +153,7 @@
             START CRALIAS-MASTER KEY NOT < CRAL-ALIAS
                INVALID KEY NEXT SENTENCE.
             IF WS-ALIAS-ST1 NOT = 0
-               MOVE "NO ALIAS'S TO PRINT, 'ESC' TO EXIT"
+               MOVE "NO ALIAS'S TO PRINT ON START, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO PRR-999.
@@ -166,6 +164,12 @@
                MOVE 0 TO WS-ALIAS-ST1
                GO TO PRR-999.
             IF WS-ALIAS-ST1 NOT = 0
+               MOVE "ALIAS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-ALIAS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-ALIAS-ST1
                GO TO PRR-002.
             IF CRAL-ALIAS < WS-RANGE1

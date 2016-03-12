@@ -41,14 +41,11 @@
        77  WS-LINE              PIC 9(3) VALUE 66.
        77  WS-SEND-CHARS        PIC X VALUE "N".
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1     PIC 99.
-      *     03  WS-CREDITOR-ST2     PIC X.
+           03  WS-CREDITOR-ST1  PIC 99.
        01  WS-CRCHEQUE-STATUS.
-           03  WS-CRCHEQUE-ST1     PIC 99.
-      *     03  WS-CRCHEQUE-ST2     PIC X.
+           03  WS-CRCHEQUE-ST1  PIC 99.
        01  WS-SPOOLER-STATUS.
-           03  WS-SPOOLER-ST1    PIC 99.
-      *     03  WS-SPOOLER-ST2    PIC X.
+           03  WS-SPOOLER-ST1   PIC 99.
        01 WS-CHEQUE-AMT.
            03  WS-CHEQUE-DIG    PIC X OCCURS 8.
        01  HEAD.
@@ -223,9 +220,11 @@
                GO TO CONTROL-013.
            IF WS-CREDITOR-ST1 NOT = 0
                MOVE 0 TO WS-CREDITOR-ST1
-               MOVE "CREDITORS BUSY ON READ, GOING TO RETRY."
+               MOVE
+               "CREDITORS BUSY ON READ, IN 1 SECOND GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                GO TO CONTROL-015.
                
            MOVE 1211 TO POS

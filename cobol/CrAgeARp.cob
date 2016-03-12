@@ -51,11 +51,11 @@
            03  WS-CURRENCY      PIC X(8).
            03  WS-BAL-OWED      PIC S9(8)V99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1        PIC 99.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1         PIC 99.
+           03  WS-CRTRANS-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-TYPES.
            03  FILLER           PIC X(7) VALUE "INVOICE".
            03  FILLER           PIC X(7) VALUE "PAYMENT".
@@ -291,7 +291,7 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
                MOVE 0 TO WS-CRTRANS-ST1
-               MOVE "CR-TRANS FILE ERROR IN START, 'ESC' TO RETRY."
+               MOVE "CR-TRANS FILE ERROR IN START, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM SUBTOTALS
@@ -304,9 +304,10 @@
                GO TO PR-999.
            IF WS-CRTRANS-ST1 NOT = 0
                MOVE 0 TO WS-CRTRANS-ST1
-               MOVE "CR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "CR-TRANS BUSY ON READ, IN 1 SECOND GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                GO TO PR-002.
            IF WS-MESSAGE NOT = " "
                MOVE " " TO WS-MESSAGE

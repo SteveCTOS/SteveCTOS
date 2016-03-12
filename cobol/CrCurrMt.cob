@@ -22,7 +22,6 @@
        77  WS-SAVE            PIC X(5) VALUE " ".
        01  WS-CURRENCY-STATUS.
            03  WS-CURRENCY-ST1   PIC 99.
-      *     03  WS-CURRENCY-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -255,8 +254,14 @@
             DELETE CURRENCY-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-CURRENCY-ST1 NOT = 0
-               MOVE 0 TO WS-CURRENCY-ST1
-               GO TO DDR-010.
+                MOVE "CURRENCY BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CURRENCY-ST1
+                GO TO DDR-010.
        DDR-999.
            EXIT.
       *
@@ -269,9 +274,10 @@
             IF WS-CURRENCY-ST1 NOT = 0
                 MOVE "CURRENCY BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-CURRENCY-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
@@ -281,9 +287,10 @@
             IF WS-CURRENCY-ST1 NOT = 0
                 MOVE "CURRENCY BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-CURRENCY-ST1
                 GO TO RDR-020.
        RDR-999.
@@ -305,9 +312,10 @@
            IF WS-CURRENCY-ST1 NOT = 0
                 MOVE "CURRENCY BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-CURRENCY-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.

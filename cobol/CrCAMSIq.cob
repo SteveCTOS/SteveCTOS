@@ -427,8 +427,11 @@
             DELETE CR-CAMS-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-CRCAMSTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRCAMSTRANS-ST1
-               GO TO DO-010.
+                MOVE "CBTRANS BUSY ON DELETE, 'ESC' TO RETRY."
+                  TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-CRCAMSTRANS-ST1
+                GO TO DO-010.
        DO-999.
            EXIT.
       *

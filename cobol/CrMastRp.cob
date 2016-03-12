@@ -41,7 +41,6 @@
            03  WS-BALANCE       PIC S9(8)V99.
        01  WS-CREDITOR-STATUS.
            03  WS-CR-ST1        PIC 99.
-      *     03  WS-CR-ST2        PIC X.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -397,8 +396,17 @@
                MOVE 0 TO WS-CR-ST1
                GO TO PRR-999.
             IF WS-CR-ST1 NOT = 0
-               MOVE 0 TO WS-CR-ST1
-               GO TO PRR-002.
+               MOVE 
+               "CREDITOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-000
+                CALL "C$SLEEP" USING 1
+                PERFORM ERROR1-020
+                PERFORM ERROR-020
+                MOVE 0 TO WS-CR-ST1
+                GO TO PRR-002.
             IF CR-ACCOUNT-NUMBER < WS-RANGE1
                GO TO PRR-002.
             IF CR-ACCOUNT-NUMBER > WS-RANGE2

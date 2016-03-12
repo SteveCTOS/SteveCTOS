@@ -52,14 +52,11 @@
            03  WS-FUTURE        PIC X VALUE " ".
            03  WS-NO            PIC 99 VALUE 0.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1    PIC 99.
-      *     03  WS-CRJRN-ST2    PIC 9(2) COMP-X.
+           03  WS-CRJRN-ST1       PIC 99.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -571,7 +568,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD, 'ESC' TO EXIT."
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY"

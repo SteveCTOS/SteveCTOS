@@ -341,6 +341,9 @@
            IF WS-CR-ST1 = 10
                GO TO PRR-999.
            IF WS-CR-ST1 NOT = 0
+               MOVE "CREDITOR BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-CR-ST1
                GO TO PRR-002.
                
@@ -508,9 +511,10 @@
                 MOVE 
              "OLD CREDITOR RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-CREDITOROLD-ST1
                 GO TO WOR-015.
             GO TO WOR-999.
@@ -521,9 +525,10 @@
                 MOVE
              "OLD CREDITOR REC BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-CREDITOROLD-ST1
                 GO TO WOR-015.
        WOR-999.
@@ -544,9 +549,10 @@
             IF WS-CREDITOROLD-ST1 NOT = 0
                MOVE "CREDITOROLD FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CREDITOROLD-ST1
                GO TO OPEN-003.
        OPEN-0021.
@@ -556,9 +562,10 @@
             IF WS-CREDITOROLD-ST1 NOT = 0
                MOVE "CREDITOROLD BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CREDITOROLD-ST1
                GO TO OPEN-002.
        OPEN-010.

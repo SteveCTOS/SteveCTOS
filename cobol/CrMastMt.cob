@@ -33,14 +33,11 @@
        77  WS-CAMS-BRANCH-NUM-SAVE PIC X(6) VALUE " ".
        77  WS-CAMS-ACC-TYPE-SAVE   PIC X.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-CURRENCY-STATUS.
-           03  WS-CURRENCY-ST1   PIC 99.
-      *     03  WS-CURRENCY-ST2   PIC X.
+           03  WS-CURRENCY-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND.
@@ -410,6 +407,9 @@
            DELETE CREDITOR-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-CREDITOR-ST1 NOT = 0
+           MOVE "DELETE OF CREDITOR BUSY, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-CREDITOR-ST1
                GO TO DCR-020.
        DCR-999.

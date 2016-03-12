@@ -37,13 +37,10 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1    PIC 99.
-      *     03  WS-CRJRN-ST2    PIC X.
+           03  WS-CRJRN-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-PERIOD.
            03  WS-1ST-CHAR        PIC X.
            03  WS-PER             PIC 99.
@@ -337,8 +334,12 @@
                CLOSE CRJRN-FILE
                GO TO RDTR-999.
            IF WS-CRJRN-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
+               MOVE
+               "CRJRN BUSY ON READ-NEXT, IN 1 SECOND GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
                GO TO RDTR-010.
            IF F-EXIT-CH = 1
             IF CRJRN-CRACC-NUMBER NOT = CR-ACCOUNT-NUMBER
@@ -415,7 +416,7 @@
        RALT-000.
            OPEN I-O CRJRN-FILE.
            IF WS-CRJRN-ST1 NOT = 0
-              MOVE "CRJRN-ST1 ERROR IN OPEN RALT-000 'ESC' TO RETRY."
+              MOVE "CRJRN-ST1 ERROR IN OPEN RALT-000, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               CLOSE CRJRN-FILE
@@ -437,9 +438,10 @@
            IF WS-CRJRN-ST1 NOT = 0
                MOVE "CRJRN-ST1 ERROR IN READ-NEXT 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CRJRN-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RALT-010.
            IF CRJRN-CRACC-NUMBER NOT = CR-ACCOUNT-NUMBER
                GO TO RALT-900.
@@ -495,6 +497,12 @@
              ELSE
                  MOVE 0 TO WS-CREDITOR-ST1
                  PERFORM START-CREDITOR
+                 MOVE 
+               "CREDITOR READ-NEXT ON START, IN 1 SEC GOING TO RESTART"
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 CALL "C$SLEEP" USING 1
+                 PERFORM ERROR1-020
                  GO TO R-ST-NX-005.
        R-ST-NX-999.
              EXIT.
@@ -529,7 +537,7 @@
             IF WS-CRJRN-ST1 NOT = 0
                MOVE "BAD START ON PRINT SECTION, GOING TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                GO TO PRR-900.
        PRR-002.
            READ CRJRN-FILE NEXT
@@ -538,6 +546,12 @@
                MOVE 0 TO WS-CRJRN-ST1
                GO TO PRR-900.
            IF WS-CRJRN-ST1 NOT = 0
+               MOVE 
+                 "CRJRN BUSY ON READ-NEXT PRINT, 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CRJRN-ST1
                GO TO PRR-002.
            IF CRJRN-CRACC-NUMBER < CR-ACCOUNT-NUMBER
@@ -773,7 +787,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD FOUND!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."

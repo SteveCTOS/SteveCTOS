@@ -119,7 +119,7 @@
                GO TO RCL-999.
            IF WS-CREDITOR-ST1 NOT = 0
                MOVE 0 TO WS-CREDITOR-ST1
-               MOVE "CREDITOR RECORD BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "CREDITOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RCL-010.
@@ -209,10 +209,13 @@
        SUB-010.
            REWRITE CREDITOR-RECORD.
            IF WS-CREDITOR-ST1 NOT = 0
-               MOVE 0 TO WS-CREDITOR-ST1
                MOVE "CREDITORS BUSY ON RE-WRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CREDITOR-ST1
                GO TO SUB-010.
        SUB-020.
            MOVE 0 TO WS-TOT-BALANCE

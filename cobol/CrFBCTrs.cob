@@ -1087,6 +1087,9 @@
             DELETE CRFXTRANS-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-FBCTRANS-ST1 NOT = 0
+               MOVE "DELETE OF CRFXTRANS BUSY, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-FBCTRANS-ST1
                GO TO DO-010.
        DO-999.
@@ -1287,6 +1290,9 @@
            START CRFXTRANS-FILE KEY NOT < CRFXTRANS-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-FBCTRANS-ST1 NOT = 0
+              MOVE "CRFXTRANS FILE BUSY ON START, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               MOVE " " TO CRFXTRANS-PORDER-NUMBER
               GO TO ST-OO-000.
        ST-OO-999.
@@ -1307,6 +1313,9 @@
               GO TO RONX-999.
            IF WS-FBCTRANS-ST1 NOT = 0
                MOVE 0 TO WS-FBCTRANS-ST1
+               MOVE "FBC-TRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                PERFORM START-TRANS
                GO TO RONX-005.
            MOVE CRFXTRANS-PORDER-NUMBER TO WS-TYPE.

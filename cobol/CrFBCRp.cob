@@ -30,12 +30,11 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-HEADER-STATUS.
-           03  WS-HEADER-ST1     PIC 99.
-      *     03  WS-HEADER-ST2     PIC X.
+           03  WS-HEADER-ST1    PIC 99.
        01  WS-CHECKDATE.
-           03  WS-CHECKYY      PIC 9999.
-           03  WS-CHECKMM      PIC 99.
-           03  WS-CHECKDD      PIC 99.
+           03  WS-CHECKYY       PIC 9999.
+           03  WS-CHECKMM       PIC 99.
+           03  WS-CHECKDD       PIC 99.
        01  CURRENCY-TOTALS-NAME.
          02  CURRENCY-TOTALS OCCURS 20.
            03  WS-CURRENCY-TYPE PIC X(5).
@@ -261,10 +260,13 @@
            IF WS-HEADER-ST1 = 10
                GO TO PR-999.
            IF WS-HEADER-ST1 NOT = 0
-               MOVE 0 TO WS-HEADER-ST1
                MOVE "CRFOREX-JRN FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE WS-HEADER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-HEADER-ST1
                GO TO PR-002.
            IF CRFOREX-FBC-NUMBER < WS-RANGE1
                GO TO PR-002.

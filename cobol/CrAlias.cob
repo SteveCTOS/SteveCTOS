@@ -23,11 +23,9 @@
        77  WS-ACC-SAVE        PIC X(7) VALUE " ".
        77  WS-CRED-NUMBER     PIC X(7) VALUE " ".
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC 9(2) COMP-X.
+           03  WS-CREDITOR-ST1 PIC 99.
        01  WS-ALIAS-STATUS.
-           03  WS-ALIAS-ST1   PIC 99.
-      *     03  WS-ALIAS-ST2   PIC 9(2) COMP-X.
+           03  WS-ALIAS-ST1    PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -200,8 +198,11 @@
            DELETE CRALIAS-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-ALIAS-ST1 NOT = 0
-               MOVE 0 TO WS-ALIAS-ST1
-               GO TO DCR-020.
+                MOVE "ALIAS FILE BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-ALIAS-ST1
+                GO TO DCR-020.
        DCR-999.
            EXIT.
       *
@@ -243,8 +244,12 @@
            START CREDITOR-MASTER KEY NOT < CR-ACCOUNT-NUMBER
               INVALID KEY NEXT SENTENCE.
            IF WS-CREDITOR-ST1 NOT = 0
+                MOVE "CREDITORS BUSY ON START 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE.
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020.
         RD-010.
            READ CREDITOR-MASTER
                  INVALID KEY NEXT SENTENCE.

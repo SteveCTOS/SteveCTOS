@@ -18,8 +18,7 @@
        77  WS-END             PIC X VALUE " ".      
        77  WS-TYPE            PIC X(20) VALUE " ".
        01  WS-HEADER-STATUS.
-           03  WS-HEADER-ST1   PIC 99.
-      *     03  WS-HEADER-ST2   PIC X.
+           03  WS-HEADER-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -426,6 +425,9 @@
             DELETE CRFOREX-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-HEADER-ST1 NOT = 0
+                MOVE "FOREX FBC BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-HEADER-ST1
                GO TO DO-010.
        DO-999.
@@ -519,6 +521,9 @@
               GO TO RONX-999.
            IF WS-HEADER-ST1 NOT = 0
                MOVE 0 TO WS-HEADER-ST1
+                MOVE "FOREX FBC BUSY ON READ, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
                PERFORM START-TRANS
                GO TO RONX-005.
            MOVE CRFOREX-FBC-NUMBER TO WS-TYPE.

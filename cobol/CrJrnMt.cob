@@ -54,17 +54,13 @@
            03  WS-INV-NO            PIC X(10).
            03  WS-DNOTE-NO          PIC X(10).
        01  WS-CRJRN-STATUS.
-           03  WS-CRJRN-ST1   PIC 99.
-      *     03  WS-CRJRN-ST2   PIC X.
+           03  WS-CRJRN-ST1         PIC 99.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
+           03  WS-CREDITOR-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1   PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1    PIC 99.
-      *     03  WS-GLMAST-ST2    PIC X.
+           03  WS-GLMAST-ST1        PIC 99.
        01  WS-TEMP-LINE.
            03  FILLER           PIC X(10) VALUE " ".
            03  T-TRANS-DATE     PIC X(10).
@@ -1372,7 +1368,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
@@ -1582,7 +1578,16 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
-           IF WS-CRJRN-ST1 NOT = 0
+           IF WS-CRJRN-ST1 NOT = 0=
+              MOVE 
+               "CR-JRN BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
                MOVE 0 TO WS-CRJRN-ST1
                PERFORM START-TRANS
                GO TO RONX-005.
@@ -1611,6 +1616,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RDPREV-999.
            IF WS-CRJRN-ST1 NOT = 0
+              MOVE 
+               "CR-JRN BUSY ON READ-PREVIOUS, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
                MOVE 0 TO WS-CRJRN-ST1
                PERFORM START-TRANS
                GO TO RDPREV-005.

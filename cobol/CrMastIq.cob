@@ -21,7 +21,6 @@
        77  WS-ACCOUNTNUMBER   PIC X(7) VALUE " ".
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1   PIC 99.
-      *     03  WS-CREDITOR-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -436,6 +435,9 @@
                PERFORM ERROR-MESSAGE
                GO TO RDNX-999.
              IF WS-CREDITOR-ST1 NOT = 0
+                 MOVE "CREDITOR BUSY ON READ-NEXT, 'ESC' TO RETRY"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  MOVE 0 TO WS-CREDITOR-ST1
                  PERFORM START-CREDITOR
                  GO TO RDNX-005.
@@ -457,11 +459,14 @@
               GO TO RDPREV-999.
            IF WS-CREDITOR-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-CREDITOR-ST1
-               MOVE "CREDITOR BUSY ON READ-NEXT, 'ESC' TO RETRY"
+               MOVE "CREDITOR BUSY ON READ-PREVIOUS-23, 'ESC' TO RETRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RDPREV-005.
            IF WS-CREDITOR-ST1 NOT = 0
+               MOVE "CREDITOR BUSY ON READ-PREVIOUS, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-CREDITOR-ST1
                PERFORM START-CREDITOR
                GO TO RDPREV-005.

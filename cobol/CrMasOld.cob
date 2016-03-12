@@ -22,9 +22,9 @@
        77  WS-ACCOUNTNUMBER   PIC 9(7) VALUE 0.
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1      PIC 99.
+           03  WS-CREDITOR-ST1    PIC 99.
        01  WS-CREDITOROLD-STATUS.
-           03  WS-CREDITOROLD-ST1   PIC 99.
+           03  WS-CREDITOROLD-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -383,9 +383,10 @@
            IF WS-CREDITOR-ST1 NOT = 0
                MOVE "ERROR IN DELETING CRMASTEROLD, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CREDITOROLD-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CREDITOR-ST1
                GO TO DCR-010.
        DCR-999.
@@ -461,11 +462,14 @@
               GO TO RDNX-999.
            IF WS-CREDITOR-ST1 = 23 OR 35 OR 49 OR 51
                MOVE 0 TO WS-CREDITOR-ST1
-               MOVE "CREDITOR BUSY ON READ-NEXT, 'ESC' TO RETRY"
+               MOVE "CREDITOR BUSY ON READ-NEXT-23, 'ESC' TO RETRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RDNX-005.
            IF WS-CREDITOR-ST1 NOT = 0
+               MOVE "CREDITOR BUSY ON READ-NEXT, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-CREDITOR-ST1
                PERFORM START-CREDITOROLD
                GO TO RDNX-005.
@@ -486,13 +490,19 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RDPR-999.
-           IF WS-CREDITOR-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-CREDITOR-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-CREDITOR-ST1
-               MOVE "CREDITOR BUSY ON READ-PREVIOUS, 'ESC' TO RETRY"
+               MOVE "CREDITOR BUSY ON READ-PREVIOUS-23, 'ESC' TO RETRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RDPR-005.
            IF WS-CREDITOR-ST1 NOT = 0
+               MOVE "CREDITOR BUSY ON READ-PREVIOUS, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CREDITOR-ST1
                PERFORM START-CREDITOROLD
                GO TO RDPR-005.

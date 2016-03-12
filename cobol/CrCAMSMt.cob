@@ -937,9 +937,10 @@
             IF WS-CRCAMSTRANS-ST1 NOT = 0
                MOVE "CRCAMS TRANS BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CRCAMSTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CRCAMSTRANS-ST1
                GO TO OPEN-000.
        OPEN-005.

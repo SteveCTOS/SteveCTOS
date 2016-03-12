@@ -35,11 +35,9 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-CREDITOR-STATUS.
-           03  WS-CREDITOR-ST1    PIC 99.
-      *     03  WS-CREDITOR-ST2    PIC X.
+           03  WS-CREDITOR-ST1  PIC 99.
        01  WS-CRTRANS-STATUS.
-           03  WS-CRTRANS-ST1    PIC 99.
-      *     03  WS-CRTRANS-ST2    PIC X.
+           03  WS-CRTRANS-ST1   PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -234,7 +232,9 @@
               MOVE 6         TO F-CBFIELDNAME
               MOVE 7         TO F-CBFIELDLENGTH
               PERFORM WRITE-FIELD-ALPHA
-              CALL "LOCKKBD" USING F-FIELDNAME
+              MOVE "INVALID ACCOUNT NUMBER ENTERED, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               GO TO GET-031.
 
            MOVE "ACCNAME" TO F-FIELDNAME
@@ -350,7 +350,7 @@
            IF WS-CRTRANS-ST1 = 23 OR 35 OR 49
                 GO TO RDTR-999.
            IF WS-CRTRANS-ST1 NOT = 0
-              MOVE "CR-TRANS NOT = 0 ON START, GOING TO RETRY."
+              MOVE "CR-TRANS NOT = 0 ON START, 'ESC' TO RETRY."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
               GO TO RDTR-005.

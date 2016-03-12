@@ -270,9 +270,10 @@
            IF WS-CRCAMSTRANS-ST1 NOT = 0 
               MOVE "CRCAMS FILE BUSY ON OPEN I-O,  'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-CRCAMSTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE WS-CAMS-DATA TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-0141.
@@ -282,9 +283,10 @@
            IF WS-CRCAMSTRANS-ST1 NOT = 0 
               MOVE "CRCAMS FILE BUSY ON OPEN OUTPUT,  'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-CRCAMSTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE WS-CAMS-DATA TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-014.

@@ -31,16 +31,15 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-FBCTRANS-STATUS.
-           03  WS-FBCTRANS-ST1     PIC 99.
-      *     03  WS-FBCTRANS-ST2     PIC 9(2) COMP-X.
+           03  WS-FBCTRANS-ST1  PIC 99.
        01  WS-CHECKDATE.
-           03  WS-CHECKYY      PIC 9999.
-           03  WS-CHECKMM      PIC 99.
-           03  WS-CHECKDD      PIC 99.
+           03  WS-CHECKYY       PIC 9999.
+           03  WS-CHECKMM       PIC 99.
+           03  WS-CHECKDD       PIC 99.
        01  WS-COMMENT-LINE.
-           03  WSCOM1          PIC X(59) VALUE " ".
-           03  WSCOM2          PIC X(59) VALUE " ".
-           03  WSCOM3          PIC X(14) VALUE " ".
+           03  WSCOM1           PIC X(59) VALUE " ".
+           03  WSCOM2           PIC X(59) VALUE " ".
+           03  WSCOM3           PIC X(14) VALUE " ".
        01  WS-PO-INFO-NAMES.
          02  WS-PO-INFO OCCURS 15.
            03  WS-PO-CURRENCY      PIC X(5).
@@ -338,11 +337,12 @@
            IF WS-FBCTRANS-ST1 NOT = 0
                MOVE "CRFXTRANS-FILE ERROR IN START, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-FBCTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE CRFXTRANS-FBC-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 88 TO WS-FBCTRANS-ST1
                GO TO PR-999.
        PR-002.
