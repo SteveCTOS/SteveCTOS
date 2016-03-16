@@ -35,11 +35,9 @@
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  WS-VALIDDATE         PIC 9(8) VALUE 0.
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC X.
+           03  WS-DEBTOR-ST1        PIC 99.
        01  WS-DEBTOROLD-STATUS.
            03  WS-DEBTOROLD-ST1   PIC 99.
-      *     03  WS-DEBTOROLD-ST2   PIC X.
        01  WS-LAST-DATE         PIC 9(8).
        01  SALESMAN-LINE.
            03  WS-SMAN-COMMENT      PIC X(28) VALUE " ".
@@ -289,16 +287,24 @@
            MOVE 0 TO DR-ACCOUNT-NUMBER.
            START DEBTOR-MASTER KEY NOT < DR-KEY
                 INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PRR-999.
        PRR-002.
            READ DEBTOR-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
-           IF WS-DR-ST1 = 10
+           IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
-           IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PRR-002.
                
            MOVE 2310 TO POS
@@ -419,11 +425,14 @@
        DA-005.
            DELETE DEBTOR-MASTER
                 INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
                MOVE "DEBTOR RECORD BUSY ON DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO DA-005.
        DA-999.
            EXIT.
@@ -436,21 +445,28 @@
             REWRITE DEBTOROLD-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOROLD-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOROLD-ST1
                 MOVE 
              "OLD DEBTOR RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOROLD-ST1
                 GO TO WOR-020.
             GO TO WOR-999.
        WOR-020.
             WRITE DEBTOROLD-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOROLD-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOROLD-ST1
                 MOVE "OLD DEBTOR REC BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOROLD-ST1
                 GO TO WOR-015.
        WOR-999.
             EXIT.
@@ -458,8 +474,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
           OPEN I-O DEBTOR-MASTER.
-           IF WS-Dr-ST1 NOT = 0
-               MOVE 0 TO WS-Dr-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE

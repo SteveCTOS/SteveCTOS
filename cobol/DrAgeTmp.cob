@@ -135,10 +135,13 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO RCL-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RCL-010.
            PERFORM PRINT-ROUTINE.
 
@@ -161,10 +164,15 @@
                PERFORM SUBTOTALS
                GO TO PR-999.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
-               MOVE "DR-TRANS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO PR-002.
            IF WS-MESSAGE NOT = " "
                MOVE " " TO WS-MESSAGE
@@ -263,10 +271,13 @@
        SUB-010.
            REWRITE DEBTOR-RECORD.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTORS BUSY ON RE-WRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO SUB-010.
        SUB-020.
            MOVE 0 TO WS-BAL-LAST-MONTH
@@ -361,6 +372,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

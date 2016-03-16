@@ -34,10 +34,8 @@
        77  WS-RANGE4            PIC X VALUE " ".
        01  Ws-DrMail-STATUS.
            03  Ws-DrMail-ST1    PIC 99.
-      *     03  Ws-DrMail-ST2    PIC X.
        01  WS-Spl-STATUS.
            03  WS-Spl-ST1       PIC 99.
-      *     03  WS-Spl-ST2       PIC X.
        01  PLINE1.
            03  FILLER           PIC X(3) VALUE " ".
            03  PNAME1           PIC X(40) VALUE " ".
@@ -247,9 +245,9 @@
                  GO TO RM-999.
            IF Ws-DrMail-ST1 NOT = 0
               MOVE 0 TO WS-DrMail-ST1
-              MOVE "MAIL RECORD BUSY ON READ-NEXT, GOING TO RE-READ."
+              MOVE "MAIL RECORD BUSY ON READ-NEXT, 'ESC TO RE-TRY."
               TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR-MESSAGE
               GO TO RM-010.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -279,9 +277,9 @@
                  GO TO RM-999.
            IF Ws-DrMail-ST1 NOT = 0
               MOVE 0 TO WS-DrMail-ST1
-              MOVE "MAIL RECORD BUSY ON READ-NEXT, GOING TO RE-READ."
+              MOVE "MAIL RECORD BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR-MESSAGE
               GO TO RM-020.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -380,7 +378,7 @@
       *
        OPEN-FILES SECTION.
        OPEN-000.
-           OPEN I-O MAIL-MASTER.
+           OPEN INPUT MAIL-MASTER.
            IF WS-DRMAIL-ST1 NOT = 0
               MOVE 0 TO WS-DRMAIL-ST1
               MOVE "MAILLIST FILE BUSY ON OPEN, 'ESC' TO RETRY."

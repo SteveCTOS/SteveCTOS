@@ -23,11 +23,9 @@
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
        77  WS-ALL-ENTERED     PIC X VALUE " ".
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1     PIC 99.
        01  WS-DEBTOROLD-STATUS.
-           03  WS-DEBTOROLD-ST1   PIC 99.
-      *     03  WS-DEBTOROLD-ST2   PIC X.
+           03  WS-DEBTOROLD-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       *                  FORMS WORK FIELDS                         *
@@ -2563,6 +2561,12 @@
             DELETE DEBTOR-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO DDR-010.
        DDR-999.
@@ -2581,20 +2585,26 @@
             REWRITE DEBTOR-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE DEBTOR-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RDR-020.
        RDR-999.
             EXIT.
@@ -2611,6 +2621,10 @@
                 MOVE 
              "OLD DEBTOR RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOROLD-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 PERFORM ERROR-MESSAGE
                 GO TO WOR-015.
             GO TO WOR-999.
@@ -2621,7 +2635,10 @@
                 MOVE 0 TO WS-DEBTOROLD-ST1
                 MOVE "OLD DEBTOR REC BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOROLD-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO WOR-015.
        WOR-999.
             EXIT.
@@ -2639,10 +2656,13 @@
                 MOVE WS-ACCOUNTNUMBER TO DR-ACCOUNT-NUMBER
                 GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON READ, PRESS 'ESC' TO RETRY."
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-DEBTORNO.
            MOVE DR-ACCOUNT-NUMBER TO WS-ACC-SAVE.
@@ -2670,13 +2690,22 @@
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO RDNX-999.
-           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DEBTOR-ST1
+           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                MOVE "DEBTOR BUSY ON READ-NEXT, PRESS 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDNX-005.
            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-ACCOUNTNUMBER
                MOVE 0 TO WS-DEBTOR-ST1
                PERFORM START-DEBTOR
@@ -2701,13 +2730,22 @@
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO RDPR-999.
-           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTORS BUSY ON READ-NEXT, 'ESC' TO RETRY"
+               MOVE "DEBTORS BUSY ON READ-PREV, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RDPR-005.
            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-ACCOUNTNUMBER
                MOVE 0 TO WS-DEBTOR-ST1
                PERFORM START-DEBTOR

@@ -396,10 +396,11 @@
            IF WS-DR-ST1 NOT = 0
              MOVE "DEBTORMASTER BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
              TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-000
              MOVE WS-DR-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-               GO TO PRR-002.
+             PERFORM ERROR1-020
+             GO TO PRR-002.
            IF DR-ACCOUNT-NUMBER < WS-RANGE1
                GO TO PRR-002.
            IF DR-ACCOUNT-NUMBER > WS-RANGE2
@@ -708,7 +709,7 @@
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC
            MOVE 7 TO LINE-CNT.
-           IF WS-Dr-St1 = 88
+           IF WS-DR-ST1 = 88
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC
                WRITE PRINT-REC

@@ -77,13 +77,11 @@
        77  WS-TOTAL-SALES       PIC S9(9)V99 VALUE 0.
        77  WS-TOTAL-PERC        PIC S9(4)V9999 VALUE 0.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1        PIC 99.
-      *     03  WS-DEBTOR-ST2        PIC 9(2) COMP-X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-RANDOM-STATUS.
-           03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
+           03  WS-RANDOM-ST1    PIC 99.
        01  DETAIL-LINE.
-           03  FILLER               PIC X(80) VALUE " ".
+           03  FILLER           PIC X(80) VALUE " ".
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(15).
@@ -478,7 +476,10 @@
                MOVE
            "ACC NUMBER LOCKED AT ANOTHER TERMINAL, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RAA-005.
            IF WS-PERIOD = "B"
               ADD DR-BALANCE    TO WS-TOTAL-SALES.
@@ -538,10 +539,11 @@
            START RANDOM-FILE KEY NOT < RANDOM-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
-              MOVE "BAD START ON RANDOM" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              MOVE "BAD START ON RANDOM, 'ESC' TO EXIT." TO WS-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               EXIT PROGRAM.
        RRF-005.
            READ RANDOM-FILE NEXT
@@ -549,14 +551,12 @@
            IF WS-RANDOM-ST1 = 10
               GO TO RRF-999.
            IF WS-RANDOM-ST1 NOT = 0
-              MOVE 3010 TO POS
-              DISPLAY "RANDOM RECORD BUSY  :" AT POS
-              ADD 25 TO POS
-              DISPLAY RANDOM-NUMBER AT POS
-              ADD 20 TO POS
-              DISPLAY WS-RANDOM-ST1 AT POS
-              ADD 5 TO POS
-              ACCEPT WS-ACCEPT AT POS
+              MOVE "RANDOM RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RRF-005.
               
            SUBTRACT 1 FROM HIGH-NUMBER
@@ -584,16 +584,16 @@
               INVALID KEY NEXT SENTENCE.
               
            IF WS-RANDOM-ST1 NOT = 0
+               MOVE "RANDOM BUSY ON WRITE, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
               ADD 1 TO RANDOM-INDEX
               GO TO WRR-005.
-              
-           GO TO WRR-999.
-              
-           IF WS-RANDOM-ST1 NOT = 0
-              MOVE "RANDOM RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
        WRR-999.
             EXIT.
       *
@@ -605,8 +605,12 @@
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "HIGH RECORD INVALID ON WRITE" TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020.
        WRR-999.
             EXIT.
       *
@@ -624,11 +628,11 @@
            START HIGH-FILE KEY NOT < HIGH-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
-              MOVE "BAD START ON HIGH, 'ESC' TO SEE STATUS."
-               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              MOVE "BAD START ON HIGH, 'ESC' TO EXIT." TO WS-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               EXIT PROGRAM.
        PRR-006.
            READ HIGH-FILE NEXT
@@ -636,19 +640,16 @@
            IF WS-RANDOM-ST1 = 10
                GO TO PRR-999.
            IF WS-RANDOM-ST1 NOT = 0
-              MOVE "DR-RECORD HIGH BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 3010 TO POS
-              DISPLAY "DEBTOR RECORD BUSY PRR-006 :" AT POS
-              ADD 28 TO POS
-              DISPLAY DR-ACCOUNT-NUMBER AT POS
-              ADD 20 TO POS
-              DISPLAY WS-RANDOM-ST1 AT POS
-              ADD 5 TO POS
-              PERFORM ERROR-010
-              MOVE 0 TO WS-RANDOM-ST1
-              GO TO PRR-006.
+               MOVE "HIGH-FILE BUSY ON READ, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-RANDOM-ST1
+               GO TO PRR-006.
 
            MOVE 2510 TO POS
            DISPLAY "DEBTOR NUMBER BEING READ:" AT POS
@@ -710,9 +711,10 @@
             IF WS-DEBTOR-ST1 NOT = 0
                MOVE "BAD START ON DEBTOR XFAX, 'ESC' TO EXIT PROGRAM."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PNFR-999.
        PNFR-002.
             READ DEBTOR-MASTER NEXT
@@ -721,6 +723,14 @@
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO PNFR-999.
             IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO PNFR-002.
             IF DR-ACCOUNT-NUMBER < WS-RANGE1
@@ -750,9 +760,10 @@
             IF WS-DEBTOR-ST1 NOT = 0
                MOVE "BAD START ON DEBTOR MAN3000, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PMAN-999.
        PMAN-002.
             READ DEBTOR-MASTER NEXT
@@ -761,6 +772,14 @@
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO PMAN-999.
             IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO PMAN-002.
             IF DR-ACCOUNT-NUMBER < WS-RANGE1
@@ -791,9 +810,10 @@
             IF WS-DEBTOR-ST1 NOT = 0
                MOVE "BAD START ON DEBTOR EMAIL, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO PPFE-999.
        PPFE-002.
             READ DEBTOR-MASTER NEXT
@@ -802,6 +822,14 @@
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO PPFE-999.
             IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO PPFE-002.
             IF DR-ACCOUNT-NUMBER < WS-RANGE1
@@ -1004,12 +1032,13 @@
            READ DEBTOR-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 3010 TO POS
-              DISPLAY "DEBTOR RECORD BUSY, RD-005:" AT POS
-              MOVE 2838 TO POS
-              DISPLAY DR-ACCOUNT-NUMBER AT POS
-              PERFORM ERROR-010
-              GO TO RD-005.
+               MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO RD-005.
        RD-999.
             EXIT.
       *

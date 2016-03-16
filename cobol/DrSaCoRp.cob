@@ -35,7 +35,7 @@
            03  WS-WEEK          PIC 9.
            03  WS-DAY           PIC 9.
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1        PIC 99.
+           03  WS-DEBTOR-ST1        PIC 99.
        01  WS-CONTACT-STATUS.
            03  WS-DC-ST1        PIC 99.
        01  HEAD1.
@@ -261,10 +261,10 @@
            MOVE WS-AREA     TO DC-AREA.
            START DRCONT-MASTER KEY NOT < DC-ALT-KEY
                 INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 NOT = 0
+           IF WS-DEBTOR-ST1 NOT = 0
               MOVE "BAD START" TO WS-MESSAGE
               PERFORM ERROR1-000
-              MOVE WS-DR-ST1 TO WS-MESSAGE
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
                GO TO PRR-999.
@@ -272,15 +272,16 @@
            READ DRCONT-MASTER NEXT
                AT END NEXT SENTENCE.
            IF WS-DC-ST1 = 10
-              MOVE "END OF FILE" TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-DR-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              PERFORM ERROR1-020
                GO TO PRR-999.
            IF WS-DC-ST1 NOT = 0
-               MOVE 0 TO WS-DC-ST1
-               GO TO PRR-010.
+              MOVE "DR-CONT FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DC-ST1
+              GO TO PRR-010.
             IF DC-AREA NOT = WS-AREA
                GO TO PRR-999.
        PRR-020.
@@ -365,7 +366,7 @@
            MOVE 0           TO DC-AREA.
            START DRCONT-MASTER KEY NOT < DC-ALT-KEY
                 INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 NOT = 0
+           IF WS-DEBTOR-ST1 NOT = 0
                MOVE "BAD START FOR PRINT, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -376,8 +377,14 @@
            IF WS-DC-ST1 = 10
                GO TO PRS-999.
            IF WS-DC-ST1 NOT = 0
-               MOVE 0 TO WS-DC-ST1
-               GO TO PRS-010.
+              MOVE "DR-CONT FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DC-ST1
+              GO TO PRS-010.
            IF DC-SALESMAN NOT = WS-SALESMAN
                GO TO PRS-999.
            IF DC-AREA NOT = WS-AREA
@@ -463,12 +470,18 @@
        RD-002.
             READ DEBTOR-MASTER
                INVALID KEY NEXT SENTENCE.
-            IF WS-DR-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
+               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "*** INVALID ACCOUNT ***" TO DR-NAME
                GO TO RD-010.
-            IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-002.
        RD-010.
            MOVE 2510 TO POS
@@ -485,8 +498,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O DEBTOR-MASTER.
-           IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTORS BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE

@@ -27,8 +27,7 @@
        77  WS-RANGE             PIC X VALUE " ".
        77  W-ACC-DISPLAY        PIC Z(6)9.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-DISCOUNT-FIELD-NAMES.
          02  WS-DISCOUNT-FIELDS OCCURS 10.
            03  WS-NO-ACCS     PIC 9(7).
@@ -127,11 +126,13 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49 OR 91
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE 3010 TO POS
-              MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              DISPLAY WS-MESSAGE AT POS
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+              MOVE 0 TO WS-DEBTOR-ST1
               GO TO PRR-005.
            IF WS-MESSAGE NOT = " "
               MOVE 3010 TO POS

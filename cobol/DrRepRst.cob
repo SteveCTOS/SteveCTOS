@@ -33,11 +33,9 @@
        77  WS-THIS-YEAR         PIC X VALUE " ".
        77  WS-TOTALS-ONLY       PIC X VALUE " ".
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-SBREP-STATUS.
            03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC 9(2) COMP-X.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -65,7 +63,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-OLD-SALESMAN.
 
-      *      ACCEPT WS-OLD-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
             MOVE WS-OLD-SALESMAN TO SBREP-REP.
@@ -90,7 +87,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-NEW-SALESMAN.
 
-      *      ACCEPT WS-NEW-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
             MOVE WS-NEW-SALESMAN TO SBREP-REP.
@@ -116,7 +112,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT.
 
-      *    ACCEPT WS-ACCEPT AT POS.
           IF W-ESCAPE-KEY = 3
               GO TO END-900.
               
@@ -153,8 +148,14 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              GO TO PRR-005.
+               MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
               
            MOVE 2210 TO POS
            DISPLAY "ACCOUNT NUMBER BEING PROCESSED:" AT POS
@@ -174,8 +175,14 @@
                PERFORM ERROR-MESSAGE
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              GO TO PRR-010.
+               MOVE "DEBTOR BUSY ON REWRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-010.
 
            GO TO PRR-005.
        PRR-999.
@@ -232,6 +239,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       *
       * END-OF-JOB.

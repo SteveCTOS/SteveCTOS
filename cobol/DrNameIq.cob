@@ -29,7 +29,6 @@
            03  WS-DISC          PIC X(2) VALUE " ".
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC 9(2) COMP-X.
        01  WS-SPLIT-ACCOUNT.
            03  WS-SP-1          PIC X VALUE " ".
            03  WS-SP-REST       PIC X(24) VALUE " ".
@@ -115,21 +114,25 @@
             IF WS-DEBTOR-ST1 NOT = 0
                 MOVE "BAD START, 'ESC' TO SEE ERROR STATUS."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 MOVE WS-DEBTOR TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 PERFORM CLEAR-MIDDLE
                 CLOSE DEBTOR-MASTER
                 GO TO READ-999.
             IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                MOVE "NO DEBTORS WITH THAT SHORT NAME, 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-DEBTOR-STATUS
                PERFORM CLEAR-MIDDLE
-                CLOSE DEBTOR-MASTER
+               CLOSE DEBTOR-MASTER
                GO TO READ-999.
  
             MOVE 0 TO SUB-2 SUB-3.
@@ -157,7 +160,7 @@
             IF WS-DEBTOR-ST1 = 91
                 MOVE 0 TO WS-DEBTOR-STATUS
                 CLOSE DEBTOR-MASTER
-                MOVE "THERE IS A SYSTEM ERROR, 'ESC' TO EXIT."
+                MOVE "THERE IS A SYSTEM ERROR91, 'ESC' TO EXIT."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO READ-999.

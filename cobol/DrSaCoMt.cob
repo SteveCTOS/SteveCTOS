@@ -38,11 +38,9 @@
            03  FILLER        PIC X(12) VALUE "ACCOUNT REP:".
            03  WS-DR-CONT    PIC X.
        01  WS-CONTACT-STATUS.
-           03  WS-DC-ST1   PIC 99.
-      *     03  WS-DC-ST2   PIC X.
+           03  WS-DC-ST1     PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1   PIC 99.
-      *     03  WS-DR-ST2   PIC X.
+           03  WS-DEBTOR-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -374,7 +372,12 @@
             DELETE DRCONT-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-               MOVE " " TO WS-DC-ST1
+               MOVE "DR-CONT FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DC-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO DDR-010.
        DDR-999.
            EXIT.
@@ -389,7 +392,16 @@
            "ENTER 'Y' TO CONTINUE DELETE OF ALL YOUR CALL RECORDS : [ ]"
             AT POS
            ADD 57 TO POS
-           ACCEPT WS-YN AT POS.
+           
+           MOVE "N"  TO CDA-DATA
+           MOVE 24   TO CDA-ROW
+           MOVE 66   TO CDA-COL
+           MOVE 1    TO CDA-DATALEN
+           MOVE "A"  TO CDA-ATTR
+           MOVE 3    TO CDA-COLOR
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+
            IF WS-YN NOT = "N" AND NOT = "Y"
               DISPLAY " " AT 3079 WITH BELL
               GO TO DALL-000.
@@ -400,14 +412,19 @@
            
            MOVE 2610 TO POS
            DISPLAY WS-MESSAGE AT POS.
+           
            MOVE 0 TO DC-ACCOUNT-NUMBER.
            START DRCONT-MASTER KEY NOT < DC-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-DC-ST1 NOT = 0
-                MOVE " " TO WS-DC-ST1
-                MOVE "DRCONT Record NOT THERE ON START"
+                MOVE "DR-CONT FILE BUSY ON START, 'ESC' TO EXIT."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-DC-ST1
                 GO TO DALL-999.
        DALL-005.
            READ DRCONT-MASTER NEXT WITH LOCK
@@ -420,11 +437,15 @@
                DISPLAY WS-MESSAGE AT POS
                GO TO DALL-999.
            IF WS-DC-ST1 NOT = 0
-              MOVE " " TO WS-DC-ST1
               MOVE "CALL SCHEDULE BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO DALL-005.
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-DC-ST1
+                GO TO DALL-005.
             IF DC-SALESMAN NOT = WS-DC-SMAN
                GO TO DALL-005.
             MOVE 2610 TO POS
@@ -435,8 +456,13 @@
             DELETE DRCONT-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-               MOVE " " TO WS-DC-ST1
-               GO TO DALL-010.
+              MOVE "CALL SCHEDULE BUSY ON DELETE-ALL, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                GO TO DALL-010.
             GO TO DALL-005.
        DALL-999.
            EXIT.
@@ -451,7 +477,16 @@
            "ENTER 'Y' TO CONTINUE DELETE OF YOUR NON CALL RECORDS : [ ]"
             AT POS
            ADD 57 TO POS
-           ACCEPT WS-YN AT POS.
+
+           MOVE "N"  TO CDA-DATA
+           MOVE 24   TO CDA-ROW
+           MOVE 66   TO CDA-COL
+           MOVE 1    TO CDA-DATALEN
+           MOVE "A"  TO CDA-ATTR
+           MOVE 3    TO CDA-COLOR
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-YN.
+           
            IF WS-YN NOT = "N" AND NOT = "Y"
               DISPLAY " " AT 3079 WITH BELL
               GO TO DOLD-000.
@@ -471,11 +506,13 @@
            START DRCONT-MASTER KEY NOT < DC-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-DC-ST1 NOT = 0
-                MOVE " " TO WS-DC-ST1
                 MOVE
                  "CALL SCHEDULE NOT THERE ON START, 'ESC' TO EXIT."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO DOLD-999.
        DOLD-005.
            READ DRCONT-MASTER NEXT WITH LOCK
@@ -488,10 +525,13 @@
                DISPLAY WS-MESSAGE AT POS
                GO TO DOLD-999.
            IF WS-DC-ST1 NOT = 0
-              MOVE " " TO WS-DC-ST1
               MOVE "CALL SCHEDULE BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DC-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DC-ST1
               GO TO DOLD-005.
               
             MOVE 2610 TO POS
@@ -500,24 +540,22 @@
             DISPLAY DC-ACCOUNT-NUMBER AT POS.
 
             IF DC-SALESMAN NOT = WS-DC-SMAN
-      *        MOVE "DC-SALEMAN NOT = WS-DC-SMAN" TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
                GO TO DOLD-005.
        DOLD-006.
            MOVE DC-ACCOUNT-NUMBER TO DR-ACCOUNT-NUMBER.
            READ DEBTOR-MASTER
                  INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 = 23 OR 35 OR 49
+           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                 GO TO DOLD-010.
-           IF WS-DR-ST1 NOT = 0
-                MOVE " " TO WS-DR-ST1
-                MOVE "DR Record Busy, Press 'ESC' To Retry"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO DOLD-006.
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO DOLD-006.
            IF DC-SALESMAN = DR-SALESMAN
-      *        MOVE "SALEMAN # THE SAME" TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
               GO TO DOLD-005.
             MOVE 2710 TO POS
             DISPLAY "CALL SCHEDULE ACCOUNT BEING DELETED:" AT POS
@@ -527,7 +565,12 @@
             DELETE DRCONT-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-               MOVE " " TO WS-DC-ST1
+               MOVE "DR-CONT FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DC-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO DOLD-010.
             GO TO DOLD-005.
        DOLD-999.
@@ -548,20 +591,26 @@
             REWRITE DRCONT-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-                MOVE 0 TO WS-DC-ST1
                 MOVE "DR-CONTACT BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DC-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE DRCONT-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-                MOVE 0 TO WS-DC-ST1
                 MOVE "DR-CONTACT BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DC-ST1
                 GO TO RDR-020.
        RDR-999.
             EXIT.
@@ -582,10 +631,13 @@
                 MOVE WS-NUMBER TO DC-ACCOUNT-NUMBER WS-DCNUM
                 GO TO RD-900.
            IF WS-DC-ST1 NOT = 0
-                MOVE 0 TO WS-DC-ST1
                 MOVE "DR-CONTACT BUSY ON READ-LOCK, 'ESC' TO RETRY"
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DC-ST1
                 GO TO RD-010.
            MOVE "N"               TO NEW-NO
            MOVE DC-ACCOUNT-NUMBER TO WS-NUMBER WS-DCNUM
@@ -614,26 +666,37 @@
            MOVE DC-ACCOUNT-NUMBER TO DR-ACCOUNT-NUMBER.
            START DEBTOR-MASTER KEY NOT < DR-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 NOT = 0
+           IF WS-DEBTOR-ST1 NOT = 0
                 MOVE "X" TO NEW-NO
                 MOVE "DR RECORD BUSY ON START, 'ESC' TO EXIT."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-999.
        RDF-015.
            READ DEBTOR-MASTER
                  INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 = 23 OR 35 OR 49
+           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                 MOVE "X" TO NEW-NO
                 MOVE "DR RECORD NOT THERE ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RDF-999.
-           IF WS-DR-ST1 NOT = 0
-                MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
                 MOVE "DR RECORD BUSY ON READ, PRESS 'ESC' TO RETRY"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RDF-015.
        RDF-999.
            EXIT.
@@ -644,10 +707,13 @@
            START DRCONT-MASTER KEY NOT < DC-KEY
                INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-                MOVE 0 TO WS-DC-ST1
                 MOVE "DRCONT NOT THERE ON START, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE.
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DC-ST1.
        STR-999.
              EXIT.
       *
@@ -660,11 +726,14 @@
            START DRCONT-MASTER KEY NOT < DC-ALT-KEY
                INVALID KEY NEXT SENTENCE.
             IF WS-DC-ST1 NOT = 0
-                MOVE 0 TO WS-DC-ST1
                 MOVE 
           "DRCONT RECORD NOT THERE ON START-PAGE-DOWN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE.
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DC-ST1.
        STNXR-999.
              EXIT.
       *
@@ -682,12 +751,15 @@
                MOVE "Y" TO WS-END
                GO TO RNX-999.
            IF WS-DC-ST1 NOT = 0
-              MOVE 0 TO WS-DC-ST1
-              MOVE "WS-DC-ST1 NOT = 0, START-RECORD GOING TO RNX-005"
+              MOVE "DR-CONT BUSY ON READ-NEXT RNX-005, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM START-RECORD
-               GO TO RNX-005.
+                PERFORM ERROR1-000
+                MOVE WS-DC-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DC-ST1
+                PERFORM START-RECORD
+                GO TO RNX-005.
            MOVE DC-ACCOUNT-NUMBER TO WS-NUMBER WS-DCNUM.
            MOVE DC-AREA           TO WS-AREA.
            IF DC-AREA-NAME NOT = " "
@@ -721,8 +793,8 @@
                GO TO OPEN-000.
         OPEN-005.
             OPEN I-O DEBTOR-MASTER.
-            IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY." 
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -759,4 +831,5 @@
        Copy "ClearScreen".
        Copy "ErrorMessage".
        Copy "Error1Message".
+       Copy "CTOSCobolAccept".
       * END-OF-JOB

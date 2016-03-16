@@ -20,7 +20,6 @@
        77  WS-ACCOUNTNUMBER   PIC 9(7) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC 9(2) COMP-X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -413,10 +412,13 @@
                 PERFORM ERROR-000
                 GO TO RD-999.
              IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
-                MOVE "DEBTOR RECORD BUSY, PRESS 'ESC' TO RETRY."
-                  TO WS-MESSAGE
+                MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-010.
        RD-999.
              EXIT.
@@ -468,13 +470,22 @@
               TO WS-MESSAGE
               PERFORM ERROR-000
               GO TO RDPR-999.
-           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTORS BUSY ON READ-NEXT, 'ESC' TO RETRY"
+           IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
+               MOVE "DEBTORS BUSY ON READ-PREV, 'ESC' TO RETRY"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDPR-005.
            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE 
+                "DEBTOR BUSY ON READ-PREV, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-ACCOUNTNUMBER
                MOVE 0 TO WS-DEBTOR-ST1
                PERFORM START-DEBTOR
@@ -488,7 +499,7 @@
             IF WS-DEBTOR-ST1 NOT = 0
                MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-DEBTOR TO WS-MESSAGE
@@ -531,6 +542,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
 
       *
       * END-OF-JOB

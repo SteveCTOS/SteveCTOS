@@ -25,7 +25,6 @@
            77  WS-EOF        PIC X(3) VALUE "   ".
            01  WS-DEBTOR-STATUS.
                03  WS-STAT1  PIC 99.
-      *         03  WS-STAT2  PIC X.     
       *
        PROCEDURE DIVISION.
        CONTROL-PARAGRAPH SECTION.
@@ -40,12 +39,16 @@
        A-000.
            OPEN INPUT MAILSEQ-MASTER.
            IF WS-STAT1 NOT = 0
-               DISPLAY "ERROR IN OPENING MailSequential FILE"
-               STOP RUN.
+               MOVE "ERROR IN OPENING MailSequential FILE, ESC' TO EXIT"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               EXIT PROGRAM.
            OPEN I-O MAIL-MASTER.
            IF WS-STAT1 NOT = 0
-               DISPLAY "ERROR IN OPENING MailList FILE"
-               STOP RUN.
+               MOVE "ERROR IN OPENING MailList FILE, 'ESC' TO EXIT"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               EXIT PROGRAM.
        A-EXIT.
            EXIT.
       *
@@ -72,8 +75,9 @@
   
            WRITE MAIL-RECORD
                  INVALID KEY
-                 DISPLAY "INVALID WRITE"
-                 STOP RUN.
+                 MOVE "INVALID WRITE" TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 EXIT PROGRAM.
            GO TO B-005.
        B-EXIT.
            EXIT.
@@ -84,4 +88,16 @@
                 MAIL-MASTER.
        C-EXIT.
           EXIT.
+      *
+      ******************
+      *Mandatory Copies*
+      ******************
+       Copy "DisplayForm".
+       Copy "UserFillField".
+       Copy "DecimaliseRate".
+       Copy "ConvertDateFormat".
+       Copy "ClearScreen".
+       Copy "ErrorMessage".
+       Copy "Error1Message".
+       Copy "CTOSCobolAccept".
       *END-OF-JOB.

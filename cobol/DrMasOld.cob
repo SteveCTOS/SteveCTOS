@@ -24,11 +24,9 @@
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
        77  WS-END             PIC X VALUE " ".      
        01  WS-DEBTOROLD-STATUS.
-           03  WS-DEBTOROLD-ST1   PIC 99.
-      *     03  WS-DEBTOROLD-ST2   PIC 9(2) COMP-X.
+           03  WS-DEBTOROLD-ST1 PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -392,9 +390,10 @@
             IF WS-DEBTOROLD-ST1 NOT = 0
                MOVE "ERROR IN DELETING DRMASTEROLD, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-DEBTOROLD-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-DEBTOROLD-ST1
                GO TO DDR-010.
        DDR-999.
@@ -413,10 +412,12 @@
                 PERFORM ERROR-MESSAGE
                 GO TO RDR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR RECORD BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RDR-020.
        RDR-999.
            EXIT.
@@ -437,8 +438,13 @@
                 PERFORM ERROR-000
                 GO TO RD-999.
              IF WS-DEBTOROLD-ST1 = 10
+               MOVE "END OF NEXT PAGE SEQUENCE, ENTER A NEW IDENTIFIER."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO RD-999.
+             IF WS-DEBTOROLD-ST1 NOT = 0
                 MOVE 0 TO WS-DEBTOROLD-ST1
-                MOVE "DEBTOR RECORD BUSY, PRESS 'ESC' TO RETRY"
+                MOVE "DEBTOROLD RECORD BUSY ON READ, 'ESC' TO RETRY."
                   TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO RD-010.
@@ -471,6 +477,15 @@
                  GO TO RDNX-999.
              ADD 1 TO WS-NO-READS.
              IF WS-NO-READS > 10
+               MOVE 
+           "DEBTOROLD FILE BUSY ON READ-NEXT, IN 1 SEC GOING TO RE-TRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOROLD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                  MOVE 0 TO WS-DEBTOROLD-ST1
                  MOVE 0 TO WS-ACCOUNTNUMBER WS-NO-READS
                  PERFORM START-DEBTOROLD
@@ -579,6 +594,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
 
       *
       * END-OF-JOB

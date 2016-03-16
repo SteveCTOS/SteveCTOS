@@ -33,10 +33,8 @@
        77  LINE-UNAPPLIED-TOT   PIC 9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1    PIC 99.
-      *     03  WS-DRTRANS-ST2    PIC X.
+           03  WS-DRTRANS-ST1   PIC 99.
        01  WS-TYPES.
            03  FILLER          PIC X(7) VALUE "INVOICE".
            03  FILLER          PIC X(7) VALUE "PAYMENT".
@@ -381,6 +379,14 @@
        RDTR-000.
            OPEN INPUT DEBTOR-TRANS-FILE.
            IF WS-DRTRANS-ST1 NOT = 0
+              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
               CLOSE DEBTOR-TRANS-FILE
               GO TO RDTR-000.
            MOVE 1 TO F-INDEX.
@@ -392,6 +398,14 @@
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                 GO TO RDTR-999.
            IF WS-DRTRANS-ST1 NOT = 0
+               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
               GO TO RDTR-005.
        RDTR-010.
            IF F-EXIT-CH NOT = 1
@@ -412,6 +426,14 @@
                CLOSE DEBTOR-TRANS-FILE
                GO TO RDTR-999.
            IF WS-DRTRANS-ST1 NOT = 0
+              MOVE "DRTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                GO TO RDTR-010.
            IF F-EXIT-CH = 1
             IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
@@ -513,9 +535,17 @@
              IF WS-DEBTOR-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
-                 MOVE 0 TO WS-DEBTOR-ST1
-                 PERFORM START-DEBTOR
-                 GO TO R-ST-NX-005.
+               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               PERFORM START-DEBTOR
+               GO TO R-ST-NX-005.
        R-ST-NX-999.
              EXIT.
       *
@@ -531,9 +561,18 @@
              IF WS-DEBTOR-ST1 = 0
                  GO TO RDPR-999
              ELSE
-                 MOVE 0 TO WS-DEBTOR-ST1
-                 PERFORM START-DEBTOR
-                 GO TO RDPR-005.
+               MOVE 
+               "DRTRANS BUSY ON START-PREV, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               PERFORM START-DEBTOR
+               GO TO RDPR-005.
        RDPR-999.
              EXIT.
       *
@@ -566,6 +605,14 @@
                MOVE 0 TO WS-DRTRANS-ST1
                GO TO PRR-900.
             IF WS-DRTRANS-ST1 NOT = 0
+               MOVE "DRTRANS BUSY ON READ-PRN, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-DRTRANS-ST1
                GO TO PRR-002.
             IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER

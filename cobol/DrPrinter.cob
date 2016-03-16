@@ -21,7 +21,6 @@
        01  F-ERROR1             BINARY-SHORT.
        01  WS-PRINTER-STATUS.
            03  WS-PRNT-ST1      PIC 99.
-           03  WS-PRNT-ST2      PIC 99.
        01  WS-OWN-PRINT-FILE.
            03  WS-OWN-DIR       PIC X(11) VALUE "/ctools/dr/".
            03  WS-OWN-FILE-NAME PIC X(14) VALUE " ".

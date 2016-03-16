@@ -58,7 +58,6 @@
                05  W-COSTLAST-A  PIC S9(7)V99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -142,11 +141,16 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
            IF DR-ACCOUNT-NUMBER = "0000000"

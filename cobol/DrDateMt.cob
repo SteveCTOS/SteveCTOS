@@ -20,8 +20,7 @@
        77  WS-ALL-ENTERED     PIC X VALUE " ".
        77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "DrNameIq".
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -2410,6 +2409,8 @@
             DELETE DEBTOR-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOR-ST1 NOT = 0
+            MOVE "DEBTORS BUSY ON DELETE, 'ESC' TO RETRY." TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO DDR-010.
        DDR-999.
@@ -2431,10 +2432,13 @@
             REWRITE DEBTOR-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RDR-020.
             GO TO RDR-999.
        RDR-020.
@@ -2444,7 +2448,10 @@
                 MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RDR-020.
        RDR-999.
             EXIT.
@@ -2464,10 +2471,14 @@
                 MOVE WS-ACCOUNTNUMBER TO DR-ACCOUNT-NUMBER
                 GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON READ, PRESS 'ESC' TO RETRY"
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-DEBTORNO.
            MOVE DR-ACCOUNT-NUMBER TO WS-ACC-SAVE.
@@ -2497,12 +2508,23 @@
               PERFORM ERROR-MESSAGE
               GO TO RDNX-999.
            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR BUSY ON READ-NEXT, PRESS 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDNX-005.
            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON RDNXSTART, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-DEBTOR-ST1
                PERFORM START-DEBTOR
                GO TO RDNX-005.
@@ -2527,12 +2549,23 @@
               PERFORM ERROR-000
               GO TO RDPR-999.
            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTORS BUSY ON READ-NEXT, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDPR-005.
            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON RDPRSTART, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-ACCOUNTNUMBER
                MOVE 0 TO WS-DEBTOR-ST1
                PERFORM START-DEBTOR
@@ -2639,5 +2672,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

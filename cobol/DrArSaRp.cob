@@ -39,10 +39,10 @@
        77  WS-COST-YTD          PIC S9(7)V99 VALUE 0.
        77  WS-MARGIN-YTD        PIC S9(7)V99 VALUE 0.
        77  WS-PERC-YTD          PIC S999V99.
-       77  WS-SALESAMT-LAST      PIC S9(7)V99 VALUE 0.
-       77  WS-COST-LAST          PIC S9(7)V99 VALUE 0.
-       77  WS-MARGIN-LAST        PIC S9(7)V99 VALUE 0.
-       77  WS-PERC-LAST          PIC S999V99.
+       77  WS-SALESAMT-LAST     PIC S9(7)V99 VALUE 0.
+       77  WS-COST-LAST         PIC S9(7)V99 VALUE 0.
+       77  WS-MARGIN-LAST       PIC S9(7)V99 VALUE 0.
+       77  WS-PERC-LAST         PIC S999V99.
        77  TOT-SALESAMT         PIC S9(7)V99 VALUE 0.
        77  TOT-COST             PIC S9(7)V99 VALUE 0.
        77  TOT-MARGIN           PIC S9(7)V99 VALUE 0.
@@ -51,16 +51,15 @@
        77  TOT-COST-YTD         PIC S9(7)V99 VALUE 0.
        77  TOT-MARGIN-YTD       PIC S9(7)V99 VALUE 0.
        77  TOT-PERC-YTD         PIC S999V99.
-       77  TOT-SALESAMT-LAST     PIC S9(7)V99 VALUE 0.
-       77  TOT-COST-LAST         PIC S9(7)V99 VALUE 0.
-       77  TOT-MARGIN-LAST       PIC S9(7)V99 VALUE 0.
-       77  TOT-PERC-LAST         PIC S999V99.
-       77  WS-ACCNO-DISP         PIC Z(3)9.
+       77  TOT-SALESAMT-LAST    PIC S9(7)V99 VALUE 0.
+       77  TOT-COST-LAST        PIC S9(7)V99 VALUE 0.
+       77  TOT-MARGIN-LAST      PIC S9(7)V99 VALUE 0.
+       77  TOT-PERC-LAST        PIC S999V99.
+       77  WS-ACCNO-DISP        PIC Z(3)9.
        01  WS-DEBTORANALYSIS.
-           03  WS-SALES-ANALYSIS    PIC 99.
+           03  WS-SALES-ANALYSIS PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC 9(2) COMP-X.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(15).
@@ -315,22 +314,27 @@
            IF WS-DEBTOR-ST1 NOT = 0
               MOVE "DEBTOR RECORD BUSY ON START, 'ESC' TO SEE STATUS."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 88 TO WS-DEBTOR-ST1
-              GO TO PRR-999.
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 88 TO WS-DEBTOR-ST1
+               GO TO PRR-999.
        PRR-005.
            READ DEBTOR-MASTER NEXT
                AT END NEXT SENTENCE.
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               GO TO PRR-005.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
            

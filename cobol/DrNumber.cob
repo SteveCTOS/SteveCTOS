@@ -115,15 +115,18 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 = 91
-              MOVE "DEBTOR RECORD BUSY ON READ, ST1=9, 'ESC' TO RETRY."
+              MOVE "DEBTOR RECORD BUSY ON READ-91, 'ESC' TO RETRY."
                TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO PRR-005.
-           IF WS-DEBTOR-ST1 = 51
-              MOVE "DEBTOR RECORD BUSY ON READ, ST1=51, 'ESC' TO RETRY."
+           IF WS-DEBTOR-ST1 NOT = 0
+              MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO PRR-005.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
            IF WS-RANGE NOT = " "

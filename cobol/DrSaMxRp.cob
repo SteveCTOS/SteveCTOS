@@ -277,7 +277,10 @@
                MOVE
            "ACC NUMBER LOCKED AT ANOTHER TERMINAL, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RAA-005.
            IF WS-PERIOD = "B"
               ADD DR-BALANCE    TO WS-TOTAL-SALES.
@@ -339,9 +342,10 @@
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "BAD START ON RANDOM, 'ESC' TO SEE STATUS."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
               EXIT PROGRAM.
        RRF-005.
            READ RANDOM-FILE NEXT
@@ -349,14 +353,15 @@
            IF WS-RANDOM-ST1 = 10
               GO TO RRF-999.
            IF WS-RANDOM-ST1 NOT = 0
-              MOVE 3010 TO POS
-              DISPLAY "RANDOM RECORD BUSY  :" AT POS
-              ADD 25 TO POS
-              DISPLAY RANDOM-NUMBER AT POS
-              ADD 20 TO POS
-              DISPLAY WS-RANDOM-ST1 AT POS
-              ADD 5 TO POS
-              ACCEPT WS-ACCEPT AT POS
+               MOVE
+               "RANDOM-FILE BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
               GO TO RRF-005.
               
            SUBTRACT 1 FROM HIGH-NUMBER
@@ -384,6 +389,15 @@
               INVALID KEY NEXT SENTENCE.
               
            IF WS-RANDOM-ST1 NOT = 0
+               MOVE 
+              "RANDOM-FILE BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
               ADD 1 TO RANDOM-INDEX
               GO TO WRR-005.
               
@@ -391,9 +405,10 @@
               
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "RANDOM RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        WRR-999.
             EXIT.
       *
@@ -404,9 +419,10 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "HIGH RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        WRR-999.
             EXIT.
       *
@@ -425,9 +441,10 @@
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "BAD START ON HIGH, 'ESC' TO SEE STATUS."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               EXIT PROGRAM.
        PRR-006.
            READ HIGH-FILE NEXT
@@ -435,19 +452,18 @@
            IF WS-RANDOM-ST1 = 10
                GO TO PRR-999.
            IF WS-RANDOM-ST1 NOT = 0
-              MOVE "DR-RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 3010 TO POS
-              DISPLAY "DEBTOR RECORD BUSY PRR-006 :" AT POS
-              ADD 28 TO POS
-              DISPLAY DR-ACCOUNT-NUMBER AT POS
-              ADD 20 TO POS
-              DISPLAY WS-RANDOM-ST1 AT POS
-              ADD 5 TO POS
-              PERFORM ERROR-010
-              MOVE 0 TO WS-RANDOM-ST1
-              GO TO PRR-006.
+               MOVE 
+              "HIGH-FILE BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               ADD 1 TO RANDOM-INDEX
+               MOVE 0 TO WS-RANDOM-ST1
+               GO TO PRR-006.
 
            MOVE 2510 TO POS
            DISPLAY "DEBTOR NUMBER BEING READ:" AT POS
@@ -580,9 +596,10 @@
            IF WS-DEBTOR-ST1 NOT = 0
               MOVE "DEBTOR RECORD BUSY ON READ, RD-005, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE DR-ACCOUNT-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RD-005.
        RD-999.
             EXIT.

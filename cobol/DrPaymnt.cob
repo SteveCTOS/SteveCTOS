@@ -1051,10 +1051,13 @@
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
               GO TO JDR-010.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS BUSY JDR-015, 'ESC' TO RETRY" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO JDR-015.
            MOVE "YOUR JRN.DR. REF:" TO WS-DAILY-1ST.
            MOVE DRTR-REFERENCE2     TO WS-DAILY-2ND.
@@ -1093,10 +1096,13 @@
                 MOVE 0 TO WS-DRTRANS-ST1
                 GO TO JCR-010.
            IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
                 MOVE "DR TRANS BUSY JCR-012, 'ESC' TO RETRY" 
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRTRANS-ST1
                 GO TO JCR-012.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
@@ -1135,10 +1141,13 @@
                 MOVE 0 TO WS-DRTRANS-ST1
                 GO TO RINT-010.
            IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
                 MOVE "DR TRANS BUSY RINT-012, 'ESC' TO RETRY" 
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRTRANS-ST1
                 GO TO RINT-012.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
@@ -1176,10 +1185,13 @@
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
               GO TO RDC-010.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS BUSY RDC-015, 'ESC' TO RETRY" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO RDC-015.
            MOVE "YOUR RD-CHEQUE #:" TO WS-DAILY-1ST.
            MOVE DRTR-REFERENCE2     TO WS-DAILY-2ND.
@@ -1216,11 +1228,14 @@
                 MOVE 0 TO WS-DRTRANS-ST1
                 GO TO BDEBT-010.
            IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
-                MOVE "DR TRANS BUSY BDEBT-012, 'ESC' TO RETRY" 
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO BDEBT-012.
+              MOVE "DR TRANS BUSY BDEBT-012, 'ESC' TO RETRY" 
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
+              GO TO BDEBT-012.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
            MOVE "YOUR BAD-DEBT #:"  TO WS-DAILY-1ST.
@@ -1257,10 +1272,13 @@
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
               GO TO CHREF-010.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS BUSY CHREF-015, 'ESC' TO RETRY" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO CHREF-015.
            MOVE "YOUR CHEQUE REF :" TO WS-DAILY-1ST.
            MOVE DRTR-REFERENCE2     TO WS-DAILY-2ND.
@@ -1281,10 +1299,13 @@
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
                 MOVE "DRTRANS BUSY ON START CR-020, 'ESC' TO RETRY" 
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRTRANS-ST1
                 GO TO CR-020.
            PERFORM ERROR-020.
        CR-030.
@@ -1296,10 +1317,13 @@
                          WS-JNL-CR-AMT
                GO TO CR-999.
            IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
                 MOVE "DR TRANS BUSY READ CR-030, 'ESC' TO RETRY" 
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRTRANS-ST1
                 GO TO CR-030.
            PERFORM ERROR-020.
            SUBTRACT RUN-TOTAL FROM DRTR-AMT-OUTSTANDING.
@@ -1314,7 +1338,11 @@
                MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DR TRANS BUSY REWRITE CR-025, 'ESC' TO RETRY" 
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO CR-025.
            PERFORM ERROR-020.
            MOVE 0 TO WS-UNAPPLIED-AMT
@@ -1348,10 +1376,13 @@
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS BUSY START AP-000, 'ESC' TO RETRY" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO AP-000.
        AP-010.     
            ADD 1 TO SUB-1.
@@ -1369,10 +1400,13 @@
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                GO TO AP-010.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS BUSY READ AP-030, 'ESC' TO RETRY" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO AP-030.
 
            IF WS-TRANSTYPE = "2" 
@@ -1384,15 +1418,22 @@
            REWRITE DEBTOR-TRANS-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-               MOVE "AP-038 REWRITE STATUS CODE 2, 'ESC' TO EXIT."
+               MOVE "AP-038 REWRITE STATUS CODE 23, 'ESC' TO EXIT."
                  TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO AP-010.
-           IF WS-DRTRANS-ST1 NOT = 0
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-DRTRANS-ST1
+              GO TO AP-010.
+           IF WS-DRTRANS-ST1 NOT = 0
               MOVE "DR TRANS BUSY REWRITE AP-038, 'ESC' TO RETRY" 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO AP-038.
            IF WS-DISCOUNT (SUB-1) > 0
               PERFORM WRITE-DISCOUNT-TRANSACTION.
@@ -1416,10 +1457,13 @@
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                GO TO RDT-900.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DRTRANS BUSY START RDT-005, PRESS 'ESC' TO RETRY" 
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO RDT-005.
            PERFORM ERROR-020.
        RDT-010.
@@ -1430,10 +1474,14 @@
                PERFORM OPEN-014
                GO TO RDT-900.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DR TRANS BUSY READ RDT-010, PRESS 'ESC' TO RETRY" 
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO RDT-010.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
@@ -1558,10 +1606,13 @@
             IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                  GO TO WRTR-000.
             IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
                 MOVE "DRTRANS BUSY ON WRITE WRTR-010, 'ESC' TO RETRY." 
-                   TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRTRANS-ST1
                 GO TO WRTR-010.
        WRTR-999.
               EXIT.
@@ -1589,10 +1640,13 @@
             IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                  GO TO WRDTR-000.
             IF WS-DRTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-DRTRANS-ST1
                 MOVE "DR TRANS BUSY WRITE WRDTR-010, 'ESC' TO RETRY" 
-                   TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRTRANS-ST1
                 GO TO WRDTR-010.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
@@ -1708,10 +1762,13 @@
                MOVE 0 TO DR-POST-CODE
                GO TO RD-999.
             IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR FILE BUSY ON READ RD-000, 'ESC' TO RETRY."
-                   TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-000.
        RD-999.
            EXIT.
@@ -1728,11 +1785,15 @@
                PERFORM ERROR-MESSAGE
                GO TO RDL-999.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTORS BUSY READ-LOCK RDL-010, 'ESC' TO RETRY" 
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RDL-010.
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
+                PERFORM ERROR-MESSAGE
+                GO TO RDL-010.
        RDL-999.
            EXIT.
       *
@@ -1747,10 +1808,13 @@
                  MOVE " "                   TO WS-DAILY-4TH
                  PERFORM WRITE-DAILY.
              IF WS-DEBTOR-ST1 NOT = 0
-                 MOVE 0 TO WS-DEBTOR-ST1
                  MOVE "DEBTORS BUSY REWRITE REWRDB-000, 'ESC' TO RETRY."
                  TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-DEBTOR-ST1
                  GO TO REWRDB-000.
        REWRDB-999.
             EXIT.
@@ -1773,10 +1837,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPDIS-950.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-                MOVE 0 TO WS-DISTRIBUTION-ST1
                 MOVE "DISTRIBUTION BUSY UPDIS-010, 'ESC' TO RETRY." 
                    TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                 GO TO UPDIS-010.
             ADD WS-DIST-PAYMENT          TO DIST-PAYMENTWEEK
                                             DIST-PAYMENTPTD
@@ -1830,10 +1897,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPDIS-950.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-                MOVE 0 TO WS-DISTRIBUTION-ST1
                 MOVE "DISTRIBUTION BUSY UPDIS-020, 'ESC' TO RETRY" 
                    TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                 GO TO UPDIS-020.
        UPDIS-950.
             MOVE 0 TO WS-DIST-PAYMENT
@@ -1870,10 +1940,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UCB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
                MOVE "DRBANK-ACC BUSY ON READ, 'ESC' TO RETRY"
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-ST1
                GO TO UCB-010.
            ADD WS-RUN-PAYMENTS TO CB-BALANCE
                                   CB-PER (SUB-3).
@@ -1883,10 +1956,13 @@
            IF WS-CB-ST1 = 23 OR 35 OR 49
                GO TO UCB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
                MOVE "DRBANK-ACC BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-ST1
                GO TO UCB-020.
        UCB-030.
            PERFORM READ-GLPARAMETER-LOCK.
@@ -1942,11 +2018,14 @@
                PERFORM ERROR-MESSAGE
                GO TO WRCB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
-               MOVE "DRBANK-ACC BUSY READ WRCB-010, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO WRCB-010.
+                MOVE "DRBANK-ACC BUSY READ WRCB-010, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-ST1
+                GO TO WRCB-010.
            SUBTRACT WS-PAYAMT FROM CB-BALANCE
                                    CB-PER (SUB-3).
        WRCB-020.
@@ -1955,10 +2034,13 @@
            IF WS-CB-ST1 = 23 OR 35 OR 49
                GO TO WRCB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
                MOVE "DRBANK-ACC BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CB-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CB-ST1
                GO TO WRCB-020.
        WRCB-030.
            PERFORM READ-GLPARAMETER-LOCK.
@@ -2016,10 +2098,13 @@
                PERFORM ERROR-MESSAGE
                GO TO WREF-CB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
                MOVE "DRBANK-ACC BUSY ON READ, 'ESC' TO RETRY"
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-ST1
                GO TO WREF-CB-010.
            SUBTRACT WS-PAYAMT FROM CB-BALANCE
                                    CB-PER (SUB-3).
@@ -2029,10 +2114,13 @@
            IF WS-CB-ST1 = 23 OR 35 OR 49
                GO TO WREF-CB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
                MOVE "DRBANK-ACC BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-ST1
                GO TO WREF-CB-020.
        WREF-CB-030.
            PERFORM READ-GLPARAMETER-LOCK.
@@ -2077,10 +2165,13 @@
               PERFORM ERROR-MESSAGE
               GO TO WCBTR-999.
            IF WS-CBTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-CBTRANS-ST1
               MOVE "CBTRANS FILE BUSY ON WRITE, 'ESC' TO RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
               GO TO WCBTR-015.
        WCBTR-999.
            EXIT.
@@ -2096,10 +2187,13 @@
               PERFORM ERROR-MESSAGE
               GO TO WRTR-015.
            IF WS-GLTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-GLTRANS-ST1
               MOVE "GLTRANS FILE BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
               GO TO WRTR-015.
        WRTR-999.
            EXIT.
@@ -2234,10 +2328,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPGL-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLMASTER RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGL-010.
            ADD GLTRANS-AMOUNT TO GL-BALANCE
                                  GL-PER (SUB-3).
@@ -2247,10 +2344,13 @@
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                GO TO UPGL-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLMASTER RECORD BUSY ON WRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGL-900.
        UPGL-999.
            EXIT.
@@ -2273,10 +2373,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPGLH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLHEADER FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGLH-010.
            ADD GLTRANS-AMOUNT TO GL-BALANCE
                                  GL-PER (SUB-3).
@@ -2286,10 +2389,13 @@
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                GO TO UPGLH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLHEADER RECORD BUSY ON WRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGLH-900.
        UPGLH-999.
            EXIT.
@@ -2312,10 +2418,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPGLSH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLSUBHEADER FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGLSH-010.
            ADD GLTRANS-AMOUNT TO GL-BALANCE
                                  GL-PER (SUB-3).
@@ -2325,10 +2434,13 @@
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                GO TO UPGLSH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLSUBHEAD FILE BUSY ON WRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGLSH-900.
        UPGLSH-999.
            EXIT.
@@ -2341,10 +2453,13 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
                MOVE "GLPARAMETER BUSY RGLP-010, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLPARAMETER-ST1
                GO TO RGLP-010.
        RGLP-999.
            EXIT.
@@ -2357,10 +2472,13 @@
            READ GLPARAMETER-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
                MOVE "GLPARAMETER BUSY RPL-010, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLPARAMETER-ST1
                GO TO RPL-010.
        RPL-999.
            EXIT.
@@ -2370,10 +2488,13 @@
            REWRITE GLPARAMETER-REC
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
                MOVE "GLPARAMETER BUSY REWP-000, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLPARAMETER-ST1
                GO TO RP-000.
        REWP-999.
            EXIT.
@@ -2893,7 +3014,6 @@
            DISPLAY "   PRESS 'GO' OR 'NEXT' TO END THE PROGRAM." AT POS.
            
            MOVE 3010 TO POS.
-           
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 13        TO CDA-ROW.
@@ -2901,7 +3021,6 @@
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-      *     MOVE CDA-DATA TO WS-IMM-PR.
 
            IF W-ESCAPE-KEY = 1 OR = 2
                CLOSE PARAMETER-FILE
@@ -2926,13 +3045,6 @@
                MOVE "PARAMETER FILE BUSY OPEN-012, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-              CLOSE PARAMETER-FILE
-            IF WS-SLPARAMETER-ST1 NOT = 0
-              MOVE "PARAMETER FILE BUSY ON CLOSE, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-               GO TO OPEN-012
-            ELSE
                GO TO OPEN-012.
        OPEN-013.
            OPEN I-O DISTRIBUTIONS.

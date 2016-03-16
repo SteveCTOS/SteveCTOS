@@ -34,8 +34,7 @@
        77  TOT-COST-YTD         PIC S9(7)V99 VALUE 0.
        77  TOT-COST-LAST        PIC S9(7)V99 VALUE 0.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -152,9 +151,9 @@
            START DEBTOR-MASTER KEY NOT < DR-DISCOUNT-CODE
                  INVALID KEY NEXT SENTENCE.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE "DEBTOR RECORD BUSY ON START, 'ESC' TO RETRY."
+              MOVE "DEBTOR RECORD BUSY ON START, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR-MESSAGE
               MOVE 88 TO WS-DEBTOR-ST1
               GO TO PRR-999.
        PRR-005.
@@ -164,18 +163,21 @@
               GO TO PRR-999.
            IF WS-DEBTOR-ST1 = 91
               MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR RECORD ST1 = 9, 'ESC' TO RETRY."
+              MOVE "DEBTOR RECORD ST1 = 91, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               CLOSE DEBTOR-MASTER
               OPEN I-O DEBTOR-MASTER
               GO TO PRR-005.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
               
            MOVE 2310 TO POS
            DISPLAY "ACCOUNT BEING READ:" AT POS

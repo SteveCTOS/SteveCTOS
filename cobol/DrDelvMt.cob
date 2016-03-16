@@ -24,13 +24,11 @@
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
        77  WS-DEL-SAVE        PIC 9(2) VALUE 0.
        77  WS-ALL-ENTERED     PIC X VALUE " ".
-       01  Ws-DrDel-STATUS.
-           03  Ws-DrDel-ST1   PIC 99.
-      *     03  Ws-DrDel-ST2   PIC X.
-       01  Ws-DEBTOR-STATUS.
-           03  Ws-DEBTOR-ST1   PIC 99.
-      *     03  Ws-DEBTOR-ST2   PIC X.
-       Copy "WsDateInfo".
+       01  WS-DRDEL-STATUS.
+           03  WS-DRDEL-ST1   PIC 99.
+       01  WS-DEBTOR-STATUS.
+           03  WS-DEBTOR-ST1  PIC 99.
+       COPY "WsDateInfo".
       **************************************************************
       *                  FORMS WORK FIELDS                         *
       **************************************************************
@@ -182,8 +180,14 @@
        DDRDEL-010.
             DELETE DEBTOR-DELIVERY
                INVALID KEY NEXT SENTENCE.
-            IF Ws-DrDel-ST1 NOT = 0
-               MOVE 0 TO WS-DrDel-ST1
+            IF WS-DRDEL-ST1 NOT = 0
+               MOVE "DRDEL FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRDEL-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRDEL-ST1
                GO TO DDRDEL-010.
        DDRDEL-999.
            EXIT.
@@ -380,21 +384,27 @@
                GO TO RDRDEL-020.
             REWRITE DEBTOR-DEL-RECORD
                 INVALID KEY NEXT SENTENCE.
-            IF Ws-DrDel-ST1 NOT = 0
-                MOVE 0 TO Ws-DrDel-ST1
+            IF WS-DRDEL-ST1 NOT = 0
                 MOVE "DELIVERY RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRDEL-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRDEL-ST1
                 GO TO RDRDEL-020.
             GO TO RDRDEL-999.
        RDRDEL-020.
             WRITE DEBTOR-DEL-RECORD
                 INVALID KEY NEXT SENTENCE.
-            IF Ws-DrDel-ST1 NOT = 0
-                MOVE 0 TO Ws-DrDel-ST1
+            IF WS-DRDEL-ST1 NOT = 0
                 MOVE "DELIVERY RECORD BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DRDEL-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRDEL-ST1
                 GO TO RDRDEL-010.
        RDRDEL-999.
             EXIT.
@@ -407,16 +417,19 @@
        RDEL-010.
            READ DEBTOR-DELIVERY WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-           IF Ws-DrDel-ST1 = 23 OR 35 OR 49
+           IF WS-DRDEL-ST1 = 23 OR 35 OR 49
                 MOVE DRDEL-ACCOUNT-NUMBER TO WS-ACC-SAVE
                 MOVE DRDEL-NUMBER         TO WS-DEL-SAVE
                 MOVE "Y" TO NEW-DELNO
                 GO TO RDEL-999.
-           IF Ws-DrDel-ST1 NOT = 0
-                MOVE 0 TO Ws-DrDel-ST1
-                MOVE "Debtor Record Busy, Press 'ESC' To Retry"
+           IF WS-DRDEL-ST1 NOT = 0
+                MOVE "DR-DEL RECORD BUSY, PRESS 'ESC' TO RETRY"
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DRDEL-ST1
                 GO TO RDEL-010.
            MOVE "N" TO NEW-DELNO.
            MOVE DRDEL-ACCOUNT-NUMBER TO WS-ACC-SAVE.
@@ -434,10 +447,13 @@
                 MOVE "Y" TO NEW-DEBTORNO
                 GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR BUSY ON READ, PRESS 'ESC' TO RETRY"
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-DEBTORNO.
        RD-999.
@@ -467,15 +483,26 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RDNX-999.
-           IF Ws-DrDel-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DrDel-ST1
+           IF WS-DRDEL-ST1 = 23 OR 35 OR 49 OR 51
                MOVE "DEBTOR FILE BUSY, PRESS 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRDEL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRDEL-ST1
                GO TO RDNX-005.
-           IF Ws-DrDel-ST1 NOT = 0
+           IF WS-DRDEL-ST1 NOT = 0
+               MOVE "DR-DEL BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRDEL-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-ACCOUNTNUMBER
-               MOVE 0 TO Ws-DrDel-ST1
+               MOVE 0 TO WS-DRDEL-ST1
                PERFORM START-DELIVERY
                GO TO RDNX-005.
            MOVE DRDEL-ACCOUNT-NUMBER TO WS-ACCOUNTNUMBER
@@ -504,8 +531,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
             OPEN I-O DEBTOR-DELIVERY.
-            IF Ws-DrDel-ST1 NOT = 0
-               MOVE 0 TO Ws-DrDel-ST1
+            IF WS-DRDEL-ST1 NOT = 0
+               MOVE 0 TO WS-DRDEL-ST1
                MOVE "DELIVERY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -551,5 +578,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

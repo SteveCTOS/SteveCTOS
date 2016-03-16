@@ -33,8 +33,7 @@
        77  WS-CODE-DIS          PIC ZZ.
        77  WS-CODE              PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC X.
+           03  WS-DEBTOR-ST1        PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -396,11 +395,19 @@
        PRR-002.
             READ DEBTOR-MASTER NEXT
                AT END NEXT SENTENCE.
-            IF WS-DR-ST1 = 10
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 = 10
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PRR-999.
-            IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PRR-002.
             IF DR-ACCOUNT-NUMBER < WS-FROM
                GO TO PRR-002.
@@ -550,11 +557,19 @@
        POL-002.
             READ DEBTOR-MASTER NEXT
                AT END NEXT SENTENCE.
-            IF WS-DR-ST1 = 10
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 = 10
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO POL-999.
-            IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO POL-002.
             IF DR-ACCOUNT-NUMBER < WS-FROM
                GO TO POL-002.
@@ -672,8 +687,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O DEBTOR-MASTER.
-           IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTORFILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE

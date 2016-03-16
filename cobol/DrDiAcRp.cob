@@ -36,13 +36,10 @@
        77  WS-DR-DISC           PIC 99V99 VALUE 0.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1     PIC 99.
-      *     03  WS-STDISC-ST2     PIC X.
+           03  WS-STDISC-ST1    PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  SPLIT-STOCK.
            03  SP-1ST3          PIC X(3).
            03  SP-REST          PIC X(12).
@@ -173,12 +170,13 @@
               PERFORM PRINT-TOTALS
               GO TO PRR-999.
            IF WS-STDISC-ST1 NOT = 0
-              MOVE 0 TO WS-STDISC-ST1
               MOVE "STDISC BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STDISC-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
               GO TO PRR-005.
            IF STDISC-ACCOUNT < WS-ANSWER1
               GO TO PRR-005.
@@ -214,10 +212,13 @@
                MOVE "UNKNOWN DEBTOR" TO DR-NAME
                GO TO PRR-010.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PRR-006.
            MOVE DR-ACCOUNT-NUMBER TO H4-ACC
            MOVE DR-NAME           TO H4-NAME.
@@ -345,6 +346,12 @@
                MOVE " "                  TO ST-DESCRIPTION2
                GO TO RS-999.
            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
               MOVE 0 TO WS-STOCK-ST1
               GO TO RS-005.
        RS-999.

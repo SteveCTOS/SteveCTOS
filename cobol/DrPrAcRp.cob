@@ -37,13 +37,10 @@
        77  WS-DR-DISC           PIC 99V99 VALUE 0.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1     PIC 99.
-      *     03  WS-STDISC-ST2     PIC X.
+           03  WS-STDISC-ST1    PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  SPLIT-STOCK.
            03  SP-1ST3          PIC X(3).
            03  SP-REST          PIC X(12).
@@ -200,12 +197,15 @@
               WRITE PRINT-REC AFTER 1
               GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK BUSY ON READ, 'ESC' TO RE-TRY."
+              MOVE "STOCK BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE ST-STOCKNUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR-020
+              MOVE 0 TO WS-STOCK-ST1
               GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-BEG-STOCK
               GO TO PRR-005.
@@ -285,10 +285,13 @@
                MOVE 0                TO DR-DISCOUNT-CODE
                GO TO RD-999.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTOR FILE BUSY ON READ, GOING TO RETRY."
+               MOVE "DEBTOR FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-007.
            MOVE DR-ACCOUNT-NUMBER TO H4-ACC
            MOVE DR-NAME           TO H4-NAME.
@@ -345,8 +348,14 @@
                MOVE 0 TO STDISC-PERCENT
                GO TO RS-999.
            IF WS-STDISC-ST1 NOT = 0
-              MOVE 0 TO WS-STDISC-ST1
-              GO TO RS-005.
+               MOVE "STOCK-DISC BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STDISC-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STDISC-ST1
+               GO TO RS-005.
        RS-999.
            EXIT.
       *

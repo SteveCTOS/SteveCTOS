@@ -33,20 +33,15 @@
        77  WS-BODY-LINE         PIC Z9.
        77  WS-ANSWER            PIC X VALUE " ".
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1      PIC 99.
-      *     03  WS-DEBTOR-ST2      PIC X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1      PIC 99.
-      *     03  WS-DAILY-ST2      PIC X.
+           03  WS-DAILY-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1      PIC 99.
-      *     03  WS-SLPARAMETER-ST2      PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1      PIC 99.
-      *     03  WS-DRTRANS-ST2      PIC X.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1      PIC 99.
-      *     03  WS-DISTRIBUTION-ST2      PIC X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -104,10 +99,14 @@
        GET-002.
             IF DR-ACCOUNT-NUMBER = 0
                 OPEN I-O DEBTOR-MASTER
-              IF WS-DEBTOR-ST1 NOT = "0"
-                MOVE " " TO WS-DEBTOR-ST1
-                MOVE "DEBTOR FILE BUSY, BE PATIENT!" TO WS-MESSAGE
+              IF WS-DEBTOR-ST1 NOT = 0
+                MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO GET-002
               ELSE
                 PERFORM CLEAR-SCREEN
@@ -234,10 +233,13 @@
              IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                  GO TO WRTR-000.
              IF WS-DRTRANS-ST1 NOT = 0
-                 MOVE 0 TO WS-DRTRANS-ST1
                  MOVE "DEBTOR TRANS. BUSY ON WRITE, 'ESC' TO RETRY." 
                     TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-DRTRANS-ST1
                  GO TO WRTR-010.
                  
            MOVE " " TO WS-MESSAGE
@@ -298,10 +300,13 @@
                  PERFORM WRITE-DAILY
                  GO TO REWRDB-999.
              IF WS-DEBTOR-ST1 NOT = 0
-                 MOVE 0 TO WS-DEBTOR-ST1
                  MOVE "DEBTOR FILE BUSY ON REWRITE, 'ESC' TO RETRY."
                   TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-DEBTOR-ST1
                  GO TO REWRDB-000.
        REWRDB-999.
             EXIT.
@@ -318,10 +323,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPDIS-900.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-               MOVE 0 TO WS-DISTRIBUTION-ST1
                MOVE "DISTRIBUTION BUSY ON READ, 'ESC' TO RETRY"
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DISTRIBUTION-ST1
                GO TO UPDIS-010.
             ADD WS-INTERESTAMT TO DIST-INTERESTWEEK
                                   DIST-INTERESTPTD
@@ -338,10 +346,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPDIS-900.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-               MOVE 0 TO WS-DISTRIBUTION-ST1
                MOVE "DISTRIBUTIONS BUSY ON REWRITE, 'ESC' TO RETRY." 
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DISTRIBUTION-ST1
                GO TO UPDIS-020.
        UPDIS-900.
             MOVE 0 TO WS-INTERESTAMT
@@ -362,10 +373,13 @@
                MOVE 0 TO DR-POST-CODE
                GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTORS BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-000.
        RD-999.
            EXIT.
@@ -382,10 +396,13 @@
                MOVE 0 TO DR-POST-CODE
                GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "READ DEBTORS LOCK BUSY, PRESS 'ESC' TO RETRY"
+               MOVE "DEBTORS READ-LOCK BUSY, PRESS 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-000.
        RD-999.
            EXIT.
@@ -399,7 +416,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
@@ -418,7 +435,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
@@ -435,7 +452,7 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "PARAMETER RECORD NOT UPDATED!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
@@ -516,6 +533,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "WriteDailyExcep1".
        Copy "CTOSCobolAccept".
       *

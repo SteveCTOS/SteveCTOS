@@ -555,10 +555,13 @@
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDM-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDM-010.
            IF DR-KEY < WS-RANGE1
                GO TO RDM-010.
@@ -763,10 +766,16 @@
                PERFORM SUBTOTALS
                GO TO PR-900.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
-               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
+               MOVE
+                "DR-TRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO PR-002.
            IF DRTR-AMT-OUTSTANDING = 0
                GO TO PR-002.
@@ -972,10 +981,16 @@
                PERFORM SUBTOTALS
                GO TO PRXQS-900.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
-               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
+               MOVE 
+              "DRTRANS BUSY ON READ-NEXTPRXQS, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO PRXQS-002.
            IF DRTR-AMT-OUTSTANDING = 0
                GO TO PRXQS-002.
@@ -1806,8 +1821,11 @@
            READ PARAMETER-FILE NEXT
               AT END NEXT SENTENCE.
            IF WS-SLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-SLPARAMETER-ST1
-              GO TO OPEN-050.
+               MOVE "PARAMETER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO OPEN-050.
            CLOSE PARAMETER-FILE.
        OPEN-055.
            OPEN I-O FAX-PARAMETER.
@@ -1822,19 +1840,23 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-FAX-ST1 NOT = 0
               MOVE
-              "THERE IS NO VALID FAXPARAMETER FILE, 'ESC' TO EXIT."
+              "THERE IS NO VALID FAXPARAMETER ON START, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-FAX-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               EXIT PROGRAM.
        OPEN-058.
            READ FAX-PARAMETER
               INVALID KEY NEXT SENTENCE.
            IF WS-FAX-ST1 NOT = 0
-              MOVE "FAXPARAMETER BUSY ON READ, 'ESC' TO RETRY."
+              MOVE "FAXPARAMETER-058 BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-FAX-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO OPEN-058.
            CLOSE FAX-PARAMETER.
        OPEN-060.

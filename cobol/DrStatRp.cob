@@ -346,7 +346,10 @@
            IF WS-SPOOL-ST1 NOT = 0
                MOVE "PRINT FILE OPEN ELSE WHERE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SPOOL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO CONT-030.
            IF WS-PRINTER-TYPE = 1
       *        MOVE WTELL-PAUSE TO PRINT-REC
@@ -653,12 +656,19 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                MOVE "DR TRANS FILE MISSING ON START" TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                PERFORM END-OFF.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DEBTOR TRANS. FILE BUSY ON START." TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO GET-075.
        GET-999.
             EXIT.
@@ -683,13 +693,16 @@
               MOVE " " TO DEBTOR-TRANS-REC
               GO TO PR-999.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DR-TRANS FILE BUSY AT PR-001, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-DRTRANS-ST1
-              GO TO PR-001.
+              MOVE "DRTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
+               GO TO PR-001.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
            IF DRTR-ACCOUNT-NUMBER < WS-ACCNOBEGIN
@@ -705,10 +718,13 @@
             IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                GO TO PR-001.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTOR RECORD BUSYON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
+               MOVE "DEBTOR FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PR-005.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -986,10 +1002,15 @@
               MOVE " " TO DEBTOR-TRANS-REC
               GO TO PRL-999.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DR-TRANS FILE BUSY AT PRL-001, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-DRTRANS-ST1
+              MOVE "DRTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
               GO TO PRL-001.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -1009,10 +1030,13 @@
             IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                GO TO PRL-001.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PRL-005.
                
            IF WS-MESSAGE NOT = " "
@@ -1470,11 +1494,16 @@
               MOVE " " TO DEBTOR-TRANS-REC
               GO TO RUAC-999.
            IF WS-DRTRANS-ST1 NOT = 0
-             MOVE "DR-TRANS BUSY ON READ NEXT RUAC-000, GOING TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-000
-              MOVE 0 TO WS-DRTRANS-ST1
-              GO TO RUAC-000.
+             MOVE "DRTRANS BUSY ON READ-NEXT RUAC-000, GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
+               GO TO RUAC-000.
            IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
               GO TO RUAC-000.
               

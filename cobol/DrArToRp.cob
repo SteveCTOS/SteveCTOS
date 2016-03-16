@@ -40,8 +40,7 @@
        77  WS-GROSSSALES-LAST   PIC S9(8)V99 VALUE 0.
        77  WS-GROSSNO-LAST      PIC S9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  AREA-FIELDS.
            03  AREA-LINE OCCURS 20.
                05  WS-NO            PIC 9(4).
@@ -174,11 +173,14 @@
               MOVE 0 TO WS-DEBTOR-ST1
               GO TO AGF-900.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
               Move "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO AGF-005.
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO AGF-005.
        AGF-020.
            ADD DR-SALES-YTD TO WS-GROSSSALES
            ADD 1            TO WS-GROSSNO
@@ -205,11 +207,16 @@
               MOVE 0 TO WS-DEBTOR-ST1
               GO TO PRR-030.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
 
            IF DR-POST-CODE > 1999 AND < 2200
               MOVE 1 TO SUB-1
