@@ -30,7 +30,7 @@
        77  WS-OTHER             PIC S9(8)V99 VALUE 0.
        77  WS-SALE-AMT          PIC S9(8)V99 VALUE 0.
        01  WS-CASHSALE-STATUS.
-           03  WS-CASHSALE-ST1    PIC 99.
+           03  WS-CASHSALE-ST1  PIC 99.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H1-DATE          PIC X(10).
@@ -133,7 +133,7 @@
            START CASH-SALE KEY NOT < CS-KEY
              INVALID KEY NEXT SENTENCE.
            IF WS-CASHSALE-ST1 NOT = 0
-               MOVE "NO CASHSALE RECORD TO PRINT, 'ESC' TO EXIT."
+               MOVE "NO CASHSALE ON START TO PRINT, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 88 TO WS-CASHSALE-ST1
@@ -145,12 +145,13 @@
                PERFORM PRINT-TOTALS
                GO TO PR-999.
            IF WS-CASHSALE-ST1 NOT = 0
-               MOVE 0 TO WS-CASHSALE-ST1
-               MOVE "SOLD BY FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               MOVE "CASH SALES BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CASHSALE-ST1
                GO TO PR-001.
        PR-010.
            IF LINE-CNT > 60
@@ -189,10 +190,13 @@
                PERFORM ERROR-MESSAGE
                GO TO PR-001.
            IF WS-CASHSALE-ST1 NOT = 0
-               MOVE 0 TO WS-CASHSALE-ST1
                MOVE "SOLD BY FILE BUSY ON READ-DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CASHSALE-ST1
                GO TO PR-900.
            GO TO PR-001.
        PR-999.
@@ -265,11 +269,12 @@
            IF WS-CASHSALE-ST1 NOT = 0
                MOVE "CASH SALE FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-COCASHSALE TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO OPEN-060.
             GO TO OPEN-070.
         OPEN-065.

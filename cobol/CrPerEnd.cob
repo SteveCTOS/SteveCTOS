@@ -405,7 +405,8 @@
            
            GO TO DCRJ-010.
        DCRJ-900.
-           MOVE 12 TO GLPA-CURRENT-CRPER.
+           IF WS-ANSWER1 = "Y"
+               MOVE 12 TO GLPA-CURRENT-CRPER.
            CLOSE CRJRN-FILE.
            MOVE 1610 TO POS.
            DISPLAY " 2. CrJrn File Process Complete.           " AT POS.

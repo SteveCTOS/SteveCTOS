@@ -24,8 +24,7 @@
        77  WS-NUMBER          PIC 99 VALUE 0.
        77  WS-SAVE            PIC 99 VALUE 0.
        01  WS-DELIVER-STATUS.
-           03  WS-DR-ST1   PIC 99.
-      *     03  WS-DR-ST2   PIC X.
+           03  WS-DEL-ST1     PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -158,11 +157,15 @@
        DDR-010.
             DELETE PARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
-            IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEL-ST1 NOT = 0
                 MOVE "PARAMETER BUSY ON DELETE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEL-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM ERROR-MESSAGE
+                MOVE 0 TO WS-DEL-ST1
                GO TO DDR-010.
        DDR-999.
            EXIT.
@@ -174,45 +177,54 @@
        RDR-010.
             REWRITE PARAMETER-REC
                 INVALID KEY NEXT SENTENCE.
-            IF WS-DR-ST1 NOT = 0
-                MOVE 0 TO WS-DR-ST1
+            IF WS-DEL-ST1 NOT = 0
                 MOVE "PARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEL-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEL-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE PARAMETER-REC
                 INVALID KEY NEXT SENTENCE.
-            IF WS-DR-ST1 NOT = 0
-                MOVE 0 TO WS-DR-ST1
+            IF WS-DEL-ST1 NOT = 0
                 MOVE "PARAMETER BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEL-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEL-ST1
                 GO TO RDR-010.
        RDR-999.
             EXIT.
       *
        READ-RECORD SECTION.
        RD-000.
-           MOVE " "       TO WS-DR-ST1
+           MOVE " "       TO WS-DEL-ST1
            MOVE 7         TO PA-TYPE
            MOVE PA-RECORD TO WS-NUMBER.
            START PARAMETER-FILE KEY NOT < PA-KEY.
         RD-010.
            READ PARAMETER-FILE WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-           IF WS-DR-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-DR-ST1
+           IF WS-DEL-ST1 = 23 OR 35 OR 49
+                MOVE 0 TO WS-DEL-ST1
                 PERFORM CLEAR-FORM
                 MOVE "Y" TO NEW-NO
                 MOVE WS-NUMBER TO PA-RECORD
                 GO TO RD-999.
-           IF WS-DR-ST1 NOT = 0
-                MOVE 0 TO WS-DR-ST1
+           IF WS-DEL-ST1 NOT = 0
                 MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEL-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEL-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE PA-RECORD TO WS-SAVE.
@@ -229,7 +241,7 @@
       *
        READ-NEXT SECTION.
        RNX-001.
-           MOVE 0 TO WS-DR-ST1.
+           MOVE 0 TO WS-DEL-ST1.
        RNX-005.
            IF PA-RECORD = " "
                PERFORM START-RECORD.
@@ -251,15 +263,23 @@
                            WS-NUMBER
                MOVE "Y" TO WS-END
                GO TO RNX-999.
-           IF WS-DR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DR-ST1
+           IF WS-DEL-ST1 = 23 OR 35 OR 49
+               MOVE "PARAMETER BUSY ON READ-NEXT-23, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEL-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEL-ST1
+               GO TO RNX-005.
+           IF WS-DEL-ST1 NOT = 0
                MOVE "PARAMETER BUSY ON READ-NEXT, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEL-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RNX-005.
-           IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
-               PERFORM START-RECORD
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEL-ST1
                GO TO RNX-005.
            MOVE PA-RECORD TO WS-NUMBER
                              WS-SAVE.
@@ -270,8 +290,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
             OPEN I-O PARAMETER-FILE.
-            IF WS-DR-ST1 NOT = 0
-               MOVE 0 TO WS-DR-ST1
+            IF WS-DEL-ST1 NOT = 0
+               MOVE 0 TO WS-DEL-ST1
                MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -307,5 +327,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

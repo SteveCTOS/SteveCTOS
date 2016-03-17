@@ -87,35 +87,25 @@
        77  WS-WRITE             PIC X VALUE " ".
        77  WS-YN                PIC X VALUE SPACES.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
+           03  WS-DEBTOR-ST1       PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-SALES-STATUS.
-           03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
+           03  WS-SALES-ST1        PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1     PIC 99.
-      *     03  WS-DRTRANS-ST2     PIC X.
+           03  WS-DRTRANS-ST1      PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
+           03  WS-STTRANS-ST1      PIC 99.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1     PIC 99.
-      *     03  WS-DISTRIBUTION-ST2     PIC X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  WS-SOLDBY-STATUS.
-           03  WS-SOLDBY-ST1     PIC 99.
-      *     03  WS-SOLDBY-ST2     PIC X.
+           03  WS-SOLDBY-ST1       PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
+           03  WS-INCR-ST1         PIC 99.
        01  WS-SPECIALS-STATUS.
-           03  WS-SPECIALS-ST1       PIC 99.
-      *     03  WS-SPECIALS-ST2       PIC 9 COMP-X.
+           03  WS-SPECIALS-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1        PIC 99.
        01  SPLIT-DELIVERVIA.
            03  WSDE-CODE        PIC X VALUE " ".
            03  WSDE-REST        PIC X(9) VALUE " ".
@@ -511,10 +501,22 @@
                 INVALID KEY NEXT SENTENCE.
              IF WS-STOCK-ST1 = 0
                  GO TO RSL-999.
-             IF WS-STOCK-ST1 = 23 OR 35 OR 49 OR 51
-                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
+             IF WS-STOCK-ST1 = 23 OR 35 OR 49
+                 MOVE "STOCK RECORD BUSY ON READ-23, 'ESC' TO EXIT."
                  TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-STOCK-ST1
+                 GO TO RSL-999.
+             IF WS-STOCK-ST1 NOT = 0
+                 MOVE "STOCK RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STOCK-ST1
                  GO TO RSL-000.
              MOVE " " TO ST-STOCKNUMBER
@@ -550,11 +552,14 @@
               MOVE SUB-1 TO SUB-25
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "STOCK TRANS-RECORD BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSTT-010.
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
                MOVE SUB-1 TO SUB-25
                GO TO RSTT-999.
@@ -611,11 +616,14 @@
               MOVE 0 TO STTR-TYPE
               GO TO DEL-ST-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS BUSY ON READ-NEXT-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO DEL-ST-010.
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO DEL-ST-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               UNLOCK STOCK-TRANS-FILE
               GO TO DEL-ST-999.
@@ -627,7 +635,10 @@
            IF WS-STTRANS-ST1 NOT = 0
                 MOVE "DELETE INV ST-TRANS BUSY, 'ESC' TO RETRY."
                  TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANS-ST1
                 GO TO DEL-ST-030.
            MOVE 0 TO WS-STTRANS-ST1.
@@ -651,10 +662,13 @@
               MOVE 0 TO INCR-INVOICE
               GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "INV/CR. REGISTER BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RIR-005.
            IF INCR-PRINTED = "R"
               MOVE 0 TO INCR-INVOICE
@@ -703,10 +717,13 @@
               MOVE 0 TO INCR-INVOICE
               GO TO UIR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "INV/CR. REGISTER BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO UIR-005.
        UIR-010.
            DELETE INCR-REGISTER
@@ -714,12 +731,19 @@
            IF WS-INCR-ST1 = 23 OR 35 OR 49
                MOVE "CREDIT REGISTER NOT DELETED 23, 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO UIR-999.
            IF WS-INCR-ST1 NOT = 0
                MOVE "CREDIT REGISTER NOT DELETED NOT 0, 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
                GO TO UIR-010.
        UIR-999.
@@ -735,10 +759,13 @@
                 MOVE "UNKNOWN" TO SA-NAME
                 GO TO RSALES-900.
             IF WS-SALES-ST1 NOT = 0
-               MOVE 0 TO WS-SALES-ST1
                MOVE "SALES RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO RSALES-500.
        RSALES-900.
             PERFORM ERROR-020.
@@ -761,9 +788,12 @@
            IF WS-SOLDBY-ST1 NOT = 0
                MOVE "SOLDBY BUSY ON READ-DEL, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-SOLDBY-ST1
-              GO TO DSF-010.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SOLDBY-ST1
+               GO TO DSF-010.
            DELETE SOLD-BY
               INVALID KEY NEXT SENTENCE.
        DSF-999.
@@ -780,10 +810,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPDR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO UPDR-000.
             ADD WS-INVOICETOTAL TO DR-BALANCE
                                    DR-CURRENT.
@@ -800,8 +833,12 @@
             IF WS-DEBTOR-ST1 NOT = 0
                MOVE "DEBTOR BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-                GO TO UPDR-900.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO UPDR-900.
        UPDR-999.
            EXIT.
       *
@@ -820,11 +857,14 @@
               PERFORM ERROR-MESSAGE
               GO TO RDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR TRANS FILE BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RDT-010.
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
+               GO TO RDT-010.
        RDT-999.
            EXIT.
       *
@@ -845,8 +885,12 @@
               MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO UDT-010.
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
+               GO TO UDT-010.
            IF DRTR-REFERENCE2 = WS-INVOICE
               GO TO UDT-020
            ELSE
@@ -857,17 +901,23 @@
        UDT-020.
            DELETE DEBTOR-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
+           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49 OR = 91
                MOVE "DEBTOR TRANS NOT DELETED 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO UDT-999.
-           IF WS-DRTRANS-ST1 = 91
-               MOVE "DEBTOR TRANS NOT DELETED, = 91, 'ESC' TO RETRY."
+           IF WS-DRTRANS-ST1 NOT = 0
+               MOVE "DR-TRANS BUSY ON DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-DRTRANS-ST1
-               GO TO UDT-000.
+               GO TO UDT-020.
        UDT-999.
            EXIT.
       *
@@ -904,7 +954,7 @@
               PERFORM ERROR1-000
               MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              MOVE "INFORM YOUR SUPERVISOR THAT NO SPECIAL IS WRITTEN."
+              MOVE "INFORM YOUR SUPERVISOR THAT NO SPECIAL IS DELETED."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020.
@@ -997,9 +1047,12 @@
            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK BUSY ON READ-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-STOCK-ST1
-              GO TO UPST-011.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO UPST-011.
       *
       * ACTUAL UPDATE OF STOCK FILE.
       *
@@ -1018,10 +1071,13 @@
            IF WS-STOCK-ST1 = 23 OR 35 OR 49
                GO TO UPST-020.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-SALES-ST1
                MOVE "STOCK BUSY ON REWRITE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO UPST-012.
        UPST-020.
            IF ST-ANALYSIS = "S"
@@ -1045,10 +1101,13 @@
             IF WS-SALES-ST1 = 23 OR 35 OR 49
                 GO TO UPSA-999.
             IF WS-SALES-ST1 NOT = 0
-               MOVE 0 TO WS-SALES-ST1
                MOVE "SALES RECORD BUSY ON READ, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO UPSA-500.
            ADD WS-COSTTOTAL  TO SA-COST-WEEK
                                 SA-COST-PTD
@@ -1062,10 +1121,13 @@
            IF WS-SALES-ST1 = 23 OR 35 OR 49
               GO TO UPSA-999.
            IF WS-SALES-ST1 NOT = 0
-               MOVE 0 TO WS-SALES-ST1
                MOVE "SALES RECORD BUSY ON REWRITE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO UPSA-600.
        UPSA-999.
            EXIT.

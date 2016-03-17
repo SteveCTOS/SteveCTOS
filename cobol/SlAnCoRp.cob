@@ -46,10 +46,8 @@
        77  TOT-COST-LY          PIC S9(8)V99 VALUE 0.
        01  WS-SALES-STATUS.
            03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -130,7 +128,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE.
 
-      *     ACCEPT WS-RANGE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-RANGE = "A"
@@ -187,10 +184,13 @@
               MOVE 88 TO WS-SALES-ST1
               GO TO RA-999.
            IF WS-SALES-ST1 NOT = 0
-              MOVE 0 TO WS-SALES-ST1
-              MOVE "SALES ANALYSIS BUSY ON READ, 'ESC' TO RETRY"
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               MOVE "SALES ANALYSIS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
               GO TO RA-005.
            MOVE SA-NAME TO H2-ANALYSIS.
        RA-999.
@@ -210,10 +210,14 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR RECORD BUSY AT PRR-005." TO WS-MESSAGE
-              PERFORM ERROR-000
-              GO TO PRR-005.
+               MOVE "DEBTOR FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
            IF WS-MESSAGE NOT = "   "
               PERFORM ERROR-020.
            IF DR-SALES-ANALYSIS = 0
