@@ -339,8 +339,12 @@
                MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RD-010.
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
+                GO TO RD-010.
        RD-999.
            EXIT.
       *
@@ -356,11 +360,12 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "RANDOM RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE RANDOM-NUMBER TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        WRR-999.
             EXIT.
       *
@@ -376,11 +381,12 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "RANDOM RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE RANDOM-NUMBER TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        WLY-999.
             EXIT.
       *
@@ -406,7 +412,7 @@
              "NO INVOICES WITH THOSE INITIALS OR DATE, 'ESC' TO EXIT"
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE 8 TO WS-INCR-ST1
+             MOVE 88 TO WS-INCR-ST1
              GO TO RTWR-999.
        RTWR-005.
            READ INCR-REGISTER NEXT
@@ -414,11 +420,12 @@
            IF WS-INCR-ST1 = 10 OR = 23
               GO TO RTWR-999.
            IF WS-INCR-ST1 NOT = 0
-            MOVE "INVOICE LOCKED BY ANOTHER TERMINAL, CANCEL' TO RETRY."
+            MOVE "INVOICE LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RTWR-005.
 
            IF INCR-TRANS NOT = 1
@@ -483,7 +490,7 @@
              "NO INVOICES LY WITH THOSE INITIALS OR DATE, 'ESC' TO EXIT"
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE 8 TO WS-INCR-LY-ST1
+             MOVE 88 TO WS-INCR-LY-ST1
              GO TO RTWR-999.
        RTWR-005.
            READ INCR-LY-REGISTER NEXT
@@ -493,7 +500,10 @@
            IF WS-INCR-LY-ST1 NOT = 0
            MOVE "INVOICE LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RTWR-005.
 
            IF INCR-LY-TRANS NOT = 1
@@ -558,7 +568,7 @@
              "NO P/SLIP WITH THOSE INITIALS OR DATE, 'ESC' TO EXIT"
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE 8 TO WS-INCR-ST1
+             MOVE 88 TO WS-INCR-ST1
              GO TO RTWRP-999.
        RTWRP-005.
            READ INCR-REGISTER NEXT
@@ -568,7 +578,10 @@
            IF WS-INCR-ST1 NOT = 0
             MOVE "P/SLIP LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RTWRP-005.
 
            IF INCR-TRANS NOT = 4
@@ -633,7 +646,7 @@
              "NO P/SLIP LY WITH THOSE INITIALS OR DATE, 'ESC' TO EXIT"
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE 8 TO WS-INCR-LY-ST1
+             MOVE 88 TO WS-INCR-LY-ST1
              GO TO RTWRP-999.
        RTWRP-005.
            READ INCR-LY-REGISTER NEXT
@@ -643,7 +656,10 @@
            IF WS-INCR-LY-ST1 NOT = 0
             MOVE "P/SLIP LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RTWRP-005.
 
            IF INCR-LY-TRANS NOT = 4
@@ -703,7 +719,7 @@
              MOVE "NO INVOICES WITH THAT AREA CODE, 'ESC' TO EXIT"
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE 8 TO WS-INCR-ST1
+             MOVE 88 TO WS-INCR-ST1
              GO TO PRR-999.
        PRR-005.
            READ INCR-REGISTER NEXT
@@ -713,7 +729,10 @@
            IF WS-INCR-ST1 NOT = 0
             MOVE "INVOICE LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO PRR-005.
 
            IF INCR-TRANS NOT = 1
@@ -800,21 +819,24 @@
            START INCR-LY-REGISTER KEY NOT < INCR-LY-AREA
                INVALID KEY NEXT SENTENCE.
        PLY-004.
-           IF WS-INCR-ST1 NOT = 0
+           IF WS-INCR-LY-ST1 NOT = 0
              MOVE "NO INVOICES LY WITH THAT AREA CODE, 'ESC' TO EXIT"
              TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE 8 TO WS-INCR-ST1
+             MOVE 88 TO WS-INCR-LY-ST1
              GO TO PLY-999.
        PLY-005.
            READ INCR-LY-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10 OR = 23
+           IF WS-INCR-LY-ST1 = 10 OR = 23
               GO TO PLY-000.
-           IF WS-INCR-ST1 NOT = 0
+           IF WS-INCR-LY-ST1 NOT = 0
            MOVE "INVOICE-LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO PLY-005.
 
            IF INCR-LY-TRANS NOT = 1
@@ -1101,7 +1123,10 @@
            IF WS-INCR-ST1 NOT = 0
             MOVE "INVOICE LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RR-005.
        RR-999.
            EXIT.
@@ -1115,7 +1140,10 @@
            IF WS-INCR-LY-ST1 NOT = 0
            MOVE "INVOICE LY LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RRLY-005.
        RRLY-999.
            EXIT.
@@ -1206,9 +1234,10 @@
               MOVE
              "RANDOM FILE OPEN I-O BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-RANDOM-ST1
               GO TO OPEN-035.
        OPEN-036.
@@ -1217,9 +1246,10 @@
               MOVE
              "RANDOM FILE OPEN OUTPUT BUSY, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-RANDOM-ST1
               GO TO OPEN-036.
 

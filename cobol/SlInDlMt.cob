@@ -45,14 +45,11 @@
            03  WS-NAME         PIC X(20).
            03  WS-PS-AMT       PIC 9(8)V99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1     PIC 99.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1  PIC 99.
-      *     03  WS-DRTRANS-ST2  PIC 9(2) COMP-X.
        01  Ws-CashSale-Status.
-           03  Ws-CashSale-St1     PIC 99.
-      *     03  Ws-CashSale-St2     PIC 9(2) COMP-X.
+           03  Ws-CashSale-St1 PIC 99.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -177,9 +174,10 @@
                MOVE
                 "CashSale RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
             GO TO QPC-900.
        QPC-530.
            REWRITE CashSale-Rec
@@ -194,9 +192,10 @@
                MOVE
                 "CashSale RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
             GO TO QPC-900.
        QPC-600.
            MOVE INCR-INVOICE TO CS-INVOICE.
@@ -214,7 +213,10 @@
            IF Ws-CashSale-ST1 NOT = 0
                MOVE "CashSale BUSY ON READ TO DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
                GO TO QPC-605.
            MOVE 2650 TO POS
            DISPLAY "** FOUND **" AT POS.
@@ -224,7 +226,10 @@
            IF Ws-CashSale-ST1 NOT = 0
                MOVE "CashSale BUSY ON DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
                GO TO QPC-610.
        QPC-900.
            PERFORM ERROR-020.
@@ -300,7 +305,7 @@
               GO TO GET-999.
        GET-920.
             IF WS-NEWINPUT = "1"
-             IF WS-INCR-ST1 = 8
+             IF WS-INCR-ST1 = 88
                GO TO GET-950.
             PERFORM SCROLLING.
             PERFORM FILL-DATA.
@@ -428,10 +433,15 @@
            IF WS-INCR-ST1 = 10 OR = 91
                GO TO RDTR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
-               MOVE 2955 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
+             MOVE "REGISTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RDTR-010.
             
            IF INCR-TRANS NOT = 1
@@ -439,7 +449,8 @@
 
            IF INCR-PULL-DATE NOT = 0
                MOVE 2910 TO POS
-               DISPLAY "Be Patient, reading next INVOICE..." AT POS
+               DISPLAY "Be Patient, Reading Next Valid INVOICE..."
+                AT POS
                GO TO RDTR-010.
                
            MOVE INCR-INVOICE     TO WS-INV-NO (SUB-1)
@@ -477,13 +488,16 @@
              "THIS INVOICE NUMBER DOES NOT EXIT, PLEASE RE-ENTER."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 8 TO WS-INCR-ST1
+               MOVE 88 TO WS-INCR-ST1
                GO TO ROT-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
-               MOVE 2955 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
+               MOVE "REGISTER BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO ROT-010.
                
            IF F-EXIT-CH NOT = X"9B" AND NOT = X"C7"
@@ -492,7 +506,7 @@
              "THIS INVOICE NUMBER HAS ALREADY BEEN ALLOCATED, RE-ENTER."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 8 TO WS-INCR-ST1
+               MOVE 88 TO WS-INCR-ST1
                GO TO ROT-999.
                
            MOVE INCR-INVOICE     TO WS-INV-NO (SUB-1)
@@ -524,8 +538,12 @@
            IF WS-INCR-ST1 NOT = 0
              MOVE "REGISTER FILE BUSY ON READ-LOCK, 'ESC' TO RETRY."
              TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             GO TO RWR-010.
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RWR-010.
            ACCEPT WS-TIME FROM TIME.
            MOVE WS-DEL-DATE (SUB-1) TO INCR-PULL-DATE
            MOVE WS-TIME             TO INCR-PULL-TIME.
@@ -533,10 +551,13 @@
            REWRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
                 MOVE "REGISTER BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
                 GO TO RWR-060.
            PERFORM UPDATE-DEBTOR-TRANSACTION.
            PERFORM QUES-CASH.
@@ -562,8 +583,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE "DEBTOR TRANS BUSY" TO WS-MESSAGE
+               MOVE "DEBTOR TRANS BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-010.
            IF DRTR-REFERENCE2 = INCR-INVOICE
                MOVE WS-DEL-DATE (SUB-1) TO DRTR-DEL-DATE
@@ -584,9 +610,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE "DR-TRANS BUSY ON UPDATE, 'ESC' TO RETRY."
+               MOVE "DR-TRANS BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-020.
        UDT-999.
            EXIT.
@@ -718,7 +748,7 @@
               PERFORM ERROR-MESSAGE
               GO TO OPEN-003.
            MOVE " " TO WS-CASH-ACCEPT.
-           MOVE "8" TO WS-CASHSALE-ST1.
+           MOVE 88  TO WS-CASHSALE-ST1.
        OPEN-005.
            OPEN I-O DEBTOR-TRANS-FILE.
            IF WS-DRTRANS-ST1 NOT = 0 

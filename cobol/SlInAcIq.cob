@@ -302,14 +302,15 @@
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
            IF WS-STTRANS-ST1 NOT = 0
-            IF SUB-2 = 10
-               MOVE "ST-TRANS-ST1 NOT = 0 ON READ, 'ESC' TO RE-TRY"
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO RDTR-010
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO RDTR-010.
            IF STTR-TYPE NOT = 1 AND NOT = 6
                MOVE 2910 TO POS
@@ -397,7 +398,6 @@
       *
        READ-DEBTORS SECTION.
        RD-000.
-           MOVE 0 TO SUB-2.
            MOVE DR-ACCOUNT-NUMBER TO WS-ACCOUNTNUMBER.
            START DEBTOR-MASTER KEY NOT < DR-KEY
                 INVALID KEY NEXT SENTENCE.
@@ -412,14 +412,13 @@
                 MOVE 0 TO DR-POST-CODE
                 GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-            IF SUB-2 = 10
-               MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY"
+               MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO RD-010
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-010.
        RD-999.
             EXIT.
@@ -433,43 +432,49 @@
              EXIT.
       *
        READ-DEBTOR-NEXT SECTION.
-       R-DR-NX-000.
-           MOVE 0 TO SUB-2.
        R-DR-NX-005. 
            READ DEBTOR-MASTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-DEBTOR-ST1 NOT = 0
-            IF SUB-2 NOT = 10
-               ADD 1 TO SUB-2
-               GO TO R-DR-NX-005
-           ELSE
-               MOVE 0 TO SUB-2
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTOR RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY"
+           IF WS-DEBTOR-ST1 = 10
+               MOVE "DEBTORS AT END OF SEQUENCE, 'ESC' TO RESTART."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM START-DEBTOR
+               GO TO R-DR-NX-005.
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO R-DR-NX-005.
        R-DR-NX-999.
              EXIT.
       *
        READ-DEBTOR-PREVIOUS SECTION.
-       R-DR-PREV-000.
-           MOVE 0 TO SUB-2.
        R-DR-PREV-005. 
            READ DEBTOR-MASTER PREVIOUS
                AT END NEXT SENTENCE.
-           IF WS-DEBTOR-ST1 NOT = 0
-            IF SUB-2 NOT = 10
-               ADD 1 TO SUB-2
-               GO TO R-DR-PREV-005
-           ELSE
-               MOVE 0 TO SUB-2
-               MOVE 0 TO WS-DEBTOR-ST1
-               MOVE "DEBTOR RECORD BUSY ON READ-PREV, 'ESC' TO RETRY"
+           IF WS-DEBTOR-ST1 = 10
+               MOVE "DEBTORS AT END OF SEQUENCE, 'ESC' TO RESTART."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM START-DEBTOR
+               GO TO R-DR-PREV-005.
+           IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO R-DR-PREV-005.
        R-DR-PREV-999.
              EXIT.
@@ -492,14 +497,13 @@
                 MOVE "*REGISTER NOT FOUND*" TO INCR-PORDER
                 GO TO ROR-999.
            IF WS-INCR-ST1 NOT = 0
-            IF SUB-2 = 10
                MOVE "REGISTER RECORD BUSY ON READ, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO ROR-010
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO ROR-010.
        ROR-999.
             EXIT.
@@ -530,14 +534,15 @@
                MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-900.
            IF WS-STTRANS-ST1 NOT = 0
-            IF SUB-2 = 10
-               MOVE "ST-TRANS BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO PRR-002
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-002.
            IF STTR-TYPE NOT = 1 AND NOT = 6
                GO TO PRR-002.
@@ -766,7 +771,7 @@
        OPEN-000.
             OPEN I-O DEBTOR-MASTER.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE "DEBTOR FIL BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-DEBTOR-ST1

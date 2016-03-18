@@ -354,7 +354,7 @@
            START INCR-REGISTER KEY NOT < INCR-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-              MOVE 8 TO WS-INCR-ST1
+              MOVE 88 TO WS-INCR-ST1
               GO TO PR-999.
        PR-002.
            PERFORM READ-RANDOM-RECORD.
@@ -365,11 +365,13 @@
            READ INCR-REGISTER
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 = 23 OR 35 OR 49
-              MOVE "REG-ST1 = 2" TO WS-MESSAGE
+              MOVE "REGISTER BUSY ON READ,REG-ST1 = 23, 'ESC' TO RETRY." 
+              TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO PR-002.
            IF WS-INCR-ST1 NOT = 0
-             MOVE "RECORD LOCKED PR AT ANOTHER STATION, 'ESC' TO RETRY."
+             MOVE 
+           "REGISTER LOCKED PR-003 AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
@@ -655,12 +657,12 @@
               GO TO RBD-900.
            IF WS-INCR-ST1 NOT = 0
              MOVE 
-           "RECORD LOCKED RBD AT ANOTHER STATION, 'ESC' TO RETRY."
+           "REGISTER LOCKED RBD AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
              PERFORM ERROR-000
-             MOVE 2837 TO POS
+             MOVE 3055 TO POS
              DISPLAY D-INVNO AT POS
              PERFORM ERROR1-020
              PERFORM ERROR-010
@@ -705,11 +707,12 @@
             IF WS-RANDOM-ST1 NOT = 0
                MOVE "RANDOM RECORD BUSY ON READ, 'ESC' TO SEE STATUS."
                 TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE RANDOM-REC TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RRR-002.
             
             MOVE RANDOM-INVOICE TO INCR-KEY.
@@ -724,18 +727,9 @@
            MOVE INCR-KEY TO RANDOM-INVOICE.
            WRITE RANDOM-REC
               INVALID KEY NEXT SENTENCE.
-              
            IF WS-RANDOM-ST1 NOT = 0
              MOVE "WE HAVE A PROBLEM @ WRR-005, WRITING RANDOM RECORD."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
-              
-           GO TO WRR-999.
-              
-           IF WS-RANDOM-ST1 NOT = 0
-              MOVE "RANDOM RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE.
        WRR-999.
             EXIT.
@@ -812,9 +806,10 @@
               MOVE
              "RANDOM FILE OPEN I-O ERROR, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-RANDOM-ST1
               GO TO OPEN-035.
        OPEN-036.
@@ -823,9 +818,10 @@
               MOVE
              "RANDOM FILE OPEN OUTPUT ERROR, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-RANDOM-ST1
               GO TO OPEN-036.
        OPEN-500.

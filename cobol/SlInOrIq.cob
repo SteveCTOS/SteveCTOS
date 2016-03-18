@@ -387,10 +387,13 @@
                MOVE "Y" TO WS-NEWORDER
                GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "REGISTER BUSY <RIR-005>, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RIR-005.
        RIR-010.
            MOVE INCR-LINENO TO SUB-20 SUB-25.
@@ -411,8 +414,12 @@
            IF WS-DRTRANS-ST1 NOT = 0
               MOVE "BAD START ON DR-TRANS FILE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RDTR-005.
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
+               GO TO RDTR-005.
        RDTR-010.
            READ DEBTOR-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
@@ -421,8 +428,12 @@
            IF WS-DRTRANS-ST1 NOT = 0
               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RDTR-010.
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
+               GO TO RDTR-010.
        RDTR-999.
            EXIT.
       *
@@ -476,12 +487,15 @@
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
-              MOVE "ST-TRANS-RECORD BUSY ON READ-NEXT" TO WS-MESSAGE
+              MOVE "ST-TRANS BUSY ON READ-NEXT, 'ESC' TO RETRY." 
+              TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
@@ -979,10 +993,13 @@
                MOVE "Z" TO DR-SUPPLY-Y-N
                GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-010.
        RD-999.
            EXIT.

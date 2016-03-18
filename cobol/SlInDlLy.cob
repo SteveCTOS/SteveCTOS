@@ -45,14 +45,11 @@
            03  WS-NAME         PIC X(20).
            03  WS-PS-AMT       PIC 9(8)V99.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1    PIC 99.
-      *     03  WS-INCR-LY-ST2    PIC X.
+           03  WS-INCR-LY-ST1  PIC 99.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1  PIC 99.
-      *     03  WS-DRTRANS-ST2  PIC 9(2) COMP-X.
        01  WS-CASHSALE-STATUS.
-           03  WS-CASHSALE-ST1     PIC 99.
-      *     03  WS-CASHSALE-ST2     PIC 9(2) COMP-X.
+           03  WS-CASHSALE-ST1 PIC 99.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -191,7 +188,11 @@
            IF WS-CASHSALE-ST1 NOT = 0
                MOVE "CASHSALE BUSY ON READ, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CASHSALE-ST1
                GO TO QPC-605.
            MOVE 2850 TO POS
            DISPLAY "** FOUND **" AT POS.
@@ -201,7 +202,11 @@
            IF WS-CASHSALE-ST1 NOT = 0
                MOVE "CASHSALE BUSY ON DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CASHSALE-ST1
                GO TO QPC-610.
        QPC-900.
            PERFORM ERROR-020.
@@ -398,11 +403,12 @@
            IF WS-INCR-LY-ST1 = 10 OR = 91
                GO TO RDTR-999.
            IF WS-INCR-LY-ST1 NOT = 0
-               MOVE 2910 TO POS
-             DISPLAY "REGISTER-LY BUSY ON READ-NEXT, GOING TO RE-READ."
-                AT POS
-               MOVE 2960 TO POS
-               DISPLAY WS-INCR-LY-ST1 AT POS
+             MOVE "REGISTER-LY BUSY ON READ-NEXT, 'ESC' TO RE-READ."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RDTR-010.
             
            IF INCR-LY-TRANS NOT = 1
@@ -451,11 +457,12 @@
                MOVE 88 TO WS-INCR-LY-ST1
                GO TO ROT-999.
            IF WS-INCR-LY-ST1 NOT = 0
-               MOVE 2910 TO POS
-             DISPLAY "REGISTER-LY BUSY ON READ-NEXT, GOING TO RE-READ."
-                   AT POS
-               MOVE 2760 TO POS
-               DISPLAY WS-INCR-LY-ST1 AT POS
+             MOVE "REGISTER-LY BUSY ON READ-NEXT, 'ESC' TO RE-READ."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO ROT-010.
                
            IF F-EXIT-CH NOT = X"9B"
@@ -494,10 +501,13 @@
            IF WS-INCR-LY-ST1 = 23 OR 35 OR 49 OR = 91
                GO TO RWR-999.
            IF WS-INCR-LY-ST1 NOT = 0
-             MOVE "REG-LY FILE BUSY ON READ-LOCK, 'ESC' TO RETRY."
-             TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             GO TO RWR-010.
+             MOVE "REGISTER-LY BUSY ON READ, 'ESC' TO RE-READ."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO RWR-010.
            ACCEPT WS-TIME FROM TIME.
            MOVE WS-DEL-DATE (SUB-1) TO INCR-LY-PULL-DATE
            MOVE WS-TIME             TO INCR-LY-PULL-TIME.
@@ -508,7 +518,10 @@
                 MOVE 0 TO WS-INCR-LY-ST1
                 MOVE "REGISTER BUSY ON RE-WRITE, 'ESC' TO RE-TRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RWR-060.
            PERFORM UPDATE-DEBTOR-TRANSACTION.
            PERFORM QUES-CASH.
@@ -537,7 +550,11 @@
            IF WS-DRTRANS-ST1 NOT = 0
                MOVE "DR-TRANS BUSY ON READ-LOCK, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-010.
            IF DRTR-REFERENCE2 = INCR-LY-INVOICE
                MOVE WS-DEL-DATE (SUB-1) TO DRTR-DEL-DATE
@@ -552,15 +569,19 @@
                PERFORM ERROR-MESSAGE
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 = 91
-               MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DR-TRANS NOT UPDATED, ST1=91, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
-               MOVE "DR-TRANS BUSY ON UPDATE, 'ESC' TO RETRY."
+               MOVE "DR-TRANS BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-020.
        UDT-999.
            EXIT.

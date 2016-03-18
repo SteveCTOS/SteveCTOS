@@ -20,13 +20,12 @@
            03  FILLER           PIC X(132).
       *
        WORKING-STORAGE SECTION.
-       77  WS-PRINTANSWER       PIC X(10) VALUE " ".
-       77  LINE-CNT             PIC 9(3) VALUE 66.
-       77  PAGE-CNT             PIC 9(3) VALUE 0.
-       77  WS-TOTALS            PIC S9(9)V99 VALUE 0.
+       77  WS-PRINTANSWER          PIC X(10) VALUE " ".
+       77  LINE-CNT                PIC 9(3) VALUE 66.
+       77  PAGE-CNT                PIC 9(3) VALUE 0.
+       77  WS-TOTALS               PIC S9(9)V99 VALUE 0.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1     PIC X.
-           03  WS-DISTRIBUTION-ST2     PIC X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -97,27 +96,36 @@
            MOVE "1" TO DIST-KEY.
            START DISTRIBUTIONS KEY NOT < DIST-KEY
               INVALID KEY NEXT SENTENCE.
-           IF WS-DISTRIBUTION-ST1 = 91
-              MOVE 0 TO WS-DISTRIBUTION-ST1
+           IF WS-DISTRIBUTION-ST1 NOT = 0
               MOVE "DIST-VAT RECORD BUSY ON START, 'ESC' TO RETRY." 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DISTRIBUTION-ST1
               GO TO PRR-000.
        PRR-005.
            READ DISTRIBUTIONS
                INVALID KEY NEXT SENTENCE.
-           IF WS-DISTRIBUTION-ST1 = 10
-              MOVE 0 TO WS-DISTRIBUTION-ST1
-              MOVE 3010 TO POS
-              DISPLAY "DISTRIBUTIONS BUSY ON READ, 'ESC' TO RETRY."
-               AT POS
-              GO TO PRR-005.
            IF WS-DISTRIBUTION-ST1 = 23 OR 35 OR 49
-              MOVE 0 TO WS-DISTRIBUTION-ST1
-              MOVE "DISTRIBUTIONS RECORD NOT FOUND, 'ESC' TO RETRY."
+              MOVE "DISTRIBUTIONS RECORD NOT FOUND, 'ESC' TO EXIT."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              STOP RUN.
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DISTRIBUTION-ST1
+              EXIT PROGRAM.
+           IF WS-DISTRIBUTION-ST1 NOT = 0
+              MOVE "DIST-VAT RECORD BUSY ON READ, 'ESC' TO RETRY." 
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DISTRIBUTION-ST1
+              GO TO PRR-005.
        PRR-010.
            IF LINE-CNT < 60
               GO TO PRR-020.

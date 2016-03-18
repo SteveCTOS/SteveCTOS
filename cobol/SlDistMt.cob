@@ -20,7 +20,6 @@
        77  WS-SAVE            PIC 9 VALUE 0.
        01  WS-DISTRIBUTION-STATUS.
            03  WS-DISTRIBUTION-ST1   PIC 99.
-      *     03  WS-DISTRIBUTION-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -2134,7 +2133,13 @@
             DELETE DISTRIBUTIONS
                INVALID KEY NEXT SENTENCE.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-               MOVE " " TO WS-DISTRIBUTION-ST1
+                MOVE "DISTRIBUTIONS BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                GO TO DDR-010.
        DDR-999.
            EXIT.
@@ -2200,20 +2205,26 @@
             REWRITE DIST-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-                MOVE 0 TO WS-DISTRIBUTION-ST1
                 MOVE "DISTRIBUTION BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE DIST-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-                MOVE 0 TO WS-DISTRIBUTION-ST1
                 MOVE "DISTRIBUTION BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                 GO TO RDR-020.
        RDR-999.
             EXIT.
@@ -2233,10 +2244,13 @@
                 MOVE WS-NUMBER TO DIST-KEY
                 GO TO RD-999.
            IF WS-DISTRIBUTION-ST1 NOT = 0
-                MOVE 0 TO WS-DISTRIBUTION-ST1
                 MOVE "DISTRIBUTIONS BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE DIST-KEY TO WS-SAVE.
@@ -2264,15 +2278,24 @@
                MOVE "Y" TO WS-END
                GO TO RNX-999.
            IF WS-DISTRIBUTION-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-DISTRIBUTION-ST1
                MOVE "DISTRIBUTIONS BUSY ON READ, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DISTRIBUTION-ST1
                GO TO RNX-005.
            IF WS-DISTRIBUTION-ST1 NOT = 0
-               MOVE 0 TO WS-DISTRIBUTION-ST1
-               PERFORM START-RECORD
-               GO TO RNX-005.
+                MOVE "DISTRIBUTIONS BUSY ON READ, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
+                PERFORM START-RECORD
+                GO TO RNX-005.
            IF DIST-KEY = 0
                PERFORM START-RECORD.
            MOVE DIST-KEY TO WS-NUMBER
@@ -2321,4 +2344,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

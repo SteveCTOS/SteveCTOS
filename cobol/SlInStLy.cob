@@ -43,16 +43,12 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
-      *     03  WS-DEBTOR-ST2    PIC X.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1    PIC 99.
-      *     03  WS-INCR-LY-ST2    PIC X.
+           03  WS-INCR-LY-ST1   PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTRANSLY-ST1    PIC 99.
-      *     03  WS-STTRANSLY-ST2    PIC X.
+           03  WS-STTRANSLY-ST1 PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -336,7 +332,14 @@
            IF WS-STTRANSLY-ST1 = 23 OR 35 OR 49
                 GO TO RDTR-999.
            IF WS-STTRANSLY-ST1 NOT = 0
-              GO TO RDTR-005.
+               MOVE "STTRANSLY FILE BUSY ON START, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANSLY-ST1
+               GO TO RDTR-005.
            MOVE " " TO F-EXIT-CH.
        RDTR-010.
            IF F-EXIT-CH = " "
@@ -356,14 +359,15 @@
                CLOSE STOCK-TRANSLY-FILE
                GO TO RDTR-000.
            IF WS-STTRANSLY-ST1 NOT = 0
-            IF SUB-2 = 10
-               MOVE "ST-TRANS-ST1 NOT = 0 ON READ, 'ESC' TO RE-TRY"
+            MOVE "STTRANSLY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO RDTR-010
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANSLY-ST1
                GO TO RDTR-010.
            IF STTR-LY-TYPE NOT = 1 AND NOT = 6
                MOVE 2910 TO POS
@@ -485,6 +489,12 @@
            START STOCK-TRANSLY-FILE KEY NOT < STTR-LY-ST-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANSLY-ST1 NOT = 0
+               MOVE "STTRANSLY FILE BUSY ON START, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STTRANSLY-ST1
                GO TO PRR-900.
        PRR-002.
@@ -494,14 +504,15 @@
                MOVE 0 TO WS-STTRANSLY-ST1
                GO TO PRR-900.
            IF WS-STTRANSLY-ST1 NOT = 0
-            IF SUB-2 = 10
-               MOVE "ST-TRANS-ST1 NOT = 0 ON READ, 'ESC' TO RE-TRY"
+            MOVE "STTRANSLY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO PRR-002
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANSLY-ST1
                GO TO PRR-002.
            IF STTR-LY-TYPE NOT = 1 AND NOT = 6
                GO TO PRR-002.
@@ -615,7 +626,6 @@
       *
        READ-DEBTOR SECTION.
        RD-010.
-           MOVE 0 TO SUB-2.
            START DEBTOR-MASTER KEY NOT < DR-KEY.
        RD-015.
            READ DEBTOR-MASTER
@@ -623,21 +633,19 @@
            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-            IF SUB-2 = 10
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO SUB-2
-               GO TO RD-015
-            ELSE
-               ADD 1 TO SUB-2
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-015.
        RD-999.
            EXIT.
       *
        READ-STOCK SECTION.
        RS-000.
-           MOVE 0 TO SUB-2.
            MOVE ST-STOCKNUMBER TO WS-STOCKNUMBER.
            START STOCK-MASTER KEY NOT < ST-KEY.
        RS-010.
@@ -648,14 +656,13 @@
                 MOVE "UNKNOWN" TO ST-DESCRIPTION1
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
-             IF SUB-2 = 10
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                MOVE 0 TO SUB-2
-                GO TO RS-010
-             ELSE
-                ADD 1 TO SUB-2
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO RS-010.
        RS-999.
             EXIT.
@@ -668,17 +675,16 @@
              EXIT.
       *
        READ-STOCK-NEXT SECTION.
-       R-ST-NX-000.
-           MOVE 0 TO SUB-2.
        R-ST-NX-005. 
            READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE.
            IF WS-STOCK-ST1 NOT = 0
-            IF SUB-2 NOT = 10
-               ADD 1 TO SUB-2
-               GO TO R-ST-NX-005
-            ELSE
-               MOVE 0 TO SUB-2
+               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO R-ST-NX-005.
@@ -686,17 +692,16 @@
              EXIT.
       *
        READ-STOCK-PREVIOUS SECTION.
-       RPREV-000.
-           MOVE 0 TO SUB-2.
        RPREV-005. 
            READ STOCK-MASTER PREVIOUS
                AT END NEXT SENTENCE.
            IF WS-STOCK-ST1 NOT = 0
-            IF SUB-2 NOT = 10
-               ADD 1 TO SUB-2
-               GO TO RPREV-005
-            ELSE
-               MOVE 0 TO SUB-2
+               MOVE "STOCK FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO RPREV-005.
@@ -708,7 +713,6 @@
             IF STTR-LY-REFERENCE1 = INCR-LY-INVOICE
              IF STTR-LY-TYPE = INCR-LY-TRANS
                  GO TO ROR-999.
-           MOVE 0 TO SUB-2.
            MOVE STTR-LY-TYPE       TO INCR-LY-TRANS.
            MOVE STTR-LY-REFERENCE1 TO INCR-LY-INVOICE.
            START INCR-LY-REGISTER KEY NOT < INCR-LY-KEY.
@@ -723,15 +727,13 @@
                MOVE "*REGISTER NOT FOUND*" TO INCR-LY-PORDER
                GO TO ROR-999.
            IF WS-INCR-LY-ST1 NOT = 0
-            IF SUB-2 = 10
-               MOVE "REGISTER RECORD BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "REGISTERLY RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-LY-ST1
-               MOVE 0 TO SUB-2
-               GO TO ROR-010
-            ELSE
-               ADD 1 TO SUB-2
                GO TO ROR-010.
        ROR-999.
             EXIT.

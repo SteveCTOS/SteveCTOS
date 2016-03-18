@@ -20,7 +20,6 @@
        77  WS-SAVE            PIC 9 VALUE 0.
        01  WS-DISTRIBUTION-STATUS.
            03  WS-DISTRIBUTION-ST1   PIC 99.
-      *     03  WS-DISTRIBUTION-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -365,10 +364,13 @@
                 MOVE WS-NUMBER TO DIST-KEY
                 GO TO RD-999.
            IF WS-DISTRIBUTION-ST1 NOT = 0
-                MOVE 0 TO WS-DISTRIBUTION-ST1
                 MOVE "DISTRIBUTIONS BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE DIST-KEY TO WS-SAVE.
@@ -415,4 +417,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

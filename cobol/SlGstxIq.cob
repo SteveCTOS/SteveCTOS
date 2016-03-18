@@ -20,11 +20,9 @@
        77  WS-PTD               PIC S9(8)V99 VALUE 0.
        77  WS-YTD               PIC S9(8)V99 VALUE 0.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1        PIC 99.
-      *     03  WS-DISTRIBUTION-ST2        PIC X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -55,10 +53,13 @@
                PERFORM ERROR-MESSAGE
                GO TO READ-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO READ-000.
        READ-005.
             MOVE "1" TO DIST-KEY.
@@ -70,10 +71,13 @@
                PERFORM ERROR-MESSAGE
                GO TO READ-999.
             IF WS-DISTRIBUTION-ST1 NOT = 0
-               MOVE 0 TO WS-DISTRIBUTION-ST1
                MOVE "VAT RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DISTRIBUTION-ST1
                GO TO READ-005.
         READ-010.
             MOVE "TAXPERCENT"   TO F-FIELDNAME
@@ -240,5 +244,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

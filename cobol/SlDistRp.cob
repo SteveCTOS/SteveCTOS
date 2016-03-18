@@ -24,8 +24,7 @@
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  PAGE-CNT             PIC 9(3) VALUE 0.
        01  WS-DISTRIBUTION-STATUS.
-           03  WS-DISTRIBUTION-ST1           PIC X.
-           03  WS-DISTRIBUTION-ST2           PIC X.
+           03  WS-DISTRIBUTION-ST1 PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -95,18 +94,15 @@
        PRR-008.
            READ DISTRIBUTIONS
                INVALID KEY NEXT SENTENCE.
-           IF WS-DISTRIBUTION-ST1 = 10
-              MOVE 0 TO WS-DISTRIBUTION-ST1
-              MOVE 3010 TO POS
-              DISPLAY "DISTRIBUTIONS RECORD BUSY ON READ" AT POS
-              GO TO PRR-008.
-           IF WS-DISTRIBUTION-ST1 = 23 OR 35 OR 49
-              MOVE 0 TO WS-DISTRIBUTION-ST1
-              MOVE 3010 TO POS
-              DISPLAY "DISTRIBUTIONS RECORD NOT FOUND" AT POS
-              STOP RUN.
-           MOVE 3010 TO POS.
-           DISPLAY "                     " AT POS.
+           IF WS-DISTRIBUTION-ST1 NOT = 0
+                MOVE "DISTRIBUTIONS BUSY ON READ, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DISTRIBUTION-ST1
+                GO TO PRR-999.
        PRR-010.
             IF LINE-CNT < 60
                GO TO PRR-015.
@@ -276,7 +272,11 @@
            IF WS-DISTRIBUTION-ST1 NOT = 0
                MOVE "DISTRIBUTION FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DISTRIBUTION-ST1
                GO TO OPEN-010.
            MOVE Ws-Co-Name To CO-NAME.
 

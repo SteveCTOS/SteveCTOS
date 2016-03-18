@@ -1885,19 +1885,6 @@
            IF WS-INCR-ST1 = 10 OR = 23
                MOVE "Y" TO WS-COMPLETE
                GO TO RDUR-999.
-           IF WS-INCR-ST1 = 35 OR 49 OR 51
-               MOVE 0 TO WS-INCR-ST1
-               GO TO RDUR-055.
-           IF INCR-TRANS NOT = 1 AND NOT = 6
-              GO TO RDUR-055.
-              
-           IF INCR-DATE < WS-DATE
-              GO TO RDUR-055.
-           MOVE INCR-DATE TO SPLIT-DATE.
-           IF SPLIT-MM > WS-MM
-               MOVE "Y" TO WS-COMPLETE
-              GO TO RDUR-999.
-              
            IF WS-INCR-ST1 NOT = 0
                MOVE "ERROR IN REGISTER FILE, PRESS 'ESC' TO EXIT = "
                TO WS-MESSAGE
@@ -1910,7 +1897,17 @@
                PERFORM ERROR-020
                MOVE 0 TO WS-INCR-ST1
                MOVE "E" TO WS-COMPLETE
-               GO TO RDUR-999.
+               GO TO RDUR-055.
+           IF INCR-TRANS NOT = 1 AND NOT = 6
+              GO TO RDUR-055.
+              
+           IF INCR-DATE < WS-DATE
+              GO TO RDUR-055.
+           MOVE INCR-DATE TO SPLIT-DATE.
+           IF SPLIT-MM > WS-MM
+               MOVE "Y" TO WS-COMPLETE
+              GO TO RDUR-999.
+              
        RDUR-100.
            IF WS-FOUND = " "
               MOVE "Y" TO WS-FOUND.
@@ -1979,10 +1976,13 @@
                MOVE 0 TO INCR-INVOICE
                GO TO RIR-002.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "REGISTER BUSY ON READ, PRESS 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RIR-005.
            IF WS-INVCRED = "I"
             IF INCR-TRANS = 1
@@ -1999,29 +1999,22 @@
        RIR-055.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-INCR-ST1
-               GO TO RIR-055.
            IF WS-INCR-ST1 = 10
                MOVE 0 TO WS-INCR-ST1
                MOVE "Y" TO WS-COMPLETE
                GO TO RIR-999.
+           IF WS-INCR-ST1 NOT = 0
+               MOVE "REGISTER BUSY ON READ-NEXT, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RIR-055.
            IF INCR-INVOICE > WS-RANGE2
               MOVE "Y" TO WS-COMPLETE
               GO TO RIR-999.
-           IF WS-INCR-ST1 NOT = 0
-               MOVE "ERROR IN REGISTER FILE, PRESS 'ESC' TO EXIT = "
-               TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3060 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
-               ADD 5 TO POS
-               DISPLAY INCR-INVOICE AT POS
-               PERFORM ERROR-010
-               PERFORM ERROR-020
-               MOVE 0 TO WS-INCR-ST1
-               MOVE "E" TO WS-COMPLETE
-               GO TO RIR-999.
            IF WS-INVCRED = "I"
              IF INCR-TRANS = 1
               GO TO RIR-100.
@@ -2101,7 +2094,11 @@
            IF WS-INCR-ST1 NOT = 0
                MOVE "REGISTER BUSY ON READ, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RQP-005.
            IF WS-PROF-TYPE = "Q"
             IF INCR-TRANS = 8
@@ -2117,29 +2114,25 @@
        RQP-055.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-INCR-ST1
-               GO TO RQP-055.
            IF WS-INCR-ST1 = 10
                MOVE 0 TO WS-INCR-ST1
                MOVE "Y" TO WS-COMPLETE
                GO TO RQP-999.
-           IF INCR-INVOICE > WS-RANGE2
-              MOVE "Y" TO WS-COMPLETE
-              GO TO RQP-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "ERROR IN REGISTER FILE, 'ESC' TO EXIT = "
+               MOVE "REGISTER BUSY ON READ-NEXT, 'ESC' TO EXIT"
                TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3060 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
-               ADD 5 TO POS
-               DISPLAY INCR-INVOICE AT POS
-               PERFORM ERROR-010
-               PERFORM ERROR-020
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE INCR-INVOICE TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
                MOVE "E" TO WS-COMPLETE
                GO TO RQP-999.
+           IF INCR-INVOICE > WS-RANGE2
+              MOVE "Y" TO WS-COMPLETE
+              GO TO RQP-999.
            IF WS-PROF-TYPE = "Q"
             IF INCR-TRANS = 8
                GO TO RQP-100.
@@ -2171,13 +2164,13 @@
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS-RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
            
@@ -2275,10 +2268,13 @@
                MOVE " " TO WS-SPEC-COMMENT
                GO TO RCOMM-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER COMM BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RCOMM-010.
        RCOMM-999.
             MOVE COMM-DESC TO WS-SPEC-COMMENT.
@@ -2302,10 +2298,13 @@
                MOVE "*** UNKNOWN DEBTOR ***" TO DR-ACC-EMAIL
                GO TO RD-010.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-000.
            IF DR-ACC-EMAIL = " "
                PERFORM ENTER-EMAIL-ADDRESS
@@ -2404,13 +2403,16 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RP-000.
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RP-000.
        RP-999.
            EXIT.
       *
