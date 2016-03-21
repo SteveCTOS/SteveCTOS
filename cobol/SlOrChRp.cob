@@ -1359,19 +1359,26 @@
            MOVE INCR-ADDFREIGHT  TO WS-ADDONFREIGHT.
            MOVE INCR-ADDLABOUR   TO WS-HANDADDON.
            MOVE INCR-ADDMISC     TO WS-MISCADDON.
-       RIR-900.
+
            IF WS-DOCPRINTED NOT = "Y"
                MOVE "Y" TO WS-DOCPRINTED.
            MOVE "P" TO INCR-PRINTED.
            ADD 1    TO INCR-COPY-NUMBER.
            MOVE " " TO INCR-PULLBY
-           MOVE 0   TO INCR-PULL-DATE
-                       INCR-PULL-TIME.
+           MOVE 0   TO INCR-PULL-DATE.
+        RIR-900.
            REWRITE INCR-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
-                GO TO RIR-900.
+               MOVE 
+             "REGISTER BUSY ON REWRITE-RIR900, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RIR-900.
        RIR-999.
            EXIT.
       *
@@ -1401,7 +1408,7 @@
                MOVE 0 TO INCR-INVOICE
                GO TO RBM-999.
            PERFORM ERROR-020.
-       RBM-900.
+
            IF WS-DOCPRINTED NOT = "Y"
                MOVE "Y" TO WS-DOCPRINTED.
            MOVE "N" TO INCR-PRINTED.
@@ -1409,11 +1416,19 @@
            MOVE " " TO INCR-PULLBY
            MOVE 0   TO INCR-PULL-DATE
                        INCR-PULL-TIME.
+       RBM-900.
            REWRITE INCR-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
-                GO TO RBM-900.
+               MOVE
+             "REGISTER BUSY ON REWRITE-RBM900, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RBM-900.
        RBM-999.
            EXIT.
       *
@@ -1536,7 +1551,14 @@
            REWRITE STOCK-TRANS-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
-                GO TO RSTT-030.
+               MOVE "ST-TRANS FILE BUSY ON RE-WRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO RSTT-030.
        RSTT-050.
            IF SP-1STCHAR NOT = "*" AND NOT = "/"
               PERFORM READ-STOCK.
@@ -1691,10 +1713,13 @@
                          WS-RUSH-PRINTER
                GO TO RINVQUES-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
-               MOVE "Parameter Busy RINVQUES, Press 'ESC' To Retry."
+               MOVE "PARAMETER BUSY RINVQUES, PRESS 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RINVQUES-010.
        RINVQUES-900.
             MOVE INVQUES-PS-NORM-PRINTER TO WS-NORM-PRINTER
@@ -1717,10 +1742,13 @@
                DISPLAY "NO PARAMETER RECORD!!!!" AT POS
                EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE "Parameter Busy RP-010, Press 'ESC' To Retry."
+               MOVE "PARAMETER BUSY RP-010, PRESS 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-SLPARAMETER-ST1
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO RP-010.
        RP-999.
            EXIT.

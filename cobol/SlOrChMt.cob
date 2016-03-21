@@ -240,7 +240,7 @@
                PERFORM ERROR1-000 
                MOVE WS-ST-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 2
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
                PERFORM ERROR-020
                CALL "C$SLEEP" USING 1
@@ -305,6 +305,12 @@
             REWRITE STOCK-RECORD
                INVALID KEY NEXT SENTENCE.
             IF WS-ST-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON RE-WRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-ST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-ST-ST1
                GO TO RSN-070.
        RSN-090.
@@ -344,7 +350,7 @@
                PERFORM ERROR1-000 
                MOVE WS-BO2-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 2
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020 
                PERFORM ERROR-020
                CALL "C$SLEEP" USING 1
@@ -482,7 +488,7 @@
                PERFORM ERROR1-000 
                MOVE WS-BO-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 2
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020 
                PERFORM ERROR-020
                CALL "C$SLEEP" USING 1
@@ -636,7 +642,7 @@
                PERFORM ERROR1-000 
                MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 2
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020 
                PERFORM ERROR-020
                CALL "C$SLEEP" USING 1
@@ -684,10 +690,13 @@
            REWRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
-                MOVE "REGISTER BUSY <UIR-500>, 'ESC' TO RE-TRY."
+                MOVE "REGISTER BUSY ON REWRITE-UIR500, 'ESC' TO RE-TRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
                 GO TO UIR-500.
            MOVE " " TO INCR-REC.
        UIR-999.
@@ -715,7 +724,9 @@
                PERFORM ERROR1-000
                MOVE INCR-INVOICE TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-INCR-ST1.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RIR-005.
        RIR-999.
            EXIT.
       *

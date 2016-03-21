@@ -20,7 +20,6 @@
        77  WS-SAVE            PIC 99 VALUE 0.
        01  WS-SALES-STATUS.
            03  WS-SALES-ST1   PIC 99.
-      *     03  WS-SALES-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -169,11 +168,14 @@
                 MOVE WS-NUMBER TO SA-ANALYSIS-CODE
                 GO TO RD-999.
            IF WS-SALES-ST1 NOT = 0
-                MOVE 0 TO WS-SALES-ST1
-                MOVE "SALES-ANALYSIS BUSY ON READ, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+               MOVE "SALES-ANALYSIS BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
+               GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE SA-ANALYSIS-CODE TO WS-SAVE.
        RD-999.
@@ -199,13 +201,22 @@
                          WS-NUMBER
                MOVE "Y" TO WS-END
                GO TO RNX-999.
-           IF WS-SALES-ST1 =  23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-SALES-ST1
-               MOVE "SALES ANALYSIS BUSY READ-NEXT, 'ESC' TO RETRY"
+           IF WS-SALES-ST1 =  23 OR 35 OR 49
+               MOVE "SALES ANALYSIS BUSY READ-NEXT-23, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO RNX-005.
            IF WS-SALES-ST1 NOT = 0
+               MOVE "SALES ANALYSIS BUSY READ-NEXT, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SALES-ST1
                PERFORM START-RECORD
                GO TO RNX-005.
@@ -230,13 +241,22 @@
                          WS-NUMBER
                MOVE "Y" TO WS-END
                GO TO RNX-999.
-           IF WS-SALES-ST1 =  23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-SALES-ST1
-               MOVE "SALES ANALYSIS BUSY READ-PREVIOUS, 'ESC' TO RETRY."
+           IF WS-SALES-ST1 =  23 OR 35 OR 49
+               MOVE "SALES ANALYSIS BUSY READ-PREV-23, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO RNX-005.
            IF WS-SALES-ST1 NOT = 0
+               MOVE "SALES ANALYSIS BUSY READ-PREV, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SALES-ST1
                PERFORM START-RECORD
                GO TO RNX-005.
@@ -252,10 +272,13 @@
        OPEN-000.
             OPEN I-O SALES-ANALYSIS.
             IF WS-SALES-ST1 NOT = 0
-               MOVE 0 TO WS-SALES-ST1
                MOVE "SALES ANALYSIS BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
@@ -287,5 +310,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

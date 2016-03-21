@@ -39,17 +39,14 @@
        77  WS-PAGE              PIC 9(3) VALUE 0.
        77  WS-LINE              PIC 9(3) VALUE 66.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1        PIC 99.
-      *     03  WS-STTRANS-ST2        PIC X.
+           03  WS-STTRANS-ST1   PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR      PIC X.
-           03  SP-REST         PIC X(14).
+           03  SP-1STCHAR       PIC X.
+           03  SP-REST          PIC X(14).
        01  HEAD1.
            03  FILLER           PIC X(5) VALUE "DATE".
            03  H1-DATE          PIC X(10).
@@ -283,10 +280,13 @@
                MOVE "UNKNOWN DEBTOR" TO DR-NAME
                GO TO RD-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-010.
        RD-999.
            EXIT.
@@ -315,12 +315,16 @@
            IF WS-INCR-ST1 = 10
               GO TO PR-999.
            IF WS-INCR-ST1 NOT = 0
-              MOVE "ORDER LOCKED BY ANOTHER TERMINAL, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-INCR-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PR-005.
+             MOVE "REGISTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO PR-005.
 
            MOVE 2310 TO POS
            DISPLAY "Record Being Read:" AT POS
@@ -427,6 +431,14 @@
             IF WS-STTRANS-ST1 = 10
                GO TO RT-999.
             IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
                GO TO RT-002.
             IF STTR-REFERENCE1 NOT = INCR-INVOICE

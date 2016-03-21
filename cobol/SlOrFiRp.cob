@@ -72,16 +72,12 @@
        01  WS-ORDER-NO-DIS      PIC Z(4)9.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1     PIC 99.
-      *     03  WS-STTRANS-ST2     PIC X.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1     PIC 99.
-      *     03  WS-INCR-ST2     PIC X.
+           03  WS-INCR-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-NAMEANDADDRESS.
            03  WS-NAME          PIC X(40) VALUE " ".
            03  WS-ADD1          PIC X(25) VALUE " ".
@@ -491,7 +487,7 @@
            START INCR-REGISTER KEY NOT < INCR-PRINTED
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "NO ORDERS TO PRINT, 'ESC' TO EXIT."
+               MOVE "NO ORDERS TO PRINT ON START, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO GET-999.
@@ -523,11 +519,15 @@
                MOVE 0 TO INCR-INVOICE
                GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "REGISTER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+             MOVE "REGISTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RIR-005.
            IF INCR-TRANS NOT = 4
                GO TO RIR-005.
@@ -571,8 +571,14 @@
            REWRITE INCR-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
-                GO TO RIR-900.
+               MOVE "REGISTER BUSY ON REWRIT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO RIR-900.
        RIR-999.
            EXIT.
       *
@@ -591,8 +597,16 @@
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
-              GO TO RSTT-010.
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
            IF STTR-TYPE NOT = 4
@@ -629,7 +643,14 @@
            REWRITE STOCK-TRANS-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
-                GO TO RSTT-030.
+               MOVE "ST-TRANS FILE BUSY ON REWRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO RSTT-030.
        RSTT-050.
            ADD 1 TO SUB-1.
            MOVE SUB-1 TO SUB-20.
@@ -736,6 +757,35 @@
        CF-999.
              EXIT.
       *
+       READ-PARAMETER SECTION.
+       RP-000.
+           MOVE 0 TO PA-TYPE.
+           MOVE 1 TO PA-RECORD.
+           START PARAMETER-FILE KEY NOT < PA-KEY.
+       RP-010.
+           READ PARAMETER-FILE
+               INVALID KEY NEXT SENTENCE.
+           IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
+              MOVE "SLPARAMETER NO SUCH FILE @ READ, 'ESC' TO EXIT." 
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               EXIT PROGRAM.
+           IF WS-SLPARAMETER-ST1 NOT = 0
+              MOVE "SLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY." 
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
+              GO TO RP-010.
+       RP-999.
+           EXIT.
+      *
        OPEN-FILES SECTION.
        OPEN-000.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -770,28 +820,6 @@
            MOVE PA-NAME        TO CO-NAME.
            CLOSE PARAMETER-FILE.
        OPEN-999.
-           EXIT.
-      *
-       READ-PARAMETER SECTION.
-       RP-000.
-           MOVE 0 TO PA-TYPE.
-           MOVE 1 TO PA-RECORD.
-           START PARAMETER-FILE KEY NOT < PA-KEY.
-       RP-010.
-           READ PARAMETER-FILE
-               INVALID KEY NEXT SENTENCE.
-           IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
-              MOVE "SLPARAMETER NO SUCH FILE @ READ, 'ESC' TO EXIT." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              EXIT PROGRAM.
-           IF WS-SLPARAMETER-ST1 NOT = 0
-              MOVE "SLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-SLPARAMETER-ST1
-              GO TO RP-010.
-       RP-999.
            EXIT.
       *
        END-OFF SECTION.

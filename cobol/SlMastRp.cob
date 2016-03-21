@@ -43,7 +43,6 @@
        77  TOT-PERC             PIC S9(4)V99.
        01  WS-SALES-STATUS.
            03  WS-SALES-ST1     PIC 99.
-      *     03  WS-SALES-ST2     PIC X.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -135,11 +134,15 @@
            IF WS-SALES-ST1 = 10
                PERFORM END-500 THRU END-900.
            IF WS-SALES-ST1 NOT = 0
-              MOVE 0 TO WS-SALES-ST1
-              MOVE "SALES ANALYSIS BUSY ON READ-NEXT, 'ESC' TO RETRY"
+             MOVE "SALES BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
+               GO TO PRR-005.
             IF LINE-CNT < 60
                GO TO PRR-020.
        PRR-010.
