@@ -4364,6 +4364,10 @@
             MOVE B-STOCKDESCRIPTION (SUB-1) TO F-NAMEFIELD.
             MOVE 20 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
+            
+            MOVE "HERE AT FILL-048" TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
+            
        FILL-048.
       ***************************************************************
       *NEW SECTION TO CHECK PASSWORD BEFORE ALLOWING CHANGE OF PRICE*
@@ -4632,6 +4636,7 @@
             PERFORM ERROR-020
             PERFORM ERROR1-020
             MOVE B-STOCKNUMBER (SUB-1) TO SPLIT-STOCK.
+
             IF WS-LINECHANGED = "Y" OR = "C"
                PERFORM CHANGE-STOCK-TRANS.
                
@@ -4937,7 +4942,6 @@
            READ STOCK-TRANS-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "BAD START ON CHANGE-ST-TRANS, GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
@@ -4946,6 +4950,7 @@
               MOVE B-STTRANS (SUB-1) TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO CHGE-TRANS-000.
        CHGE-TRANS-002.
            IF F-NAMEFIELDRED1 = "D"
@@ -4977,6 +4982,7 @@
            MOVE B-UNIT (SUB-1)              TO STTR-UNIT
            MOVE B-DISCOUNTPERITEM (SUB-1)   TO STTR-ITEMDISC
            MOVE B-STOCKCOST (SUB-1)         TO STTR-COST-VALUE.
+       CHGE-TRANS-005.
            REWRITE STOCK-TRANS-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
@@ -4987,14 +4993,14 @@
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
                MOVE 0 TO WS-STTRANS-ST1
-               GO TO WNT-TRANS-800.
-              PERFORM ERROR-MESSAGE
-              GO TO CHGE-TRANS-002.
+               GO TO CHGE-TRANS-005.
            IF STTR-TRANSACTION-NUMBER = 0
               MOVE
-              "ST-TRANS-NO = 0 AT CHGE-TRANS-002, ADVISE THE BOSS NOW !"
+             "ST-TRANS-NO = 0 AT CHGE-TRANS-002, ADD 1 & GOING TO RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              ADD 1 TO STTR-TRANSACTION-NUMBER
+              GO TO CHGE-TRANS-005.
        CHGE-TRANS-999.
             EXIT.
       *
