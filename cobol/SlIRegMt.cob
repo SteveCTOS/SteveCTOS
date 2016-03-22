@@ -14,8 +14,8 @@
            COPY ChlfdRegister.
       *
        WORKING-STORAGE SECTION.
-       77  NEW-ORDER          PIC X VALUE " ".      
-       77  WS-END             PIC X VALUE " ".      
+       77  NEW-ORDER          PIC X VALUE " ".
+       77  WS-END             PIC X VALUE " ".
        77  WS-INVOICE         PIC 9(6) VALUE 0.
        77  WS-TRANS           PIC 9 VALUE 0.
        01  SPLIT-TIME.
@@ -38,12 +38,12 @@
            PERFORM CLEAR-SCREEN.
        CONTROL-001.
            MOVE "SlIRegIq"      TO F-FORMNAME
-           PERFORM OPEN-FILES
+           PERFORM OPEN-FILES.
            PERFORM CLEAR-SCREEN.
        CONTROL-010.
-           PERFORM DISPLAY-FORM
-           PERFORM GET-DATA
-           PERFORM FILL-DATA
+           PERFORM DISPLAY-FORM.
+           PERFORM GET-DATA.
+           PERFORM FILL-DATA.
            MOVE "SlIRegIq"      TO F-FORMNAME
            PERFORM OPEN-010 THRU OPEN-020.
            GO TO CONTROL-010.
