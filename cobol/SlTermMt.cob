@@ -20,7 +20,6 @@
        77  WS-SAVE            PIC 9 VALUE 0.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1   PIC 99.
-      *     03  WS-SLPARAMETER-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -213,10 +212,13 @@
                 MOVE WS-NUMBER TO PA-RECORD
                 GO TO RD-999.
            IF WS-SLPARAMETER-ST1 NOT = 0
-                MOVE 0 TO WS-SLPARAMETER-ST1
-                MOVE "PARAMETER Busy on Read, Press 'ESC' To Retry"
-                  TO WS-MESSAGE
+                MOVE "PARAMETER BUSY ON READ, PRESS 'ESC' TO RETRY"
+                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SLPARAMETER-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE PA-RECORD TO WS-SAVE.
@@ -253,13 +255,22 @@
                            WS-NUMBER
                MOVE "Y" TO WS-END
                GO TO RNX-999.
-           IF WS-SLPARAMETER-ST1 =  23 OR 35 OR 49 OR 51
+           IF WS-SLPARAMETER-ST1 =  23 OR 35 OR 49
+               MOVE "TERMS FILE BUSY ON READ-NEXT-23, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RNX-999.
+           IF WS-SLPARAMETER-ST1 NOT = 0
                MOVE "TERMS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RNX-005.
-           IF WS-SLPARAMETER-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SLPARAMETER-ST1
                PERFORM START-RECORD
                GO TO RNX-005.
@@ -293,13 +304,22 @@
                            WS-NUMBER
                MOVE "Y" TO WS-END
                GO TO RPREV-999.
-           IF WS-SLPARAMETER-ST1 =  23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-SLPARAMETER-ST1
+           IF WS-SLPARAMETER-ST1 =  23 OR 35 OR 49
                MOVE "TERMS FILE BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RPREV-999.
            IF WS-SLPARAMETER-ST1 NOT = 0
+               MOVE "TERMS FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SLPARAMETER-ST1
                PERFORM START-RECORD
                GO TO RPREV-005.
@@ -351,4 +371,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

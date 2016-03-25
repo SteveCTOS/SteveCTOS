@@ -46,8 +46,7 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC 9(2) COMP-X.
+           03  WS-INCR-ST1  PIC 99.
        01  SPLIT-ORDER.
            03  SP-1ST       PIC X.
            03  SP-2ND       PIC X.
@@ -258,21 +257,27 @@
        RDTR-000.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0
-              MOVE 3010 TO POS
-              DISPLAY "WS-INCR-ST1 NOT = 0, ON OPEN" AT POS
-              ADD 25 TO POS
-              DISPLAY WS-INCR-ST1 AT POS
-              CLOSE INCR-REGISTER
-              GO TO RDTR-000.
+               MOVE "REGISTER BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               CLOSE INCR-REGISTER
+               GO TO RDTR-000.
        RDTR-005.
            MOVE WS-PORDER TO INCR-PORDER.
            START INCR-REGISTER KEY NOT < INCR-PORDER
                 INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "BAD START" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               MOVE "REGISTER BUSY ON START, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                MOVE INCR-PORDER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE "Y" TO WS-ANSWER
@@ -304,10 +309,15 @@
                CLOSE INCR-REGISTER
                GO TO RDTR-000.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
-               MOVE 2955 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
+             MOVE "REGISTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RDTR-010.
            IF WS-KEY = "O"
             IF INCR-TRANS NOT = 4 AND NOT = 7
@@ -459,6 +469,14 @@
                MOVE 0 TO WS-INCR-ST1
                GO TO PRR-900.
             IF WS-INCR-ST1 NOT = 0
+             MOVE "REGISTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-INCR-ST1
                GO TO PRR-002.
             IF INCR-PORDER < WS-PORDER

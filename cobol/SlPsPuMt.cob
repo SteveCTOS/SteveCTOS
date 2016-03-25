@@ -43,11 +43,9 @@
            03  WS-NAME         PIC X(20).
            03  WS-PS-AMT       PIC 9(8)V99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1     PIC 99.
        01  WS-PULLERS-STATUS.
-           03  WS-PULLERS-ST1   PIC 99.
-      *     03  WS-PULLERS-ST2   PIC X.
+           03  WS-PULLERS-ST1  PIC 99.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -266,13 +264,16 @@
        RDTR-010.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = "1" OR = "9"
+           IF WS-INCR-ST1 = 10 OR = 91
                GO TO RDTR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
-               MOVE 2955 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
+               MOVE "REGISTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RDTR-010.
                
            IF WS-NEWINPUT = "1"
@@ -364,7 +365,11 @@
            IF WS-INCR-ST1 NOT = 0
              MOVE "REGISTER FILE BUSY ON READ-LOCK, 'ESC' TO RETRY."
              TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-INCR-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             MOVE 0 TO WS-INCR-ST1
              GO TO RWR-010.
            ACCEPT WS-TIME FROM TIME.
            MOVE WS-INITIAL (SUB-1) TO INCR-PULLBY
@@ -379,11 +384,14 @@
            REWRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
-                MOVE "REGISTER BUSY ON REWRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RWR-060.
+             MOVE "REGISTER BUSY ON REWRITE, 'ESC' TO RETRY."
+             TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-INCR-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             MOVE 0 TO WS-INCR-ST1
+             GO TO RWR-060.
        RWR-070.
            IF SUB-1 < 15
               ADD 1 TO SUB-1
@@ -402,11 +410,14 @@
                 MOVE " " TO PU-INITIAL
                 GO TO RPULL-999.
            IF WS-PULLERS-ST1 NOT = 0
-                MOVE 0 TO WS-PULLERS-ST1
-                MOVE "PULLER RECORD BUSY ON READ, 'ESC' TO RETRY"
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPULL-010.
+             MOVE "PULLER RECORD BUSY ON READ, 'ESC' TO RETRY"
+             TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-PULLERS-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             MOVE 0 TO WS-PULLERS-ST1
+             GO TO RPULL-010.
            MOVE PU-INITIAL TO WS-INITIAL (SUB-1).
        RPULL-999.
              EXIT.

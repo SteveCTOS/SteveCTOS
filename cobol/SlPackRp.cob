@@ -344,7 +344,7 @@
             PERFORM DECIMALISE-RATE.
             MOVE NUMERIC-RATE TO WS-INVOICE.
             PERFORM READ-INVOICE-REGISTER.
-           IF WS-INCR-ST1 = 23 OR 35 OR 49 OR = "1"
+           IF WS-INCR-ST1 = 23 OR 35 OR 49 OR = 10
                 MOVE "ENTER AN EXISTING INVOICE NUMBER." TO WS-MESSAGE
                 PERFORM ERROR-000
                 GO TO GET-010.
@@ -537,12 +537,20 @@
            IF WS-INCR-ST1 = 23 OR 35 OR 49
                MOVE "NO SUCH INVOICE TO PRINT, 'ESC' TO EXIT."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RIR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
-               MOVE "INV/CR. REGISTER BUSY, RIR-005" TO WS-MESSAGE
+               MOVE "INV/CR. REGISTER BUSY ON READ, RIR-005" 
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RIR-005.
        RIR-999.
            EXIT.
@@ -554,10 +562,13 @@
            IF WS-INCR-ST1 = 10
                GO TO RNR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "INV/CR. REGISTER BUSY READ-NEXT, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RNR-005.
        RNR-999.
            EXIT.
@@ -569,10 +580,13 @@
            IF WS-INCR-ST1 = 10
                GO TO RPREV-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "INV/CR. REGISTER BUSY READ-PREV, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RPREV-005.
        RPREV-999.
            EXIT.
@@ -581,11 +595,14 @@
        OPEN-016.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
               MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-016.
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO OPEN-016.
        OPEN-020.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.

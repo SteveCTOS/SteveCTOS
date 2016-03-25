@@ -19,8 +19,7 @@
        77  WS-NUMBER          PIC XX VALUE " ".
        77  WS-SAVE            PIC XX VALUE " ".
        01  WS-PULLERS-STATUS.
-           03  WS-PULLERS-ST1   PIC 99.
-      *     03  WS-PULLERS-ST2   PIC 9(2) COMP-X.
+           03  WS-PULLERS-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -160,8 +159,14 @@
             DELETE PULLER-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-PULLERS-ST1 NOT = 0
-               MOVE 0 TO WS-PULLERS-ST1
-               GO TO DDR-010.
+             MOVE "PULLERS BUSY ON DELETE, 'ESC' TO RETRY."
+             TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-PULLERS-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             MOVE 0 TO WS-PULLERS-ST1
+             GO TO DDR-010.
        DDR-999.
            EXIT.
       *
@@ -181,20 +186,26 @@
             REWRITE PULLER-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-PULLERS-ST1 NOT = 0
-                MOVE 0 TO WS-PULLERS-ST1
                 MOVE "PULL BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-PULLERS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-PULLERS-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE PULLER-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-PULLERS-ST1 NOT = 0
-                MOVE 0 TO WS-PULLERS-ST1
                 MOVE "PULLBY RECORD BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-PULLERS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-PULLERS-ST1
                 GO TO RDR-020.
        RDR-999.
             EXIT.
@@ -214,10 +225,13 @@
                 MOVE WS-NUMBER TO PU-INITIAL
                 GO TO RD-999.
            IF WS-PULLERS-ST1 NOT = 0
-                MOVE 0 TO WS-PULLERS-ST1
                 MOVE "PULLBY BUSY ON READ-LOCK, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-PULLERS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-PULLERS-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE PU-INITIAL TO WS-SAVE.
@@ -246,15 +260,24 @@
                MOVE "Y" TO WS-END
                GO TO RNX-999.
            IF WS-PULLERS-ST1 = 23 OR = 35 OR 49 OR 51
-               MOVE 0 TO WS-PULLERS-ST1
                MOVE "PULLBY BUSY ON READ-NEXT, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PULLERS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PULLERS-ST1
                GO TO RNX-005.
            IF WS-PULLERS-ST1 NOT = 0
-               MOVE 0 TO WS-PULLERS-ST1
-               PERFORM START-RECORD
-               GO TO RNX-005.
+                MOVE "PULLBY BUSY ON READ-NEXT, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-PULLERS-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-PULLERS-ST1
+                PERFORM START-RECORD
+                GO TO RNX-005.
            MOVE PU-INITIAL TO WS-NUMBER
                              WS-SAVE.
            MOVE "N" TO NEW-NO.
@@ -276,12 +299,21 @@
                MOVE "Y" TO WS-END
                GO TO RPREV-999.
            IF WS-PULLERS-ST1 = 23 OR = 35 OR 49 OR 51
-               MOVE 0 TO WS-PULLERS-ST1
                MOVE "PULLBY BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PULLERS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PULLERS-ST1
                GO TO RPREV-005.
            IF WS-PULLERS-ST1 NOT = 0
+               MOVE "PULLBY BUSY ON READ-PREV, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PULLERS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-PULLERS-ST1
                PERFORM START-RECORD
                GO TO RPREV-005.
@@ -297,11 +329,12 @@
             IF WS-PULLERS-ST1 NOT = 0
                MOVE "PULLBY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-PULLERS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE WS-COPULLBY TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-PULLERS-ST1
                GO TO OPEN-000.
        OPEN-010.
@@ -334,5 +367,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

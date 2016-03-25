@@ -7,28 +7,9 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT DEBTOR-MASTER ASSIGN TO Ws-Debtor
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               RECORD KEY IS DR-KEY
-               FILE STATUS IS WS-DEBTOR-STATUS
-               ALTERNATE RECORD KEY IS DR-ALT-KEY WITH DUPLICATES.
-           SELECT STOCK-TRANS-FILE ASSIGN TO Ws-StTrans
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               RECORD KEY IS STTR-KEY
-               FILE STATUS IS WS-BORDER-STATUS
-               ALTERNATE RECORD KEY IS STTR-ST-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS STTR-AC-KEY WITH DUPLICATES.
-           SELECT INCR-REGISTER ASSIGN TO Ws-Register
-             ORGANIZATION IS INDEXED
-             LOCK MANUAL
-             ACCESS MODE IS DYNAMIC
-             RECORD KEY IS INCR-KEY
-             FILE STATUS IS WS-INCR-STATUS
-             ALTERNATE RECORD KEY IS INCR-ALT-KEY WITH DUPLICATES.
+         Copy "SelectDrMaster".
+         Copy "SelectStTrans".
+         Copy "SelectSlRegister".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                 ORGANIZATION IS LINE SEQUENTIAL.
       *
@@ -54,8 +35,8 @@
            03  WS-DEBTOR-ST1    PIC 99.
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1      PIC 99.
-       01  WS-BORDER-STATUS.
-           03  WS-BORDER-ST1    PIC 99.
+       01  WS-STTRANS-STATUS.
+           03  WS-STTRANS-ST1    PIC 99.
        01  WS-SALEDATE.
            03 WS-SALEYY         PIC 9999.
            03 WS-SALEMM         PIC 99.
@@ -277,9 +258,16 @@
        READ-TRANSACTIONS SECTION.
        RDTR-000.
            OPEN I-O STOCK-TRANS-FILE.
-           IF WS-BORDER-ST1 NOT = 0
-              CLOSE STOCK-TRANS-FILE
-              GO TO RDTR-000.
+           IF WS-STTRANS-ST1 NOT = 0
+               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-000.
        RDTR-001.
            MOVE 1 TO F-INDEX.
        RDTR-005.
@@ -288,24 +276,26 @@
            MOVE WS-SALEDATE       TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
-           IF WS-BORDER-ST1 NOT = 0
+           IF WS-STTRANS-ST1 NOT = 0
               CLOSE STOCK-TRANS-FILE
               PERFORM RDTR-999.
        RDTR-010.
            READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-BORDER-ST1 = 10 OR = 23
+           IF WS-STTRANS-ST1 = 10 OR = 23
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
-           IF WS-BORDER-ST1 NOT = 0
-               MOVE 
-            "ST-TRANS BUSY ON READ NEXT, SEE NEXT LINE, <ESC> TO RETRY."
+           IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
-               MOVE WS-BORDER-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO RDTR-010.
            IF STTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
                MOVE 1 TO F-INDEX
@@ -455,23 +445,25 @@
            MOVE WS-SALEDATE       TO STTR-AC-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-AC-KEY
                 INVALID KEY NEXT SENTENCE.
-            IF WS-BORDER-ST1 NOT = 0
-               MOVE 0 TO WS-BORDER-ST1
+            IF WS-STTRANS-ST1 NOT = 0
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-900.
        PRR-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-            IF WS-BORDER-ST1 = 10 OR = 23
-               MOVE 0 TO WS-BORDER-ST1
+            IF WS-STTRANS-ST1 = 10 OR = 23
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-900.
-            IF WS-BORDER-ST1 NOT = 0
-               MOVE 
-            "ST-TRANS PRINT BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
+            IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
-               MOVE WS-BORDER-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-002.
             IF STTR-AC-COMPLETE NOT = "Q"
                GO TO PRR-900.

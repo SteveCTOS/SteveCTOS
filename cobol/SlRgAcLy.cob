@@ -66,16 +66,15 @@
        01  W-DD                 PIC Z9.
        01  W-YY                 PIC ZZZ9.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1    PIC 99.
-      *     03  WS-INCR-LY-ST2    PIC X.
+           03  WS-INCR-LY-ST1   PIC 99.
        01  WEEK-DATE.
-           03  WEEK-YY         PIC 9999.
-           03  WEEK-MM         PIC 99.
-           03  WEEK-DD         PIC 99.
+           03  WEEK-YY          PIC 9999.
+           03  WEEK-MM          PIC 99.
+           03  WEEK-DD          PIC 99.
        01  COMP-DATE.
-           03  COMP-YY         PIC 9999.
-           03  COMP-MM         PIC 99.
-           03  COMP-DD         PIC 99.
+           03  COMP-YY          PIC 9999.
+           03  COMP-MM          PIC 99.
+           03  COMP-DD          PIC 99.
        01  WS-TYPES.
            03  FILLER           PIC X(2) VALUE "IN".
            03  FILLER           PIC X(2) VALUE "  ".

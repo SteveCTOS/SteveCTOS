@@ -19,12 +19,11 @@
        77  WS-INVOICE         PIC 9(6) VALUE 0.
        77  WS-TRANS           PIC 9 VALUE 0.
        01  SPLIT-TIME.
-           03  SPLIT-HR           PIC 99.
-           03  SPLIT-MIN          PIC 99.
-           03  SPLIT-SEC          PIC 99.
+           03  SPLIT-HR       PIC 99.
+           03  SPLIT-MIN      PIC 99.
+           03  SPLIT-SEC      PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1   PIC 99.
-      *     03  WS-INCR-ST2   PIC 9(2) COMP-X.
+           03  WS-INCR-ST1    PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -2184,6 +2183,12 @@
             DELETE INCR-REGISTER
                INVALID KEY NEXT SENTENCE.
             IF WS-INCR-ST1 NOT = 0
+               MOVE "REGISTER BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
                GO TO DO-010.
        DO-999.
@@ -2242,20 +2247,26 @@
             REWRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
                 MOVE "REGISTER RECORD BUSY ON REWRITE, BE PATIENT"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
                 GO TO ROR-010.
             GO TO ROR-999.
        ROR-020.
             WRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
                 MOVE "REGISTER RECORD BUSY ON WRITE, BE PATIENT"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
                 GO TO ROR-020.
        ROR-999.
             EXIT.
@@ -2278,10 +2289,13 @@
                 PERFORM ERROR-MESSAGE
                 GO TO RO-999.
            IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
                 MOVE "REGISTER BUSY ON READ-LOCK, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
                 GO TO RO-010.
            MOVE "N" TO NEW-ORDER.
            MOVE INCR-INVOICE TO WS-INVOICE.
@@ -2315,9 +2329,15 @@
               OPEN I-O INCR-REGISTER
               GO TO RONX-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
-               PERFORM START-TRANS
-               GO TO RONX-005.
+              MOVE "REGISTER BUSY ON READ-LOCK-RONX005, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
+                PERFORM START-TRANS
+                GO TO RONX-005.
            MOVE INCR-INVOICE TO WS-INVOICE.
            MOVE INCR-TRANS   TO WS-TRANS.
            MOVE "N" TO NEW-ORDER.
@@ -2342,9 +2362,15 @@
               OPEN I-O INCR-REGISTER
               GO TO RPREV-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
-               PERFORM START-TRANS
-               GO TO RPREV-005.
+             MOVE "REGISTER BUSY ON READ-LOCK-RPREV005, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
+                PERFORM START-TRANS
+                GO TO RPREV-005.
            MOVE INCR-INVOICE TO WS-INVOICE.
            MOVE INCR-TRANS   TO WS-TRANS.
            MOVE "N" TO NEW-ORDER.
@@ -2356,13 +2382,13 @@
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0
                MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-INCR-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-REGISTER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-000.
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
+                GO TO OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.
@@ -2403,5 +2429,6 @@
        Copy "TimeChecking".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

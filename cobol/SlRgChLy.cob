@@ -50,23 +50,17 @@
            03  WS-ST-CODE       PIC X.
            03  WS-ST-TERM       PIC X(11).
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  WS-INCR-LY-STATUS.
-           03  WS-INCR-LY-ST1        PIC 99.
-      *     03  WS-INCR-LY-ST2        PIC X.
+           03  WS-INCR-LY-ST1     PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTR-ST1        PIC 99.
-      *     03  WS-DRTR-ST2        PIC X.
+           03  WS-DRTRANS-ST1        PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTR-LY-ST1        PIC 99.
-      *     03  WS-STTR-LY-ST2        PIC X.
+           03  WS-STTRANSLY-ST1     PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -347,29 +341,34 @@
                 MOVE 1       TO STTR-LY-TRANSACTION-NUMBER
                 START STOCK-TRANSLY-FILE KEY NOT < STTR-LY-KEY
                     INVALID KEY NEXT SENTENCE.
-            IF WS-STTR-LY-ST1 NOT = 0
+            IF WS-STTRANSLY-ST1 NOT = 0
              IF WS-ANSWER1 = "Y"
                MOVE "THERE ARE NO ST-TRANS RECORDS FOR THAT ACCOUNT."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE "N" TO WS-VALID
                GO TO RBO-999
              ELSE
                MOVE "THERE ARE NO ST-TRANS RECORDS FOR THAT NUMBER."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE "N" TO WS-VALID
                GO TO RBO-999.
        RBO-002.
             READ STOCK-TRANSLY-FILE NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-STTR-LY-ST1 = 10
+            IF WS-STTRANSLY-ST1 = 10
                GO TO RBO-999.
-            IF WS-STTR-LY-ST1 NOT = 0
-               MOVE 0 TO WS-STTR-LY-ST1
-               MOVE "BO FILE BUSY ON READ, 'ESC' TO RETRY."
+            IF WS-STTRANSLY-ST1 NOT = 0
+            MOVE "STTRANSLY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANSLY-ST1
                GO TO RBO-002.
             IF WS-ANSWER1 = "N"
              IF STTR-LY-REFERENCE1 NOT = WS-NUM
@@ -380,7 +379,7 @@
             MOVE WS-NEWDEBTORNUMBER TO STTR-LY-ACCOUNT-NUMBER.
             REWRITE STOCK-TRANSLY-REC
                 INVALID KEY NEXT SENTENCE.
-            IF WS-STTR-LY-ST1 NOT = 0
+            IF WS-STTRANSLY-ST1 NOT = 0
                MOVE STTR-LY-KEY               TO WS-DAILY-1ST
                MOVE STTR-LY-ACCOUNT-NUMBER    TO WS-DAILY-2ND
                MOVE "NO CHNG TO ST-TRANS "    TO WS-DAILY-3RD
@@ -409,13 +408,13 @@
              IF WS-ANSWER1 = "Y"
                MOVE "THERE ARE NO REGISTER RECORDS FOR THAT ACCOUNT."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE "N" TO WS-VALID
                GO TO RRR-999
              ELSE
                MOVE "THAT IS NOT A VALID RECORD FOR THAT ACCOUNT."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE "N" TO WS-VALID
                GO TO RRR-999.
        RRR-002.
@@ -424,10 +423,15 @@
             IF WS-INCR-LY-ST1 = 10
                GO TO RRR-999.
             IF WS-INCR-LY-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-LY-ST1
-               MOVE "REGISTER FILE BUSY ON READ, 'ESC' TO RETRY."
+             MOVE "REG-LY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-INCR-LY-ST1
                GO TO RRR-002.
             IF INCR-LY-ACCOUNT NOT = WS-OLDDEBTORNUMBER
                GO TO RRR-999.
@@ -476,10 +480,13 @@
                 MOVE WS-DEBTORNUMBER TO DR-ACCOUNT-NUMBER
                 GO TO R-DR-999.
              IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO R-DR-010.
              MOVE "N" TO NEW-DEBTORNO.
        R-DR-999.
@@ -498,34 +505,40 @@
            MOVE INCR-LY-DRTRANS-NO TO DRTR-TRANSACTION-NUMBER.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTR-ST1 NOT = 0
+           IF WS-DRTRANS-ST1 NOT = 0
                MOVE
-              "NO SUCH DRTRANS NUMBER TO UPDATE, 'ESC' TO CONTINUE."
+              "NO SUCH DRTRANS NUMBER ON START, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RDRTR-999.
        RDRTR-002.
            READ DEBTOR-TRANS-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTR-ST1 = 23 OR 35 OR 49
+           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                GO TO RDRTR-999.
-           IF WS-DRTR-ST1 NOT = 0
-               MOVE 0 TO WS-DRTR-ST1
-               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RETRY."
+           IF WS-DRTRANS-ST1 NOT = 0
+               MOVE "DRTRANS BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO RDRTR-002.
             MOVE WS-NEWDEBTORNUMBER TO DRTR-ACCOUNT-NUMBER.
        RDRTR-020.
            REWRITE DEBTOR-TRANS-REC
                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTR-ST1 = 23 OR 35 OR 49
+           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                GO TO RDRTR-999.
-           IF WS-DRTR-ST1 NOT = 0
-               MOVE 0 TO WS-DRTR-ST1
+           IF WS-DRTRANS-ST1 NOT = 0
                MOVE "DR-TRANS FILE BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO RDRTR-020.
        RDRTR-030.
            IF WS-TYPE = "6"
@@ -570,10 +583,13 @@
              IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                 GO TO UP-DR-999.
              IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO UP-DR-010.
        UP-DR-020.
            IF WS-OLDDEBTORNUMBER = DR-ACCOUNT-NUMBER
@@ -620,10 +636,13 @@
              IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                 GO TO UP-DR-999.
              IF WS-DEBTOR-ST1 NOT = 0
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO UP-DR-030.
        UP-DR-999.
            EXIT.
@@ -643,10 +662,13 @@
             IF PA-TYPE > 2
                 GO TO RTERM-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER TERMS BUSY, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RTERM-010.
             IF PARAMETER-REC = "           "
                GO TO RTERM-010.           
@@ -663,15 +685,18 @@
        OPEN-000.
             OPEN I-O DEBTOR-MASTER.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE 0 TO WS-DEBTOR-ST1
                MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO OPEN-000.
        OPEN-006.
             OPEN I-O STOCK-TRANSLY-FILE.
-            IF WS-STTR-LY-ST1 NOT = 0
-               MOVE 0 TO WS-STTR-LY-ST1
+            IF WS-STTRANSLY-ST1 NOT = 0
+               MOVE 0 TO WS-STTRANSLY-ST1
                MOVE "STTRANSLY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -697,8 +722,8 @@
            CLOSE PARAMETER-FILE.
        OPEN-030.
            OPEN I-O DEBTOR-TRANS-FILE.
-           IF WS-DRTR-ST1 NOT = 0
-               MOVE 0 TO WS-DRTR-ST1
+           IF WS-DRTRANS-ST1 NOT = 0
+               MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DR-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -730,6 +755,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "WriteDailyExcep1".
        Copy "CTOSCobolAccept".
       * END-OF-JOB

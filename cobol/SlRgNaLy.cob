@@ -119,17 +119,6 @@
                START INCR-LY-REGISTER KEY NOT < INCR-LY-DEL1
                    INVALID KEY NEXT SENTENCE.
                    
-            IF WS-INCR-LY-ST1 NOT = 0
-                MOVE "BAD START, 'ESC' TO SEE ERROR STATUS."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                MOVE WS-REGISTER TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM CLEAR-MIDDLE
-                CLOSE INCR-LY-REGISTER
-                GO TO READ-999.
             IF WS-INCR-LY-ST1 = 23 OR 35 OR 49
                MOVE
                "NO REG RECORDS WITH THAT SHORT NAME, 'ESC' TO EXIT."
@@ -139,6 +128,18 @@
                PERFORM CLEAR-MIDDLE
                CLOSE INCR-LY-REGISTER
                GO TO READ-999.
+            IF WS-INCR-LY-ST1 NOT = 0
+                MOVE "BAD START, 'ESC' TO SEE ERROR STATUS."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE WS-REGISTER TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM CLEAR-MIDDLE
+                CLOSE INCR-LY-REGISTER
+                GO TO READ-999.
             MOVE 0 TO SUB-2 SUB-3.
             MOVE 800 TO SUB-DIS.
             MOVE " " TO F-EXIT-CH.
@@ -168,7 +169,16 @@
                 CLOSE INCR-LY-REGISTER
                 MOVE 0 TO WS-INCR-LY-STATUS
                 GO TO READ-999.
-                
+            IF WS-INCR-LY-ST1 NOT = 0
+                MOVE "REG-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-LY-ST1
+                GO TO READ-999.
+
            IF INCR-LY-TRANS = 7
       *       MOVE 
       *      "BM TRANS BEING READ, GOING TO READ-NEXT IN 1 SECONDS..."

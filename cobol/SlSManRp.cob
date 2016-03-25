@@ -43,11 +43,9 @@
        77  TOT-COST-YTD         PIC S9(7)V99 VALUE 0.
        77  TOT-COST-LAST        PIC S9(7)V99 VALUE 0.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1     PIC 99.
-      *     03  WS-DEBTOR-ST2     PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-SBREP-STATUS.
            03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC 9(2) COMP-X.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -292,8 +290,16 @@
            IF WS-DEBTOR-ST1 = 10
                GO TO PRR-999.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              GO TO PRR-005.
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
               
            MOVE 2210 TO POS
            DISPLAY "Account Being Read:" AT POS

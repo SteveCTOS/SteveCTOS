@@ -39,8 +39,7 @@
        77  WS-SALE-TOT          PIC S9(7)V99 VALUE 0.
        77  WS-COST-TOT          PIC S9(7)V99 VALUE 0.
        01  WS-SPECIALS-STATUS.
-           03  WS-SPECIALS-ST1    PIC 99.
-      *     03  WS-SPECIALS-ST2    PIC X.
+           03  WS-SPECIALS-ST1  PIC 99.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H1-DATE          PIC X(10).
@@ -221,10 +220,13 @@
                PERFORM PRINT-TOTALS
                GO TO PR-999.
            IF WS-SPECIALS-ST1 NOT = 0
-               MOVE 0 TO WS-SPECIALS-ST1
                MOVE "SPECIALS-FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SPECIALS-ST1
                GO TO PR-001.
        PR-005.
            IF WS-PRINT-THAT-SB = " "
@@ -418,16 +420,29 @@
            IF WS-SPECIALS-ST1 = 23 OR 35 OR 49
                MOVE "NO SPECIALS-FILE TO OPEN I-O, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               EXIT PROGRAM.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SPECIALS-ST1
+               OPEN OUTPUT SPECIALS-FILE
+           IF WS-SPECIALS-ST1 NOT = 0
+               MOVE "SPECIALS-FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SPECIALS-ST1
+               GO TO OPEN-060.
            IF WS-SPECIALS-ST1 NOT = 0
                MOVE "SPECIALS-FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SPECIALS-ST1
                GO TO OPEN-060.
            MOVE Ws-Co-Name TO CO-NAME.
        OPEN-999.

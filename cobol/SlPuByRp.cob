@@ -37,7 +37,6 @@
        77  WS-AVE               PIC S9(7)V99 VALUE 0.
        01  WS-PULLBY-STATUS.
            03  WS-PULLBY-ST1    PIC 99.
-      *     03  WS-PULLBY-ST2    PIC X.
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H1-DATE          PIC X(10).
@@ -242,12 +241,13 @@
                PERFORM PRINT-TOTALS
                GO TO PR-999.
            IF WS-PULLBY-ST1 NOT = 0
-               MOVE 0 TO WS-PULLBY-ST1
                MOVE "PULL BY FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-PULLBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PULLBY-ST1
                GO TO PR-001.
        PR-005.
            IF PRINT-SB = " "
@@ -290,10 +290,13 @@
            DELETE PULL-BY
                INVALID KEY NEXT SENTENCE.
            IF WS-PULLBY-ST1 NOT = 0
-               MOVE 0 TO WS-PULLBY-ST1
                MOVE "PULL BY FILE BUSY ON DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PULLBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PULLBY-ST1
                GO TO PR-050.
        PR-999.
            EXIT.
@@ -382,10 +385,13 @@
            DISPLAY "Opening files....." AT POS.
            OPEN I-O PULL-BY.
            IF WS-PULLBY-ST1 NOT = 0
-               MOVE 0 TO WS-PULLBY-ST1
                MOVE "PULL BY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PULLBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PULLBY-ST1
                GO TO OPEN-060.
            MOVE Ws-Co-Name TO CO-NAME.
        OPEN-070.

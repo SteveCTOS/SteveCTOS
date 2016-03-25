@@ -476,9 +476,10 @@
            IF WS-INCR-ST1 NOT = 0
               MOVE "BAD START ON INCR-REGISTER, 'ESC' TO SEE ERC."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RDTR-999.
            
            MOVE "Y" TO WS-NEWINPUT.
@@ -504,7 +505,7 @@
                CLOSE INCR-REGISTER
                GO TO RDTR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "Record Locked By another User, 'ESC' To Retry."
+               MOVE "RECORD LOCKED BY ANOTHER USER, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE
@@ -718,12 +719,14 @@
                MOVE 0 TO WS-INCR-ST1
                GO TO PRR-900.
             IF WS-INCR-ST1 NOT = 0
-               MOVE "Record Locked By another User, 'ESC' To Retry."
-                TO WS-MESSAGE
+             MOVE "REGISTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-INCR-ST1
                GO TO PRR-002.
                
@@ -958,6 +961,13 @@
        RDTR-LY-000.
            OPEN I-O INCR-LY-REGISTER.
            IF WS-INCR-LY-ST1 NOT = 0
+               MOVE "REG-LY BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-LY-ST1
               CLOSE INCR-LY-REGISTER
               GO TO RDTR-LY-000.
        RDTR-LY-005.
@@ -972,10 +982,13 @@
                 INVALID KEY NEXT SENTENCE.
        RDTR-LY-008.
            IF WS-INCR-LY-ST1 NOT = 0
-              MOVE "BAD START" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               MOVE "REG-LY BUSY ON START, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-LY-ST1
               GO TO RDTR-LY-999.
            
            MOVE "Y" TO WS-NEWINPUT.
@@ -995,7 +1008,7 @@
                CLOSE INCR-LY-REGISTER
                GO TO RDTR-LY-999.
            IF WS-INCR-LY-ST1 NOT = 0
-               MOVE "Record Locked By another User, 'ESC' To Retry."
+               MOVE "RECORD LOCKED BY ANOTHER USER, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
@@ -1143,7 +1156,11 @@
            IF WS-DEBTOR-ST1 NOT = 0
                MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RD-010.
        RD-999.
             EXIT.
@@ -1160,9 +1177,13 @@
                 MOVE "UNKNOWN" TO DR-NAME
                 GO TO RDLY-999.
            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE "DEBTOR RECORD BUSY ON READ, 'ESC' TO RETRY."
+              MOVE "DEBTOR RECORD BUSY ON READ-RDLY010, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO RDLY-010.
        RDLY-999.
             EXIT.
@@ -1192,12 +1213,14 @@
                MOVE 0 TO WS-INCR-LY-ST1
                GO TO PRR-LY-900.
             IF WS-INCR-LY-ST1 NOT = 0
-               MOVE "Record Locked By another User, 'ESC' To Retry."
-                TO WS-MESSAGE
+             MOVE "REG-LY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-INCR-LY-ST1
                GO TO PRR-LY-002.
                

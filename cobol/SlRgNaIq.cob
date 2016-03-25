@@ -30,7 +30,6 @@
            03  WS-INV           PIC Z(6).
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1       PIC 99.
-      *     03  WS-INCR-ST2       PIC 9(2) COMP-X.
        01  WS-SPLIT-ACCOUNT.
            03  WS-SP-1          PIC X VALUE " ".
            03  WS-SP-REST       PIC X(24) VALUE " ".
@@ -127,11 +126,12 @@
             IF WS-INCR-ST1 NOT = 0
                 MOVE "BAD START, 'ESC' TO SEE ERROR STATUS."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR-000
                 MOVE WS-INCR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 MOVE WS-REGISTER TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 PERFORM CLEAR-MIDDLE
                 CLOSE INCR-REGISTER
                 GO TO READ-999.
@@ -139,11 +139,14 @@
                MOVE
                "NO REG RECORDS WITH THAT SHORT NAME, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-INCR-STATUS
-               PERFORM CLEAR-MIDDLE
-               CLOSE INCR-REGISTER
-               GO TO READ-999.
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-STATUS
+                PERFORM CLEAR-MIDDLE
+                CLOSE INCR-REGISTER
+                GO TO READ-999.
             MOVE 0 TO SUB-2 SUB-3 F-EXIT-CH
             MOVE 800 TO SUB-DIS.
         READ-010.
@@ -172,6 +175,15 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO READ-999.
+            IF WS-INCR-ST1 NOT = 0
+                MOVE "REGISTER BUSY ON READ-NEXT, 'ESC' TO EXIT."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INCR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INCR-ST1
+                GO TO READ-010.
 
             IF INCR-TRANS = 7
                GO TO READ-010.
@@ -323,7 +335,10 @@
             IF WS-INCR-ST1 NOT = 0
                MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
                GO TO OPEN-000.
        OPEN-001.

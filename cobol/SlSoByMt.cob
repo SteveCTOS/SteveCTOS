@@ -20,7 +20,7 @@
        77  WS-SAVE            PIC XX VALUE " ".
        77  WS-INVSAVE         PIC 9(6) VALUE 0.
        01  WS-SOLDBY-STATUS.
-           03  WS-SOLDBY-ST1   PIC 99.
+           03  WS-SOLDBY-ST1  PIC 99.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -497,8 +497,14 @@
             DELETE SOLD-BY
                INVALID KEY NEXT SENTENCE.
             IF WS-SOLDBY-ST1 NOT = 0
-               MOVE 0 TO WS-SOLDBY-ST1
-               GO TO DDR-010.
+                MOVE "SOLDBY BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
+                GO TO DDR-010.
        DDR-999.
            EXIT.
       *
@@ -509,20 +515,26 @@
             REWRITE SOLDBY-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-SOLDBY-ST1 NOT = 0
-                MOVE 0 TO WS-SOLDBY-ST1
                 MOVE "SOLDBY BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE SOLDBY-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-SOLDBY-ST1 NOT = 0
-                MOVE 0 TO WS-SOLDBY-ST1
                 MOVE "SOLDBY BUSY ON WRITE,  'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO RDR-020.
        RDR-999.
             EXIT.
@@ -536,7 +548,7 @@
         RD-010.
            READ SOLD-BY WITH LOCK
                  INVALID KEY NEXT SENTENCE.
-           IF WS-SOLDBY-ST1 = 23 OR 35 OR 49 OR = 52
+           IF WS-SOLDBY-ST1 = 23 OR 35 OR 49
                 MOVE 0 TO WS-SOLDBY-ST1
                 PERFORM CLEAR-FORM
                 MOVE "Y" TO NEW-NO
@@ -546,9 +558,10 @@
            IF WS-SOLDBY-ST1 NOT = 0
                 MOVE "SOLDBY BUSY ON READ, PRESS 'ESC' TO RETRY."
                   TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-SOLDBY-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
@@ -580,13 +593,22 @@
                          WS-INVSAVE
                MOVE "Y" TO WS-END
                GO TO RNX-999.
-           IF WS-SOLDBY-ST1 =  23 OR 35 OR 49 OR 51
+           IF WS-SOLDBY-ST1 = 23 OR 35 OR 49
+               MOVE "SOLDBY BUSY ON READ-NEXT-23, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SOLDBY-ST1
+               GO TO RNX-999.
+           IF WS-SOLDBY-ST1 NOT = 0
                MOVE "SOLDBY BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RNX-005.
-           IF WS-SOLDBY-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SOLDBY-ST1
                PERFORM START-RECORD
                GO TO RNX-005.
@@ -612,13 +634,22 @@
                          WS-INVSAVE
                MOVE "Y" TO WS-END
                GO TO RPREV-999.
-           IF WS-SOLDBY-ST1 =  23 OR 35 OR 49 OR 51
+           IF WS-SOLDBY-ST1 =  23 OR 35 OR 49
+               MOVE "SOLDBY BUSY ON READ-PREV-23, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SOLDBY-ST1
+               GO TO RPREV-999.
+           IF WS-SOLDBY-ST1 NOT = 0
                MOVE "SOLDBY BUSY ON READ-PREV, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
-           IF WS-SOLDBY-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SOLDBY-ST1
                PERFORM START-RECORD
                GO TO RPREV-005.
@@ -633,16 +664,22 @@
        OPEN-000.
             OPEN I-O SOLD-BY.
             IF WS-SOLDBY-ST1 NOT = 0
-               MOVE 0 TO WS-SOLDBY-ST1
                MOVE "SOLDBY FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
             OPEN OUTPUT SOLD-BY
              IF WS-SOLDBY-ST1 NOT = 0
-               MOVE 0 TO WS-SOLDBY-ST1
                MOVE "SOLDBY FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                GO TO OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
@@ -679,5 +716,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

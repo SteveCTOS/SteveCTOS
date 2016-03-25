@@ -5845,6 +5845,7 @@
                              B-UNIT (SUB-1)
                  MOVE 0   TO B-ORDERQTY (SUB-1)
                              B-SHIPQTY (SUB-1)
+                             B-SHIPPEDQTY (SUB-1)
                              B-STOCKPRICE (SUB-1)
                              B-STOCKCOST (SUB-1)
                              B-DISCOUNTPERITEM (SUB-1)
@@ -5863,6 +5864,7 @@
                          B-UNIT (SUB-1).
              MOVE 0   TO B-ORDERQTY (SUB-1)
                          B-SHIPQTY (SUB-1)
+                         B-SHIPPEDQTY (SUB-1)
                          B-STOCKPRICE (SUB-1)
                          B-STOCKCOST (SUB-1)
                          B-DISCOUNTPERITEM (SUB-1)

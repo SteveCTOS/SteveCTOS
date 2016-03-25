@@ -212,8 +212,16 @@
                MOVE 1 TO SUB-1
                GO TO PRR-010.
            IF WS-DEBTOR-ST1 NOT = 0
-              MOVE 0 TO WS-DEBTOR-ST1
-              GO TO PRR-005.
+               MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PRR-005.
               
            IF DR-SALESMAN = " "
               GO TO PRR-005.
@@ -406,10 +414,15 @@
            IF WS-SALES-ST1 = 10
               GO TO PRS-999.
            IF WS-SALES-ST1 NOT = 0
-              MOVE 0 TO WS-SALES-ST1
-              MOVE "SALES ANALYSIS BUSY ON READ, 'ESC' TO RETRY"
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+             MOVE "SALES BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-SALES-ST1
               GO TO PRS-005.
        PRS-020.
       * 53= BRANCH OFFICE, 57= ASSOCIATE COMPANIES

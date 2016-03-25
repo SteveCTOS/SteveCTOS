@@ -20,7 +20,6 @@
        77  WS-SAVE            PIC 9 VALUE 0.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1   PIC 99.
-      *     03  WS-SLPARAMETER-ST2   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -1388,6 +1387,12 @@
             DELETE PARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-SLPARAMETER-ST1 NOT = 0
+               MOVE "PARAMETER FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO DDR-020.
        DDR-999.
@@ -1436,23 +1441,28 @@
             IF WS-SLPARAMETER-ST1 NOT = 0
                MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-                MOVE 0 TO WS-SLPARAMETER-ST1
-                MOVE "PARAMETER RECORD BUSY ON REWRITE, BE PATIENT"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RDR-010.
+               MOVE "PARAMETER FILE BUSY ON REWRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RDR-010.
             GO TO RDR-999.
        RDR-020.
             WRITE PARAMETER-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-SLPARAMETER-ST1 NOT = 0
                MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               MOVE "PARAMETER RECORD BUSY ON WRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-                MOVE 0 TO WS-SLPARAMETER-ST1
-                MOVE "PARAMETER RECORD BUSY ON WRITE, BE PATIENT"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RDR-020.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RDR-020.
        RDR-999.
             EXIT.
       *
@@ -1471,13 +1481,14 @@
                 MOVE WS-NUMBER TO PA-RECORD
                 GO TO RD-999.
            IF WS-SLPARAMETER-ST1 NOT = 0
+               MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-                MOVE 0 TO WS-SLPARAMETER-ST1
-                MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE PA-RECORD TO WS-SAVE.
        RD-999.
@@ -1506,12 +1517,23 @@
                MOVE "Y" TO WS-END
                GO TO RNX-999.
            IF WS-SLPARAMETER-ST1 =  23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER FILE BUSY ON READ,  'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RNX-005.
            IF WS-SLPARAMETER-ST1 NOT = 0
+            MOVE "PARAMETER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-SLPARAMETER-ST1
                PERFORM START-RECORD
                GO TO RNX-005.
@@ -1536,10 +1558,12 @@
        OPEN-000.
             OPEN I-O PARAMETER-FILE.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
@@ -1575,5 +1599,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

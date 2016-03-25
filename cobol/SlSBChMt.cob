@@ -40,14 +40,11 @@
            03  WS-ST-CODE       PIC X.
            03  WS-ST-TERM       PIC X(11).
        01  WS-SOLDBY-STATUS.
-           03  WS-SOLDBY-ST1   PIC 99.
-      *     03  WS-SOLDBY-ST2   PIC X.
+           03  WS-SOLDBY-ST1    PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1        PIC 99.
-      *     03  WS-INCR-ST2        PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST        PIC X(20) VALUE " ".
            03  WS-DAILY-2ND        PIC X(20) VALUE " ".
@@ -221,7 +218,7 @@
             IF WS-INCR-ST1 NOT = 0
                MOVE "THERE ARE NO REGISTER RECORDS FOR THAT ACCOUNT."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR-MESSAGE
                MOVE "N" TO WS-VALID
                GO TO RRR-999.
        RRR-002.
@@ -230,10 +227,13 @@
             IF WS-INCR-ST1 = 23 OR 35 OR 49
                GO TO RRR-999.
             IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "REGISTER FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO RRR-002.
        RRR-010.
             MOVE WS-NEWSOLDBY-NUM          TO INCR-SB-TYPE.
@@ -270,19 +270,25 @@
                 PERFORM ERROR-MESSAGE
                 GO TO R-SB-999.
              IF WS-SOLDBY-ST1 NOT = 0
-                MOVE 0 TO WS-SOLDBY-ST1
                 MOVE "SOLDBY RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO R-SB-010.
        R-SB-030.
              DELETE SOLD-BY
                 INVALID KEY NEXT SENTENCE.
              IF WS-SOLDBY-ST1 NOT = 0
-                MOVE 0 TO WS-SOLDBY-ST1
                 MOVE "SOLDBY RECORD BUSY ON DELETE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO R-SB-030.
        R-SB-999.
              EXIT.
@@ -292,15 +298,22 @@
              WRITE SOLDBY-REC
                  INVALID KEY NEXT SENTENCE.
              IF WS-SOLDBY-ST1 = 23 OR 35 OR 49
-                MOVE "SOLDBY FILE ERROR ON WRITE, 'ESC' TO EXIT."
+                MOVE "SOLDBY FILE ERROR ON WRITE-23, 'ESC' TO EXIT."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO UP-SB-999.
              IF WS-SOLDBY-ST1 NOT = 0
-                MOVE 0 TO WS-SOLDBY-ST1
                 MOVE "SOLDBY FILE BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
                 GO TO UP-SB-030.
        UP-SB-999.
            EXIT.
@@ -309,18 +322,21 @@
        OPEN-000.
             OPEN I-O SOLD-BY.
             IF WS-SOLDBY-ST1 NOT = 0
-               MOVE 0 TO WS-SOLDBY-ST1
                MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-000.
+                PERFORM ERROR1-000
+                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-SOLDBY-ST1
+                GO TO OPEN-000.
        OPEN-008.
             OPEN I-O INCR-REGISTER.
             IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
-               MOVE "SORDER-FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "REGISTER BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-INCR-ST1
                GO TO OPEN-008.
        OPEN-999.
             EXIT.
@@ -344,6 +360,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
        Copy "WriteDailyExcep1".
       * END-OF-JOB

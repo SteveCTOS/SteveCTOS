@@ -20,17 +20,16 @@
 
       *
        WORKING-STORAGE SECTION.
-       77  WS-INVNO             PIC 9(5) VALUE 0.
-       77  WS-ACCEPT            PIC XX VALUE " ".
-       77  WS-YYACCEPT          PIC X(4) VALUE " ".
-       77  WS-VALUE             PIC S9(7)V99.
-       77  WS-PAGE              PIC 9(3) VALUE 0.
-       77  WS-LINE              PIC 9(3) VALUE 66.
-       01  W-DD                 PIC Z9.
-       01  W-YY                 PIC Z(3)9.
+       77  WS-INVNO            PIC 9(5) VALUE 0.
+       77  WS-ACCEPT           PIC XX VALUE " ".
+       77  WS-YYACCEPT         PIC X(4) VALUE " ".
+       77  WS-VALUE            PIC S9(7)V99.
+       77  WS-PAGE             PIC 9(3) VALUE 0.
+       77  WS-LINE             PIC 9(3) VALUE 66.
+       01  W-DD                PIC Z9.
+       01  W-YY                PIC Z(3)9.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1    PIC 99.
-      *     03  WS-INCR-ST2    PIC X.
+           03  WS-INCR-ST1     PIC 99.
        01  WEEK-DATE.
            03  WEEK-YY         PIC 9999.
            03  WEEK-MM         PIC 99.
@@ -212,9 +211,10 @@
            IF WS-INCR-ST1 NOT = 0
               MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO PR-003.
            IF INCR-TRANS NOT = 1 AND NOT = 6
               GO TO PR-003.

@@ -202,10 +202,13 @@
                PERFORM PRINT-TOTALS
                GO TO PRR-999.
            IF WS-SOLDBY-ST1 NOT = 0
-               MOVE 0 TO WS-SOLDBY-ST1
                MOVE "SOLD BY FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SOLDBY-ST1
                GO TO PRR-001.
        PRR-005.
            IF PRINT-SB = " "
@@ -215,21 +218,6 @@
                PERFORM SUB-LINE
                GO TO PRR-999.
        PRR-010.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-               GO TO PRR-012.
-           IF LINE-CNT > 22
-             MOVE 3010 TO POS
-             DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT1."
-             AT POS
-             ADD 60 TO POS
-             ACCEPT WS-ACCEPT AT POS
-           ELSE
-             GO TO PRR-020.
-           IF W-ESCAPE-KEY = 3
-             GO TO END-900
-           ELSE
-             PERFORM PRINT-HEADINGS.
-       PRR-012.
            IF LINE-CNT > 60
                MOVE "N" TO LINE-CNT-ANSWER
                PERFORM PRINT-HEADINGS.
@@ -277,9 +265,6 @@
               SUBTRACT 2 FROM WS-LINECNT.
            IF PRINT-SB = " " 
                MOVE SB-TYPE TO PRINT-SB.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-            IF LINE-CNT > 23
-              MOVE 66 TO LINE-CNT.
               
            GO TO PRR-001.
        PRR-999.
@@ -295,23 +280,16 @@
            MOVE WS-PAGE TO H-PAGE
            MOVE " "     TO PRINT-REC.
 
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-                PERFORM CLEAR-SCREEN-PART.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-            IF WS-PRINT-TYPE = 2
+           IF WS-PRINT-TYPE = 2
                MOVE WS-PRINT-COMP TO PRINT-REC
                WRITE PRINT-REC
                MOVE " " TO PRINT-REC.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-            IF WS-PAGE = 1
+           IF WS-PAGE = 1
                WRITE PRINT-REC FROM COMPANY-LINE
             ELSE
                WRITE PRINT-REC FROM COMPANY-LINE AFTER PAGE.
            MOVE " " TO PRINT-REC
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-              WRITE PRINT-REC FROM HEAD1 AFTER 1
-           ELSE
-              WRITE PRINT-REC FROM HEAD1 AFTER 1.
+           WRITE PRINT-REC FROM HEAD1 AFTER 1.
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC FROM HEAD2 AFTER 1
            MOVE " " TO PRINT-REC.
@@ -328,10 +306,8 @@
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC FROM HEAD4 AFTER 1.
            MOVE " " TO PRINT-REC.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-               MOVE 5 TO LINE-CNT
-           ELSE
-               MOVE 7 TO LINE-CNT.
+
+           MOVE 7 TO LINE-CNT.
         PH-999.
            EXIT.
       *
@@ -356,29 +332,13 @@
                      WS-LINECNT
                      WS-MARGIN
                      WS-PERC.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-            IF LINE-CNT > 22
-             MOVE 3010 TO POS
-             DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT3."
-             AT POS
-             ADD 60 TO POS
-             ACCEPT WS-ACCEPT AT POS
-           ELSE
-             GO TO SL-020.
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-            IF W-ESCAPE-KEY = 3
-             GO TO END-900
-            ELSE
-             PERFORM PRINT-HEADINGS
-             GO TO SL-999.
        SL-020.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-            IF LINE-CNT > 56
+           IF LINE-CNT > 56
                PERFORM PRINT-HEADINGS
                GO TO SL-999.
            IF WS-PRINT-ALL NOT = "Y"
                GO TO SL-999.
-           IF WS-SOLDBY-ST1 NOT = "1"
+           IF WS-SOLDBY-ST1 NOT = 10
               WRITE PRINT-REC FROM HEAD3 AFTER 1
               WRITE PRINT-REC FROM HEAD4 AFTER 1
               MOVE " " TO PRINT-REC
@@ -401,22 +361,6 @@
        PT-999.
            EXIT.
       *
-       CLEAR-SCREEN-PART SECTION.
-       CSP-005.
-           MOVE 0301 TO POS
-           DISPLAY WS-MESSAGE-PART AT POS
-           MOVE 0 TO LINE-CNT.
-       CSP-010.
-           ADD 1 TO LINE-CNT
-           ADD 80 TO POS
-           DISPLAY WS-MESSAGE-PART AT POS.
-           IF LINE-CNT < 29
-              GO TO CSP-010.
-           MOVE 0280 TO POS
-           DISPLAY WS-MESS AT POS.
-       CSP-999.
-           EXIT.
-      *
        OPEN-FILES SECTION.
        OPEN-010.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -428,36 +372,21 @@
            IF WS-SOLDBY-ST1 NOT = 0
                MOVE "SOLD BY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE WS-SOLDBY TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SOLDBY-ST1
                GO TO OPEN-060.
            MOVE Ws-Co-Name TO CO-NAME.
        OPEN-999.
            EXIT.
       *
        END-OFF SECTION.
-       END-000.
-           IF WS-PRINTER NOT = "[VID]" AND NOT = "[Vid]"
-              GO TO END-010.
-           IF LINE-CNT < 24
-             GO TO END-020.
-             MOVE 3010 TO POS
-             DISPLAY "Press ANY key for NEXT-PAGE OR 'END' to EXIT2."
-             AT POS
-             ADD 60 TO POS
-             ACCEPT WS-ACCEPT AT POS.
-           IF W-ESCAPE-KEY = 3
-             GO TO END-900
-           ELSE
-             PERFORM PRINT-HEADINGS
-             GO TO END-020.
-        END-010.
+       END-010.
            IF LINE-CNT > 56
-              PERFORM PRINT-HEADINGS.
-        END-020.
+             PERFORM PRINT-HEADINGS.
+       END-020.
            PERFORM GET-USER-MAIL-NAME
            PERFORM GET-REPORT-Y2K-DATE
            PERFORM PRINT-REPORT-INFO.
