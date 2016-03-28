@@ -220,9 +220,13 @@
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY"
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-              CLOSE STOCK-TRANS-FILE
-              GO TO RDTR-000.
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-000.
        RDTR-001.
            MOVE 1 TO F-INDEX.
        RDTR-005.
@@ -253,13 +257,15 @@
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-000.
            IF WS-STTRANS-ST1 NOT = 0
-               MOVE 
-            "ST-TRANS BUSY ON READ NEXT, SEE NEXT LINE, <ESC> TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO RDTR-010.
            IF STTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
                MOVE 1 TO F-INDEX
@@ -356,7 +362,11 @@
             IF WS-DEBTOR-ST1 NOT = 0
                 MOVE "DR RECORD BUSY ON READ, PRESS 'ESC' TO RE-TRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-010.
        RD-999.
             EXIT.
@@ -382,10 +392,13 @@
              IF WS-DEBTOR-ST1 = 0
                  GO TO R-DR-NX-999
              ELSE
-                 MOVE 0 TO WS-DEBTOR-ST1
                  MOVE "DEBTOR BUSY NEXT-PAGE SEQUENCE, 'ESC' TO RETRY."
                  TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-DEBTOR-ST1
                  PERFORM START-DEBTOR
                  GO TO R-DR-NX-005.
        R-DR-NX-999.
@@ -407,6 +420,10 @@
               MOVE "DEBTOR BUSY PREV-PAGE SEQUENCE, 'ESC' TO RETRY."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-DEBTOR-ST1
                  PERFORM START-DEBTOR
                  GO TO RPREV-005.
@@ -430,8 +447,15 @@
                 MOVE "*REGISTER NOT FOUND*" TO INCR-PORDER
                 GO TO ROR-999.
             IF WS-INCR-ST1 NOT = 0
-                MOVE 0 TO WS-INCR-ST1
-                MOVE "*P/O NOT AVAILABLE*" TO INCR-PORDER.
+               MOVE "REGISTER BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               MOVE "*P/O NOT AVAILABLE*" TO INCR-PORDER
+               GO TO ROR-010.
        ROR-999.
             EXIT.
       *
@@ -456,13 +480,15 @@
                MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-900.
             IF WS-STTRANS-ST1 NOT = 0
-               MOVE 
-            "ST-TRANS PRINT BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-002.
             IF STTR-AC-COMPLETE NOT = "N"
                GO TO PRR-900.

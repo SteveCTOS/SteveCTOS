@@ -321,13 +321,13 @@
        WRDA-000.
            OPEN EXTEND DAILY-EXCEPTIONS.
            IF WS-DAILY-ST1 = 35 OR = 48
-              MOVE WS-DAILY-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-DAILY-ST1
               MOVE "DAILY FILE BUSY ON EXTEND, PRESS 'ESC' TO RETRY"
                 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO WRDA-000.
+               PERFORM ERROR1-000
+               MOVE WS-DAILY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO WRDA-000.
             GO TO WRDA-008.
        WRDA-005.
            OPEN OUTPUT DAILY-EXCEPTIONS.
@@ -352,12 +352,14 @@
            MOVE WS-DAILY-MESSAGE TO DAILY-EX-REC.
            WRITE DAILY-EX-REC.
            IF WS-DAILY-ST1 NOT = 0
-              MOVE 0 TO WS-DAILY-ST1
-              MOVE 2910 TO POS
-              DISPLAY "DAILY FILE BUSY ON WRITE." AT POS
-              GO TO WRDA-010.
-           MOVE 2910 TO POS.
-           DISPLAY "                                   " AT POS.
+              MOVE "DAILY FILE BUSY ON WRITE, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DAILY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DAILY-ST1
+               GO TO WRDA-010.
        WRDA-900.
            CLOSE DAILY-EXCEPTIONS.
            IF WS-DAILY-ST1 NOT = 0

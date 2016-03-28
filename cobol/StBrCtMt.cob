@@ -22,7 +22,6 @@
        77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "StDescIq".
        01  WS-STBRCAT-STATUS.
            03  WS-STBRCAT-ST1   PIC 99.
-      *     03  WS-STBRCAT-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -138,6 +137,12 @@
             DELETE STBRANCHCAT-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-STBRCAT-ST1 NOT = 0
+               MOVE "STOCK BR-CAT BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STBRCAT-ST1
                GO TO DSR-010. 
        DSR-999.
@@ -156,20 +161,26 @@
           REWRITE STBRANCHCAT-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STBRCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STBRCAT-ST1
               MOVE "STBRANCHCAT BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STBRCAT-ST1
               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STBRANCHCAT-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STBRCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STBRCAT-ST1
               MOVE "STBRANCHCAT BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STBRCAT-ST1
               GO TO RSR-020.
        RSR-999.
           EXIT.
@@ -186,11 +197,14 @@
                 MOVE WS-CATEGORY TO STBRCAT-CATEGORY
                 GO TO R-STBRCAT-999.
              IF WS-STBRCAT-ST1 NOT = 0
-                MOVE 0 TO WS-STBRCAT-ST1
-                MOVE "STBRANCHCAT BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-STBRCAT-010.
+               MOVE "STBRANCHCAT BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STBRCAT-ST1
+               GO TO R-STBRCAT-010.
            MOVE STBRCAT-CATEGORY    TO WS-CATEGORY.
        R-STBRCAT-999.
              EXIT.
@@ -214,12 +228,22 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
            IF WS-STBRCAT-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-STBRCAT-ST1
                MOVE "STBRANCHCAT BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STBRCAT-ST1
+               MOVE "Y" TO WS-END
+               GO TO RSN-999.
            IF WS-STBRCAT-ST1 NOT = 0
+               MOVE "STBRANCHCAT BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STBRCAT-ST1
                PERFORM START-STOCK
                GO TO RSN-005.
@@ -240,12 +264,21 @@
                PERFORM ERROR-MESSAGE
                GO TO RPREV-999.
            IF WS-STBRCAT-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-STBRCAT-ST1
-               MOVE "STBRANCHCAT BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
+              MOVE "STBRANCHCAT BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STBRCAT-ST1
+               GO TO RPREV-999.
            IF WS-STBRCAT-ST1 NOT = 0
+              MOVE "STBRANCHCAT BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STBRCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STBRCAT-ST1
                PERFORM START-STOCK
                GO TO RPREV-005.
@@ -306,5 +339,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

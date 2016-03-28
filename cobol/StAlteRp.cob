@@ -35,17 +35,13 @@
        77  WS-CAT               PIC X(3) VALUE " ".
        77  WS-TOTANSWER         PIC X VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-STALT-STATUS.
-           03  WS-STALT-ST1   PIC 99.
-      *     03  WS-STALT-ST2   PIC X.
+           03  WS-STALT-ST1     PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1      PIC 99.
        01  WS-STCAT-STATUS.
            03  WS-STCAT-ST1     PIC 99.
-      *     03  WS-STCAT-ST2     PIC X.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -167,11 +163,16 @@
            READ STOCK-MASTER NEXT
                AT END
                GO TO PRR-999.
-           IF WS-ST-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-002.
                
            MOVE ST-STOCKNUMBER     TO WS-STOCKNUMBER.
@@ -272,21 +273,24 @@
            MOVE STALT-NUMBER (SUB-1) TO ST-STOCKNUMBER.
            START STOCK-MASTER KEY NOT < ST-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-ST-ST1 NOT = 0
+           IF WS-STOCK-ST1 NOT = 0
                MOVE " " TO ST-STOCKNUMBER
                GO TO RAS-999.
        RAS-005.
            READ STOCK-MASTER
                INVALID KEY NEXT SENTENCE.
-           IF WS-ST-ST1 = 23 OR 35 OR 49
+           IF WS-STOCK-ST1 = 23 OR 35 OR 49
                MOVE " " TO ST-STOCKNUMBER
                GO TO RAS-999.
-           IF WS-ST-ST1 NOT = 0
-              MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0
               Move "STOCK FILE BUSY ON READ, 'ESC' to RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RAS-005.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RAS-005.
        RAS-999.
            EXIT.
       *
@@ -302,11 +306,14 @@
                MOVE 0 TO STPR-PRICE
                GO TO SPR-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               Move "SPECIAL PRICES BUSY ON READ, 'ESC' to RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO SPR-005.
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
+               GO TO SPR-005.
        SPR-999.
            EXIT.
       *
@@ -325,11 +332,14 @@
                MOVE " " TO STCAT-PAGE-NUM
                GO TO RCREF-999.
            IF WS-STCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STCAT-ST1
-              Move "ST-CATALOGUE PAGE BUSY ON READ, 'ESC' to RETRY"
+              MOVE "ST-CATALOGUE PAGE BUSY ON READ, 'ESC' TO RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RCREF-005.
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO RCREF-005.
        RCREF-999.
            EXIT.
       *
@@ -344,19 +354,22 @@
              IF WS-STALT-ST1 = 23 OR 35 OR 49
                 GO TO R-CAT-999.
              IF WS-STALT-ST1 NOT = 0
-                MOVE 0 TO WS-STALT-ST1
-                MOVE "ST-CAT RECORD BUSY ON READ, 'ESC' TO RETRY."
+                MOVE "ST-ALT RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-CAT-010.
+               PERFORM ERROR1-000
+               MOVE WS-STALT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STALT-ST1
+               GO TO R-CAT-010.
        R-CAT-999.
              EXIT.
       *
         OPEN-FILES SECTION.
         OPEN-000.
            OPEN I-O STOCK-MASTER.
-           IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0
+               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE

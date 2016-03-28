@@ -67,35 +67,25 @@
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY         PIC X OCCURS 11.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-STOCK1-STATUS.
-           03  WS-STOCK1-ST1   PIC 99.
-      *     03  WS-STOCK1-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK1-ST1      PIC 99.
        01  WS-STOCK2-STATUS.
-           03  WS-STOCK2-ST1   PIC 99.
-      *     03  WS-STOCK2-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK2-ST1      PIC 99.
        01  WS-STOCK3-STATUS.
-           03  WS-STOCK3-ST1   PIC 99.
-      *     03  WS-STOCK3-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK3-ST1      PIC 99.
        01  WS-STOCK4-STATUS.
-           03  WS-STOCK4-ST1   PIC 99.
-      *     03  WS-STOCK4-ST2   PIC 9(2) COMP-X.
+           03  WS-STOCK4-ST1      PIC 99.
        01  WS-MENU-STATUS.
-           03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9(2) COMP-X.
+           03  WS-MENU-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1   PIC 99.
-      *     03  WS-SLPARAMETER-ST2   PIC X.
-       01  Ws-Data-Status.
-           03  Ws-Data-St1       Pic 99.
-      *     03  Ws-Data-St2       Pic 9(2) Comp-X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
+       01  WS-DATA-STATUS.
+           03  WS-DATA-ST1        PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1        PIC 99.
        01 COMPANIES-NAME-LIST.
          02  COMPANIES-LIST OCCURS 20.
            03  LIST-NAME        PIC X(40).
@@ -650,7 +640,10 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON OPEN, GOING TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-MENU-ST1
                GO TO RNC-005.
            MOVE 1 TO PTY-NUMBER.
@@ -665,9 +658,13 @@
            IF WS-MENU-ST1 = 10
                GO TO RNC-900.
            IF WS-MENU-ST1 NOT = 0
-               MOVE "COMPANY FILE BUSY ON READ-NEXT, GOING TO RE-TRY."
+               MOVE "COMPANY FILE BUSY ON READ-NEXT, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-MENU-ST1
                GO TO RNC-010.
            MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-20)
            MOVE PTY-NUMBER  TO LIST-NUMBER (SUB-20)
@@ -697,12 +694,14 @@
                 MOVE "ock Item, Try Again!" TO ST-DESCRIPTION2 
                 GO TO R-ST-900.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
-                GO TO R-ST-000.
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
+                GO TO R-ST-010.
        R-ST-900.
              PERFORM READ-SPECIAL-PRICES.
              PERFORM ERROR-020.
@@ -735,9 +734,12 @@
              IF WS-STOCK1-ST1 NOT = 0
                 MOVE "STOCK RECORD1 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
-                GO TO RBRST-100.
+                PERFORM ERROR1-000
+                MOVE WS-STOCK1-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK1-ST1
+                GO TO RBRST-110.
              MOVE ST1-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST1-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
              MOVE ST1-QTYONORDER   TO WS-BRANCH-ONORDER (SUB-1)
@@ -763,8 +765,11 @@
              IF WS-STOCK2-ST1 NOT = 0
                 MOVE "STOCK RECORD2 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
+                PERFORM ERROR1-000
+                MOVE WS-STOCK2-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK2-ST1
                 GO TO RBRST-210.
              MOVE ST2-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST2-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
@@ -791,8 +796,11 @@
              IF WS-STOCK3-ST1 NOT = 0
                 MOVE "STOCK RECORD3 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
+                PERFORM ERROR1-000
+                MOVE WS-STOCK3-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK3-ST1
                 GO TO RBRST-310.
              MOVE ST3-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST3-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
@@ -819,8 +827,11 @@
              IF WS-STOCK4-ST1 NOT = 0
                 MOVE "STOCK RECORD4 BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
-                DISPLAY " " AT 3079 WITH BELL
+                PERFORM ERROR1-000
+                MOVE WS-STOCK4-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK4-ST1
                 GO TO RBRST-410.
              MOVE ST4-QTYONHAND    TO WS-BRANCH-ONHAND (SUB-1)
              MOVE ST4-QTYONRESERVE TO WS-BRANCH-ONRES (SUB-1)
@@ -860,6 +871,13 @@
            IF WS-STOCK-ST1 = 0
                GO TO R-ST-NX-900
            ELSE
+               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO R-ST-NX-005.
        R-ST-NX-900.
@@ -886,6 +904,13 @@
            IF WS-STOCK-ST1 = 0
                GO TO RPREV-900
            ELSE
+               MOVE "STOCK FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO RPREV-005.
        RPREV-900.
@@ -907,11 +932,14 @@
                MOVE 0 TO STPR-PRICE
                GO TO SPR-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
-              Move "SPECIAL PRICES BUSY ON READ, 'ESC' to RETRY."
+              MOVE "SPECIAL PRICES BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO SPR-005.
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
+               GO TO SPR-005.
        SPR-999.
            EXIT.
       *
@@ -936,16 +964,22 @@
            IF PA-TYPE NOT = 7
                GO TO RNX-999.
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAM FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RNX-005.
-           IF WS-SLPARAMETER-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RNX-999.
+           IF WS-SLPARAMETER-ST1 NOT = 0
                MOVE "GOING TO RESTART PARAM FILE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                PERFORM START-PARAM-RECORD
                GO TO RNX-005.
            ADD 1 TO SUB-1.
@@ -965,13 +999,16 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RP-000.
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RP-000.
        RP-999.
            EXIT.
       *
@@ -987,10 +1024,13 @@
                MOVE "N" TO WS-QUES-MU-GP-PERC
                GO TO RINVQUES-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER BUSY RINVQUES, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RINVQUES-010.
        RINVQUES-900.
             MOVE INVQUES-MU-GP-PERC TO WS-QUES-MU-GP-PERC.
@@ -1217,9 +1257,11 @@
             IF WS-STOCK1-ST1 NOT = 0
                MOVE "STOCK FILE1 BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK1-ST1 TO WS-MESSAGE
                PERFORM ERROR1-000
+               MOVE WS-STOCK1-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK1-ST1
                GO TO OBS-001.
        OBS-002.
             IF WS-STOCK2 = " "
@@ -1242,9 +1284,11 @@
             IF WS-STOCK2-ST1 NOT = 0
                MOVE "STOCK FILE2 BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK2-ST1 TO WS-MESSAGE
                PERFORM ERROR1-000
+               MOVE WS-STOCK2-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK2-ST1
                GO TO OBS-002.
        OBS-003.
             IF WS-STOCK3 = " "
@@ -1267,9 +1311,11 @@
             IF WS-STOCK3-ST1 NOT = 0
                MOVE "STOCK FILE3 BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK3-ST1 TO WS-MESSAGE
                PERFORM ERROR1-000
+               MOVE WS-STOCK3-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK3-ST1
                GO TO OBS-003.
        OBS-004.
             IF WS-STOCK4 = " "
@@ -1292,9 +1338,11 @@
             IF WS-STOCK4-ST1 NOT = 0
                MOVE "STOCK FILE4 BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK4-ST1 TO WS-MESSAGE
                PERFORM ERROR1-000
+               MOVE WS-STOCK4-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK4-ST1
                GO TO OBS-004.
        OBS-900.
              PERFORM ERROR1-020.

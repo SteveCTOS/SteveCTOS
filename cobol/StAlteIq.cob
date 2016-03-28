@@ -25,20 +25,16 @@
        77  WS-STOCKNUMBER     PIC X(15) VALUE " ".
        77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "StMastIq".
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1       PIC X(20) VALUE " ".
+           03  WS-DESC2       PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
        01  WS-STALT-STATUS.
            03  WS-STALT-ST1   PIC 99.
-      *     03  WS-STALT-ST2   PIC X.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1    PIC 99.
        01  WS-STCAT-STATUS.
-           03  WS-STCAT-ST1     PIC 99.
-      *     03  WS-STCAT-ST2     PIC X.
+           03  WS-STCAT-ST1   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -247,11 +243,14 @@
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-ST-010.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO R-ST-010.
        R-ST-999.
              EXIT.
       *
@@ -267,11 +266,14 @@
                MOVE 0 TO STPR-PRICE
                GO TO SPR-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               Move "SPECIAL PRICES BUSY ON READ, 'ESC' to RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO SPR-005.
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
+               GO TO SPR-005.
        SPR-999.
            EXIT.
       *
@@ -290,11 +292,14 @@
                MOVE " " TO STCAT-PAGE-NUM
                GO TO RCREF-999.
            IF WS-STCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STCAT-ST1
               Move "ST-CATALOGUE PAGE BUSY ON READ, 'ESC' to RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RCREF-005.
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO RCREF-005.
        RCREF-999.
            EXIT.
       *
@@ -305,7 +310,10 @@
              PERFORM READ-STOCK.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 MOVE "THIS IS NOT A VALID STOCK-NUMBER." TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 88 TO WS-STOCK-ST1
                 GO TO R-CAT-999.
              START STALT-MASTER KEY NOT < STALT-KEY
@@ -318,10 +326,13 @@
                 MOVE WS-STOCKNUMBER TO STALT-STOCKNUMBER
                 GO TO R-CAT-999.
              IF WS-STALT-ST1 NOT = 0
-                MOVE 0 TO WS-STALT-ST1
                 MOVE "ST-CAT RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STALT-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STALT-ST1
                 GO TO R-CAT-010.
        R-CAT-999.
              EXIT.
@@ -348,12 +359,22 @@
                MOVE 0 TO WS-STALT-ST1
                MOVE "ST-ALTERNATIVE BUSY READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
+                PERFORM ERROR1-000
+                MOVE WS-STALT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STALT-ST1
+                GO TO RSN-005.
            IF WS-STALT-ST1 NOT = 0
-               MOVE 0 TO WS-STALT-ST1
-               PERFORM START-ALTERNATIVE
-               GO TO RSN-005.
+               MOVE "ST-ALTERNATIVE BUSY READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STALT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STALT-ST1
+                PERFORM START-ALTERNATIVE
+                GO TO RSN-005.
            MOVE "N" TO NEW-STOCKNO.
            MOVE STALT-STOCKNUMBER TO WS-STOCKNUMBER
                                      ST-STOCKNUMBER.
@@ -373,15 +394,24 @@
                PERFORM ERROR-MESSAGE
                GO TO RPREV-999.
            IF WS-STALT-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-STALT-ST1
                MOVE "ST-ALTERNATIVE BUSY READ-PREV, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
+                PERFORM ERROR1-000
+                MOVE WS-STALT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STALT-ST1
+                GO TO RPREV-005.
            IF WS-STALT-ST1 NOT = 0
-               MOVE 0 TO WS-STALT-ST1
-               PERFORM START-ALTERNATIVE
-               GO TO RPREV-005.
+               MOVE "ST-ALTERNATIVE BUSY READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STALT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STALT-ST1
+                PERFORM START-ALTERNATIVE
+                GO TO RPREV-005.
            MOVE "N" TO NEW-STOCKNO.
            MOVE STALT-STOCKNUMBER TO WS-STOCKNUMBER
                                      ST-STOCKNUMBER.
@@ -457,5 +487,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

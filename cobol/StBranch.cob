@@ -35,12 +35,11 @@
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  PAGE-CNT             PIC 9(3) VALUE 0.
-       77  WS-EOF        PIC X(3) VALUE "   ".
-       77  WS-ORIGINAL   PIC X(30) VALUE " ".
-       77  WS-CHECK      PIC X(30) VALUE " ".
+       77  WS-EOF               PIC X(3) VALUE "   ".
+       77  WS-ORIGINAL          PIC X(30) VALUE " ".
+       77  WS-CHECK             PIC X(30) VALUE " ".
        01  WS-STNWPR-STATUS.
-           03  WS-STAT1  PIC 99.
-      *     03  WS-STAT2  PIC X.     
+           03  WS-STAT1         PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -108,7 +107,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ORIGINAL.
 
-      *     ACCEPT WS-ORIGINAL AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-003.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -130,7 +128,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHECK.
 
-      *     ACCEPT WS-CHECK AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO CONTROL-003.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -251,18 +248,24 @@
        OPEN-000.
            OPEN I-O STNWPR-MASTER.
            IF WS-STAT1 NOT = 0
-              MOVE 0 TO WS-STAT1
               MOVE "ORIGINAL DATA-FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STAT1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STAT1
               GO TO OPEN-000.
        OPEN-005.
            OPEN I-O STNWPR1-MASTER.
            IF WS-STAT1 NOT = 0
-              MOVE 0 TO WS-STAT1
               MOVE "CHECKING DATA-FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STAT1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STAT1
               GO TO OPEN-005.
        OPEN-015.
            MOVE Ws-Co-Name TO CO-NAME.

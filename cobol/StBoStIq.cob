@@ -38,8 +38,8 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
        01  WS-INCR-STATUS.
@@ -241,9 +241,13 @@
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY"
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-              CLOSE STOCK-TRANS-FILE
-              GO TO RDTR-000.
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-000.
        RDTR-001.
            MOVE 1   TO F-INDEX.
            MOVE "Y" TO WS-NEWINPUT.
@@ -275,14 +279,15 @@
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-000.
            IF WS-STTRANS-ST1 NOT = 0
-               MOVE 2910 TO POS
-               MOVE 
-            "ST-TRANS BUSY ON READ NEXT, SEE NEXT LINE, <ESC> TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO RDTR-010.
             IF STTR-ST-COMPLETE NOT = "N"
                CLOSE STOCK-TRANS-FILE
@@ -380,8 +385,7 @@
                 MOVE "UNKNOWN" TO ST-DESCRIPTION1
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 
-                  "STOCK BUSY ON READ, SEE NEXT LINE, <ESC> TO RETRY."
+               MOVE "STOCK BUSY ON READ, SEE NEXT LINE, <ESC> TO RETRY."
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
@@ -414,7 +418,7 @@
              IF WS-STOCK-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
-               MOVE "STOCK BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
+               MOVE "STOCK BUSY READ NEXT, <ESC> TO RETRY."
                  TO WS-MESSAGE
                  PERFORM ERROR1-000
                  MOVE WS-STOCK-ST1 TO WS-MESSAGE
@@ -442,7 +446,7 @@
              ELSE
                  MOVE 0 TO WS-STOCK-ST1
                MOVE
-               "STOCK BUSY READ PREVIOUS, NEXT LINE, <ESC> TO RETRY."
+               "STOCK BUSY READ PREVIOUS, <ESC> TO RETRY."
                  TO WS-MESSAGE
                  PERFORM ERROR1-000
                  MOVE WS-STOCK-ST1 TO WS-MESSAGE
@@ -511,13 +515,15 @@
                MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-900.
             IF WS-STTRANS-ST1 NOT = 0
-               MOVE 
-            "ST-TRANS PRINT BUSY READ NEXT, NEXT LINE, <ESC> TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-002.
            IF STTR-ST-COMPLETE NOT = "N"
                GO TO PRR-900.
