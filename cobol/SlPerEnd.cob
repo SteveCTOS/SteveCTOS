@@ -1518,6 +1518,13 @@
            WRITE INCR-LY-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-LY-ST1 NOT = 0
+           
+               MOVE "REG-LY NOT =0" TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+
               MOVE "SL-REG MOVE TO L/Y  " TO WS-DAILY-1ST
               MOVE INCR-LY-INVOICE        TO WS-DAILY-2ND
               MOVE "NOT WRITTEN IN PER- " TO WS-DAILY-3RD
@@ -1935,7 +1942,8 @@
            CLOSE INCR-REGISTER
            CLOSE STOCK-TRANS-FILE
            IF WS-ANSWER1 = "Y"
-              CLOSE STOCK-TRANSLY-FILE.
+              CLOSE STOCK-TRANSLY-FILE
+              CLOSE INCR-LY-REGISTER.
            MOVE 2210 TO POS
            DISPLAY "14. Quote File Processed.                  " AT POS
            MOVE " " TO WS-MESSAGE
@@ -2126,12 +2134,12 @@
                 GO TO DPSLP-900.
        DPSLP-004.
            PERFORM OPEN-055.
-           IF WS-ANSWER1 = "Y"
-               PERFORM OPEN-057.
+           PERFORM OPEN-057.
            START STOCK-TRANS-FILE KEY NOT < STTR-KEY
                 INVALID KEY NEXT SENTENCE.
        DPSLP-005.
            PERFORM OPEN-050.
+           PERFORM OPEN-051.
            MOVE 2410 TO POS.
            DISPLAY "16. P/Slip File Being Processed..........." AT POS.
            MOVE 4 TO INCR-TRANS
@@ -2150,6 +2158,7 @@
            DISPLAY INCR-INVOICE AT POS
            ADD 10 TO POS
            DISPLAY INCR-DATE AT POS.
+           
            IF WS-INCR-ST1 = 91
               PERFORM DPSLP-900
               PERFORM DPSLP-004
@@ -2160,15 +2169,30 @@
        DPSLP-020.
            IF INCR-PRINTED = "Y"
             IF INCR-TRANS = 4
-              PERFORM WRITE-REG-LY
-              GO TO DPSLP-800.
+
+      *         MOVE "GOING TO WRITE-REG-LY" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+              PERFORM WRITE-REG-LY.
+      *        GO TO DPSLP-800.
 
            GO TO DPSLP-010.
        DPSLP-800.
-           PERFORM DELETE-PSLIP-TRANSACTIONS.
+
+      *         MOVE "GOING TO DELETE-TRANS" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+      *     PERFORM DELETE-PSLIP-TRANSACTIONS.
            
            DELETE INCR-REGISTER
                INVALID KEY
+               
+               MOVE "REGISTER NOT DELETED" TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               
                 MOVE "P/SLIP-RG RECORD NOT" TO WS-DAILY-1ST
                 MOVE "DELETED             " TO WS-DAILY-2ND
                 MOVE INCR-INVOICE           TO WS-DAILY-3RD
@@ -2177,9 +2201,10 @@
            GO TO DPSLP-010.
        DPSLP-900.
            CLOSE INCR-REGISTER
-           CLOSE STOCK-TRANS-FILE.
+                 STOCK-TRANS-FILE.
            IF WS-ANSWER1 = "Y"
-               CLOSE STOCK-TRANSLY-FILE
+                 CLOSE INCR-LY-REGISTER
+                       STOCK-TRANSLY-FILE
            MOVE 2410 TO POS
            DISPLAY "16. Repair File Processed.                 " AT POS
            MOVE " " TO WS-MESSAGE
@@ -2221,7 +2246,7 @@
                GO TO DPSTR-999.
        DPSTR-800.
             PERFORM WR-ST-LY-015 THRU WR-ST-LY-030.
-       
+
             DELETE STOCK-TRANS-FILE
                INVALID KEY
                 MOVE "PSLIP STTRANS REC. N"  TO WS-DAILY-1ST
@@ -2656,7 +2681,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
@@ -2673,7 +2698,7 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "GLPARAMETER RECORD NOT UPDATED!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
@@ -2777,12 +2802,26 @@
             IF WS-INCR-ST1 NOT = 0
               MOVE "ERROR IN OPENING REGISTER FILE, GOING TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-000
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO OPEN-050.
+       OPEN-051.
+            OPEN I-O INCR-LY-REGISTER.
+            IF WS-INCR-LY-ST1 NOT = 0
+              MOVE "ERROR IN OPENING I-O LY-REG, GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-SLREGLY TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO OPEN-051.
        OPEN-052.
             OPEN OUTPUT INCR-LY-REGISTER.
             IF WS-INCR-LY-ST1 NOT = 0
-              MOVE "ERROR IN OPENING LY-REGISTER FILE, GOING TO RETRY."
+              MOVE "ERROR IN OPENING OUTPUT LY-REG , GOING TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
