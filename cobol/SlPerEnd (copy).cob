@@ -445,41 +445,41 @@
               ELSE
            DISPLAY "There Are 16 Data Files To Process." AT POS.
 
-           PERFORM CHECK-WEEK-END-DONE.
-           PERFORM CGP-005 THRU CGP-010.
-           PERFORM CGP-900.
+      *     PERFORM CHECK-WEEK-END-DONE.
+      *     PERFORM CGP-005 THRU CGP-010.
+      *     PERFORM CGP-900.
 
-           CALL "C$SLEEP" USING 1.
-           PERFORM PARAMETERS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM DEBTORS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM STOCK.
-           CALL "C$SLEEP" USING 1.
-           PERFORM DEBTOR-TRANS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM OUT-ORDERS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM S-ANALYSIS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM IMPORTS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM UP-DIST.
-           CALL "C$SLEEP" USING 1.
-           PERFORM DELETE-SOLDBY.
-           CALL "C$SLEEP" USING 1.
-           PERFORM DELETE-REGISTER.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM PARAMETERS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM DEBTORS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM STOCK.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM DEBTOR-TRANS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM OUT-ORDERS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM S-ANALYSIS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM IMPORTS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM UP-DIST.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM DELETE-SOLDBY.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM DELETE-REGISTER.
        CONTROL-056.
-           CALL "C$SLEEP" USING 1.
-           PERFORM DELETE-STOCK-TRANS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM DELETE-STOCK-RECEIPTS.
-           CALL "C$SLEEP" USING 1.
-           PERFORM CHANGE-GL-PARAMETER.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM DELETE-STOCK-TRANS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM DELETE-STOCK-RECEIPTS.
+      *     CALL "C$SLEEP" USING 1.
+      *     PERFORM CHANGE-GL-PARAMETER.
        CONTROL-057.
-           PERFORM DELETE-QUOTE-REGISTER.
-           IF WS-ANSWER1 = "Y"
-               PERFORM DELETE-REPAIR-REGISTER.
+      *     PERFORM DELETE-QUOTE-REGISTER.
+      *     IF WS-ANSWER1 = "Y"
+      *         PERFORM DELETE-REPAIR-REGISTER.
            IF WS-ANSWER1 = "Y"
                PERFORM DELETE-PSLIP-REGISTER.
        CONTROL-600.
@@ -1518,6 +1518,13 @@
            WRITE INCR-LY-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-INCR-LY-ST1 NOT = 0
+           
+               MOVE "REG-LY NOT =0" TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+
               MOVE "SL-REG MOVE TO L/Y  " TO WS-DAILY-1ST
               MOVE INCR-LY-INVOICE        TO WS-DAILY-2ND
               MOVE "NOT WRITTEN IN PER- " TO WS-DAILY-3RD
@@ -2162,12 +2169,20 @@
        DPSLP-020.
            IF INCR-PRINTED = "Y"
             IF INCR-TRANS = 4
-              PERFORM WRITE-REG-LY
-              GO TO DPSLP-800.
+
+      *         MOVE "GOING TO WRITE-REG-LY" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+              PERFORM WRITE-REG-LY.
+      *        GO TO DPSLP-800.
 
            GO TO DPSLP-010.
        DPSLP-800.
-           PERFORM DELETE-PSLIP-TRANSACTIONS.
+
+      *         MOVE "GOING TO DELETE-TRANS" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+      *     PERFORM DELETE-PSLIP-TRANSACTIONS.
            
            DELETE INCR-REGISTER
                INVALID KEY
