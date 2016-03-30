@@ -800,7 +800,7 @@
        OPEN-000.
             OPEN I-O DEBTOR-MASTER.
             IF WS-DEBTOR-ST1 NOT = 0
-               MOVE "DRTRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-DEBTOR-ST1
