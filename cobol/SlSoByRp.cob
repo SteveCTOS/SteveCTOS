@@ -187,7 +187,11 @@
        PRR-000.
            IF WS-PRINT-ALL NOT = "Y"
                MOVE PRINT-SB TO SB-TYPE
-               MOVE 0 TO        SB-INVOICE-NUMBER.
+               MOVE 0        TO SB-INVOICE-NUMBER
+           ELSE
+               MOVE " " TO SB-TYPE
+               MOVE 0   TO SB-INVOICE-NUMBER.
+               
            START SOLD-BY KEY NOT < SB-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-SOLDBY-ST1 NOT = 0
