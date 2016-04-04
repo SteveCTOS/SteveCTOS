@@ -29,18 +29,18 @@
        77  WS-ALTERNATIVE-PROGRAM PIC X(8) VALUE "StAlteIq".
        77  WS-NEW-PROG            PIC X(8) VALUE "StBrchIq".
        77  WS-ACCEPT              PIC X(20) VALUE " ".
-       77  WS-NO-OF-READS     PIC 9(2) VALUE 0.
-       77  WS-VATPRICE        PIC 9(6)V99 VALUE 0.
-       77  WS-PERCENT         PIC S9(3)V99 VALUE 0.
-       77  WS-END             PIC X VALUE " ".
-       77  WS-QUES-MU-GP-PERC PIC X VALUE " ".
-       77  WS-STOCKNUMBER     PIC X(15) VALUE " ".
-       77  WS-DIS-COSTS       PIC X VALUE "N".
-       77  WS-PasswordSaved      PIC X(10).
-       77  PSW-SUB1              PIC S9(5) VALUE 0.
-       77  PSW-SUB2              PIC S9(5) VALUE 0.
-       01  W-READ-KEY            PIC X(11).
-       01  W-CRTSTATUS           PIC 9(4) VALUE 0.
+       77  WS-NO-OF-READS         PIC 9(2) VALUE 0.
+       77  WS-VATPRICE            PIC 9(6)V99 VALUE 0.
+       77  WS-PERCENT             PIC S9(3)V99 VALUE 0.
+       77  WS-END                 PIC X VALUE " ".
+       77  WS-QUES-MU-GP-PERC     PIC X VALUE " ".
+       77  WS-STOCKNUMBER         PIC X(15) VALUE " ".
+       77  WS-DIS-COSTS           PIC X VALUE "N".
+       77  WS-PasswordSaved       PIC X(10).
+       77  PSW-SUB1               PIC S9(5) VALUE 0.
+       77  PSW-SUB2               PIC S9(5) VALUE 0.
+       01  W-READ-KEY             PIC X(11).
+       01  W-CRTSTATUS            PIC 9(4) VALUE 0.
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY          PIC X OCCURS 11.
        01  WS-STOCK-STATUS.
@@ -670,13 +670,14 @@
                 MOVE "ock Item, Try Again!" TO ST-DESCRIPTION2
                 GO TO R-ST-900.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
-                MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY." 
-                 TO WS-MESSAGE
-                MOVE 3010 TO POS
-                DISPLAY WS-MESSAGE AT POS
-                DISPLAY " " AT 3079 WITH BELL
-                GO TO R-ST-000.
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO R-ST-000.
        R-ST-900.
              PERFORM READ-SPECIAL-PRICES.
              PERFORM ERROR-020.
@@ -705,6 +706,15 @@
            IF WS-STOCK-ST1 = 0
                GO TO R-ST-NX-900
            ELSE
+             MOVE "STOCK BUSY READ-NEXT-START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO R-ST-NX-005.
        R-ST-NX-900.
@@ -724,6 +734,15 @@
            IF WS-STOCK-ST1 = 0
                GO TO R-ST-PR-900
            ELSE
+             MOVE "STOCK BUSY READ-PREV-START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO R-ST-PR-005.
        R-ST-PR-900.
@@ -744,10 +763,13 @@
                MOVE 0 TO STPR-PRICE
                GO TO SPR-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               Move "SPECIAL PRICES BUSY ON READ, 'ESC' to RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
               GO TO SPR-005.
        SPR-999.
            EXIT.
@@ -767,10 +789,13 @@
                MOVE 0 TO STCAT-PAGE-NUM
                GO TO RCREF-999.
            IF WS-STCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STCAT-ST1
               Move "ST-CATALOGUE PAGE BUSY ON READ, 'ESC' to RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STCAT-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STCAT-ST1
               GO TO RCREF-005.
        RCREF-999.
            EXIT.
@@ -784,11 +809,15 @@
            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               PERFORM ERROR-MESSAGE
               GO TO RP-000.
        RP-999.
@@ -806,11 +835,14 @@
                MOVE "N" TO WS-QUES-MU-GP-PERC
                GO TO RINVQUES-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER BUSY RINVQUES, PRESS 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RINVQUES-010.
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
+              GO TO RINVQUES-010.
        RINVQUES-900.
             MOVE INVQUES-MU-GP-PERC TO WS-QUES-MU-GP-PERC.
        RINVQUES-999.

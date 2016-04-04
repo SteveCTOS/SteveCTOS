@@ -28,15 +28,13 @@
        77  WS-MONTH             PIC 9 VALUE 0.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1     PIC 99.
-      *     03  WS-DAILY-ST2     PIC X.
        01  WS-DAILY-MESSAGE.
-           03  WS-DAILY-1ST        PIC X(20) VALUE " ".
-           03  WS-DAILY-2ND        PIC X(20) VALUE " ".
-           03  WS-DAILY-3RD        PIC X(20) VALUE " ".
-           03  WS-DAILY-4TH        PIC X(20) VALUE " ".
+           03  WS-DAILY-1ST     PIC X(20) VALUE " ".
+           03  WS-DAILY-2ND     PIC X(20) VALUE " ".
+           03  WS-DAILY-3RD     PIC X(20) VALUE " ".
+           03  WS-DAILY-4TH     PIC X(20) VALUE " ".
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -344,10 +342,13 @@
                PERFORM WRITE-DAILY
                GO TO UPST-950.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO UPST-900.
        UPST-950.
             READ STOCK-MASTER NEXT WITH LOCK
@@ -355,10 +356,15 @@
             IF WS-STOCK-ST1 = 10
                GO TO UPST-999.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
-               MOVE "STOCK RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO UPST-950.
             IF ST-CATEGORY = WS-CATEGORY
                MOVE 2710 TO POS
@@ -375,10 +381,14 @@
        RS-010.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK FILE BUSY, BE PATIENT" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RS-010.
+              MOVE "STOCK FILE BUSY ON OPEM, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RS-010.
        RS-015.
            MOVE WS-CATEGORY TO ST-STOCKNUMBER.
            START STOCK-MASTER KEY NOT < ST-KEY
@@ -387,10 +397,15 @@
                MOVE "@@@" TO ST-CATEGORY
                GO TO RS-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK FILE BUSY ON START, 'ESC' TO RETRY."
+             MOVE "STOCK BUSY ON START, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
               GO TO RS-015.
        RS-020.
            READ STOCK-MASTER NEXT WITH LOCK
@@ -402,10 +417,15 @@
                MOVE "@@@" TO ST-CATEGORY
                GO TO RS-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
               GO TO RS-020.
        RS-999.
            EXIT.
@@ -417,11 +437,14 @@
        OPEN-010.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
                 MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO OPEN-010.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO OPEN-010.
        OPEN-020.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.

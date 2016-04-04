@@ -27,8 +27,7 @@
        77  WS-RANGE2            PIC X(15) VALUE " ".
        77  WS-ANALYSIS          PIC X VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC xX.
+           03  WS-STOCK-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -329,11 +328,16 @@
        PRR-002.
             READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE.
-            IF WS-ST-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-ST-ST1
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-002.
             IF ST-STOCKNUMBER < WS-RANGE1
                GO TO PRR-002.
@@ -469,8 +473,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O STOCK-MASTER.
-           IF WS-ST-ST1 NOT = 0
-              MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0
+              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
