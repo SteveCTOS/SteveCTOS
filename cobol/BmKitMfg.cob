@@ -2321,8 +2321,8 @@
 
            MOVE 'N'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 11        TO CDA-ROW.
-           MOVE 56        TO CDA-COL.
+           MOVE 26        TO CDA-ROW.
+           MOVE 44        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.

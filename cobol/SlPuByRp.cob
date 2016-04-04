@@ -143,7 +143,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO PRINT-SB.
 
-      *     ACCEPT PRINT-SB AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF PRINT-SB = " " 
@@ -169,7 +168,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-030.
            IF WS-ANSWER1 NOT = "Y" AND NOT = "N"
@@ -195,7 +193,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-040.
            IF WS-ANSWER2 NOT = "Y" AND NOT = "N"
@@ -220,7 +217,9 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            IF PRINT-SB NOT = " "
-               MOVE PRINT-SB TO PB-INITIAL.
+               MOVE PRINT-SB TO PB-INITIAL
+           ELSE
+               MOVE " "      TO PB-INITIAL.
            START PULL-BY KEY NOT < PB-KEY
              INVALID KEY NEXT SENTENCE.
            IF WS-PULLBY-ST1 NOT = 0

@@ -60,11 +60,9 @@
            03 WS-DESC1          PIC X(20).
            03 WS-DESC2          PIC X(20).
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
+           03  WS-STOCK-ST1        PIC 99.
        01  WS-RANDOM-STATUS.
-           03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
+           03  WS-RANDOM-ST1    PIC 99.
        01  WS-SPLIT-DESC.
            03  WS-SP-1          PIC X(5) VALUE " ".
            03  WS-SP-REST       PIC X(15) VALUE " ".
@@ -184,7 +182,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE-BY-DESC.
 
-      *      ACCEPT WS-RANGE-BY-DESC AT POS.
             IF WS-RANGE-BY-DESC NOT = "D" AND NOT = "N"
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-000.
@@ -216,7 +213,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -240,7 +236,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SKIP.
 
-      *      ACCEPT WS-SKIP AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-002.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -264,7 +259,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -287,7 +281,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-008.
             IF WS-RANGE2 = " "
@@ -312,7 +305,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-ON-HAND.
 
-      *      ACCEPT WS-PRINT-ON-HAND AT POS.
             IF W-ESCAPE-KEY = 4
              IF WS-RANGE-BY-DESC = "N"
                GO TO GET-010
@@ -340,7 +332,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ONLY-ON-HAND.
 
-      *      ACCEPT WS-ONLY-ON-HAND AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-015.
             IF WS-ONLY-ON-HAND NOT = "Y" AND NOT = "N"
@@ -365,7 +356,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANDOM.
 
-      *      ACCEPT WS-RANDOM AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-020.
             IF WS-RANDOM NOT = "Y" AND NOT = "N"
@@ -401,7 +391,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANDOM-NUM.
 
-      *      ACCEPT WS-RANDOM-NUM AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-030.
             IF WS-RANDOM-NUM = " "
@@ -434,7 +423,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CAT-NEW-PAGE.
 
-      *      ACCEPT WS-CAT-NEW-PAGE AT POS.
             IF W-ESCAPE-KEY = 4
              IF WS-RANDOM = "N"
                GO TO GET-030
@@ -472,14 +460,19 @@
        PRR-002.
             READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE. 
-            IF WS-ST-ST1 = 10
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 10
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-999.
-            IF WS-ST-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-ST-ST1
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-002.
             IF WS-RANGE-BY-DESC = "N"
                MOVE 2310 TO POS
@@ -600,11 +593,19 @@
        PRSR-002.
             READ STOCK-MASTER
                INVALID KEY NEXT SENTENCE. 
-            IF WS-ST-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 23 OR 35 OR 49
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRSR-999.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+            MOVE "STOCK BUSY ON READ PRSR-002, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRSR-002.
             MOVE 2510 TO POS
             DISPLAY "Random Stock Being Read:" AT POS
@@ -704,19 +705,21 @@
             READ RANDOM-FILE
                INVALID KEY NEXT SENTENCE. 
             IF WS-RANDOM-ST1 = 23 OR 35 OR 49
-               MOVE "NO SUCH RANDOM RECORD ON READ." TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               MOVE "NO SUCH RANDOM RECORD ON READ-23." TO WS-MESSAGE
+               PERFORM ERROR1-000
                MOVE RANDOM-REC TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RRR-999.
             IF WS-RANDOM-ST1 NOT = 0
                MOVE "RANDOM RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE RANDOM-REC TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RRR-002.
             MOVE 2510 TO POS
             DISPLAY "Random Stock Being Read:" AT POS
@@ -734,9 +737,10 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "RANDOM RECORD INVALID ON WRITE" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020.
        WRR-999.
             EXIT.
       *
@@ -750,16 +754,24 @@
        RAS-001.
            IF WS-RANGE8 = "Y"
               START STOCK-MASTER KEY < ST-SALESRANDSYTD.
-           IF WS-ST-ST1 NOT = 0
+           IF WS-STOCK-ST1 NOT = 0
               GO TO RAS-900.
        RAS-002.
             READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE. 
-            IF WS-ST-ST1 = 10
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 10
+               MOVE 0 TO WS-STOCK-ST1
                GO TO RAS-900.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO RAS-002.
             MOVE 2510 TO POS
             DISPLAY "Stocknumber Being Read:" AT POS
@@ -837,8 +849,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O STOCK-MASTER.
-           IF WS-ST-ST1 NOT = 0 
-              MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0 
+              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

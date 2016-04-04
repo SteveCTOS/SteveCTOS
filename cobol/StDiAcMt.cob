@@ -19,17 +19,17 @@
 
        WORKING-STORAGE SECTION.
        77  NEW-STPRICENO        PIC X VALUE " ".      
-       77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "DrNameIq".
+       77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "DrNameIq".
        77  WS-END               PIC X VALUE " ".      
        77  WS-STDISC-NUMBER     PIC X(15) VALUE " ".
        77  WS-STDISC-ACCOUNT    PIC 9(7) VALUE 0.
        77  WS-STDISC-PERCENT    PIC 99V99 VALUE 0.
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1   PIC 99.
+           03  WS-STDISC-ST1    PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
+           03  WS-DEBTOR-ST1    PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -95,7 +95,7 @@
                GO TO GET-001.
 
             PERFORM READ-DEBTOR.
-            IF WS-DEBTOR-ST1 = "2"
+            IF WS-DEBTOR-ST1 = 23
                 GO TO GET-001.
             PERFORM GET-004.
        GET-002.              
@@ -130,7 +130,7 @@
             PERFORM READ-STDISC.
             IF NEW-STPRICENO = "Y"
                PERFORM READ-STOCK
-             IF WS-STOCK-ST1 NOT = "2"
+             IF WS-STOCK-ST1 NOT = 23
                PERFORM GET-005 THRU GET-006
                GO TO GET-999
              ELSE
@@ -325,8 +325,14 @@
             DELETE STDISC-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-STDISC-ST1 NOT = 0
-               MOVE 0 TO WS-STDISC-ST1
-               GO TO DSR-010. 
+              MOVE "STPRICE RECORD BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STDISC-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
+              GO TO DSR-010. 
        DSR-999.
             EXIT. 
       *
@@ -343,20 +349,26 @@
           REWRITE STDISC-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STDISC-ST1 NOT = 0
-              MOVE 0 TO WS-STDISC-ST1
               MOVE "STPRICE RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STDISC-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STDISC-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STDISC-ST1 NOT = 0
-              MOVE 0 TO WS-STDISC-ST1
               MOVE "STPRICE RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STDISC-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
               GO TO RSR-020.
        RSR-999.
           EXIT.
@@ -377,10 +389,13 @@
                 MOVE WS-STDISC-ACCOUNT TO STDISC-ACCOUNT
                 GO TO R-STDISC-999.
              IF WS-STDISC-ST1 NOT = 0
-                MOVE 0 TO WS-STDISC-ST1
                 MOVE "STPRICE BUSY ON READ, 'ESC' TO RETRY."
-                 TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STDISC-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STDISC-ST1
                 GO TO R-STDISC-010.
        R-STDISC-999.
              EXIT.
@@ -407,13 +422,18 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-STDISC-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-STDISC-ST1
-               MOVE "STPRICE FILE BUSY, PRESS 'ESC' TO RETRY."
+           IF WS-STDISC-ST1 = 23 OR 35 OR 49
+               MOVE "STPRICE FILE BUSY, PRESS 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
+               GO TO RSN-999.
            IF WS-STDISC-ST1 NOT = 0
+               MOVE "STPRICE FILE BUSY, PRESS 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STDISC-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STDISC-ST1
                PERFORM START-STDISC
                GO TO RSN-005.
@@ -437,7 +457,11 @@
              IF WS-STOCK-ST1 NOT = 0
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RE-TRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO R-ST-010.
        R-ST-900.
              PERFORM ERROR-020.
@@ -459,10 +483,13 @@
                 PERFORM ERROR-MESSAGE
                 GO TO RD-999.
              IF WS-DEBTOR-ST1 = 10
-                MOVE 0 TO WS-DEBTOR-ST1
                 MOVE "DEBTOR RECORD BUSY, PRESS 'ESC' TO RETRY"
-                  TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-DEBTOR-ST1
                 GO TO RD-010.
              MOVE STDISC-ACCOUNT TO WS-STDISC-ACCOUNT.
        RD-999.

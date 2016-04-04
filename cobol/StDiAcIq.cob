@@ -9,56 +9,14 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT STDISC-MASTER ASSIGN TO Ws-StDiscAcc
-                ORGANIZATION IS INDEXED
-                LOCK MANUAL
-                ACCESS MODE IS DYNAMIC
-                FILE STATUS IS WS-STDISC-STATUS
-                RECORD KEY IS STDISC-KEY
-                ALTERNATE RECORD KEY IS STDISC-ACCOUNT WITH DUPLICATES.
-           SELECT STOCK-MASTER ASSIGN TO Ws-Stock
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-STOCK-STATUS
-               RECORD KEY IS ST-KEY
-               ALTERNATE RECORD KEY IS ST-ALT-KEY WITH DUPLICATES.
-           SELECT DEBTOR-MASTER ASSIGN TO Ws-Debtor
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-DEBTOR-STATUS
-               RECORD KEY IS DR-KEY.
-           SELECT SBREP-MASTER ASSIGN TO Ws-SbRep
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-SBREP-STATUS
-               RECORD KEY IS SBREP-KEY.
-           SELECT STCAT-MASTER ASSIGN TO Ws-StCatalogue
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-STCAT-STATUS
-               RECORD KEY IS STCAT-KEY.
-           SELECT STALT-MASTER ASSIGN TO Ws-StAlternative
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-STALT-STATUS
-               RECORD KEY IS STALT-KEY.
-           SELECT STPR-MASTER ASSIGN TO Ws-StSpecPr
-                ORGANIZATION IS INDEXED
-                LOCK MANUAL
-                ACCESS MODE IS DYNAMIC
-                FILE STATUS IS WS-STPR-STATUS
-                RECORD KEY IS STPR-KEY.
-           SELECT PARAMETER-FILE ASSIGN TO Ws-Parameter
-               ORGANIZATION IS INDEXED
-               LOCK MANUAL
-               ACCESS MODE IS DYNAMIC
-               FILE STATUS IS WS-PARAMETER-STATUS
-               RECORD KEY IS PA-KEY.
+          Copy "SelectDrMaster".
+          Copy "SelectStDiscAcc".
+          Copy "SelectStMaster".
+          Copy "SelectStCatalogue".
+          Copy "SelectStSpecPr".
+          Copy "SelectSlParameter".
+          Copy "SelectStAlternative".
+          Copy "SelectSlSbRep".
       *
         DATA DIVISION.
         FILE SECTION.
@@ -94,34 +52,26 @@
        01  W-READ-KEY             PIC X.
        01  W-CRTSTATUS            PIC 9(4) value 0.
        01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY          PIC X OCCURS 11.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1           PIC X(20) VALUE " ".
+           03  WS-DESC2           PIC X(20) VALUE " ".
        01  WS-STDISC-STATUS.
-           03  WS-STDISC-ST1   PIC 99.
-      *     03  WS-STDISC-ST2   PIC X.
+           03  WS-STDISC-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DEBTOR-ST1   PIC 99.
-      *     03  WS-DEBTOR-ST2   PIC X.
+           03  WS-DEBTOR-ST1      PIC 99.
        01  WS-SBREP-STATUS.
-           03  WS-SBREP-ST1     PIC 99.
-      *     03  WS-SBREP-ST2     PIC X.
+           03  WS-SBREP-ST1       PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1        PIC 99.
        01  WS-STCAT-STATUS.
-           03  WS-STCAT-ST1     PIC 99.
-      *     03  WS-STCAT-ST2     PIC X.
+           03  WS-STCAT-ST1       PIC 99.
        01  WS-STALT-STATUS.
-           03  WS-STALT-ST1     PIC 99.
-      *     03  WS-STALT-ST2     PIC X.
-       01  WS-PARAMETER-STATUS.
-           03  WS-PARAMETER-ST1     PIC 99.
-      *     03  WS-PARAMETER-ST2     PIC X.
+           03  WS-STALT-ST1       PIC 99.
+       01  WS-SLPARAMETER-STATUS.
+           03  WS-SLPARAMETER-ST1   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -677,11 +627,14 @@
                           STDISC-DATE
                 GO TO R-STDISC-999.
              IF WS-STDISC-ST1 NOT = 0
-                MOVE 0 TO WS-STDISC-ST1
                 MOVE "STDISC BUSY ON READ, 'ESC' TO RETRY."
                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-STDISC-010.
+                 PERFORM ERROR1-000
+                 MOVE WS-STDISC-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-STDISC-ST1
+                 GO TO R-STDISC-010.
        R-STDISC-999.
              EXIT.
       *
@@ -699,11 +652,13 @@
                 MOVE "ock Item, Try Again!" TO ST-DESCRIPTION2
                 GO TO R-ST-900.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
-                MOVE "Stock Record Busy, Be Patient!" TO WS-MESSAGE
-                MOVE 3010 TO POS
-                DISPLAY WS-MESSAGE AT POS
-                DISPLAY " " AT 3079 WITH BELL
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                 GO TO R-ST-000.
        R-ST-900.
              PERFORM READ-SPECIAL-PRICES.
@@ -734,6 +689,13 @@
            IF WS-STOCK-ST1 = 0
                GO TO R-ST-NX-900
            ELSE
+               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO R-ST-NX-005.
        R-ST-NX-900.
@@ -754,10 +716,13 @@
                MOVE 0 TO STPR-PRICE
                GO TO SPR-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               Move "SPECIAL PRICES BUSY ON READ, 'ESC' to RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
               GO TO SPR-005.
        SPR-999.
            EXIT.
@@ -777,10 +742,13 @@
                MOVE " " TO STCAT-PAGE-NUM
                GO TO RCREF-999.
            IF WS-STCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STCAT-ST1
               Move "ST-CATALOGUE PAGE BUSY ON READ, 'ESC' to RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STCAT-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STCAT-ST1
               GO TO RCREF-005.
        RCREF-999.
            EXIT.
@@ -791,15 +759,18 @@
            MOVE 1 TO PA-RECORD.
            READ PARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
-           IF WS-PARAMETER-ST1 = 23 OR 35 OR 49
+           IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO PARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
-           IF WS-PARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-PARAMETER-ST1
+               EXIT PROGRAM.
+           IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -816,17 +787,16 @@
                 MOVE "Enter An Existing Debtor Account Number."
                    TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-      *          MOVE DR-ACCOUNT-NUMBER TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-      *          MOVE STDISC-ACCOUNT TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
                 GO TO RD-999.
-             IF WS-DEBTOR-ST1 = 10
-                MOVE 0 TO WS-DEBTOR-ST1
+             IF WS-DEBTOR-ST1 NOT = 0
                 MOVE "DEBTORS BUSY ON READ, 'ESC' TO RETRY."
                   TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO RD-010.
        RD-999.
              EXIT.
       *
@@ -845,6 +815,14 @@
            IF WS-SBREP-ST1 = 23 OR 35 OR 49
               MOVE "  " TO WS-SALESMAN
               GO TO RSB-999.
+           IF WS-SBREP-ST1 NOT = 0
+               MOVE "SBREP FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SBREP-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SBREP-ST1
            MOVE SBREP-REPNAME TO WS-SALESMAN.
        RSB-999.
             EXIT.
@@ -857,14 +835,17 @@
        RINVQUES-010.
             READ PARAMETER-FILE
                 INVALID KEY NEXT SENTENCE.
-            IF WS-PARAMETER-ST1 = 23 OR 35 OR 49
+            IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
                MOVE "N" TO WS-QUES-MU-GP-PERC
                GO TO RINVQUES-999.
-            IF WS-PARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-PARAMETER-ST1
+            IF WS-SLPARAMETER-ST1 NOT = 0
                MOVE "PARAMETER BUSY RINVQUES ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RINVQUES-010.
        RINVQUES-900.
             MOVE INVQUES-MU-GP-PERC TO WS-QUES-MU-GP-PERC.
@@ -942,8 +923,8 @@
               GO TO OPEN-007.
        OPEN-008.
            OPEN I-O PARAMETER-FILE.
-           IF WS-PARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-PARAMETER-ST1
+           IF WS-SLPARAMETER-ST1 NOT = 0 
+              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

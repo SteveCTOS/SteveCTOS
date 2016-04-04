@@ -26,11 +26,9 @@
        77  WS-SP-PRICE          PIC Z(5)9.99 BLANK WHEN ZERO.
        77  WS-MIDDLE            PIC X(79) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC 9(2) COMP-X.
+           03  WS-STPR-ST1      PIC 99.
        01  WS-SPLIT-DESC.
            03  WS-SP-1          PIC X(5) VALUE " ".
            03  WS-SP-REST       PIC X(15) VALUE " ".
@@ -115,11 +113,14 @@
                INVALID KEY NEXT SENTENCE.
             MOVE 0 TO F-EXIT-CH.
             IF WS-STOCK-ST1 NOT = 0
-                MOVE "RECORD STATUS NOT = 0, 'ESC' TO EXIT."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                MOVE 0 TO WS-STOCK-STATUS
-                GO TO READ-999.
+               MOVE "STOCK FILE BUSY ON START, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO READ-999.
             MOVE 0 TO SUB-2 SUB-3.
             MOVE 800 TO WS-SUB1-DIS.
        READ-010.
@@ -142,13 +143,21 @@
                 PERFORM ERROR-MESSAGE
                 GO TO READ-999.
             IF WS-STOCK-ST1 = 91
-                MOVE 0 TO WS-STOCK-STATUS
                 CLOSE STOCK-MASTER
-                MOVE "SYSTEM ERROR=91, CALL YOUR SUPERVISOR."
+                MOVE "STOCK BUSY SYSTEM ERROR=91, CALL YOUR SUPERVISOR."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM OPEN-000
-                GO TO READ-010.
+                GO TO READ-999.
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO READ-010.
             IF WS-ONHAND-ONLY = "Y"
              IF ST-QTYONHAND NOT > 0
                 MOVE 2701 TO POS
@@ -279,13 +288,12 @@
             MOVE 0 TO F-EXIT-CH.
             IF WS-STPR-ST1 NOT = 0
                 MOVE 
-           "THERE ARE NO SPECIALS ON FILE TO READ, 'ESC' TO EXIT."
+           "THERE ARE NO SPECIALS ON START TO READ, 'ESC' TO EXIT."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-STPR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-      *          MOVE WS-STPR-ST2 TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RDSP-999.
             MOVE 0   TO SUB-2 SUB-3.
             MOVE 800 TO WS-SUB1-DIS.
@@ -317,6 +325,14 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM OPEN-005
+                GO TO RDSP-010.
+            IF WS-STPR-ST1 NOT = 0
+                MOVE "STOCK SPECIALS BUSY ON READ-NEXT, 'ESC' TO EXIT."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STPR-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RDSP-010.
                 
             PERFORM READ-STOCK.
@@ -454,9 +470,10 @@
            IF WS-STPR-ST1 NOT = 0
               Move "SPECIAL PRICES BUSY ON READ, 'ESC' to RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STPR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-STPR-ST1
               GO TO SPR-005.
        SPR-900.
@@ -479,11 +496,14 @@
                MOVE 0 TO ST-PRICE
                GO TO R-STOCK-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              Move "STOCK ITEM BUSY ON READ, 'ESC' to RETRY"
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO R-STOCK-005.
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO R-STOCK-005.
        R-STOCK-999.
            EXIT.
       *
@@ -581,5 +601,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

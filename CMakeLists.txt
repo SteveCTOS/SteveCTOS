@@ -76,10 +76,10 @@ set (COBOL_C_OUTPUT
 
 set (INSTALL_DIR  "/ctools/bin")
 
-add_subdirectory(installs)
-add_subdirectory(print)
 add_subdirectory(tools/cocoR/cpp)
-add_subdirectory(decode)
 add_subdirectory(ascii)
 add_subdirectory(cobol)
+add_subdirectory(decode)
+add_subdirectory(installs)
+add_subdirectory(print)
 add_subdirectory(submit)

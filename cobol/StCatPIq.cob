@@ -34,14 +34,12 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1         PIC X(20) VALUE " ".
+           03  WS-DESC2         PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-STCAT-STATUS.
-           03  WS-STCAT-ST1    PIC 99.
-      *     03  WS-STCAT-ST2    PIC X.
+           03  WS-STCAT-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -247,7 +245,11 @@
            IF WS-STCAT-ST1 NOT = 0
                MOVE "CATALOGUE FILE BUSY READ-NEXT, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
                GO TO RDTR-010.
            IF WS-TYPE = "P"
             IF STCAT-PAGE-NUM NOT = WS-STOCKNUMBER
@@ -318,6 +320,13 @@
                 MOVE 0                      TO ST-QTYONHAND
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                 GO TO RS-010.
        RS-999.
             EXIT.
@@ -356,6 +365,12 @@
              IF WS-STCAT-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
+               MOVE "CATALOGUE FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STCAT-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STCAT-ST1
                  PERFORM START-CATALOGUE
                  GO TO R-ST-NX-005.
@@ -378,6 +393,12 @@
              IF WS-STCAT-ST1 = 0
                  GO TO RPREV-999
              ELSE
+               MOVE "CATALOGUE FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STCAT-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STCAT-ST1
                  PERFORM START-CATALOGUE
                  GO TO RPREV-005.
@@ -415,6 +436,12 @@
                MOVE 0 TO WS-STCAT-ST1
                GO TO PRR-900.
             IF WS-STCAT-ST1 NOT = 0
+               MOVE "CATALOGUE FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
                GO TO PRR-002.
            IF STCAT-PAGE-NUM < WS-STOCKNUMBER

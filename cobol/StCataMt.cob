@@ -25,14 +25,12 @@
        77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "StDescIq".
        77  WS-OLDPRICE        PIC 9(6)V99.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1       PIC X(20) VALUE " ".
+           03  WS-DESC2       PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
        01  WS-STCAT-STATUS.
            03  WS-STCAT-ST1   PIC 99.
-      *     03  WS-STCAT-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -176,6 +174,12 @@
             DELETE STCAT-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-STCAT-ST1 NOT = 0
+              MOVE "ST-CATALOGUE BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
                GO TO DSR-010. 
        DSR-999.
@@ -194,21 +198,27 @@
           REWRITE STCAT-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STCAT-ST1
               MOVE "ST-CATALOGUE BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-010.
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STCAT-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STCAT-ST1 NOT = 0
-              MOVE 0 TO WS-STCAT-ST1
               MOVE "ST-CATALOGUE BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-020.
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO RSR-020.
        RSR-999.
           EXIT.
       *
@@ -221,11 +231,13 @@
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
-                MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-ST-010.
+               MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO R-ST-010.
        R-ST-999.
              EXIT.
       *
@@ -236,7 +248,8 @@
              PERFORM READ-STOCK.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 MOVE "THIS IS NOT A VALID STOCK-NUMBER." TO WS-MESSAGE
-                PERFORM ERROR-000.
+                PERFORM ERROR-MESSAGE
+                GO TO R-CAT-999.
              START STCAT-MASTER KEY NOT < STCAT-KEY
                 INVALID KEY NEXT SENTENCE.
        R-CAT-010.
@@ -247,11 +260,14 @@
                 MOVE WS-STOCKNUMBER TO STCAT-STOCKNUMBER
                 GO TO R-CAT-999.
              IF WS-STCAT-ST1 NOT = 0
-                MOVE 0 TO WS-STCAT-ST1
-                MOVE "ST-CAT RECORD BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-CAT-010.
+               MOVE "ST-CAT RECORD BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO R-CAT-010.
        R-CAT-999.
              EXIT.
       *
@@ -273,13 +289,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-STCAT-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-STCAT-ST1 = 23 OR 35 OR 49
+               MOVE "ST-CATALOGUE BUSY ON READ-NEXT, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
+               GO TO RSN-999.
+           IF WS-STCAT-ST1 NOT = 0
                MOVE "ST-CATALOGUE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
-           IF WS-STCAT-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
                PERFORM START-CATALOGUE
                GO TO RSN-005.
@@ -301,13 +326,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RPREV-999.
-           IF WS-STCAT-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-STCAT-ST1
+           IF WS-STCAT-ST1 = 23 OR 35 OR 49
                MOVE "ST-CATALOGUE BUSY ON READ-PREV, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO RPREV-999.
            IF WS-STCAT-ST1 NOT = 0
+               MOVE "ST-CATALOGUE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
                PERFORM START-CATALOGUE
                GO TO RPREV-005.
@@ -366,5 +400,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

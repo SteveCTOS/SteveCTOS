@@ -96,7 +96,7 @@
        01  WS-OUTORD-STATUS.
            03  WS-OUTORD-ST1         PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-BO-ST1             PIC 99.
+           03  WS-STTRANS-ST1             PIC 99.
        01  WS-IMPRECEIPT-STATUS.
            03  WS-IMPRECEIPT-ST1     PIC 99.
        01  WS-STKRECEIPT-STATUS.
@@ -361,9 +361,12 @@
            IF WS-DATA-ST1 NOT = 0
                MOVE "DATAFILE BUSY ON READ, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DATA-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE DATA-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RC-010.
        RC-020.
            MOVE DATA-NAME        TO WS-STCHANGE.
@@ -389,9 +392,14 @@
            READ DATA-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-DATA-ST1 NOT = 0
-               MOVE "BRANCH DATAFILE BUSY ON READ, 'ESC' TO RE-TRY."
+               MOVE "BRANCH DATAFILES BUSY ON READ, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DATA-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE DATA-NUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RBC-010.
        RBC-020.
            MOVE DATA-NAME         TO WS-STOCK.
@@ -486,9 +494,12 @@
            IF WS-DATA-ST1 NOT = 0
                MOVE "DATAFILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-DATA-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE DATA-NUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE WS-DATA TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-DATA-005.
@@ -572,7 +583,10 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON OPEN, GOING TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-MENU-ST1
                GO TO RNC-005.
            MOVE 1 TO PTY-NUMBER.
@@ -589,7 +603,11 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON READ-NEXT, GOING TO RE-TRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-MENU-ST1
                GO TO RNC-010.
            MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-40)
            MOVE PTY-NUMBER  TO LIST-NUMBER (SUB-40)
@@ -756,16 +774,17 @@
        DSR-010.
             DELETE STOCK-MASTER
                INVALID KEY NEXT SENTENCE.
+            IF WS-STOCK-ST1 NOT = 23
+               GO TO DSR-999.
             IF WS-STOCK-ST1 NOT = 0
-      *         MOVE "STOCKFILE BUSY ON DELETE, 'ESC' TO RETRY."
-      *         TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *         MOVE WS-STOCK-ST1 TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *         MOVE WS-STOCK-ST2 TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *         MOVE ST-STOCKNUMBER TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
+               MOVE "STOCKFILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE ST-STOCKNUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
              IF ST-STOCKNUMBER = " "
                GO TO DSR-999
              ELSE
@@ -807,13 +826,14 @@
           REWRITE STOCK-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STOCK-ST1 NOT = 0
-      *        MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
-      *        TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-      *        MOVE ST-STOCKNUMBER TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-      *        MOVE WS-STOCK-ST1 TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
+              MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE ST-STOCKNUMBER TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSR-020.
           GO TO RSR-999.
        RSR-020.
@@ -824,11 +844,14 @@
           WRITE STOCK-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STOCK-ST1 NOT = 0
-      *        MOVE "STOCK RECORD BUSY ON WRITE, 'ESC' TO RETRY."
-      *        TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-      *        MOVE ST-STOCKNUMBER TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
+              MOVE "STOCK RECORD BUSY ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE ST-STOCKNUMBER TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSR-015.
        RSR-999.
            EXIT.
@@ -850,14 +873,14 @@
            IF WS-STCHANGE-ST1 = 10
                GO TO RNSC-999.
            IF WS-STCHANGE-ST1 NOT = 0
-                MOVE 0 TO WS-STCHANGE-ST1
                 MOVE "STOCKCHANGE BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                MOVE STCH-STOCKNUMBER TO WS-MESSAGE
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RNSC-005.
            IF STCH-STOCKNUMBER < WS-RANGE1
                GO TO RNSC-005.
@@ -955,11 +978,15 @@
           DELETE STOCKCHANGE-MASTER
               INVALID KEY NEXT SENTENCE.
           IF WS-STCHANGE-ST1 NOT = 0
-              MOVE 0 TO WS-STCHANGE-ST1
               MOVE "STOCKCHANGE BUSY ON DELETE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RNSC-020.
+                PERFORM ERROR1-000
+                MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE STCH-STOCKNUMBER TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                GO TO RNSC-020.
           GO TO RNSC-005.
        RNSC-999.
            EXIT.
@@ -996,10 +1023,14 @@
            IF WS-STCHANGE-ST1 = 10
                GO TO RNREN-999.
            IF WS-STCHANGE-ST1 NOT = 0
-                MOVE 0 TO WS-STCHANGE-ST1
-                MOVE "STOCKCHANGE BUSY ON READ, 'ESC' TO RETRY."
+             MOVE "STOCKCHANGE BUSY READ-NEXT, IN 1 SEC GOING TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
+                PERFORM ERROR-000
+                CALL "C$SLEEP" USING 1
+                PERFORM ERROR-020
+                PERFORM ERROR1-020
                 GO TO RNREN-005.
            IF STCH-STOCKNUMBER < WS-RANGE1
                GO TO RNREN-005.
@@ -1108,11 +1139,12 @@
            IF WS-STCHANGE-ST1 NOT = 0
               MOVE "STOCKCHANGE BUSY ON DELETE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               MOVE STCH-STOCKNUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RNREN-020.
            GO TO RNREN-005.
        RNREN-999.
@@ -1131,10 +1163,13 @@
                 MOVE "Y" TO NEW-STOCKNO
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO R-ST-010.
              MOVE "N" TO NEW-STOCKNO.
        R-ST-999.
@@ -1152,55 +1187,55 @@
                             ST-ANALYSIS
                             ST-PERMIT.
                               
-            MOVE 0      TO  ST-FOREIGNCOST
-                           ST-SUPPLIERDISC
-                           ST-CURRENCY-RATE
-                           ST-PRICE
-                           ST-OLDPRICE
-                           ST-MIN-PERC
-                           ST-DISCOUNT1
-                           ST-DISCOUNT2
-                           ST-DISCOUNT3
-                           ST-DISCOUNT4
-                           ST-DISCOUNT5
-                           ST-DISCOUNT6
-                           ST-DISCOUNT7
-                           ST-DISCOUNT8
-                           ST-DISCOUNT9
-                           ST-AVERAGECOST
-                           ST-LASTCOST
-                           ST-MINBUYQTY
-                           ST-DEL-DELAY
-                           ST-MAXIMUMLEVEL
-                           ST-MINIMUMLEVEL
-                           ST-QTYONHAND
-                           ST-QTYONRESERVE
-                           ST-QTYONORDER
-                           ST-QTYONBORDER
-                           ST-QTY-ST-TAKE
-                           ST-DATE-CREATED
-                           ST-LASTPRICECHANGE
-                           ST-LASTSALEDATE
-                           ST-LASTRECEIPTDATE
-                           ST-LASTORDERDATE
-                           ST-QTYRECMTD
-                           ST-QTYRECYTD
-                           ST-QTYRECLAST
-                           ST-QTYADJMTD
-                           ST-QTYADJYTD
-                           ST-QTYADJLAST
-                           ST-SALESUNITMTD
-                           ST-SALESUNITSYTD
-                           ST-SALESUNITSLAST
-                           ST-SALESRANDSMTD
-                           ST-SALESRANDSYTD
-                           ST-SALESRANDSLAST
-                           ST-SALESCOSTMTD
-                           ST-SALESCOSTYTD
-                           ST-SALESCOSTLAST
-                           ST-DUTYPERCENT
-                           ST-DUTYTARIFF
-                           ST-SURCHARGE.
+            MOVE 0       TO ST-FOREIGNCOST
+                            ST-SUPPLIERDISC
+                            ST-CURRENCY-RATE
+                            ST-PRICE
+                            ST-OLDPRICE
+                            ST-MIN-PERC
+                            ST-DISCOUNT1
+                            ST-DISCOUNT2
+                            ST-DISCOUNT3
+                            ST-DISCOUNT4
+                            ST-DISCOUNT5
+                            ST-DISCOUNT6
+                            ST-DISCOUNT7
+                            ST-DISCOUNT8
+                            ST-DISCOUNT9
+                            ST-AVERAGECOST
+                            ST-LASTCOST
+                            ST-MAXIMUMLEVEL
+                            ST-MINIMUMLEVEL
+                            ST-QTYONHAND
+                            ST-QTYONRESERVE
+                            ST-QTYONORDER
+                            ST-QTYONBORDER
+                            ST-QTY-ST-TAKE
+                            ST-DATE-CREATED
+                            ST-LASTPRICECHANGE
+                            ST-LASTSALEDATE
+                            ST-LASTRECEIPTDATE
+                            ST-LASTORDERDATE
+                            ST-QTYRECMTD
+                            ST-QTYRECYTD
+                            ST-QTYRECLAST
+                            ST-QTYADJMTD
+                            ST-QTYADJYTD
+                            ST-QTYADJLAST
+                            ST-SALESUNITMTD
+                            ST-SALESUNITSYTD
+                            ST-SALESUNITSLAST
+                            ST-SALESRANDSMTD
+                            ST-SALESRANDSYTD
+                            ST-SALESRANDSLAST
+                            ST-SALESCOSTMTD
+                            ST-SALESCOSTYTD
+                            ST-SALESCOSTLAST
+                            ST-DUTYPERCENT
+                            ST-DUTYTARIFF
+                            ST-SURCHARGE.
+              MOVE 1     TO ST-MINBUYQTY
+                            ST-DEL-DELAY.
        FNRWB-999.
              EXIT.
       *
@@ -1212,15 +1247,18 @@
              READ STOCK-MASTER
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
-                MOVE SPACES TO STOCK-RECORD
-      *          PERFORM FILL-NEW-RECORD-WITH-BLANKS
+      *          MOVE SPACES TO STOCK-RECORD
+                PERFORM FILL-NEW-RECORD-WITH-BLANKS
                 MOVE "Y" TO NEW-STOCKNO
                 GO TO RSTV-999.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
                 MOVE "STOCK RECORD BUSY ON READ VALID, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO RSTV-010.
              MOVE "N" TO NEW-STOCKNO.
        RSTV-999.
@@ -1233,18 +1271,23 @@
             MOVE WS-OLDSTOCKNUMBER TO STTR-STOCK-NUMBER.
             START STOCK-TRANS-FILE KEY NOT < STTR-STOCK-NUMBER
                  INVALID KEY NEXT SENTENCE.
-            IF WS-BO-ST1 NOT = 0
+            IF WS-STTRANS-ST1 NOT = 0
                GO TO RBO-999.
        RBO-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-            IF WS-BO-ST1 = 10
+            IF WS-STTRANS-ST1 = 10
                GO TO RBO-999.
-            IF WS-BO-ST1 NOT = 0
-               MOVE 0 TO WS-BO-ST1
-               MOVE "BO FILE BUSY ON READ, 'ESC' TO RETRY." 
+            IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO RBO-002.
             IF STTR-STOCK-NUMBER NOT = WS-OLDSTOCKNUMBER
                GO TO RBO-999.
@@ -1252,7 +1295,7 @@
             MOVE WS-NEWSTOCKNUMBER TO STTR-STOCK-NUMBER.
             REWRITE STOCK-TRANS-REC
                 INVALID KEY NEXT SENTENCE.
-            IF WS-BO-ST1 NOT = 0
+            IF WS-STTRANS-ST1 NOT = 0
                MOVE STTR-KEY               TO WS-DAILY-1ST
                MOVE STTR-STOCK-NUMBER      TO WS-DAILY-2ND
                MOVE "NO CHANGE TO NEW NO " TO WS-DAILY-3RD
@@ -1277,10 +1320,14 @@
             IF WS-OUTORD-ST1 = 10
                GO TO RSQ-999.
             IF WS-OUTORD-ST1 NOT = 0
-               MOVE 0 TO WS-OUTORD-ST1
-               MOVE "SORDERS FILE BUSY ON READ, BE PATIENT!"
+              MOVE "ORDERS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                GO TO RSQ-002.
             IF OO-STOCK-NUMBER NOT = WS-OLDSTOCKNUMBER
                GO TO RSQ-999.
@@ -1322,9 +1369,15 @@
            IF WS-IMPRECEIPT-ST1 = 10
               GO TO RSI-999.
            IF WS-IMPRECEIPT-ST1 NOT = 0
-              MOVE "IMPORTS BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              MOVE "IMPORTS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-IMPRECEIPT-ST1
               GO TO RSI-030.
            IF IMRE-STOCK-NUMBER NOT = WS-OLDSTOCKNUMBER
               GO TO RSI-999.
@@ -1365,9 +1418,16 @@
            IF WS-STKRECEIPT-ST1 = 10
               GO TO RSTK-REC-999.
            IF WS-STKRECEIPT-ST1 NOT = 0
-              MOVE "RECEIPTS BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              MOVE 
+              "STRECEIPT BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STKRECEIPT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STKRECEIPT-ST1
               GO TO RSTK-REC-030.
            IF STRE-STOCK-NUMBER NOT = WS-OLDSTOCKNUMBER
               GO TO RSTK-REC-999.
@@ -1386,7 +1446,10 @@
            IF WS-STKRECEIPT-ST1 NOT = 0
               MOVE "RECEIPTS BUSY ON RE-WRITE, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STKRECEIPT-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSTK-REC-050.
            GO TO RSTK-REC-030.
        RSTK-REC-999.
@@ -1408,9 +1471,16 @@
            IF WS-STKRECEIPTSLY-ST1 = 10
               GO TO RSTK-RECLY-999.
            IF WS-STKRECEIPTSLY-ST1 NOT = 0
-              MOVE "RECEIPTS BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              MOVE 
+              "STRECEIPTLY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STKRECEIPTSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STKRECEIPTSLY-ST1
               GO TO RSTK-RECLY-030.
            IF STRELY-STOCK-NUMBER NOT = WS-OLDSTOCKNUMBER
               GO TO RSTK-RECLY-999.
@@ -1429,7 +1499,10 @@
            IF WS-STKRECEIPTSLY-ST1 NOT = 0
               MOVE "RECEIPTSLY BUSY ON RE-WRITE, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STKRECEIPTSLY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO RSTK-RECLY-050.
            GO TO RSTK-RECLY-030.
        RSTK-RECLY-999.
@@ -1451,9 +1524,12 @@
            IF WS-TOOLKIT-ST1 = 10
                GO TO RNK-999.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "KIT BUSY ON READ NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                PERFORM ERROR-MESSAGE
                GO TO RNK-000.
        RNK-999.
@@ -1474,10 +1550,13 @@
                MOVE "Y" TO WS-TOOLKIT-INVALID
                GO TO RTH-999.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
-               MOVE "TOOLKIT HEADER BUSY ON READ, 'ESC' TO RETRY"
+              MOVE "TOOLKIT HEADER BUSY ON READ, 'ESC' TO RETRY"
                TO WS-MESSAGE
-               PERFORM ERROR-010
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               PERFORM ERROR-MESSAGE
                GO TO RTH-000.
            MOVE "N" TO WS-TOOLKIT-INVALID.
        RTH-999.
@@ -1507,15 +1586,18 @@
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
               MOVE "TOOLKITS ST1=2 ON WRITE, 'ESC' FOR MORE."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO WRT-999.
            IF WS-TOOLKIT-ST1 NOT = 0
-              MOVE 0 TO WS-TOOLKIT-ST1
               MOVE "TOOLKITS BUSY ON WRITE, WRT-010, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO WRT-010.
        WRT-999.
            EXIT.
@@ -1527,10 +1609,12 @@
            START TOOLKITS KEY NOT < TO-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "TOOLKITS BUSY ON START-DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO DT-010.
        DT-020.
            READ TOOLKITS NEXT WITH LOCK
@@ -1538,10 +1622,12 @@
            IF WS-TOOLKIT-ST1 = 10
                GO TO DT-999.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "TOOLKITS BUSY ON READ-DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO DT-020.
            IF TO-TOOLKIT-NUMBER = WS-OLDSTOCKNUMBER
                GO TO DT-050.
@@ -1552,10 +1638,12 @@
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
                GO TO DT-020.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
                MOVE "TOOLKIT RECORD BUSY ON DELETE, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO DT-050.
            GO TO DT-020.
        DT-999.
@@ -1583,7 +1671,7 @@
            IF WS-TOOLKIT-ST1 NOT = 0
                MOVE "TOOLKIT COMP. BUSY ON READ, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE TOOL-REC TO WS-MESSAGE
@@ -1632,10 +1720,12 @@
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
               GO TO WNC-010.
            IF WS-TOOLKIT-ST1 NOT = 0
-              MOVE 0 TO WS-TOOLKIT-ST1
               MOVE "TOOLKIT RECORD NOT REWRITTEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO WNC-005.
            GO TO WNC-999.
        WNC-010.
@@ -1644,10 +1734,12 @@
            IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
               GO TO WNC-005.
            IF WS-TOOLKIT-ST1 NOT = 0
-              MOVE 0 TO WS-TOOLKIT-ST1
               MOVE "TOOLKIT RECORD NOT WRITTEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE TO-COMPONENT-NUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO WNC-010.
        WNC-999.
            EXIT.
@@ -1661,7 +1753,7 @@
            IF WS-TOOLKIT-ST1 NOT = 0
                MOVE "TOOLKIT BUSY ON COMP. DELETE, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                MOVE TOOL-REC TO WS-MESSAGE
@@ -1675,11 +1767,18 @@
            READ STOCKCHANGE-MASTER NEXT
              AT END 
                GO TO RSN-900.
-           IF WS-STCHANGE-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-STCHANGE-ST1
-               MOVE "STOCKCHANGE FILE BUSY, PRESS 'ESC' TO RETRY"
+           IF WS-STCHANGE-ST1 = 23 OR 35 OR 49
+               MOVE "STOCKCHANGE FILE BUSY, PRESS 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               GO TO RSN-999.
+           IF WS-STCHANGE-ST1 NOT = 0
+               MOVE "STOCKCHANGE FILE BUSY, PRESS 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RSN-005.
            IF STCH-STOCKNUMBER < WS-RANGE1
                GO TO RSN-005.
@@ -1752,9 +1851,9 @@
       *         PERFORM ERROR-MESSAGE.
        OPEN-005.
             OPEN I-O STOCK-TRANS-FILE.
-            IF WS-BO-ST1 NOT = 0
-               MOVE 0 TO WS-BO-ST1
-               MOVE "BO FILE BUSY ON OPEN, 'ESC' TO RETRY."
+            IF WS-STTRANS-ST1 NOT = 0
+               MOVE 0 TO WS-STTRANS-ST1
+               MOVE "STTRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-005.

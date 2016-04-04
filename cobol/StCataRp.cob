@@ -27,8 +27,7 @@
        77  WS-RANGE1            PIC X(15) VALUE " ".
        77  WS-RANGE2            PIC X(15) VALUE " ".
        01  WS-STCAT-STATUS.
-           03  WS-STCAT-ST1        PIC 99.
-      *     03  WS-STCAT-ST2        PIC X.
+           03  WS-STCAT-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -165,7 +164,10 @@
             IF WS-STCAT-ST1 NOT = 0
                MOVE "CATALOGUE FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
                GO TO PRR-002.
             IF STCAT-STOCKNUMBER < WS-RANGE1
