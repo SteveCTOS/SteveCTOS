@@ -101,13 +101,10 @@
        77  TOT-VALUE-ONHAND     PIC S9(7)V99.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC 9 COMP-X.
        01  WS-TOOLKIT-STATUS.
-           03  WS-TOOLKIT-ST1        PIC 99.
-      *     03  WS-TOOLKIT-ST2        PIC X.
+           03  WS-TOOLKIT-ST1   PIC 99.
        01  WS-RANDOM-STATUS.
-           03  WS-RANDOM-ST1        PIC 99.
-      *     03  WS-RANDOM-ST2        PIC 9(2) COMP-X.
+           03  WS-RANDOM-ST1    PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -398,18 +395,20 @@
             READ RANDOM-FILE
                INVALID KEY NEXT SENTENCE. 
             IF WS-RANDOM-ST1 = 23 OR 35 OR 49
-               MOVE "NO SUCH RANDOM RECORD ON READ." TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               MOVE "NO SUCH RANDOM RECORD ON READ-23." TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE RANDOM-REC TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO RRR-999.
             IF WS-RANDOM-ST1 NOT = 0
                MOVE "RANDOM RECORD BUSY ON READ." TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
-               MOVE RANDOM-REC TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-               PERFORM  ERROR-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE RANDOM-REC TO WS-MESSAGE
+               PERFORM ERROR1-020
                GO TO RRR-002.
             MOVE 2510 TO POS
             DISPLAY "Random Stock Being Read:" AT POS
@@ -481,10 +480,15 @@
            IF WS-STOCK-ST1 = 10
               GO TO PRINT-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE "STOCK RECORD BUSY ON READ NEXT" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE ST-STOCKNUMBER TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
               GO TO PRINT-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
               GO TO PRINT-005.
@@ -573,7 +577,7 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "BAD START ON HIGH, 'ESC' TO EXIT." TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               EXIT PROGRAM.
@@ -803,7 +807,7 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-RANDOM-ST1 NOT = 0
               MOVE "BAD START ON RANDOM" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               EXIT PROGRAM.
@@ -820,7 +824,7 @@
               ADD 20 TO POS
               DISPLAY WS-RANDOM-ST1 AT POS
               ADD 5 TO POS
-              ACCEPT WS-ACCEPT AT POS
+              PERFORM ERROR-010
               GO TO RRF-005.
               
            SUBTRACT 1 FROM HIGH-NUMBER
@@ -856,7 +860,11 @@
             IF WS-TOOLKIT-ST1 NOT = 0
                MOVE "KIT BUSY ON LABOUR READ, 'ESC' TO RE-TRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-TOOLKIT-ST1
                GO TO RKIT-002.
             MOVE TO-QUANTITY TO WS-LABOUR-QTY.
        RKIT-500.
@@ -877,7 +885,11 @@
             IF WS-TOOLKIT-ST1 NOT = 0
                MOVE "KIT BUSY ON OVER-HEADS READ, 'ESC' TO RE-TRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-TOOLKIT-ST1
                GO TO RKIT-510.
             MOVE TO-QUANTITY TO WS-OVERHEAD-QTY.
        RKIT-999.
@@ -904,9 +916,10 @@
               GO TO GLOC-005.
            IF WS-STOCK-ST1 NOT = 0
               MOVE "STOCK RECORD BUSY ON READ NEXT" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE ST-STOCKNUMBER TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               GO TO GLOC-015.
            IF ST-STOCKNUMBER = "ZZZ LABOUR1"
               MOVE ST-AVERAGECOST TO WS-LABOUR-COST.
@@ -922,11 +935,14 @@
            READ STOCK-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 3010 TO POS
-              DISPLAY "STOCK RECORD BUSY  RS-005:" AT POS
-              MOVE 2838 TO POS
-              DISPLAY ST-STOCKNUMBER AT POS
-              PERFORM ERROR-010.
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RS-005.
        RS-999.
             EXIT.
       *

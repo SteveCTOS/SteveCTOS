@@ -47,17 +47,13 @@
            03  WS-MMC           PIC 99.
            03  WS-DDC           PIC 99.
        01  WS-DEBTOR-STATUS.
-           03  WS-DR-ST1        PIC 99.
-      *     03  WS-DR-ST2        PIC X.
+           03  WS-DEBTOR-ST1    PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-BO-ST1        PIC 99.
-      *     03  WS-BO-ST2        PIC X.
+           03  WS-STTRANS-ST1   PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1        PIC 99.
-      *     03  WS-INCR-ST2        PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -164,7 +160,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                PERFORM END-500
                GO TO CONTROL-005.
@@ -187,7 +182,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-000.
             IF WS-RANGE2 = " "
@@ -214,7 +208,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *     ACCEPT WS-RANGE3 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-010.
            
@@ -239,20 +232,19 @@
               INVALID KEY NEXT SENTENCE.
             READ DEBTOR-MASTER
                INVALID KEY NEXT SENTENCE.
-            IF WS-DR-ST1 = 10
-               MOVE "DEBTOR FILE AT END ON READ, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO GET-999.
-            IF WS-DR-ST1 = 23 OR 35 OR 49
+            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
                MOVE "INVALID NUMBER ENTERED, 'ESC' TO RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO GET-020.
-            IF WS-DR-ST1 NOT = 0
-               MOVE "DEBTOR FILE BUSY ON ON READ, 'ESC' TO RETRY."
+            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "DEBTOR FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO GET-0231.
        GET-024.
             MOVE 1620 TO POS
@@ -274,7 +266,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE4.
 
-      *     ACCEPT WS-RANGE4 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-020.
            
@@ -307,7 +298,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DET-SUM.
 
-      *      ACCEPT WS-DET-SUM AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-020.
             IF WS-DET-SUM NOT = "D" AND NOT = "S"
@@ -340,7 +330,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO F-FIELDNAME.
 
-      *     ACCEPT F-FIELDNAME AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-060.
            MOVE F-FIELDNAME TO ALPHA-RATE.
@@ -382,7 +371,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO F-FIELDNAME.
 
-      *     ACCEPT F-FIELDNAME AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-065.
            MOVE F-FIELDNAME TO ALPHA-RATE.
@@ -425,13 +413,22 @@
        RS-006.
             READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE. 
-            IF WS-ST-ST1 = 10
+            IF WS-STOCK-ST1 = 10
                GO TO RS-999.
-            IF WS-ST-ST1 = 23 OR 35 OR 49
-               MOVE
-              "STOCK BUSY AT ANOTHER WORKSTATION, 'ESC' TO RETRY."
+            IF WS-STOCK-ST1 = 23 OR 35 OR 49
+               MOVE "STOCK INVALID KEY, 'ESC' TO EXIT."
                  TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               GO TO RS-999.
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO RS-006.
             IF ST-STOCKNUMBER < WS-RANGE1
                GO TO RS-006.
@@ -451,14 +448,19 @@
        PRR-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-            IF WS-BO-ST1 = 10
+            IF WS-STTRANS-ST1 = 10
                PERFORM SUB-TOTAL-LINE
                GO TO PRR-999.
-            IF WS-BO-ST1 NOT = 0
-               MOVE 0 TO WS-BO-ST1
-               MOVE "STTRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+            IF WS-STTRANS-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-002.
                
             IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
@@ -594,24 +596,24 @@
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O DEBTOR-MASTER
-           IF WS-DR-ST1 NOT = 0 
-              MOVE 0 TO WS-DR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0 
+              MOVE 0 TO WS-DEBTOR-ST1
               MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-000.
        OPEN-002.
            OPEN I-O STOCK-MASTER.
-           IF WS-ST-ST1 NOT = 0 
-              MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0 
+              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-002.
        OPEN-003.
            OPEN I-O STOCK-TRANS-FILE.
-           IF WS-BO-ST1 NOT = 0 
-              MOVE 0 TO WS-BO-ST1
+           IF WS-STTRANS-ST1 NOT = 0 
+              MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

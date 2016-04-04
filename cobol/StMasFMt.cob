@@ -33,7 +33,7 @@
        77  WS-WHAT-TYPE         PIC X VALUE " ".
        77  WS-NUMERIC-DISPLAY   PIC Z(7)9.999.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1            PIC 99.
+           03  WS-STOCK-ST1            PIC 99.
        01  WS-STCHANGE-STATUS.
            03  WS-STCHANGE-ST1      PIC 99.
        01  WS-SLPARAMETER-STATUS.
@@ -398,15 +398,19 @@
        PRR-002.
             READ STOCK-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-ST-ST1 = 10
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 10
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-999.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
-               MOVE "STOCK-FILE BUSY, NUMBER:" TO WS-MESSAGE
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               MOVE 3035 TO POS
-               DISPLAY ST-STOCKNUMBER AT POS
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-002.
             IF ST-STOCKNUMBER < WS-BEG-STOCK
                GO TO PRR-002.
@@ -736,12 +740,16 @@
        PRR-050.
             REWRITE STOCK-RECORD
                 INVALID KEY NEXT SENTENCE.
-            IF WS-ST-ST1 NOT = 0
-                MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
                 MOVE "STOCK RECORD BUSY ON RE-WRITE" TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE ST-STOCKNUMBER TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO PRR-050.
            PERFORM ERROR-020.
        PRR-900.
@@ -760,17 +768,19 @@
        PRA-002.
             READ STOCK-ALPHA-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-ST-ST1 = 10
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 10
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRA-999.
-            IF WS-ST-ST1 NOT = 0
-               MOVE "STOCK-FILE BUSY, NUMBER:" TO WS-MESSAGE
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "ST-ALPHA BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
                PERFORM ERROR1-000
-               MOVE 2935 TO POS
-               DISPLAY ST-AL-STOCKNUMBER AT POS
-               MOVE WS-ST-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRA-002.
             IF ST-AL-STOCKNUMBER < WS-BEG-STOCK
                GO TO PRA-002.
@@ -873,12 +883,12 @@
        PRA-050.
             REWRITE STOCK-ALPHA-RECORD
                 INVALID KEY NEXT SENTENCE.
-            IF WS-ST-ST1 NOT = 0
+            IF WS-STOCK-ST1 NOT = 0
                 MOVE "STOCK ALPHA RECORD BUSY ON RE-WRITE" TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 MOVE ST-AL-STOCKNUMBER TO WS-MESSAGE
                 PERFORM ERROR1-000
-                MOVE WS-ST-ST1 TO WS-MESSAGE
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 GO TO PRA-050.
@@ -903,10 +913,13 @@
                MOVE "N" TO INVQUES-STOCK-CHANGE
                GO TO RINVQUES-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER BUSY RINVQUES, PRESS 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RINVQUES-010.
        RINVQUES-999.
             EXIT.
@@ -914,16 +927,16 @@
        OPEN-FILES SECTION.
        OPEN-000.
             OPEN I-O STOCK-MASTER.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-000.
        OPEN-001.
             OPEN I-O STOCK-ALPHA-MASTER.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK ALPHA FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE

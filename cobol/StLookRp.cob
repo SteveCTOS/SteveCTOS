@@ -31,11 +31,9 @@
        77  WS-ONLY-INVALID      PIC X VALUE " ".
        77  WS-DELETE-INVALID    PIC X VALUE " ".
        01  WS-LOOK-STATUS.
-           03  WS-LOOK-ST1        PIC 99.
-      *     03  WS-LOOK-ST2        PIC X.
+           03  WS-LOOK-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-DELETE-MESSAGE.
            03  WS-FILLER            PIC X(20) VALUE " ".
            03  WS-DELETE-LOOKREC    PIC X(15) VALUE " ".
@@ -230,9 +228,14 @@
                MOVE 0 TO WS-LOOK-ST1
                GO TO PRR-999.
             IF WS-LOOK-ST1 NOT = 0
-               MOVE "ST-LOOK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+             MOVE "LOOKUP BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-LOOK-ST1
                GO TO PRR-002.
                
@@ -294,14 +297,19 @@
        PRS-002.
             READ STOCK-MASTER NEXT
                AT END NEXT SENTENCE.
-            IF WS-ST-ST1 = 10
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 10
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRS-999.
-            IF WS-ST-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRS-002.
                
             IF ST-STOCKNUMBER < WS-RANGE1
@@ -380,8 +388,8 @@
        RST-002.
             READ STOCK-MASTER
                INVALID KEY NEXT SENTENCE.
-            IF WS-ST-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 23 OR 35 OR 49
+               MOVE 0 TO WS-STOCK-ST1
                MOVE "YES" TO D-INVALID
                GO TO RST-900.
             MOVE "     " TO D-INVALID.
@@ -398,14 +406,13 @@
             DELETE STLOOK-MASTER
               INVALID KEY NEXT SENTENCE.
             IF WS-LOOK-ST1 NOT = 0
-               MOVE 0 TO WS-LOOK-ST1
                MOVE STLOOK-STOCKNUMBER     TO WS-DELETE-LOOKREC
                MOVE "RECORD NOT DELETED, " TO WS-FILLER
                MOVE WS-DELETE-MESSAGE      TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-
+               PERFORM ERROR1-000
                MOVE WS-LOOK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
        RST-999.
            EXIT.
       *
@@ -420,8 +427,8 @@
               GO TO OPEN-000.
        OPEN-005.
            OPEN I-O STOCK-MASTER.
-           IF WS-ST-ST1 NOT = 0 
-              MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 NOT = 0 
+              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

@@ -30,11 +30,9 @@
        77  WS-INVOICE           PIC 9(6) VALUE 0.
        77  WS-START-POS         PIC 9 VALUE 0.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        01  WS-Spl-STATUS.
            03  WS-Spl-ST1       PIC 99.
-      *     03  WS-Spl-ST2       PIC X.
        01  PLINE1.
          02  PLINE1-REC OCCURS 4.
            03  P1-COMP          PIC X(1) VALUE " ".
@@ -267,10 +265,15 @@
            IF WS-STOCK-ST1 = 10
               PERFORM END-OFF.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
               GO TO RM-010.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -353,11 +356,14 @@
        OPEN-000.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-000.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO OPEN-000.
        OPEN-005.
            PERFORM GET-SYSTEM-Y2K-DATE.
       *     ACCEPT WS-DATE FROM DATE.

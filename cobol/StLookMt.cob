@@ -25,14 +25,12 @@
        77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "StDescIq".
        77  WS-OLDPRICE        PIC 9(6)V99.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1       PIC X(20) VALUE " ".
+           03  WS-DESC2       PIC X(20) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
        01  WS-LOOK-STATUS.
-           03  WS-LOOK-ST1   PIC 99.
-      *     03  WS-LOOK-ST2   PIC X.
+           03  WS-LOOK-ST1    PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -177,6 +175,12 @@
             DELETE STLOOK-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-LOOK-ST1 NOT = 0
+              MOVE "ST-LOOKUP BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-LOOK-ST1
                GO TO DSR-010. 
        DSR-999.
@@ -198,17 +202,24 @@
               MOVE 0 TO WS-LOOK-ST1
               MOVE "ST-LOOKUP BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-LOOK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-LOOK-ST1
               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STLOOK-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-LOOK-ST1 NOT = 0
-              MOVE 0 TO WS-LOOK-ST1
               MOVE "ST-LOOKUP BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-LOOK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-LOOK-ST1
               GO TO RSR-020.
        RSR-999.
           EXIT.
@@ -224,11 +235,14 @@
                 MOVE SPACES                 TO ST-DESCRIPTION2
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
-                MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-ST-010.
+               MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO R-ST-010.
        R-ST-999.
              EXIT.
       *
@@ -250,10 +264,13 @@
                 MOVE WS-STOCKNUMBER TO STLOOK-STOCKNUMBER
                 GO TO R-CAT-999.
              IF WS-LOOK-ST1 NOT = 0
-                MOVE 0 TO WS-LOOK-ST1
-                MOVE "ST-CAT RECORD BUSY ON READ, 'ESC' TO RETRY."
+                MOVE "ST-LOOKUP BUSY ON READ-LOCK, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-LOOK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-LOOK-ST1
                 GO TO R-CAT-010.
        R-CAT-999.
              EXIT.
@@ -276,13 +293,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-LOOK-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-LOOK-ST1 = 23 OR 35 OR 49
+               MOVE "ST-LOOKUP BUSY ON READ-NEXT-23, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-LOOK-ST1
+               GO TO RSN-999.
+           IF WS-LOOK-ST1 NOT = 0
                MOVE "ST-LOOKUP BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
-           IF WS-LOOK-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-LOOK-ST1
                PERFORM START-LOOKUP
                GO TO RSN-005.
@@ -304,13 +330,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RPREV-999.
-           IF WS-LOOK-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-LOOK-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-LOOK-ST1
+               MOVE "ST-LOOKUP BUSY ON READ-PREV-23, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               GO TO RPREV-999.
+           IF WS-LOOK-ST1 NOT = 0
                MOVE "ST-LOOKUP BUSY ON READ-PREV, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
-           IF WS-LOOK-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-LOOK-ST1
                PERFORM START-LOOKUP
                GO TO RPREV-005.
@@ -368,5 +403,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

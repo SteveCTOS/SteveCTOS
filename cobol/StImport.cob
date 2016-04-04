@@ -18,8 +18,7 @@
        77  WS-END             PIC X VALUE " ".      
        77  WS-TRANS           PIC 9(6) VALUE 0.
        01  WS-IMPRECEIPT-STATUS.
-           03  WS-IMPRECEIPT-ST1   PIC X.
-           03  WS-IMPRECEIPT-ST2   PIC X.
+           03  WS-IMPRECEIPT-ST1   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -1574,8 +1573,14 @@
             DELETE IMPRECEIPTS-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-IMPRECEIPT-ST1 NOT = 0
-               MOVE 0 TO WS-IMPRECEIPT-ST1
-               GO TO DO-010.
+                MOVE "IMPORTS RECORD BUSY ON DELETE, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPRECEIPT-ST1
+                GO TO DO-010.
        DO-999.
            EXIT.
       *
@@ -1586,20 +1591,26 @@
             REWRITE IMPORT-RECEIPTS-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-IMPRECEIPT-ST1 NOT = 0
-                MOVE 0 TO WS-IMPRECEIPT-ST1
                 MOVE "IMPORTS RECORD BUSY ON REWRITE, BE PATIENT"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPRECEIPT-ST1
                 GO TO ROR-010.
             GO TO ROR-999.
        ROR-020.
             WRITE IMPORT-RECEIPTS-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-IMPRECEIPT-ST1 NOT = 0
-                MOVE 0 TO WS-IMPRECEIPT-ST1
                 MOVE "IMPORTS RECORD BUSY ON WRITE, BE PATIENT"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPRECEIPT-ST1
                 GO TO ROR-020.
        ROR-999.
             EXIT.
@@ -1618,10 +1629,13 @@
                 MOVE "Y" TO NEW-ORDER
                 GO TO RO-999.
            IF WS-IMPRECEIPT-ST1 NOT = 0
-                MOVE 0 TO WS-IMPRECEIPT-ST1
                 MOVE "IMPORTS BUSY ON READ, 'ESC' To Retry"
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPRECEIPT-ST1
                 GO TO RO-010.
            MOVE "N" TO NEW-ORDER.
            MOVE IMRE-TRANSACTION-NUMBER TO WS-TRANS.
@@ -1649,9 +1663,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-IMPRECEIPT-ST1 NOT = 0
-               MOVE 0 TO WS-IMPRECEIPT-ST1
-               PERFORM START-TRANS
-               GO TO RONX-005.
+                MOVE "IMPORTS BUSY ON READ-NEXT, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPRECEIPT-ST1
+                PERFORM START-TRANS
+                GO TO RONX-005.
            MOVE IMRE-TRANSACTION-NUMBER TO WS-TRANS.
            MOVE "N"                     TO NEW-ORDER.
        RONX-999.
@@ -1671,9 +1691,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RPREV-999.
            IF WS-IMPRECEIPT-ST1 NOT = 0
-               MOVE 0 TO WS-IMPRECEIPT-ST1
-               PERFORM START-TRANS
-               GO TO RPREV-005.
+                MOVE "IMPORTS BUSY ON READ-PREV, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPRECEIPT-ST1
+                PERFORM START-TRANS
+                GO TO RPREV-005.
            MOVE IMRE-TRANSACTION-NUMBER TO WS-TRANS.
            MOVE "N"                     TO NEW-ORDER.
        RPREV-999.
@@ -1726,4 +1752,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

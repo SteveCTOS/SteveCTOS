@@ -20,7 +20,6 @@
        77  WS-STOCKNUMBER     PIC X(15) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -2962,6 +2961,12 @@
             DELETE STOCK-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO DSR-010. 
        DSR-999.
@@ -2980,21 +2985,27 @@
           REWRITE STOCK-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-010.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STOCK-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-020.
+                PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RSR-020.
        RSR-999.
           EXIT.
       *
@@ -3010,10 +3021,13 @@
                 MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE 0 TO WS-STOCK-ST1
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO R-ST-010.
        R-ST-999.
              EXIT.
@@ -3037,13 +3051,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-STOCK-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-STOCK-ST1
-               MOVE "STOCK FILE BUSY, PRESS 'ESC' TO RETRY"
+           IF WS-STOCK-ST1 = 23 OR 35 OR 49
+               MOVE "STOCK FILE BUSY READ-NEXT-23, PRESS 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RSN-999.
            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY READ-NEXT, PRESS 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO RSN-005.
@@ -3063,13 +3086,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSPREV-999.
-           IF WS-STOCK-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-STOCK-ST1 = 23 OR 35 OR 49
+               MOVE "STOCK FILE BUSY READ-PREV-23, PRESS 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
+               GO TO RSPREV-999.
+           IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BUSY ON READ PREV, PRESS 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSPREV-005.
-           IF WS-STOCK-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                PERFORM START-STOCK
                GO TO RSPREV-005.
@@ -3082,10 +3114,13 @@
        OPEN-000.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO OPEN-000.
        OPEN-010.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -3130,5 +3165,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB
