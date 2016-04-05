@@ -25,7 +25,7 @@
            03  SP-1STCHAR     PIC X VALUE " ".
            03  SP-REST        PIC X(14) VALUE " ".
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1   PIC 99.
+           03  WS-STTRANS-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -1833,15 +1833,19 @@
             IF WS-STTRANS-ST1 = 23 OR 35 OR 49
                 MOVE "STTRANS BUSY ON REWRITE, 'ESC' TO VIEW STATUS."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANS-ST1
                 GO TO ROR-020.
             IF WS-STTRANS-ST1 NOT = 0
                 MOVE "STTRANS RECORD BUSY ON REWRITE, ROR-010"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANS-ST1
                 GO TO ROR-010.
             GO TO ROR-999.
@@ -1851,9 +1855,10 @@
             IF WS-STTRANS-ST1 NOT = 0
                 MOVE "STTRANS BUSY ON WRITE, 'ESC' TO VIEW STATUS."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANS-ST1
                 GO TO ROR-010.
        ROR-999.
@@ -1874,10 +1879,13 @@
                 MOVE "Y" TO NEW-ORDER
                 GO TO RO-999.
            IF WS-STTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-STTRANS-ST1
                 MOVE "STTRANS BUSY ON READ-LOCK, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STTRANS-ST1
                 GO TO RO-010.
            MOVE "N" TO NEW-ORDER
                        WS-COM.
@@ -1916,8 +1924,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-STTRANS-ST1 NOT = 0
-              PERFORM START-TRANS
-              GO TO RONX-005.
+               MOVE "ST-TRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               PERFORM START-TRANS
+               GO TO RONX-005.
            MOVE "N" TO NEW-ORDER
                        WS-COM.
            MOVE STTR-REFERENCE1         TO WS-REF1
@@ -1943,8 +1958,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RPREV-999.
            IF WS-STTRANS-ST1 NOT = 0
-              PERFORM START-TRANS
-              GO TO RPREV-005.
+               MOVE "ST-TRANS FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               PERFORM START-TRANS
+               GO TO RPREV-005.
            MOVE "N" TO NEW-ORDER
                        WS-COM.
            MOVE STTR-REFERENCE1         TO WS-REF1
@@ -1977,9 +1999,10 @@
             IF WS-STTRANS-ST1 NOT = 0
                MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STTRANS-ST1
                GO TO OPEN-000.
        OPEN-010.

@@ -52,7 +52,7 @@
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-BO-ST1        PIC 99.
+           03  WS-STTRANS-ST1   PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -258,12 +258,16 @@
               PERFORM PRR-025
               GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-BO-ST1
-              MOVE "STMASTER BUSY ON READ-NEXT, 'ESC' TO RETRY." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-STOCK-ST1
-              GO TO PRR-005.
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-BEGSTOCK
               GO TO PRR-005.
            IF ST-STOCKNUMBER > WS-ENDSTOCK
@@ -439,15 +443,19 @@
        PNSI-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-            IF WS-BO-ST1 = 10
+            IF WS-STTRANS-ST1 = 10
                PERFORM PNSI-025
                GO TO PNSI-999.
-            IF WS-BO-ST1 NOT = 0
-              MOVE 0 TO WS-BO-ST1
-              MOVE "ST-TRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-BO-ST1
+            IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO PNSI-002.
                
             IF STTR-ST-COMPLETE NOT = "N" AND NOT = "B" AND NOT = "C"
@@ -602,8 +610,8 @@
        OPEN-FILES SECTION.
        OPEN-003.
            OPEN I-O STOCK-TRANS-FILE.
-           IF WS-BO-ST1 NOT = 0 
-              MOVE 0 TO WS-BO-ST1
+           IF WS-STTRANS-ST1 NOT = 0 
+              MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE

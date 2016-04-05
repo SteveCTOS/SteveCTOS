@@ -32,8 +32,8 @@
        77  WS-TYPE              PIC X VALUE " ".
        77  WS-TYPE-NUM          PIC 99 VALUE 0.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR      PIC X.
-           03  SP-REST         PIC X(14).
+           03  SP-1STCHAR       PIC X.
+           03  SP-REST          PIC X(14).
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST     PIC X(20) VALUE " ".
            03  WS-DAILY-2ND     PIC X(20) VALUE " ".
@@ -47,16 +47,12 @@
            03  SPLIT-SC         PIC 99.
        01  WS-STTRANS-STATUS.
            03  WS-STTRANS-ST1   PIC 99.
-      *     03  WS-STTRANS-ST2   PIC 9(2) COMP-X.
        01  WS-STTRANSLY-STATUS.
-           03  WS-STTRANSLY-ST1   PIC 99.
-      *     03  WS-STTRANSLY-ST2   PIC 9(2) COMP-X.
+           03  WS-STTRANSLY-ST1 PIC 99.
        01  WS-INCR-STATUS.
-           03  WS-INCR-ST1   PIC 99.
-      *     03  WS-INCR-ST2   PIC X.
+           03  WS-INCR-ST1      PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1     PIC 9.
-      *     03  WS-DAILY-ST2     PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1     PIC 99.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -199,11 +195,13 @@
                PERFORM ERROR-000
                GO TO DQT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE "ST-TRANS FILE BUSY ON READ, 'CANCEL' TO RETRY."
+              MOVE "ST-TRANS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
                GO TO DQT-010.
            IF STTR-TYPE NOT = WS-TYPE-NUM
                GO TO DQT-999.
@@ -256,10 +254,13 @@
                MOVE 88 TO WS-INCR-ST1
                GO TO DQR-020.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
                MOVE "REGISTER BUSY ON READ, 'CANCEL' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
                GO TO DQR-010.
        DQR-020.
            MOVE 2910 TO POS

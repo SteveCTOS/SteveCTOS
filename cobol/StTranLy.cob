@@ -26,7 +26,6 @@
            03  SP-REST        PIC X(14) VALUE " ".
        01  WS-STTRANSLY-STATUS.
            03  WS-STTRANSLY-ST1   PIC 99.
-      *     03  WS-STTRANSLY-ST2   PIC 9(2) COMP-X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -1827,16 +1826,20 @@
             IF WS-STTRANSLY-ST1 = 23 OR 35 OR 49
                 MOVE "STTRANS BUSY ON REWRITE, 'ESC' TO VIEW STATUS."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANSLY-ST1
                 GO TO ROR-020.
             IF WS-STTRANSLY-ST1 NOT = 0
                 MOVE 
             "STTRANS RECORD BUSY ON REWRITE, ROR-010, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANSLY-ST1
                 GO TO ROR-010.
             GO TO ROR-999.
@@ -1844,11 +1847,12 @@
             WRITE STOCK-TRANSLY-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-STTRANSLY-ST1 NOT = 0
-                MOVE "STTRANS BUSY ON WRITE, 'ESC' TO VIEW STATUS."
+                MOVE "STTRANS BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANSLY-ST1
                 GO TO ROR-010.
        ROR-999.
@@ -1869,10 +1873,13 @@
                 MOVE "Y" TO NEW-ORDER
                 GO TO RO-999.
            IF WS-STTRANSLY-ST1 NOT = 0
-                MOVE 0 TO WS-STTRANSLY-ST1
                 MOVE "STTRANS-LY BUSY ON READ-LOCK,  'ESC' TO RETRY."
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STTRANSLY-ST1
                 GO TO RO-010.
            MOVE "N" TO NEW-ORDER
                        WS-COM.
@@ -1890,7 +1897,7 @@
            START STOCK-TRANSLY-FILE KEY NOT < STTR-LY-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-STTRANSLY-ST1 NOT = 0
-              MOVE "9" TO WS-STTRANSLY-ST1.
+              MOVE 91 TO WS-STTRANSLY-ST1.
        ST-OO-999.
              EXIT.
       *
@@ -1911,8 +1918,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-STTRANSLY-ST1 NOT = 0
-              PERFORM START-TRANS
-              GO TO RONX-005.
+               MOVE "STTRANSLY FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANSLY-ST1
+               PERFORM START-TRANS
+               GO TO RONX-005.
            MOVE "N" TO NEW-ORDER
                        WS-COM.
            MOVE STTR-LY-REFERENCE1         TO WS-REF1
@@ -1938,8 +1952,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RPREV-999.
            IF WS-STTRANSLY-ST1 NOT = 0
-              PERFORM START-TRANS
-              GO TO RPREV-005.
+               MOVE "STTRANSLY FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANSLY-ST1
+               PERFORM START-TRANS
+               GO TO RPREV-005.
            MOVE "N" TO NEW-ORDER
                        WS-COM.
            MOVE STTR-LY-REFERENCE1         TO WS-REF1
@@ -1956,6 +1977,12 @@
             DELETE STOCK-TRANSLY-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-STTRANSLY-ST1 NOT = 0
+               MOVE "STTRANSLY FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STTRANSLY-ST1
                GO TO DO-010.
        DO-999.
@@ -1967,9 +1994,10 @@
             IF WS-STTRANSLY-ST1 NOT = 0
                MOVE "ST-TRANSLY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STTRANSLY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STTRANSLY-ST1
                GO TO OPEN-000.
        OPEN-010.

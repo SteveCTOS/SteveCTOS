@@ -31,18 +31,15 @@
        77  NEW-STOCKNO          PIC X VALUE " ".      
        77  WS-MATCH-FIELD       PIC X(20) VALUE " ".
        77  WS-MATCH             PIC 9(8)V999 VALUE 0.
-       77  WS-TARIFF-MUST-MATCH  PIC X VALUE " ".
-       77  WS-WHAT-TYPE         PIC X VALUE " ".
-       77  WS-NUMERIC-DISPLAY   PIC Z(7)9.999.
+       77  WS-TARIFF-MUST-MATCH   PIC X VALUE " ".
+       77  WS-WHAT-TYPE           PIC X VALUE " ".
+       77  WS-NUMERIC-DISPLAY     PIC Z(7)9.999.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1            PIC 99.
-      *     03  WS-ST-ST2            PIC 9(2) COMP-X.
+           03  WS-STOCK-ST1          PIC 99.
        01  WS-STCHANGE-STATUS.
-           03  WS-STCHANGE-ST1      PIC 99.
-      *     03  WS-STCHANGE-ST2      PIC x.
+           03  WS-STCHANGE-ST1    PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -87,7 +84,6 @@
            MOVE 560 TO POS
            MOVE WS-BEG-STOCK TO CDA-DATA.
            
-      *     MOVE ' '       TO CDA-DATA.
            MOVE 15        TO CDA-DATALEN.
            MOVE 2         TO CDA-ROW.
            MOVE 59        TO CDA-COL.
@@ -96,7 +92,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BEG-STOCK.
 
-      *     ACCEPT WS-BEG-STOCK AT POS.
            IF W-ESCAPE-KEY = 3
               PERFORM END-OFF.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -110,7 +105,6 @@
            MOVE 760 TO POS
            MOVE WS-END-STOCK TO CDA-DATA.
 
-      *     MOVE ' '       TO CDA-DATA.
            MOVE 15        TO CDA-DATALEN.
            MOVE 4         TO CDA-ROW.
            MOVE 59        TO CDA-COL.
@@ -119,7 +113,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-END-STOCK.
 
-      *     ACCEPT WS-END-STOCK AT POS.
            IF W-ESCAPE-KEY = 7
               MOVE WS-BEG-STOCK TO WS-END-STOCK
               DISPLAY WS-END-STOCK AT POS
@@ -139,7 +132,6 @@
            MOVE 960 TO POS
            MOVE WS-TAR-ACCEPT TO CDA-DATA
 
-      *     MOVE ' '       TO CDA-DATA.
            MOVE 8         TO CDA-DATALEN.
            MOVE 6         TO CDA-ROW.
            MOVE 59        TO CDA-COL.
@@ -148,7 +140,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TAR-ACCEPT.
 
-      *     ACCEPT WS-TAR-ACCEPT AT POS.
            IF WS-TAR-ACCEPT = " "
               GO TO GET-015.
            MOVE WS-TAR-ACCEPT TO ALPHA-RATE
@@ -180,7 +171,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DUTY-ACCEPT.
 
-      *     ACCEPT WS-DUTY-ACCEPT AT POS.
            MOVE WS-DUTY-ACCEPT TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
            MOVE NUMERIC-RATE TO WS-DUTY
@@ -201,7 +191,6 @@
            MOVE 1360 TO POS
            MOVE WS-CHANGE-FILE TO CDA-DATA
 
-      *     MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 10        TO CDA-ROW.
            MOVE 59        TO CDA-COL.
@@ -210,7 +199,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHANGE-FILE.
 
-      *     ACCEPT WS-CHANGE-FILE AT POS.
            IF WS-CHANGE-FILE NOT = "N" AND NOT = "Y"
                MOVE "THIS FIELD MUST BE 'N' OR 'Y' RE-ENTER."
                TO WS-MESSAGE
@@ -239,15 +227,19 @@
        PRR-002.
             READ STOCK-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-ST-ST1 = 10
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 = 10
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-999.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
-               MOVE "STOCK-FILE BUSY, NUMBER:" TO WS-MESSAGE
+            IF WS-STOCK-ST1 NOT = 0
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               MOVE 2835 TO POS
-               DISPLAY ST-STOCKNUMBER AT POS
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-002.
             IF ST-STOCKNUMBER < WS-BEG-STOCK
                GO TO PRR-002.
@@ -270,14 +262,15 @@
        PRR-050.
             REWRITE STOCK-RECORD
                 INVALID KEY NEXT SENTENCE.
-            IF WS-ST-ST1 NOT = 0
-                MOVE "STOCK RECORD BUSY ON RE-WRITE" TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                MOVE ST-STOCKNUMBER TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                MOVE WS-ST-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO PRR-050.
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK RECORD BUSY ON RE-WRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO PRR-050.
            PERFORM ERROR-020.
        PRR-900.
            IF INVQUES-STOCK-CHANGE = "Y"
@@ -299,10 +292,13 @@
                MOVE "N" TO INVQUES-STOCK-CHANGE
                GO TO RINVQUES-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER BUSY RINVQUES, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RINVQUES-010.
        RINVQUES-999.
             EXIT.
@@ -310,8 +306,8 @@
        OPEN-FILES SECTION.
        OPEN-000.
             OPEN I-O STOCK-MASTER.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
