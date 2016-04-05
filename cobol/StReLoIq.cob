@@ -36,20 +36,17 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1         PIC 99.
        01  WS-STKRECEIPT-STATUS.
            03  WS-STKRECEIPT-ST1    PIC 99.
-      *     03  WS-STKRECEIPT-ST2    PIC 99 COMP-X.
        01  WS-STKRECEIPTSLY-STATUS.
-           03  WS-STKRECEIPTSLY-ST1    PIC 99.
-      *     03  WS-STKRECEIPTSLY-ST2    PIC 99 COMP-X.
+           03  WS-STKRECEIPTSLY-ST1 PIC 99.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR       PIC X.
-           03  SP-REST          PIC X(15).
+           03  SP-1STCHAR     PIC X.
+           03  SP-REST        PIC X(15).
        01  SPLIT-PORDER.
-           03  SP-1ST3CHAR      PIC X(3).
-           03  SP-3REST         PIC X(13).
+           03  SP-1ST3CHAR    PIC X(3).
+           03  SP-3REST       PIC X(13).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -335,9 +332,10 @@
            IF WS-STKRECEIPT-ST1 NOT = 0
               MOVE "RECEIPTS BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STKRECEIPT-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               CLOSE STKRECEIPTS-FILE
               GO TO RDTR-000.
        RDTR-001.
@@ -378,12 +376,15 @@
                CLOSE STKRECEIPTS-FILE
                GO TO RDTR-999.
            IF WS-STKRECEIPT-ST1 NOT = 0
-               MOVE 2910 TO POS
-               MOVE "Be Patient, Status not = 0, Re-reading."
+             MOVE "RECEIPTS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               DISPLAY WS-MESSAGE AT POS
-               ADD 40 TO POS
-               DISPLAY WS-STKRECEIPT-ST1 AT POS
+               PERFORM ERROR1-000
+               MOVE WS-STKRECEIPT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STKRECEIPT-ST1
                GO TO RDTR-010.
                
            IF SP-1STCHAR NOT = "#"
@@ -462,9 +463,10 @@
            IF WS-STKRECEIPTSLY-ST1 NOT = 0
               MOVE "ST-RECEIPTSLY FILE BUSY ON OPEN, 'ESC' TO RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STKRECEIPTSLY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               CLOSE STKRECEIPTSLY-FILE
               GO TO RDTRLY-0000.
        RDTRLY-001.
@@ -502,12 +504,15 @@
                CLOSE STKRECEIPTSLY-FILE
                GO TO RDTRLY-999.
            IF WS-STKRECEIPTSLY-ST1 NOT = 0
-               MOVE 2910 TO POS
-               MOVE "Be Patient, Status not = 0, Re-reading."
+           MOVE "RECEIPTLY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               DISPLAY WS-MESSAGE AT POS
-               ADD 40 TO POS
-               DISPLAY WS-STKRECEIPTSLY-ST1 AT POS
+               PERFORM ERROR1-000
+               MOVE WS-STKRECEIPTSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STKRECEIPTSLY-ST1
                GO TO RDTRLY-010.
                
            IF SP-1STCHAR NOT = "#"
@@ -591,7 +596,14 @@
                 MOVE "UNKNOWN" TO ST-DESCRIPTION1
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
-                GO TO RS-010.
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RS-010.
        RS-999.
             EXIT.
       *
@@ -617,6 +629,12 @@
              IF WS-STOCK-ST1 = 0
                  GO TO R-ST-NX-999
              ELSE
+                 MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STOCK-ST1
                  PERFORM START-STOCK
                  GO TO R-ST-NX-005.
@@ -638,6 +656,12 @@
              IF WS-STOCK-ST1 = 0
                  GO TO RPREV-999
              ELSE
+                 MOVE "STOCK FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  MOVE 0 TO WS-STOCK-ST1
                  PERFORM START-STOCK
                  GO TO RPREV-005.
@@ -681,6 +705,14 @@
                MOVE 0 TO WS-STKRECEIPT-ST1
                GO TO PRR-900.
             IF WS-STKRECEIPT-ST1 NOT = 0
+             MOVE "RECEIPTS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STKRECEIPT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-STKRECEIPT-ST1
                GO TO PRR-002.
                
@@ -861,6 +893,14 @@
                MOVE 0 TO WS-STKRECEIPTSLY-ST1
                GO TO PRRLY-900.
             IF WS-STKRECEIPTSLY-ST1 NOT = 0
+           MOVE "RECEIPTSLY BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STKRECEIPTSLY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-STKRECEIPTSLY-ST1
                GO TO PRRLY-002.
                
@@ -1144,10 +1184,13 @@
        OPEN-005.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK BUSY ON OPEN, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO OPEN-005.
            MOVE Ws-Co-Name TO CO-NAME.
        OPEN-006.

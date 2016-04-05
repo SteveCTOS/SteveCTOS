@@ -166,8 +166,12 @@
             IF WS-IMPORT-ST1 NOT = 0
                MOVE "NO TRANS WITHIN RANGE ENTERED, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO PRR-999.
+                PERFORM ERROR1-000
+                MOVE WS-IMPORT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPORT-ST1
+                GO TO PRR-999.
             IF WS-RANGE1 = " "
                GO TO PRR-002.
        PRR-001.
@@ -178,8 +182,12 @@
             IF WS-IMPORT-ST1 NOT = 0
                MOVE "NO SUPPLIER WITHIN RANGE, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO PRR-999.
+                PERFORM ERROR1-000
+                MOVE WS-IMPORT-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-IMPORT-ST1
+                GO TO PRR-999.
        PRR-002.
             READ IMPRECEIPTS-FILE NEXT
                AT END NEXT SENTENCE.

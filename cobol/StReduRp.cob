@@ -44,7 +44,6 @@
        77  WS-DATE-ACCEPT       PIC X(10) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-DATE-ENTER.
            03  WS-YYE           PIC 9999.
            03  WS-MME           PIC 99.
@@ -402,9 +401,14 @@
                PERFORM PRR-025
                GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
@@ -619,8 +623,12 @@
             IF WS-STOCK-ST1 NOT = 0
               MOVE "STOCK FILE BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RWS-010.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RWS-010.
        RWS-999.
            EXIT.
       *
@@ -628,11 +636,14 @@
        OPEN-045.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-045.
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO OPEN-045.
        OPEN-150.
            MOVE Ws-Co-Name TO CO-NAME.
            PERFORM GET-SYSTEM-Y2K-DATE.

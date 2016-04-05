@@ -289,7 +289,11 @@
            IF WS-STOCK-ST1 NOT = 0
               MOVE "STARTING STOCKNUMBER TOO HIGH, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
               GO TO PRR-999.
        PRR-005.
            READ STOCK-MASTER NEXT
@@ -297,13 +301,16 @@
            IF WS-STOCK-ST1 = 10 OR = 23
                PERFORM PRR-025
                GO TO PRR-999.
-           IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STOCK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
               GO TO PRR-005.
            IF ST-STOCKNUMBER > WS-ANSWER2

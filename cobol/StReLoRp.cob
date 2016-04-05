@@ -42,14 +42,11 @@
        77  WS-KITADJ-TOTAL      PIC S9(8)V99 VALUE 0.
        77  WS-MV-TOTAL          PIC S9(8)V99 VALUE 0.
        01  WS-STKRECEIPT-STATUS.
-           03  WS-STKRECEIPT-ST1     PIC 99.
-      *     03  WS-STKRECEIPT-ST2     PIC X.
+           03  WS-STKRECEIPT-ST1    PIC 99.
        01  WS-STKRECEIPTSLY-STATUS.
-           03  WS-STKRECEIPTSLY-ST1    PIC 99.
-      *     03  WS-STKRECEIPTSLY-ST2    PIC 99 COMP-X.
+           03  WS-STKRECEIPTSLY-ST1 PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
+           03  WS-STOCK-ST1         PIC 99.
        01  HEAD1.
            03  FILLER          PIC X(7) VALUE "  DATE".
            03  H1-DATE         PIC X(10).
@@ -468,7 +465,11 @@
              IF WS-STOCK-ST1 NOT = 0
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 MOVE STRE-STOCK-NUMBER TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO R-ST-010.
