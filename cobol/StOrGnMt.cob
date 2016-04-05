@@ -22,14 +22,12 @@
        77  WS-SAVE            PIC X(23) VALUE " ".
        77  CALC-FIELD         PIC 9(7)V999 VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1       PIC X(20) VALUE " ".
+           03  WS-DESC2       PIC X(20) VALUE " ".
        01  WS-GEN-STATUS.
-           03  WS-GEN-ST1   PIC 99.
-      *     03  WS-GEN-ST2   PIC X.
+           03  WS-GEN-ST1     PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -292,6 +290,12 @@
             DELETE ORDER-GEN-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-GEN-ST1 NOT = 0
+               MOVE "ST-ORDERGEN BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GEN-ST1
                GO TO DDR-010.
        DDR-999.
@@ -307,21 +311,27 @@
             REWRITE ORDER-GEN-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GEN-ST1 NOT = 0
-                MOVE 0 TO WS-GEN-ST1
-                MOVE "ORDER-GEN BUSY ON REWRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RDR-020.
+               MOVE "ORDER-GEN BUSY ON REWRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GEN-ST1
+               GO TO RDR-020.
             GO TO RDR-999.
        RDR-020.
             WRITE ORDER-GEN-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GEN-ST1 NOT = 0
-                MOVE 0 TO WS-GEN-ST1
-                MOVE "ORDER-GEN BUSY ON WRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RDR-015.
+               MOVE "ORDER-GEN BUSY ON WRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GEN-ST1
+               GO TO RDR-015.
        RDR-999.
             EXIT.
       *
@@ -338,10 +348,13 @@
                 MOVE WS-NUMBER TO OG-KEY
                 GO TO RD-999.
            IF WS-GEN-ST1 NOT = 0
-                MOVE 0 TO WS-GEN-ST1
                 MOVE "ORDER-GEN BUSY ON READ, PRESS 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GEN-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GEN-ST1
                 GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE OG-KEY TO WS-SAVE.
@@ -378,13 +391,22 @@
                MOVE " " TO OG-KEY
                MOVE "Y" TO WS-END
                GO TO RNX-999.
-           IF WS-GEN-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-GEN-ST1
-               MOVE "ORDER-GEN BUSY ON READ-NEXT, 'ESC' TO RETRY."
+           IF WS-GEN-ST1 = 23 OR 35 OR 49
+               MOVE "ORDER-GEN BUSY ON READ-NEXT-23, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GEN-ST1
                GO TO RNX-005.
            IF WS-GEN-ST1 NOT = 0
+               MOVE "ORDER-GEN BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GEN-ST1
                PERFORM START-RECORD
                GO TO RNX-005.
@@ -410,13 +432,19 @@
                MOVE " " TO OG-KEY
                MOVE "Y" TO WS-END
                GO TO RPREV-999.
-           IF WS-GEN-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-GEN-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-GEN-ST1
-               MOVE "ORDER-GEN BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               MOVE "ORDER-GEN BUSY ON READ-PREV-23, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RPREV-005.
            IF WS-GEN-ST1 NOT = 0
+               MOVE "ORDER-GEN BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GEN-ST1
                PERFORM START-RECORD
                GO TO RPREV-005.
@@ -450,7 +478,6 @@
        OPEN-000.
             OPEN I-O ORDER-GEN-FILE.
             IF WS-GEN-ST1 = 49
-               MOVE 0 TO WS-GEN-ST1
                MOVE "ORDER-GEN BUSY I-O 49 ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -462,7 +489,6 @@
        OPEN-001.
             OPEN OUTPUT ORDER-GEN-FILE.
             IF WS-GEN-ST1 NOT = 0
-               MOVE 0 TO WS-GEN-ST1
               MOVE "ORDER-GEN-FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -473,10 +499,10 @@
        OPEN-005.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK-FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-STOCK-ST1
                GO TO OPEN-005.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
@@ -511,5 +537,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       * END-OF-JOB

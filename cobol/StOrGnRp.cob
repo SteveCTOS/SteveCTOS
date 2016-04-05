@@ -76,13 +76,13 @@
            03  WS-SUPPLY-NAME  PIC X(7).
            03  WS-SUPPLY-COUNT PIC 999.
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1    PIC 99.
+           03  WS-OUTORD-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1    PIC 99.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-GEN-STATUS.
-           03  WS-GEN-ST1    PIC 99.
+           03  WS-GEN-ST1         PIC 99.
        01  SPLIT1-DATE.
            03  SPLIT1-YY        PIC 9999.
            03  SPLIT1-MM        PIC 99.
@@ -830,11 +830,14 @@
                         OO-DELIVERY-METHOD
               GO TO ROO-999.
            IF WS-OUTORD-ST1 NOT = 0
-              MOVE 0 TO WS-OUTORD-ST1
               MOVE "S-ORDER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO ROO-020.
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO ROO-020.
            IF OO-ORDER-NUMBER NOT = WS-ORDER (SUB-1)
               GO TO ROO-020.
            IF WS-MESSAGE NOT = " "
@@ -861,11 +864,14 @@
                         OO-DELIVERY-METHOD
               GO TO CFOOS-900.
            IF WS-OUTORD-ST1 NOT = 0
-              MOVE 0 TO WS-OUTORD-ST1
               MOVE "S/ORDER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO CFOOS-020.
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO CFOOS-020.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
            IF OO-STOCK-NUMBER < WS-RANGE1
@@ -1018,37 +1024,6 @@
        CFOOS-999.
            EXIT.
       *
-       READ-DELIVERY-FILE SECTION.
-       RDELIV-000.
-            MOVE 1 TO SUB-1
-                      PA-RECORD.
-            MOVE 3 TO PA-TYPE.
-       RDELIV-010.
-            READ PARAMETER-FILE NEXT
-                AT END NEXT SENTENCE.
-            IF WS-SLPARAMETER-ST1 = 10
-                GO TO RDELIV-999.
-            IF PA-TYPE < 3
-               GO TO RDELIV-010.
-            IF PA-TYPE > 3
-                GO TO RDELIV-999.
-            IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
-               MOVE "PARAMETER DELV BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RDELIV-010.
-            IF PARAMETER-REC = "           "
-               GO TO RDELIV-010.           
-            MOVE PARAMETER-REC TO WS-DEL-OCCUR (SUB-1).
-            ADD 1 TO SUB-1.
-            IF SUB-1 = 10
-               PERFORM ERROR-020
-               GO TO RDELIV-999.
-            GO TO RDELIV-010.
-       RDELIV-999.
-            EXIT.
-      *
        READ-OUT-ORDERS SECTION.
        ROS-005.
            MOVE WS-ORDER (SUB-1) TO OO-ORDER-NUMBER.
@@ -1064,11 +1039,14 @@
                         WS-ORDERQTY (SUB-1)
               GO TO ROS-999.
            IF WS-OUTORD-ST1 NOT = 0
-              MOVE 0 TO WS-OUTORD-ST1
               MOVE "ORDERS FILE BUSY ON READ, 'ESC' TO RETRY."
                  TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO ROS-010.
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO ROS-010.
               
            MOVE OO-QUANTITY TO WS-QTY
                                WS-ORDERQTY (SUB-1).
@@ -1086,14 +1064,15 @@
                PERFORM SUB-LINE
                GO TO PR-900.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STOCK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
                PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PR-001.
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
@@ -1245,13 +1224,15 @@
                PERFORM SUB-LINE
                GO TO PRBR-900.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STOCK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRBR-001.
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
@@ -1390,8 +1371,12 @@
            IF WS-GEN-ST1 NOT = 0
               MOVE "ORDER-GEN-REC BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO WTO-500.
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GEN-ST1
+               GO TO WTO-500.
        WTO-999.
            EXIT.
       *
@@ -1707,6 +1692,40 @@
        SL-999.
            EXIT.
       *
+       READ-DELIVERY-FILE SECTION.
+       RDELIV-000.
+            MOVE 1 TO SUB-1
+                      PA-RECORD.
+            MOVE 3 TO PA-TYPE.
+       RDELIV-010.
+            READ PARAMETER-FILE NEXT
+                AT END NEXT SENTENCE.
+            IF WS-SLPARAMETER-ST1 = 10
+                GO TO RDELIV-999.
+            IF PA-TYPE < 3
+               GO TO RDELIV-010.
+            IF PA-TYPE > 3
+                GO TO RDELIV-999.
+            IF WS-SLPARAMETER-ST1 NOT = 0
+               MOVE "PARAMETER DELV BUSY ON READ, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RDELIV-010.
+            IF PARAMETER-REC = "           "
+               GO TO RDELIV-010.           
+            MOVE PARAMETER-REC TO WS-DEL-OCCUR (SUB-1).
+            ADD 1 TO SUB-1.
+            IF SUB-1 = 10
+               PERFORM ERROR-020
+               GO TO RDELIV-999.
+            GO TO RDELIV-010.
+       RDELIV-999.
+            EXIT.
+      *
        READ-INVQUES-FILE SECTION.
        RINVQUES-000.
             MOVE 1 TO PA-RECORD.
@@ -1719,10 +1738,13 @@
                MOVE "N" TO INVQUES-STOCK-TO-MAX
                GO TO RINVQUES-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
-               MOVE "Parameter Busy RINVQUES, Press 'ESC' To Retry."
+               MOVE "PARAMETER BUSY RINVQUES, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RINVQUES-010.
        RINVQUES-999.
             EXIT.
@@ -1761,19 +1783,25 @@
        OPEN-003.
            OPEN I-O ORDER-GEN-FILE.
            IF WS-GEN-ST1 NOT = 0
-               MOVE 0 TO WS-GEN-ST1
                MOVE "ORDER-GEN-FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GEN-ST1
                GO TO OPEN-004.
             GO TO OPEN-999.
        OPEN-004.
            OPEN OUTPUT ORDER-GEN-FILE.
            IF WS-GEN-ST1 NOT = 0
-               MOVE 0 TO WS-GEN-ST1
                MOVE "ORDER-GEN BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GEN-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GEN-ST1
                GO TO OPEN-003.
        OPEN-999.
             EXIT.

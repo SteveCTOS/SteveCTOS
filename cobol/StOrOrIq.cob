@@ -38,22 +38,19 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        77  WS-WRITE             PIC X VALUE " ".
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1    PIC 99.
-      *     03  WS-OUTORD-ST2    PIC X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1    PIC 99.
-      *     03  WS-STOCK-ST2    PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  SPLIT-STOCK.
-           03  SP-1STCHAR       PIC X.
-           03  SP-REST          PIC X(14).
+           03  SP-1STCHAR         PIC X.
+           03  SP-REST            PIC X(14).
        01  STORE-DEL.
          02  WS-DEL-OCCUR OCCURS 10.
-           03  WS-DEL-TYPE       PIC X.
-           03  WS-DEL-CODE       PIC X.
-           03  WS-DEL-TERM       PIC X(20).
+           03  WS-DEL-TYPE        PIC X.
+           03  WS-DEL-CODE        PIC X.
+           03  WS-DEL-TERM        PIC X(20).
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -263,7 +260,14 @@
            IF WS-OUTORD-ST1 = 23 OR 35 OR 49
                 GO TO RDTR-999.
            IF WS-OUTORD-ST1 NOT = 0
-              GO TO RDTR-005.
+               MOVE "ST-ORDER FILE BUSY ON START, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO RDTR-005.
            MOVE " " TO F-EXIT-CH.
        RDTR-010.
            IF F-EXIT-CH = " "
@@ -281,7 +285,14 @@
                MOVE 1 TO F-INDEX
                GO TO RDTR-005.
            IF WS-OUTORD-ST1 NOT = 0
-               GO TO RDTR-010.
+               MOVE "ST-ORDER FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+              GO TO RDTR-010.
            IF OO-QUANTITY NOT > 0
                MOVE 2910 TO POS
                DISPLAY "Reading Next Valid Transaction.." AT POS
@@ -359,7 +370,14 @@
                 MOVE "                   " TO ST-DESCRIPTION2
                 GO TO RS-999.
            IF WS-STOCK-ST1 NOT = 0
-                GO TO RS-000.
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RS-010.
        RS-999.
            EXIT.
       *
@@ -395,7 +413,15 @@
              PERFORM START-ORDER.
              IF WS-OUTORD-ST1 = 88
                  GO TO R-ST-NX-999.
-             GO TO R-ST-NX-005.
+
+            MOVE "ST-ORDERS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-OUTORD-ST1
+                 GO TO R-ST-NX-005.
        R-ST-NX-999.
              EXIT.
       *
@@ -420,7 +446,14 @@
              PERFORM START-ORDER.
              IF WS-OUTORD-ST1 = 88
                  GO TO RPREV-999.
-             GO TO RPREV-005.
+            MOVE "ST-ORDERS BUSY ON READ-PREV, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-OUTORD-ST1
+                 GO TO RPREV-005.
        RPREV-999.
              EXIT.
       *
@@ -460,8 +493,14 @@
                MOVE 0 TO WS-OUTORD-ST1
                GO TO PRR-900.
             IF WS-OUTORD-ST1 NOT = 0
-               MOVE 0 TO WS-OUTORD-ST1
-               GO TO PRR-002.
+            MOVE "ST-ORDERS BUSY ON READ-NEXT-PRN, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-OUTORD-ST1
+                 GO TO PRR-002.
            IF OO-QUANTITY NOT > 0
                GO TO PRR-002.
             IF OO-ORDER-NUMBER < WS-ORDER-NUMBER
@@ -632,10 +671,13 @@
             IF PA-TYPE > 3
                 GO TO RDELIV-900.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RDELIV-010.
             IF PARAMETER-REC = "           "
                GO TO RDELIV-010.           

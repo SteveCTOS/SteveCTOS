@@ -19,7 +19,6 @@
        77  WS-STPRICENUMBER   PIC X(15) VALUE " ".
        01  WS-STNWPR-STATUS.
            03  WS-STNWPR-ST1   PIC 99.
-      *     03  WS-STNWPR-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -216,9 +215,15 @@
             IF NEW-STPRICENO = "Y"
                GO TO DSR-999.
        DSR-010.
-            DELETE StNwPr-Master
-               INVALID KEY NEXT SENTENCE.
-            IF WS-STNWPR-ST1 NOT = 0
+           DELETE STNWPR-MASTER
+              INVALID KEY NEXT SENTENCE.
+           IF WS-STNWPR-ST1 NOT = 0
+               MOVE "STPRICE FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                GO TO DSR-010. 
        DSR-999.
@@ -226,7 +231,7 @@
       *
        RELEASE-STNWPR-RECORD SECTION.
        REL-000.
-           UNLOCK StNwPr-Master.
+           UNLOCK STNWPR-MASTER.
        REL-999.
            EXIT.
       *
@@ -237,31 +242,37 @@
           REWRITE STNWPR-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STNWPR-ST1 NOT = 0
-              MOVE 0 TO WS-STNWPR-ST1
               MOVE "STPRICE RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-010.
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STNWPR-ST1
+               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STNWPR-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STNWPR-ST1 NOT = 0
-              MOVE 0 TO WS-STNWPR-ST1
               MOVE "STPRICE RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-020.
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STNWPR-ST1
+               GO TO RSR-020.
        RSR-999.
           EXIT.
       *
        READ-STPRICE SECTION.
        R-STNWPR-000.
              MOVE STNWPR-STOCKNUMBER TO WS-STPRICENUMBER.
-             START StNwPr-Master KEY NOT < StNwPr-Key
+             START STNWPR-MASTER KEY NOT < STNWPR-KEY
                   INVALID KEY NEXT SENTENCE.
        R-STNWPR-010.
-             READ StNwPr-Master WITH LOCK
+             READ STNWPR-MASTER WITH LOCK
                  INVALID KEY NEXT SENTENCE.
              IF WS-STNWPR-ST1 = 23 OR 35 OR 49
                 PERFORM CLEAR-FORM
@@ -269,20 +280,25 @@
                 MOVE WS-STPRICENUMBER TO STNWPR-STOCKNUMBER
                 GO TO R-STNWPR-999.
              IF WS-STNWPR-ST1 NOT = 0
-                MOVE 0 TO WS-STNWPR-ST1
-                MOVE "STPRICE RECORD BUSY, BE PATIENT!" TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-STNWPR-010.
+               MOVE "STPRICE RECORD BUSY ON READ, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STNWPR-ST1
+               GO TO R-STNWPR-010.
        R-STNWPR-999.
              EXIT.
       *
        START-STPRICE SECTION.
        STNWPR-STNWPR-000.
               MOVE WS-STPRICENUMBER TO STNWPR-STOCKNUMBER.
-              START StNwPr-Master KEY NOT < STNWPR-STOCKNUMBER.
+              START STNWPR-MASTER KEY NOT < STNWPR-STOCKNUMBER.
              IF WS-STNWPR-ST1 = 10
                MOVE 88 TO WS-STNWPR-ST1
-               MOVE "THERE ARE NO RECORDS IN THIS FILE, CANCEL TO EXIT."
+               MOVE 
+            "THERE ARE NO PRICE RECORDS IN THIS FILE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
        STNWPR-STNWPR-999.
@@ -302,13 +318,22 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-STNWPR-ST1 = 23 OR 35 or 49 OR 51
+           IF WS-STNWPR-ST1 = 23 OR 35 OR 49
+               MOVE "STPRICE FILE BUSY ON READ-NEXT-23, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
+               GO TO RSN-999.
+           IF WS-STNWPR-ST1 NOT = 0
                MOVE "STPRICE FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
-           IF WS-STNWPR-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                PERFORM START-STPRICE
                GO TO RSN-005.
@@ -331,13 +356,19 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RPREV-999.
-           IF WS-STNWPR-ST1 = 23 OR 35 or 49 OR 51
+           IF WS-STNWPR-ST1 = 23 OR 35 OR 49
                MOVE 0 TO WS-STNWPR-ST1
-               MOVE "STPRICE FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               MOVE "STPRICE FILE BUSY ON READ-PREV-23, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RPREV-005.
+               GO TO RPREV-999.
            IF WS-STNWPR-ST1 NOT = 0
+               MOVE "STPRICE FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STNWPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                PERFORM START-STPRICE
                GO TO RPREV-005.
@@ -364,9 +395,10 @@
             IF WS-STNWPR-ST1 NOT = 0
                MOVE "NEW PRICE FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STNWPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                GO TO OPEN-000.
             GO TO OPEN-010.
@@ -375,9 +407,10 @@
             IF WS-STNWPR-ST1 NOT = 0
                MOVE "NEW PRICE FILE BUSY ON OPEN OUPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STNWPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STNWPR-ST1
                GO TO OPEN-001.
        OPEN-010.
@@ -415,4 +448,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

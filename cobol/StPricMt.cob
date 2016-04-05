@@ -33,40 +33,36 @@
            COPY ChlfdDaily.
       *
        WORKING-STORAGE SECTION.
-           77  WS-EOF            PIC X(3) VALUE "   ".
-           77  WS-ACCEPT         PIC X(10).
-           77  WS-TEMP           PIC X.
-           77  WS-DEL-DELAY      PIC 99.
-           77  WS-ONHAND         PIC 9(6).
-           77  WS-AVECOST        PIC 9(6)V99.
-           77  WS-RANGE1         PIC X(15) VALUE " ".
-           77  WS-RANGE2         PIC X(15) VALUE " ".
-           77  WS-UP-DESC        PIC X VALUE "N".
-           77  WS-UP-COST        PIC X VALUE "Y".
-           77  WS-IMP-UPDATE     PIC X VALUE " ".
+           77  WS-EOF             PIC X(3) VALUE "   ".
+           77  WS-ACCEPT          PIC X(10).
+           77  WS-TEMP            PIC X.
+           77  WS-DEL-DELAY       PIC 99.
+           77  WS-ONHAND          PIC 9(6).
+           77  WS-AVECOST         PIC 9(6)V99.
+           77  WS-RANGE1          PIC X(15) VALUE " ".
+           77  WS-RANGE2          PIC X(15) VALUE " ".
+           77  WS-UP-DESC         PIC X VALUE "N".
+           77  WS-UP-COST         PIC X VALUE "Y".
+           77  WS-IMP-UPDATE      PIC X VALUE " ".
            77  WS-USE-LOOKUP-DATA PIC X VALUE " ".
-           77  WS-FOR-LOC        PIC X VALUE " ".
+           77  WS-FOR-LOC         PIC X VALUE " ".
            01  WS-DESC.
-               03  WS-DESC1    PIC X(20) VALUE " ".
-               03  WS-DESC2    PIC X(20) VALUE " ".
+               03  WS-DESC1       PIC X(20) VALUE " ".
+               03  WS-DESC2       PIC X(20) VALUE " ".
            01  WS-STOCK-PREFIX.
-               03  WS-SP1      PIC X(4) VALUE " ".
-               03  WS-SP2      PIC X(11) VALUE " ".
+               03  WS-SP1         PIC X(4) VALUE " ".
+               03  WS-SP2         PIC X(11) VALUE " ".
            01  WS-STOCK-CHECKING.
-               03  WS-SC1      PIC X(3) VALUE " ".
-               03  WS-SC2      PIC X(12) VALUE " ".
+               03  WS-SC1         PIC X(3) VALUE " ".
+               03  WS-SC2         PIC X(12) VALUE " ".
            01  WS-STOCK-STATUS.
-               03  WS-STOCK-ST1  PIC X.
-               03  WS-STOCK-ST2  PIC 99 COMP-X.
+               03  WS-STOCK-ST1   PIC 99.
            01  WS-LOOK-STATUS.
-               03  WS-LOOK-ST1  PIC X.
-               03  WS-LOOK-ST2  PIC 99 COMP-X.
+               03  WS-LOOK-ST1    PIC 99.
            01  WS-PRICE-STATUS.
-               03  WS-PRICE-ST1  PIC X.
-               03  WS-PRICE-ST2  PIC 99 COMP-X.
+               03  WS-PRICE-ST1   PIC 99.
            01  WS-DAILY-STATUS.
-               03  WS-DAILY-ST1  PIC X.
-               03  WS-DAILY-ST2  PIC 99 COMP-X.
+               03  WS-DAILY-ST1   PIC 99.
                
        Copy "WsDateInfo".
        Copy "FormsInfo".
@@ -149,7 +145,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 3 OR 4
               EXIT PROGRAM.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -193,7 +188,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-IMP-UPDATE.
 
-      *     ACCEPT WS-IMP-UPDATE AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-010.
            IF WS-IMP-UPDATE NOT = "I" AND NOT = "U" AND NOT = "B"
@@ -222,7 +216,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-UP-DESC
            
-      *     ACCEPT WS-UP-DESC AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-012.
            IF WS-UP-DESC NOT = "N" AND NOT = "Y"
@@ -247,7 +240,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FOR-LOC.
 
-      *     ACCEPT WS-FOR-LOC AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-015.
            IF WS-FOR-LOC NOT = "F" AND NOT = "L"
@@ -274,7 +266,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-UP-COST.
 
-      *     ACCEPT WS-UP-COST AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-020.
            IF WS-UP-COST NOT = "N" AND NOT = "Y"
@@ -300,7 +291,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-USE-LOOKUP-DATA.
 
-      *     ACCEPT WS-USE-LOOKUP-DATA AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-025.
            IF WS-USE-LOOKUP-DATA NOT = "N" AND NOT = "Y"
@@ -373,13 +363,12 @@
       *           PERFORM ERROR1-020
                  GO TO ID-005.
            IF WS-PRICE-ST1 NOT = 0
-      *           MOVE "INVALID WRITE OF PRICE UPDATE" TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-      *           MOVE WS-PRICE-ST1 TO WS-MESSAGE
-      *           PERFORM ERROR1-000
-      *           MOVE WS-PRICE-ST2 TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-      *           PERFORM ERROR1-020
+                 MOVE "INVALID WRITE OF PRICE UPDATE, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRICE-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  GO TO ID-020.
            GO TO ID-005.
        ID-999.
@@ -543,37 +532,39 @@
            DISPLAY STOCK-IMP-ST-NUM AT POS.
        ILUP-020.
            WRITE STLOOK-RECORD.
-           IF WS-STOCK-ST1 = 23 OR 35 OR 49
+           IF WS-LOOK-ST1 = 23 OR 35 OR 49
                  MOVE "INVALID WRITE, STOCK LOOKUP, ITEM EXISTS."
                   TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
                  PERFORM ERROR1-000
+                 MOVE WS-LOOK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ILUP-025.
-           IF WS-STOCK-ST1 NOT = 0
-                 MOVE "INVALID WRITE OF STOCK LOOKUP." TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+           IF WS-LOOK-ST1 NOT = 0
+                 MOVE "INVALID WRITE OF STOCK LOOKUP, 'ESC' TO RETRY." 
+                 TO WS-MESSAGE
                  PERFORM ERROR1-000
+                 MOVE WS-LOOK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ILUP-020.
            GO TO ILUP-005.
        ILUP-025.
            REWRITE STLOOK-RECORD.
-           IF WS-STOCK-ST1 = 23 OR 35 OR 49
-                 MOVE "INVALID REWRITE OF STOCK LOOKUP, ITEM EXISTS."
+           IF WS-LOOK-ST1 = 23 OR 35 OR 49
+                 MOVE "INVALID REWRITE OF STOCK LOOKUP, ITEM NOT THERE."
                   TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
                  PERFORM ERROR1-000
+                 MOVE WS-LOOK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ILUP-020.
-           IF WS-STOCK-ST1 NOT = 0
-                 MOVE "INVALID WRITE OF STOCK LOOKUP." TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+           IF WS-LOOK-ST1 NOT = 0
+                 MOVE "INVALID WRITE OF STOCK LOOKUP, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
                  PERFORM ERROR1-000
+                 MOVE WS-LOOK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ILUP-025.
            GO TO ILUP-005.
@@ -622,11 +613,16 @@
            IF WS-STOCK-ST1 = 10
               GO TO WRITE-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "Stock Files Busy on Read, Press 'CANCEL' To Retry"
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO WRITE-005.
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO WRITE-005.
            IF ST-STOCKNUMBER < WS-RANGE1
               GO TO WRITE-005.
            IF ST-STOCKNUMBER > WS-RANGE2
@@ -649,28 +645,34 @@
        WRITE-015.
            READ STLOOK-MASTER
               INVALID KEY NEXT SENTENCE.
-           IF WS-STOCK-ST1 = 23 OR 35 OR 49
+           IF WS-LOOK-ST1 = 23 OR 35 OR 49
               GO TO WRITE-020.
-           IF WS-STOCK-ST1 = 0
+           IF WS-LOOK-ST1 = 0
               GO TO WRITE-050.
-           IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "Stock LOOKUP Busy on Read, 'CANCEL' To Retry."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO WRITE-015.
+           IF WS-LOOK-ST1 NOT = 0
+               MOVE "LOOKUP FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-LOOK-ST1
+               GO TO WRITE-015.
        WRITE-020.
            MOVE ST-STOCKNUMBER   TO STLOOK-STOCKNUMBER
            MOVE " "              TO STLOOK-SUPPLIERNUMBER.
            WRITE STLOOK-RECORD
                INVALID KEY NEXT SENTENCE.
-           IF WS-STOCK-ST1 = 23 OR 35 OR 49
+           IF WS-LOOK-ST1 = 23 OR 35 OR 49
                GO TO WRITE-050.
-           IF WS-STOCK-ST1 NOT = 0
-               MOVE "WRITING OF NEW LOOKUP LIST IN ERROR." TO WS-MESSAGE
+           IF WS-LOOK-ST1 NOT = 0
+               MOVE 
+               "WRITING OF NEW LOOKUP LIST IN ERROR, 'ESC' TO RETRY."
+               TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO WRITE-020.
        WRITE-050.
            GO TO WRITE-005.
@@ -684,35 +686,26 @@
            START STLOOK-MASTER KEY NOT < STLOOK-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-LOOK-ST1 NOT = 0
-      *          MOVE
-      *     "ST-LOOKUP RECORD NOT THERE ON START, SKIPPING FILE."
-      *          TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
                 MOVE "UNKNOWN" TO PRICE-KEY
                 GO TO RLF-999.
        RLF-010.
            READ STLOOK-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-LOOK-ST1 = 23 OR 35 OR 49
-      *          MOVE
-      *     "ST-LOOKUP RECORD NOT THERE ON READ, SKIPPING FILE."
-      *          TO WS-MESSAGE
-      *          PERFORM ERROR1-000
-      *          MOVE STLOOK-SUPPLIERNUMBER TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-      *          PERFORM ERROR1-020
                 MOVE "UNKNOWN" TO PRICE-KEY
                 GO TO RLF-999.
            IF WS-LOOK-ST1 NOT = 0
-              MOVE 0 TO WS-LOOK-ST1
-              MOVE "StLOOKUP File Busy on Read, 'ESC' To Retry"
+              MOVE "STLOOKUP FILE BUSY ON READ, 'ESC' TO RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RLF-010.
+               PERFORM ERROR1-000
+               MOVE WS-LOOK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-LOOK-ST1
+               GO TO RLF-010.
                  
            MOVE 2560 TO POS
            DISPLAY STLOOK-SUPPLIERNUMBER AT POS.
-      *     CALL "&LOCKKBD" USING F-FIELDNAME.
 
            IF STLOOK-SUPPLIERNUMBER = SPACES
                MOVE "UNKNOWN"             TO PRICE-KEY
@@ -726,36 +719,26 @@
            START PRICE-MASTER KEY NOT < PRICE-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-PRICE-ST1 NOT = 0
-      *          MOVE
-      *    "ST-PRICE RECORD NOT THERE ON START, SKIPPING FILE."
-      *          TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
                 MOVE "UNKNOWN" TO PRICE-KEY
                 GO TO RPM-999.
        RPM-010.
            READ PRICE-MASTER
                INVALID KEY NEXT SENTENCE.
            IF WS-PRICE-ST1 = 23 OR 35 OR 49
-      *          MOVE
-      *     "ST-PRICE RECORD NOT THERE ON READ, SKIPPING FILE."
-      *          TO WS-MESSAGE
-      *          PERFORM ERROR1-000
-      *          MOVE PRICE-KEY TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-      *          PERFORM ERROR1-020
                 MOVE "UNKNOWN" TO PRICE-KEY
                 GO TO RPM-999.
            IF WS-PRICE-ST1 NOT = 0
-              MOVE 0 TO WS-PRICE-ST1
-              MOVE "STLOOK FILE BUSY ON READ, 'ESC' TO RETRY"
+              MOVE "ST-PRICE FILE BUSY ON READ, 'ESC' TO RETRY"
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RPM-010.
+               PERFORM ERROR1-000
+               MOVE WS-PRICE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PRICE-ST1
+               GO TO RPM-010.
                  
            MOVE 2660 TO POS
            DISPLAY PRICE-KEY AT POS.
-      *     CALL "&LOCKKBD" USING F-FIELDNAME.
-
        RPM-999.
            EXIT.
       *
@@ -777,7 +760,7 @@
                    GO TO END-900.
            START STOCK-MASTER KEY NOT < ST-KEY
                  INVALID KEY
-                   MOVE "NO RECORDS ON ST FILE " TO WS-MESSAGE
+                   MOVE "NO RECORDS ON STOCK FILE " TO WS-MESSAGE
                    PERFORM ERROR-MESSAGE
                    GO TO END-900.
         UP-005.
@@ -885,9 +868,10 @@
            IF WS-STOCK-ST1 NOT = 0
              MOVE  "STOCK BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-000
              MOVE WS-STOCK-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
              GO TO OPEN-000.
        OPEN-003.
            IF WS-IMP-UPDATE = "U"
@@ -896,28 +880,32 @@
            IF WS-STOCK-ST1 NOT = 0
              MOVE "ERROR ON OPENING IMPORT FILE - /spl/PriceSequ."
               TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-000
              MOVE WS-STOCK-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
              GO TO OPEN-003.
        OPEN-005.
            OPEN I-O PRICE-MASTER.
            IF WS-PRICE-ST1 NOT = 0
              MOVE "ERROR ON OPENING PRICE LIST - /spl/Prices."
               TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-000
              MOVE WS-STOCK-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
              GO TO OPEN-005.
        OPEN-010.
            OPEN I-O STLOOK-MASTER.
            IF WS-STOCK-ST1 NOT = 0
              MOVE "ERROR ON OPENING EXCEL FILE - /data01/StockLookup."
               TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-STOCK-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
              MOVE WS-STOCKLOOKUP TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE WS-STOCK-ST1 TO WS-MESSAGE
-             PERFORM ERROR1-000
+             PERFORM ERROR1-020
              GO TO OPEN-010.
        OPEN-015.
            IF WS-IMP-UPDATE NOT = "S"
@@ -926,9 +914,10 @@
            IF WS-STOCK-ST1 NOT = 0
              MOVE "ERROR ON OPENING EXCEL FILE - /spl/StockSequ."
               TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             MOVE WS-STOCK-ST1 TO WS-MESSAGE
              PERFORM ERROR1-000
+             MOVE WS-STOCK-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
              GO TO OPEN-015.
        OPEN-020.
            PERFORM GET-SYSTEM-Y2K-DATE.

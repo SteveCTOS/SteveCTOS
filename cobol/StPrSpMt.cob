@@ -21,11 +21,9 @@
        77  WS-END               PIC X VALUE " ".      
        77  WS-STPRICENUMBER     PIC X(15) VALUE " ".
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1   PIC 99.
-      *     03  WS-STPR-ST2   PIC X.
+           03  WS-STPR-ST1      PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -51,6 +49,7 @@
       *                  WS-STPRICENUMBER.
             MOVE "N" TO NEW-STPRICENO
                         WS-END.
+            PERFORM ERROR-020.
        GET-001.              
             MOVE "STOCKNUMBER" TO F-FIELDNAME.
             MOVE 11 TO F-CBFIELDNAME.
@@ -272,6 +271,12 @@
             DELETE STPR-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-STPR-ST1 NOT = 0
+              MOVE "STPRICE RECORD BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STPR-ST1
                GO TO DSR-010. 
        DSR-999.
@@ -290,20 +295,26 @@
           REWRITE STPR-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               MOVE "STPRICE RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO RSR-010.
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
+               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE STPR-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               MOVE "STPRICE RECORD BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
               GO TO RSR-020.
        RSR-999.
           EXIT.
@@ -323,11 +334,14 @@
                 PERFORM START-STPRICE
                 GO TO R-STPR-999.
              IF WS-STPR-ST1 NOT = 0
-                MOVE 0 TO WS-STPR-ST1
-                MOVE "STPRICE RECORD BUSY ON READ, 'ESC' TO RETRY."
-                 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-STPR-010.
+               MOVE "STPRICE RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
+               GO TO R-STPR-010.
        R-STPR-999.
              EXIT.
       *
@@ -350,16 +364,22 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
            IF WS-STPR-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-STPR-ST1
-               MOVE "STPRICE FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               MOVE "STPRICE FILE BUSY ON READ-NEXT-23, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
                GO TO RSN-005.
            IF WS-STPR-ST1 NOT = 0
-               MOVE "BAD START, GOING TO RESTART, 'ESC' TO RETRY." 
+               MOVE "STPRICE BUSY ON READ-NEXT, 'ESC' TO RETRY." 
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-STPR-ST1 
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
                MOVE " " TO WS-STPRICENUMBER
                PERFORM START-STPRICE
                GO TO RSN-005.
@@ -380,16 +400,22 @@
                PERFORM ERROR-MESSAGE
                GO TO RSPREV-999.
            IF WS-STPR-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-STPR-ST1
-               MOVE "STPRICE FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               MOVE "STPRICE FILE BUSY ON READ-PREV-23, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
                GO TO RSPREV-005.
            IF WS-STPR-ST1 NOT = 0
-               MOVE "BAD START, GOING TO RESTART, 'ESC' TO RETRY." 
+               MOVE "STPRICE BUSY ON READ-PREV, 'ESC' TO RETRY." 
                 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-STPR-ST1 
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STPR-ST1
                MOVE " " TO WS-STPRICENUMBER
                PERFORM START-STPRICE
                GO TO RSPREV-005.
@@ -410,10 +436,14 @@
                 MOVE "NUMBER ENTERED *****" TO ST-DESCRIPTION2
                 GO TO R-ST-900.
              IF WS-STOCK-ST1 NOT = 0
-                MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RE-TRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-ST-010.
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO R-ST-010.
        R-ST-900.
              PERFORM ERROR-020.
        R-ST-999.
@@ -478,5 +508,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       *
       * END-OF-JOB

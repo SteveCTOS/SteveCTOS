@@ -24,11 +24,9 @@
        77  WS-ORDER-UPDATED     PIC X VALUE " ".
        77  WS-ACCEPT            PIC X VALUE " ".
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1        PIC 99.
-      *     03  WS-OUTORD-ST2        PIC X.
+           03  WS-OUTORD-ST1    PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-STOCK-ST1   PIC 99.
-      *     03  WS-STOCK-ST2   PIC X.
+           03  WS-STOCK-ST1     PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -69,7 +67,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT.
 
-      *     ACCEPT WS-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 3
               PERFORM END-OFF.
            
@@ -93,7 +90,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PO-NUM.
 
-      *      ACCEPT WS-PO-NUM AT POS.
             IF W-ESCAPE-KEY = 3
                 PERFORM END-OFF.
             IF WS-PO-NUM = "                    "
@@ -125,7 +121,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CONFIRM.
 
-      *      ACCEPT WS-CONFIRM AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-000.
             IF WS-CONFIRM NOT = "N" AND NOT = "Y"
@@ -162,7 +157,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DATE-ACCEPT.
 
-      *      ACCEPT WS-DATE-ACCEPT AT POS.
             IF WS-CONFIRM = "D"
              IF WS-DATE-ACCEPT = "DELETE"
               GO TO GET-050
@@ -217,6 +211,14 @@
                MOVE 0 TO WS-OUTORD-ST1
                GO TO PRR-999.
             IF WS-OUTORD-ST1 NOT = 0
+            MOVE "ST-ORDERS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
                MOVE 0 TO WS-OUTORD-ST1
                GO TO PRR-002.
             IF OO-ORDER-NUMBER < WS-PO-NUM
@@ -238,18 +240,31 @@
                MOVE "Y" TO OO-UPDATED.
            IF WS-CONFIRM = "C"
                MOVE "N" TO OO-UPDATED.
+       PRR-011.
            REWRITE OUT-ORDER-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-OUTORD-ST1 NOT = 0
-              MOVE 0 TO WS-OUTORD-ST1
-              GO TO PRR-010.
+               MOVE "ST-ORDER FILE BUSY ON RE-WRITE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO PRR-011.
            GO TO PRR-500.
        PRR-015.
            DELETE OUTSTANDING-ORDERS
               INVALID KEY NEXT SENTENCE.
            IF WS-OUTORD-ST1 NOT = 0
-              MOVE 0 TO WS-OUTORD-ST1
-              GO TO PRR-015.
+               MOVE "ST-ORDER FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO PRR-015.
            PERFORM UPDATE-STOCK.
        PRR-500.
            ADD 1 TO WS-NUM-UPDATED
@@ -281,11 +296,17 @@
                 PERFORM ERROR1-000
                 MOVE OO-STOCK-NUMBER TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
                 MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                MOVE OO-STOCK-NUMBER TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO R-ST-010.
        R-ST-015.
           IF OO-QUANTITY NOT > ST-QTYONORDER
@@ -296,10 +317,14 @@
           REWRITE STOCK-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE OO-STOCK-NUMBER TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
               GO TO R-ST-020.
        R-ST-999.
              EXIT.

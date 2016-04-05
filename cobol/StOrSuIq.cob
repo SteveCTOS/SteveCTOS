@@ -36,16 +36,14 @@
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        77  WS-WRITE             PIC X VALUE " ".
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1    PIC 99.
-           03  WS-OUTORD-ST2    PIC X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-           03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  STORE-DEL.
          02  WS-DEL-OCCUR OCCURS 10.
-           03  WS-DEL-TYPE       PIC X.
-           03  WS-DEL-CODE       PIC X.
-           03  WS-DEL-TERM       PIC X(20).
+           03  WS-DEL-TYPE        PIC X.
+           03  WS-DEL-CODE        PIC X.
+           03  WS-DEL-TERM        PIC X(20).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -203,6 +201,15 @@
                CLOSE OUTSTANDING-ORDERS
                GO TO RDTR-999.
            IF WS-OUTORD-ST1 NOT = 0
+            MOVE "ST-ORDERS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-OUTORD-ST1
                GO TO RDTR-010.
            IF OO-SUPPLIER-NUMBER NOT = WS-SUPPLIER-NUMBER
             IF WS-QUANTITY = 0
@@ -310,7 +317,14 @@
            IF WS-OUTORD-ST1 = 23 OR 35 OR 49
               GO TO PRR-900.
            IF WS-OUTORD-ST1 NOT = 0
-              GO TO PRR-001.
+               MOVE "ST-ORDERS FILE BUSY ON START, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO PRR-001.
        PRR-002.
            READ OUTSTANDING-ORDERS NEXT
                AT END NEXT SENTENCE.
@@ -323,12 +337,15 @@
             ELSE
                GO TO PRR-900.
            IF WS-OUTORD-ST1 NOT = 0
-               MOVE 0 TO WS-OUTORD-ST1
-               MOVE "O/ORDERS BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+            MOVE "ST-ORDERS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-OUTORD-ST1
                GO TO PRR-002.
            IF OO-QUANTITY NOT > 0
                GO TO PRR-002.
@@ -536,10 +553,13 @@
             IF PA-TYPE > 3
                 GO TO RDELIV-900.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RDELIV-010.
             IF PARAMETER-REC = "           "
                GO TO RDELIV-010.           
@@ -560,11 +580,14 @@
        OPEN-005.
            OPEN I-O OUTSTANDING-ORDERS.
            IF WS-OUTORD-ST1 NOT = 0
-              MOVE " " TO WS-OUTORD-ST1
               MOVE "ORDERS FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-              PERFORM ERROR-000
-              GO TO OPEN-005.
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO OPEN-005.
        OPEN-106.
            MOVE Ws-Co-Name TO CO-NAME.
            PERFORM GET-SYSTEM-Y2K-DATE.

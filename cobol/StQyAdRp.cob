@@ -260,13 +260,23 @@
               PERFORM PRR-025
               GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK RECORD BUSY ON READ:" TO WS-MESSAGE
-              PERFORM ERROR-000
-              MOVE 2840 TO POS
-              DISPLAY ST-STOCKNUMBER AT POS
-              GO TO PRR-005.
-           IF ST-STOCKNUMBER < WS-ANSWER1
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO PRR-005.
+ 
+           MOVE 2510 TO POS
+           DISPLAY "STOCKNUMBER BEING READ:" AT POS
+           ADD 25 TO POS
+           DISPLAY ST-STOCKNUMBER AT POS.
+
+          IF ST-STOCKNUMBER < WS-ANSWER1
               GO TO PRR-005.
            IF ST-STOCKNUMBER > WS-ANSWER2
               PERFORM PRR-025

@@ -47,18 +47,15 @@
            03  WSDE-REST        PIC X(19) VALUE " ".
        01  STORE-DEL.
          02  WS-DEL-OCCUR OCCURS 10.
-           03  WS-DEL-TYPE       PIC X.
-           03  WS-DEL-CODE       PIC X.
-           03  WS-DEL-TERM       PIC X(20).
+           03  WS-DEL-TYPE        PIC X.
+           03  WS-DEL-CODE        PIC X.
+           03  WS-DEL-TERM        PIC X(20).
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1        PIC 99.
-      *     03  WS-ST-ST2        PIC X.
+           03  WS-STOCK-ST1       PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1        PIC 99.
-      *     03  WS-SLPARAMETER-ST2        PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-OUTORD-STATUS.
-           03  WS-OO-ST1        PIC 99.
-      *     03  WS-OO-ST2        PIC X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -292,13 +289,19 @@
        PRR-002.
             READ OUTSTANDING-ORDERS NEXT WITH LOCK
                AT END NEXT SENTENCE.
-            IF WS-OO-ST1 = 10
+            IF WS-OUTORD-ST1 = 10
                PERFORM TOTALS
                GO TO PRR-999.
-            IF WS-OO-ST1 NOT = 0
-               MOVE "ORDERS FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+            IF WS-OUTORD-ST1 NOT = 0
+            MOVE "ST-ORDERS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-OUTORD-ST1
                GO TO PRR-002.
             IF OO-STOCK-NUMBER < WS-RANGE1
                GO TO PRR-002.
@@ -330,17 +333,17 @@
             START STOCK-MASTER KEY NOT < ST-KEY.
             READ STOCK-MASTER
                INVALID KEY NEXT SENTENCE. 
-            IF WS-ST-ST1 = 10
-               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-ST-ST1
-               GO TO PRR-006.
-            IF WS-ST-ST1 = 23 OR 35 OR 49
+            IF WS-STOCK-ST1 = 23 OR 35 OR 49
                MOVE " " TO D-REST
                GO TO PRR-010.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO PRR-006.
        PRR-010.
             IF WS-CAT = "   "
@@ -391,7 +394,7 @@
               MOVE DISPLAY-DATE       TO  D-DUEDATE
            ELSE
               MOVE " "                TO  D-DUEDATE.
-           IF WS-ST-ST1 = 23 OR 35 OR 49
+           IF WS-STOCK-ST1 = 23 OR 35 OR 49
              MOVE "*** STOCK NUMBER NOT ON STOCK RECORD ***" TO D-REST
              GO TO PRR-025.
            MOVE WS-DELIVERVIA      TO D-DELIVERY.
@@ -460,10 +463,13 @@
             IF PA-TYPE > 3
                 GO TO RDELIV-999.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "SLPARAMETER DELV BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RDELIV-010.
             IF PARAMETER-REC = "           "
                GO TO RDELIV-010.           
@@ -478,19 +484,19 @@
        OPEN-FILES SECTION.
        OPEN-002.
            OPEN I-O STOCK-MASTER.
-            IF WS-ST-ST1 NOT = 0
+            IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCKMASTER BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-ST-ST1
+               MOVE 0 TO WS-STOCK-ST1
                GO TO OPEN-002.
        OPEN-003.
            OPEN I-O OUTSTANDING-ORDERS.
-            IF WS-OO-ST1 NOT = 0
+            IF WS-OUTORD-ST1 NOT = 0
                MOVE "SORDERS BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-OO-ST1
+               MOVE 0 TO WS-OUTORD-ST1
                GO TO OPEN-003.
        OPEN-010.
            OPEN I-O PARAMETER-FILE

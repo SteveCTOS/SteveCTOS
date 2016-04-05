@@ -38,10 +38,8 @@
        77  WS-FACTOR-DIS        PIC Z(2)9.999.
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
-      *     03  WS-STOCK-ST2     PIC X.
        01  WS-STPR-STATUS.
-           03  WS-STPR-ST1     PIC 99.
-      *     03  WS-STPR-ST2     PIC X.
+           03  WS-STPR-ST1      PIC 99.
        01  SPLIT-STOCK.
            03  SP-1ST3          PIC X(3).
            03  SP-REST          PIC X(12).
@@ -290,11 +288,16 @@
            IF WS-STOCK-ST1 = 10
                GO TO PRR-999.
            IF WS-STOCK-ST1 NOT = 0
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK BUSY ON READ, 'ESC' TO RE-TRY."
-                TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-005.
+             MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO PRR-005.
            IF ST-STOCKNUMBER < WS-ANSWER1
               GO TO PRR-005.
            IF ST-STOCKNUMBER > WS-ANSWER2
@@ -387,10 +390,12 @@
            IF WS-STPR-ST1 = 22 OR 23 OR 35 OR 49
                GO TO WSPL-030.
            IF WS-STPR-ST1 NOT = 0
-               MOVE "WRITING OF NEW PRICE LIST IN ERROR" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               MOVE "WRITING OF NEW PRICE LIST IN ERROR, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STPR-ST1
                GO TO WSPL-030.
            GO TO WSPL-999.
@@ -400,12 +405,14 @@
            IF WS-STPR-ST1 = 23 OR 35 OR 49
                GO TO WSPL-999.
            IF WS-STPR-ST1 NOT = 0
-               MOVE "REWRITING OF NEW PRICE LIST IN ERROR" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+            MOVE "REWRITING OF NEW PRICE LIST IN ERROR, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-STPR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STPR-ST1
-               GO TO WSPL-020..
+               GO TO WSPL-020.
        WSPL-999.
            EXIT.
       *
@@ -420,11 +427,16 @@
            IF WS-STPR-ST1 = 10
                GO TO SPR-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
-              MOVE "ST-PRICES BUSY ON READ, 'ESC' TO RE-TRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO SPR-005.
+             MOVE "ST-PRICE BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STPR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-STPR-ST1
+               GO TO SPR-005.
            IF STPR-STOCKNUMBER < WS-ANSWER1
               GO TO SPR-005.
            IF STPR-STOCKNUMBER > WS-ANSWER2
@@ -523,9 +535,9 @@
            IF WS-STPR-ST1 NOT = 0
               MOVE "ST-PRICES BUSY ON READ AT DELETE, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STPR-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-STPR-ST1
               GO TO DSP-005.
        DSP-105.
@@ -534,10 +546,12 @@
            IF WS-STPR-ST1 = 23 OR 35 OR 49
                GO TO DSP-999.
            IF WS-STPR-ST1 NOT = 0
-              MOVE 0 TO WS-STPR-ST1
               MOVE "ST-PRICES BUSY ON DELETE, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
               GO TO DSP-105.
        DSP-999.
            EXIT.
@@ -556,6 +570,11 @@
                MOVE 0 TO STPR-PRICE ST-QTYONHAND
                GO TO RS-999.
            IF WS-STOCK-ST1 NOT = 0
+              MOVE "STOCK BUSY ON READ, 'ESC' TO RE-TRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-STOCK-ST1
               GO TO RS-005.
        RS-999.

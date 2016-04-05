@@ -24,14 +24,12 @@
        77  WS-NUM-SAVE        PIC X(20) VALUE " ".
        77  WS-QTYSAVE         PIC S9(5) VALUE 0.
        01  WS-STDESC.
-           03  WS-DESC1          PIC X(20) VALUE " ".
-           03  WS-DESC2          PIC X(20) VALUE " ".
+           03  WS-DESC1       PIC X(20) VALUE " ".
+           03  WS-DESC2       PIC X(20) VALUE " ".
        01  WS-OUTORD-STATUS.
-           03  WS-OUTORD-ST1   PIC 99.
-      *     03  WS-OUTORD-ST2   PIC X.
+           03  WS-OUTORD-ST1  PIC 99.
        01  WS-STOCK-STATUS.
-           03  WS-ST-ST1   PIC 99.
-      *     03  WS-ST-ST2   PIC X.
+           03  WS-STOCK-ST1   PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -769,8 +767,14 @@
             DELETE OUTSTANDING-ORDERS
                INVALID KEY NEXT SENTENCE.
             IF WS-OUTORD-ST1 NOT = 0
-               MOVE 0 TO WS-OUTORD-ST1
-               GO TO DO-010.
+                MOVE "ORDERS RECORD BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-OUTORD-ST1
+                GO TO DO-010.
        DO-999.
            EXIT.
       *
@@ -781,20 +785,26 @@
             REWRITE OUT-ORDER-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-OUTORD-ST1 NOT = 0
-                MOVE 0 TO WS-OUTORD-ST1
                 MOVE "ORDERS RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-OUTORD-ST1
                 GO TO ROR-010.
             GO TO ROR-900.
        ROR-020.
             WRITE OUT-ORDER-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-OUTORD-ST1 NOT = 0
-                MOVE 0 TO WS-OUTORD-ST1
                 MOVE "ORDERS RECORD BUSY ON WRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-OUTORD-ST1
                 GO TO ROR-020.
        ROR-900.
             PERFORM REWRITE-STOCK.
@@ -819,7 +829,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY NOT = 0 AND NOT = 1 AND NOT = 2 AND NOT = 7
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO RWST-002.
@@ -835,7 +844,7 @@
        RWST-010.
            REWRITE STOCK-RECORD
                 INVALID KEY NEXT SENTENCE.
-           IF WS-ST-ST1 NOT = 0
+           IF WS-STOCK-ST1 NOT = 0
                 MOVE 0 TO WS-OUTORD-ST1
                 MOVE "STOCK RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
                 TO WS-MESSAGE
@@ -863,10 +872,13 @@
                 MOVE "Y" TO NEW-ORDER
                 GO TO RO-999.
            IF WS-OUTORD-ST1 NOT = 0
-                MOVE 0 TO WS-OUTORD-ST1
                 MOVE "ORDERS RECORD BUSY ON READ, 'ESC' TO RETRY."
                   TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-OUTORD-ST1
                 GO TO RO-010.
            MOVE "N" TO NEW-ORDER.
            MOVE OO-ORDER-NUMBER TO WS-NUM-SAVE.
@@ -881,15 +893,18 @@
        RS-010.
            READ STOCK-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
-           IF WS-ST-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-ST-ST1
+           IF WS-STOCK-ST1 = 23 OR 35 OR 49
+                MOVE 0 TO WS-STOCK-ST1
                             ST-DESCRIPTION1
                 GO TO RS-999.
-           IF WS-ST-ST1 NOT = 0
-                MOVE 0 TO WS-ST-ST1
-                MOVE "STOCK RECORD BUSY ON READ, 'ESC' TO RETRY."
+           IF WS-STOCK-ST1 NOT = 0
+                MOVE "STOCK RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-STOCK-ST1
                 GO TO RS-010.
        RS-999.
            EXIT.
@@ -930,9 +945,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-OUTORD-ST1 NOT = 0
-               MOVE 0 TO WS-OUTORD-ST1
-               PERFORM START-ORDER
-               GO TO RONX-005.
+                MOVE "ORDERS RECORD BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                  TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-OUTORD-ST1
+                PERFORM START-ORDER
+                GO TO RONX-005.
            MOVE OO-ORDER-NUMBER TO WS-ORDERNUMBER
                                    WS-NUM-SAVE.
            MOVE OO-STOCK-NUMBER TO WS-STOCKNUMBER.
@@ -964,6 +985,12 @@
               PERFORM ERROR-MESSAGE
               GO TO RPREV-999.
            IF WS-OUTORD-ST1 NOT = 0
+               MOVE "ORDERS RECORD BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-OUTORD-ST1
                PERFORM START-ORDER
                GO TO RPREV-005.
@@ -985,8 +1012,8 @@
                GO TO OPEN-000.
        OPEN-005.
             OPEN I-O STOCK-MASTER.
-            IF WS-ST-ST1 NOT = 0
-               MOVE 0 TO WS-ST-ST1
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK MASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -1034,6 +1061,7 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       *
       * END-OF-JOB

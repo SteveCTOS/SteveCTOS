@@ -39,16 +39,14 @@
        77  WS-ACCEPT-DATE       PIC X(10) VALUE " ".
        77  WS-VALIDDATE         PIC 9(8) VALUE 0.
        01  WS-OUTORD-STATUS.
-           03  WS-OO-ST1    PIC 99.
-      *     03  WS-OO-ST2    PIC 9(2) COMP-X.
+           03  WS-OUTORD-ST1      PIC 99.
        01  WS-SLPARAMETER-STATUS.
-           03  WS-SLPARAMETER-ST1     PIC 99.
-      *     03  WS-SLPARAMETER-ST2     PIC X.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  STORE-DEL.
          02  WS-DEL-OCCUR OCCURS 10.
-           03  WS-DEL-TYPE       PIC X.
-           03  WS-DEL-CODE       PIC X.
-           03  WS-DEL-TERM       PIC X(20).
+           03  WS-DEL-TYPE        PIC X.
+           03  WS-DEL-CODE        PIC X.
+           03  WS-DEL-TERM        PIC X(20).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -271,22 +269,26 @@
            MOVE 66              TO LINE-CNT.
            START OUTSTANDING-ORDERS KEY NOT < OO-KEY
               INVALID KEY NEXT SENTENCE.
-           IF WS-OO-ST1 = 23 OR 35 OR 49
+           IF WS-OUTORD-ST1 = 23 OR 35 OR 49
               MOVE "BAD START ON S-ORDERS ERC 23/35/49, 'ESC' TO EXIT."
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO PRR-900.
-           IF WS-OO-ST1 NOT = 0
-              MOVE "BAD START ON S-ORDERS, 'ESC' TO RETRY."
+           IF WS-OUTORD-ST1 NOT = 0
+              MOVE "BAD START ON ST-ORDERS, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO PRR-001.
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO PRR-001.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
        PRR-002.
            READ OUTSTANDING-ORDERS NEXT
                AT END NEXT SENTENCE.
-           IF WS-OO-ST1 = 10 OR = 91
+           IF WS-OUTORD-ST1 = 10 OR = 91
             IF WS-QUANTITY NOT = 0
                MOVE WS-QUANTITY TO D-QTY
                PERFORM PRR-025
@@ -294,12 +296,16 @@
             ELSE
                GO TO PRR-900.
                
-           IF WS-OO-ST1 NOT = 0
-             MOVE "ST-ORDERS FILE BUSY ON READ, 'ESC' TO SEE STATUS"
-              TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-OO-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+           IF WS-OUTORD-ST1 NOT = 0
+            MOVE "ST-ORDERS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-OUTORD-ST1
                GO TO PRR-002.
                
            MOVE 2310 TO POS
@@ -449,10 +455,13 @@
             IF PA-TYPE > 3
                 GO TO RDELIV-900.
             IF WS-SLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-SLPARAMETER-ST1
                MOVE "PARAMETER DELV BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
                GO TO RDELIV-010.
             IF PARAMETER-REC = "           "
                GO TO RDELIV-010.           
@@ -470,12 +479,15 @@
        OPEN-FILES SECTION.
        OPEN-005.
            OPEN I-O OUTSTANDING-ORDERS.
-           IF WS-OO-ST1 NOT = 0
-              MOVE 0 TO WS-OO-ST1
+           IF WS-OUTORD-ST1 NOT = 0
               MOVE "ST-ORDERS FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-005.
+               PERFORM ERROR1-000
+               MOVE WS-OUTORD-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-OUTORD-ST1
+               GO TO OPEN-005.
        OPEN-106.
            MOVE Ws-Co-Name TO CO-NAME.
            PERFORM GET-SYSTEM-Y2K-DATE.

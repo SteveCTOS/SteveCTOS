@@ -250,10 +250,13 @@
        OPEN-035.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                GO TO OPEN-035.
        OPEN-050.
            PERFORM GET-SYSTEM-Y2K-DATE.
