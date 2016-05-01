@@ -767,6 +767,7 @@
       *
        CHECK-FUTURE-TRANS SECTION.
        CH-FU-000.
+            MOVE 0 TO WS-POSTED.
             ACCEPT WS-TIME FROM TIME
             MOVE WS-HR TO SPLIT-HR
             MOVE ":"   TO SPLIT-FIL1
@@ -805,10 +806,12 @@
            READ GLTRANS-FILE NEXT WITH LOCK
                AT END
                GO TO CH-FU-900.
+               
            MOVE 2710 TO POS
            DISPLAY "GlTrans Being Processed:" AT POS
            ADD 26 TO POS
            DISPLAY GLTRANS-REFERENCE AT POS.
+           
            IF GLTRANS-NO NOT = WS-GLTRANS-NO
                GO TO CH-FU-900.
            IF GLTRANS-FUTURE NOT = "F"
@@ -1141,79 +1144,95 @@
        OPEN-000.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
-              MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              MOVE "GLPARAMETER FILE BUSY ON OPEN,  'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-000.
        OPEN-005.
             OPEN I-O GLJRN-FILE.
             IF WS-GLJRN-ST1 NOT = 0 
-              MOVE 0 TO WS-GLJRN-ST1
               MOVE "GLJRN FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
               GO TO OPEN-005.
        OPEN-010.
             OPEN I-O GL-LY-MASTER.
             IF WS-GL-LY-ST1 NOT = 0
-                MOVE 
-                "ERROR IN OPEN I-O GL-MASTERLY, 'ESC' TO SEE STATUS"
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO OPEN-010.
+              MOVE "GL-MASTERLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO OPEN-010.
        OPEN-0100.
             GO TO OPEN-015.
        OPEN-011.
             OPEN OUTPUT GL-LY-MASTER.
             IF WS-GL-LY-ST1 NOT = 0
-                MOVE 
-                "ERROR IN OPEN OUTPUT GL-MASTERLY, 'ESC' TO SEE STATUS"
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO OPEN-011.
+              MOVE "GL-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO OPEN-011.
        OPEN-015.
             OPEN I-O GL-MASTER.
             IF WS-GLMAST-ST1 NOT = 0
-                MOVE "ERROR IN OPEN GL-MASTER, 'ESC' TO SEE STATUS."
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO OPEN-015.
+              MOVE "GL-MASTER BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO OPEN-015.
        OPEN-020.
             OPEN I-O GLTRANS-LY-FILE.
             IF WS-GLTRANS-LY-ST1 NOT = 0
-               MOVE "ERROR IN OPEN I-O GLTRANS-LY, 'ESC' FOR STATUS"
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO OPEN-020.
+              MOVE "GL-TRANSLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO OPEN-020.
        OPEN-0200.
             GO TO OPEN-025.
        OPEN-021.
             OPEN OUTPUT GLTRANS-LY-FILE.
             IF WS-GLTRANS-LY-ST1 NOT = 0
-               MOVE "ERROR IN OPEN OUTPUT GLTRANS-LY, 'ESC' FOR STATUS"
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO OPEN-020.
+              MOVE "GL-TRANSLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO OPEN-020.
        OPEN-025.
             OPEN I-O GLTRANS-FILE.
             IF WS-GLTRANS-ST1 NOT = 0
-                MOVE "ERROR IN OPEN GLTRANS FILE, 'ESC' FOR STATUS"
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO OPEN-025.
+              MOVE "GL-TRANSLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO OPEN-025.
        OPEN-999.
             EXIT.
       *

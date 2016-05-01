@@ -53,26 +53,19 @@
            03  SPLIT-FIL2       PIC X.
            03  SPLIT-SC         PIC 99.
        01  WS-CBTRANS-STATUS.
-           03  WS-CBTRANS-ST1   PIC 99.
-      *     03  WS-CBTRANS-ST2   PIC 9(2) COMP-X.
-       01  WS-CB-LY-STATUS.
-           03  WS-CB-LY-ST1   PIC 99.
-      *     03  WS-CB-LY-ST2   PIC 9(2) COMP-X.
-       01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC 9(2) COMP-X.
+           03  WS-CBTRANS-ST1     PIC 99.
        01  WS-CBTRANS-LY-STATUS.
-           03  WS-CBTRANS-LY-ST1   PIC 99.
-      *     03  WS-CBTRANS-LY-ST2   PIC 9(2) COMP-X.
+           03  WS-CBTRANS-LY-ST1  PIC 99.
+       01  WS-GLMAST-STATUS.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
-      *     03  WS-GLPARAMETER-ST2   PIC 9(2) COMP-X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1   PIC 99.
-      *     03  WS-CB-ST2   PIC 9(2) COMP-X.
+           03  WS-CB-ST1          PIC 99.
+       01  WS-CB-LY-STATUS.
+           03  WS-CB-LY-ST1       PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1   PIC 99.
-      *     03  WS-DAILY-ST2   PIC 9(2) COMP-X.
+           03  WS-DAILY-ST1       PIC 99.
        Copy "WsDateInfo".
       *
       **************************************************************
@@ -113,7 +106,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM CONTROL-900.
            IF WS-ANSWER1 NOT = "M" AND NOT = "Y"
@@ -140,7 +132,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *         ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF WS-ANSWER2 = "Y"
@@ -164,7 +155,6 @@
                AT POS.
        CONTROL-040.
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE.
        CONTROL-055.
            MOVE 3010 TO POS.
            DISPLAY "                                             "
@@ -246,8 +236,6 @@
                 MOVE 'F'       TO CDA-ATTR
                 PERFORM CTOS-ACCEPT
                 MOVE CDA-DATA TO WS-ANSWER3
-
-      *          ACCEPT WS-ANSWER3 AT POS
            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
@@ -277,12 +265,10 @@
                 MOVE 'F'       TO CDA-ATTR
                 PERFORM CTOS-ACCEPT
                 MOVE CDA-DATA TO WS-ANSWER3
-
-      *          ACCEPT WS-ANSWER3 AT POS
-           IF W-ESCAPE-KEY = 1 OR 2
+            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
-           ELSE
+            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CH-GLPA-010.
            IF WS-ANSWER1 = "N"
@@ -306,12 +292,10 @@
                 MOVE 'F'       TO CDA-ATTR
                 PERFORM CTOS-ACCEPT
                 MOVE CDA-DATA TO WS-ANSWER3
-
-      *          ACCEPT WS-ANSWER3 AT POS
-           IF W-ESCAPE-KEY = 1 OR 2
+            IF W-ESCAPE-KEY = 1 OR 2
                 CLOSE GLPARAMETER-FILE
                 EXIT PROGRAM
-           ELSE
+            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CH-GLPA-010.
         CH-GLPA-020.
@@ -403,9 +387,10 @@
             PERFORM WRITE-DAILY.
        W-CBM-LY-005.
            MOVE 1 To WS-RECORD-TO-DELETE
-           PERFORM DELETE-TRANS.
+      *     PERFORM DELETE-TRANS.
            PERFORM OPEN-010.
            PERFORM OPEN-011.
+           MOVE " " TO CB-NUMBER.
            START CB-MASTER KEY NOT < CB-NUMBER
                 INVALID KEY NEXT SENTENCE.
            IF WS-CB-ST1 NOT = 0
@@ -470,7 +455,7 @@
             PERFORM WRITE-DAILY.
        W-TO-YEAR-005.
            MOVE 2 To WS-RECORD-TO-DELETE
-           PERFORM DELETE-TRANS.
+      *     PERFORM DELETE-TRANS.
            PERFORM OPEN-012.
            PERFORM OPEN-005.
            MOVE " " TO CBTRANS-FUTURE.
@@ -697,6 +682,7 @@
       *
        CHECK-FUTURE-TRANS SECTION.
        CH-FU-000.
+            MOVE 0 TO WS-POSTED.
             ACCEPT WS-TIME FROM TIME
             MOVE WS-HR TO SPLIT-HR
             MOVE ":"   TO SPLIT-FIL1
@@ -935,40 +921,57 @@
        OPEN-001.
            OPEN I-O GLPARAMETER-FILE.
            IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
-              MOVE "GLPARAMETER FILE BUSY,  'ESC' TO RETRY."
+              MOVE "GLPARAMETER FILE BUSY ON OPEN,  'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-001.
+               PERFORM ERROR1-000
+               MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLPARAMETER-ST1
+               GO TO OPEN-001.
        OPEN-005.
            OPEN I-O CBTRANS-FILE.
            IF WS-CBTRANS-ST1 NOT = 0
-                MOVE "ERROR ON CB-TRANS OPEN, CANCEL TO RETRY"
+                MOVE "CB-TRANS BUSY ON OPEN I-O, 'ESC' TO RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
+                PERFORM ERROR1-000
                 MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
                 PERFORM ERROR1-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CBTRANS-ST1
                 GO TO OPEN-005.
        OPEN-010.
            OPEN OUTPUT CB-LY-MASTER.
-           IF WS-CB-ST1 NOT = 0
-                MOVE "WE HAVE A PROBLEM IN OPEN OUTPUT OF CBMASTERLY."
+           IF WS-CB-LY-ST1 NOT = 0
+                MOVE "CB-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-LY-ST1 TO WS-MESSAGE
                 PERFORM ERROR1-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-LY-ST1
                 GO TO OPEN-010.
        OPEN-011.
            OPEN I-O CB-MASTER.
            IF WS-CB-ST1 NOT = 0
-                MOVE "WE HAVE A PROBLEM IN OPEN OF CBMASTER."
+                MOVE "CB-MASTER BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CB-ST1 TO WS-MESSAGE
                 PERFORM ERROR1-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CB-ST1
                 GO TO OPEN-011.
        OPEN-012.
            OPEN OUTPUT CBTRANS-LY-FILE.
            IF WS-CBTRANS-LY-ST1 NOT = 0
-                MOVE "WE HAVE A PROBLEM IN THE OPEN OF CBTRANSLY"
+                MOVE "CB-TRANS-LY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CBTRANS-LY-ST1 TO WS-MESSAGE
                 PERFORM ERROR1-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CBTRANS-LY-ST1
                 GO TO OPEN-012.
        OPEN-999.
            EXIT.

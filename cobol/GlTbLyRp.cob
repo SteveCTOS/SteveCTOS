@@ -56,14 +56,11 @@
        77  WS-DETAIL-CNT        PIC 9(6) VALUE 0.
        77  WS-NO-OF-TRANS       PIC 9(6) VALUE 0.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1        PIC 99.
-      *     03  WS-GL-LY-ST2        PIC X.
+           03  WS-GL-LY-ST1       PIC 99.
        01  WS-GLTRANS-LY-STATUS.
-           03  WS-GLTRANS-LY-ST1    PIC 99.
-      *     03  WS-GLTRANS-LY-ST2    PIC X.
+           03  WS-GLTRANS-LY-ST1  PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
                05  WS-HEADER   PIC X(2).
@@ -177,7 +174,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            MOVE WS-RANGE1 TO ALPHA-RATE.
            PERFORM NUMBER-CHECK.
            MOVE WS-GLNO-CHECK TO WS-RANGE1.
@@ -205,7 +201,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            MOVE WS-RANGE2 TO ALPHA-RATE.
            PERFORM NUMBER-CHECK.
            MOVE WS-GLNO-CHECK TO WS-RANGE2.
@@ -223,7 +218,7 @@
                GO TO GET-010.
        GET-015.
            MOVE 1410 TO POS
-           DISPLAY "Press <Return> to continue, <Finish> to Exit."
+           DISPLAY "Press <Return> to continue, <End> to Exit."
            AT POS
            ADD 55 TO POS.
 
@@ -236,7 +231,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *     ACCEPT WS-ANSWER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-010.
            IF W-ESCAPE-KEY = 0 OR 1
