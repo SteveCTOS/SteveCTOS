@@ -301,6 +301,7 @@
            IF WS-STOCK-ST1 = 10 OR = 23
                PERFORM PRR-025
                GO TO PRR-999.
+           IF WS-STOCK-ST1 NOT = 0
              MOVE "STOCK BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000

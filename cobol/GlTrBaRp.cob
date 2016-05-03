@@ -33,26 +33,26 @@
        77  WS-1ST-HEAD-PRINT    PIC X VALUE " ".
        77  WS-1ST-SUBHEAD-PRINT PIC X VALUE " ".
        77  WS-LAST-ACC-READ     PIC X VALUE " ".
-       77  WS-TOTAL-DEBIT       PIC S9(8)V99 VALUE 0.
-       77  WS-TOTAL-CREDIT      PIC S9(8)V99 VALUE 0.
-       77  WS-TRANS-TOTAL       PIC S9(8)V99 VALUE 0.
-       77  WS-TRANS-AMT         PIC S9(8)V99 VALUE 0.
+       77  WS-TOTAL-DEBIT       PIC S9(9)V99 VALUE 0.
+       77  WS-TOTAL-CREDIT      PIC S9(9)V99 VALUE 0.
+       77  WS-TRANS-TOTAL       PIC S9(9)V99 VALUE 0.
+       77  WS-TRANS-AMT         PIC S9(9)V99 VALUE 0.
        77  WS-HEAD-ACCOUNT      PIC X(12) VALUE " ".
        77  WS-HEAD-TYPE         PIC X VALUE " ".
-       77  WS-HEAD-OPEN-BAL     PIC S9(8)V99 VALUE 0.
-       77  WS-HEAD-DR-TOTAL     PIC S9(8)V99 VALUE 0.
-       77  WS-HEAD-CR-TOTAL     PIC S9(8)V99 VALUE 0.
-       77  WS-HEAD-ACT-TOTAL    PIC S9(8)V99 VALUE 0.
-       77  WS-HEAD-CLOSE-BAL    PIC S9(8)V99 VALUE 0.
+       77  WS-HEAD-OPEN-BAL     PIC S9(9)V99 VALUE 0.
+       77  WS-HEAD-DR-TOTAL     PIC S9(9)V99 VALUE 0.
+       77  WS-HEAD-CR-TOTAL     PIC S9(9)V99 VALUE 0.
+       77  WS-HEAD-ACT-TOTAL    PIC S9(9)V99 VALUE 0.
+       77  WS-HEAD-CLOSE-BAL    PIC S9(9)V99 VALUE 0.
        77  WS-HEAD-DESC         PIC X(40) VALUE " ".
        77  WS-HEAD-CNT          PIC 9(6) VALUE 0.
        77  WS-SUBHEAD-ACCOUNT   PIC X(12) VALUE " ".
        77  WS-SUBHEAD-TYPE      PIC X VALUE " ".
-       77  WS-SUBHEAD-OPEN-BAL  PIC S9(8)V99 VALUE 0.
-       77  WS-SUBHEAD-DR-TOTAL  PIC S9(8)V99 VALUE 0.
-       77  WS-SUBHEAD-CR-TOTAL  PIC S9(8)V99 VALUE 0.
-       77  WS-SUBHEAD-ACT-TOTAL PIC S9(8)V99 VALUE 0.
-       77  WS-SUBHEAD-CLOSE-BAL PIC S9(8)V99 VALUE 0.
+       77  WS-SUBHEAD-OPEN-BAL  PIC S9(9)V99 VALUE 0.
+       77  WS-SUBHEAD-DR-TOTAL  PIC S9(9)V99 VALUE 0.
+       77  WS-SUBHEAD-CR-TOTAL  PIC S9(9)V99 VALUE 0.
+       77  WS-SUBHEAD-ACT-TOTAL PIC S9(9)V99 VALUE 0.
+       77  WS-SUBHEAD-CLOSE-BAL PIC S9(9)V99 VALUE 0.
        77  WS-SUBHEAD-DESC      PIC X(40) VALUE " ".
        77  WS-SUB-CNT           PIC 9(6) VALUE 0.
        77  WS-DETAIL-CNT        PIC 9(6) VALUE 0.
@@ -102,16 +102,16 @@
        01  DETAIL-LINE.
            03  D-ACCOUNT         PIC X(19).
            03  D-TYPE            PIC X(3).
-           03  D-DESC            PIC X(46).
-           03  D-OPEN            PIC Z(7)9.99-.
-           03  FILLER            PIC X(1) VALUE " ".
-           03  D-DEBIT           PIC Z(7)9.99-.
-           03  FILLER            PIC X(1) VALUE " ".
-           03  D-CREDIT          PIC Z(7)9.99-.
-           03  FILLER            PIC X(1) VALUE " ".
-           03  D-ACTIVITY        PIC Z(7)9.99-.
-           03  FILLER            PIC X(1) VALUE " ".
-           03  D-CLOSE           PIC Z(7)9.99-.
+           03  D-DESC            PIC X(45).
+           03  D-OPEN            PIC Z(8)9.99-.
+      *     03  FILLER            PIC X(1) VALUE " ".
+           03  D-DEBIT           PIC Z(8)9.99-.
+      *     03  FILLER            PIC X(1) VALUE " ".
+           03  D-CREDIT          PIC Z(8)9.99-.
+      *     03  FILLER            PIC X(1) VALUE " ".
+           03  D-ACTIVITY        PIC Z(8)9.99-.
+      *     03  FILLER            PIC X(1) VALUE " ".
+           03  D-CLOSE           PIC Z(8)9.99-.
        01  TRANS-LINE.
            03  TRANS-REF         PIC X(11).
            03  TRANS-TRANS       PIC Z(5)9.
@@ -119,10 +119,10 @@
            03  FILLER            PIC X(2) VALUE " ".
            03  TRANS-DATE        PIC X(10).
            03  FILLER            PIC X(5) VALUE " ".
-           03  TRANS-DESC        PIC X(44).
-           03  TRANS-DEBIT       PIC Z(7)9.99- BLANK WHEN ZERO.
-           03  FILLER            PIC X(1) VALUE " ".
-           03  TRANS-CREDIT      PIC Z(7)9.99- BLANK WHEN ZERO.
+           03  TRANS-DESC        PIC X(43).
+           03  TRANS-DEBIT       PIC Z(8)9.99- BLANK WHEN ZERO.
+      *     03  FILLER            PIC X(1) VALUE " ".
+           03  TRANS-CREDIT      PIC Z(8)9.99- BLANK WHEN ZERO.
            03  FILLER            PIC X(26) VALUE " ".
        01  UNDER-LINE.
            03  FILLER            PIC X(19) VALUE " ".

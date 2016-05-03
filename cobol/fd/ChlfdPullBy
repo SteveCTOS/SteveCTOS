@@ -5,5 +5,5 @@
                05  PB-INVOICE            PIC 9(6).
            03  PB-LINE-CNT               PIC 9(3).
            03  PB-INV-DATE               PIC 9(8).
-           03  PB-SALE-AMOUNT            PIC 9(6)V99.
+           03  PB-SALE-AMOUNT            PIC 9(7)V99.
       *

@@ -45,8 +45,11 @@ cp -a /ctools/data12/* /media/ctools/USB/data12
 rm /ctools/lock/*
 
 echo COPYING DATA TO BACKUP DISK ON SERVER
-ll /media/ctools/BACKUPHDD/ctools/*
+#ll /media/ctools/BACKUPHDD/ctools/*
 cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/
+
+echo COPYING ALL FOLDERS TO BACKUP DISK ON SERVER
+cp -a /ctools/* /media/ctools/BACKUPHDD/ctools
 
 Submit MainCont TapeBackupMonth.Sub01
 
