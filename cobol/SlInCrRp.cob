@@ -2333,7 +2333,7 @@
 
            MOVE ' '       TO CDA-DATA.
            MOVE 50        TO CDA-DATALEN.
-           MOVE 26        TO CDA-ROW.
+           MOVE 27        TO CDA-ROW.
            MOVE 17        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.

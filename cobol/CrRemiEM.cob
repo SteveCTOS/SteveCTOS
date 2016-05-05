@@ -29,6 +29,7 @@
        77  LINE-CNT           PIC 9(3) VALUE 66.
        77  WS-LINE-NO         PIC 9(3) VALUE 0.
        77  PAGE-CNT           PIC 9(2) VALUE 0.
+       77  STATE-CNT          PIC 9(4) VALUE 0.
        77  WS-TYPE            PIC X VALUE " ".
        77  WS-RANGE1          PIC X(7) VALUE " ".
        77  WS-RANGE2          PIC X(7) VALUE " ".
@@ -226,7 +227,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REMIT-PERIOD.
 
-      *     ACCEPT WS-REMIT-PERIOD AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
        CONTROL-006.
@@ -245,7 +245,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REMIT-F-L.
 
-      *     ACCEPT WS-REMIT-F-L AT POS.
            IF WS-REMIT-F-L NOT = "F" AND NOT = "L"
               MOVE "FOREIGN / LOCAL FIELD MUST BE F OR L, RE-ENTER"
               TO WS-MESSAGE
@@ -293,7 +292,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                MOVE "Y" TO WS-END
                GO TO GET-999.
@@ -316,7 +314,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *     ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -359,7 +356,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MES-COMMENT.
 
-      *     ACCEPT WS-MESSAGE       AT POS.
            MOVE WS-MES-COMMENT     TO WS-COMMENT (SUB-1).
            MOVE " "                TO WS-MES-COMMENT.
            DISPLAY WS-MES-COMMENT AT POS.
@@ -399,7 +395,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FAX-Y-N.
 
-      *     ACCEPT WS-FAX-Y-N AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-015.
            IF WS-FAX-Y-N NOT = "E"
@@ -429,7 +424,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-NO.
 
-      *     ACCEPT WS-PRINT-NO AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-030.
            IF WS-PRINT-NO NOT = "N" AND NOT = "Y"
@@ -479,6 +473,7 @@
            PERFORM Z1-HEADINGS.
            
            PERFORM START-CRREMIT.
+           MOVE 0 TO STATE-CNT.
        PRE-00005.
            MOVE 0 TO PAGE-CNT
                      WS-TOTAL-ADJ
@@ -515,7 +510,10 @@
            MOVE 2510 TO POS
            DISPLAY "PROCESSING REMITTANCE FOR ACCOUNT:" AT POS
            ADD 35 TO POS
-           DISPLAY CR-ACCOUNT-NUMBER AT POS.
+           DISPLAY CR-ACCOUNT-NUMBER AT POS
+           ADD 1 TO STATE-CNT
+           ADD 10 TO POS
+           DISPLAY STATE-CNT AT POS.
            
            PERFORM PRE-00011.
 
@@ -917,6 +915,7 @@
            PERFORM Z1-HEADINGS.
            
            PERFORM START-CRREMIT.
+           MOVE 0 TO STATE-CNT.
        PREF-00005.
            MOVE 0 TO PAGE-CNT
                      WS-TOTAL-ADJ
@@ -953,7 +952,10 @@
            MOVE 2510 TO POS
            DISPLAY "PROCESSING REMITTANCE FOR ACCOUNT:" AT POS
            ADD 35 TO POS
-           DISPLAY CR-ACCOUNT-NUMBER AT POS.
+           DISPLAY CR-ACCOUNT-NUMBER AT POS
+           ADD 1 TO STATE-CNT
+           ADD 10 TO POS
+           DISPLAY STATE-CNT AT POS.
            
            PERFORM PREF-00011.
 
@@ -1398,7 +1400,10 @@
              IF WS-REMI-ST1 NOT = 0
                 MOVE "CRREM RECORD BUSY ON READ, 'ESC' TO RETRY"
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-REMI-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO R-GL-010.
                 
              IF CRREM-F-L NOT = WS-REMIT-F-L
@@ -1706,6 +1711,19 @@
       *
        END-OFF SECTION.
        END-000.
+           MOVE 2910 TO POS.
+           DISPLAY "REMITTANCE RUN FINISHED, PRESS 'Return' TO EXIT."
+            AT POS.
+           ADD 50 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 7         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+
            CLOSE CRREMIT-FILE
                  CRREMIT-TRANS-FILE
                  CREDITOR-MASTER.
