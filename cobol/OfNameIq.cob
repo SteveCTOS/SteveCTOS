@@ -44,9 +44,9 @@
            03  WS-PHONE         PIC X(27) VALUE " ".
        01  WS-READ-LINES.
            03  WS-NAMES OCCURS 25.
-              05  WS-NAME-SEARCH    PIC X(50).
+              05  WS-NAME-SEARCH PIC X(50).
        01  WS-OFIS-STATUS.
-           03  WS-OFIS-ST1    PIC 99.
+           03  WS-OFIS-ST1      PIC 99.
        01  WS-SPLIT-ACCOUNT.
            03  WS-SP-1          PIC X VALUE " ".
            03  WS-SP-REST       PIC X(39) VALUE " ".
@@ -175,12 +175,13 @@
             IF F-EXIT-CH = 0
               READ OFIS-FILE NEXT
                 AT END
-                MOVE "END OF FILE, 'ESC' TO THE CLEAR SCREEN."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM CLEAR-MIDDLE
-                CLOSE OFIS-FILE
-                GO TO READ-999.
+                 GO TO READ-020.
+      *          MOVE "END OF FILE, 'ESC' TO THE CLEAR SCREEN."
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM CLEAR-MIDDLE
+      *          CLOSE OFIS-FILE
+      *          GO TO READ-999.
             IF F-EXIT-CH = 1
                READ OFIS-FILE PREVIOUS.
             IF WS-OFIS-ST1 = 91
@@ -218,10 +219,24 @@
                   "'ESC' To Clear The Screen, OR" AT POS
                 MOVE 3015 TO POS 
                 DISPLAY
-                "Enter A Number & Press <GO> To Edit The Entry." AT POS
-                MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
+               "Enter A Number & Press <GO> To Edit The Entry." AT POS
+      *          MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
+      *          MOVE 7           TO F-CBFIELDLENGTH
+      *          PERFORM WRITE-FIELD-ALPHA
+                PERFORM USER-FILL-FIELD
                 MOVE 7           TO F-CBFIELDLENGTH
-                PERFORM WRITE-FIELD-ALPHA
+                PERFORM READ-FIELD-ALPHA.
+            IF WS-OFIS-ST1 = 10
+                MOVE 2905 TO POS
+                DISPLAY 
+            "Press 'PgUp' For Previous, 'Esc' To Clear The Screen, OR"
+                AT POS
+                MOVE 3015 TO POS 
+                DISPLAY
+                "Enter A Number & Press <GO> To Edit The Entry." AT POS
+      *          MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
+      *          MOVE 7           TO F-CBFIELDLENGTH
+      *          PERFORM WRITE-FIELD-ALPHA
                 PERFORM USER-FILL-FIELD
                 MOVE 7           TO F-CBFIELDLENGTH
                 PERFORM READ-FIELD-ALPHA.
@@ -236,7 +251,10 @@
                 MOVE 0 TO F-EXIT-CH
                 MOVE 0 TO SUB-2
                 MOVE 1 TO SUB-3
-                MOVE 800 TO SUB-DIS.
+                MOVE 800 TO SUB-DIS
+            IF WS-OFIS-ST1 = 10
+                 GO TO READ-020.
+
             IF F-EXIT-CH = X"05"
                 PERFORM CLEAR-MIDDLE
                 MOVE 1 TO F-EXIT-CH
@@ -270,10 +288,11 @@
                      AND NOT = X"07" AND NOT = 0     AND NOT = 1
                      AND NOT = X"1B"
                 GO TO READ-025.
+
             ADD 1      TO SUB-DIS.
    
-            MOVE SUB-3 TO WS-LINE.
-            MOVE OFIS-NAME  TO WS-LASTNAME.
+            MOVE SUB-3              TO WS-LINE.
+            MOVE OFIS-NAME          TO WS-LASTNAME.
             DISPLAY WS-LAST AT SUB-DIS WITH REVERSE-VIDEO.
             ADD 21 TO SUB-DIS.
 

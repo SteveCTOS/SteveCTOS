@@ -222,6 +222,14 @@
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLTRANS-LY-ST1
 
+              MOVE "GL-TRANS BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              
               MOVE "GL-TRANSLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
@@ -246,26 +254,26 @@
               PERFORM ERROR1-020
               MOVE 0 TO WS-CBTRANS-ST1
 
-                MOVE "CB-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-CB-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-CB-LY-ST1
+              MOVE "CB-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-LY-ST1
 
-                MOVE "CB-MASTER BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-CB-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-CB-ST1
+              MOVE "CB-MASTER BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
 
-                MOVE "CB-TRANS-LY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-CBTRANS-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-CBTRANS-LY-ST1
+              MOVE "CB-TRANS-LY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-LY-ST1

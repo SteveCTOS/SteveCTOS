@@ -328,11 +328,15 @@
            START CBTRANS-FILE KEY NOT < CBTRANS-ALT-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-CBTRANS-ST1 NOT = 0
-                MOVE 
+              MOVE 
             "WE HAVE A PROBLEM IN THE START OF CBTRANS, 'ESC' TO EXIT."
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                GO TO CH-TR-PS-900.
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO CH-TR-PS-900.
            MOVE 1410 TO POS.
            DISPLAY " 1. Checking all transactions are posted..." AT POS.
        CH-TR-PS-010.
@@ -340,6 +344,7 @@
                AT END NEXT SENTENCE.
            IF WS-CBTRANS-ST1 = 10
                GO TO CH-TR-PS-900.
+
            MOVE 2910 TO POS
            DISPLAY "CBTrans Being Processed:" AT POS
            ADD 26 TO POS
@@ -348,6 +353,7 @@
            DISPLAY CBTRANS-TRANS AT POS
            ADD 10 TO POS
            DISPLAY CBTRANS-TYPE AT POS.
+
            IF CBTRANS-DATE < GL-BEGDATE (WS-CBTRANS-NO)
                GO TO CH-TR-PS-010.
            IF CBTRANS-DATE > GL-ENDDATE (WS-CBTRANS-NO)
@@ -394,10 +400,15 @@
            START CB-MASTER KEY NOT < CB-NUMBER
                 INVALID KEY NEXT SENTENCE.
            IF WS-CB-ST1 NOT = 0
-                MOVE 
+              MOVE 
            "WE HAVE A PROBLEM IN THE START OF CBMASTER, 'ESC' TO EXIT."
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE.
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO W-CBM-LY-900.
            MOVE 1510 TO POS
            DISPLAY " 2. CBMast Last/Year File Being Processed." AT POS.
        W-CBM-LY-010.
@@ -463,10 +474,15 @@
            START CBTRANS-FILE KEY NOT < CBTRANS-PERIOD
                 INVALID KEY NEXT SENTENCE.
            IF WS-CBTRANS-ST1 NOT = 0
-                MOVE 
+              MOVE 
             "WE HAVE A PROBLEM IN THE START OF CBTRANS, 'ESC' TO EXIT."
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE.
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO W-TO-YEAR-900.
            MOVE 1610 TO POS
            DISPLAY " 3. CBTrans Last/Year File Being Processed." AT POS.
        W-TO-YEAR-010.
@@ -474,6 +490,7 @@
                AT END NEXT SENTENCE.
            IF WS-CBTRANS-ST1 = 10
                GO TO W-TO-YEAR-900.
+
            MOVE 2910 TO POS
            DISPLAY "CBTrans Being Processed:" AT POS
            ADD 26 TO POS
@@ -481,6 +498,7 @@
            ADD 15 TO POS
            DISPLAY CBTRANS-TRANS AT POS
            ADD 10 TO POS
+
            DISPLAY CBTRANS-TYPE AT POS.
            IF CBTRANS-FUTURE = "F"
                GO TO W-TO-YEAR-010.
@@ -540,8 +558,8 @@
                MOVE " 4. CB-Master File  " TO WS-DAILY-1ST
             ELSE
                MOVE " 2. CB-Master File  " TO WS-DAILY-1ST.
-            MOVE "Start of process    " TO WS-DAILY-2ND
-            MOVE SPLIT-TIME             TO WS-DAILY-3RD
+            MOVE "Start of process    "    TO WS-DAILY-2ND
+            MOVE SPLIT-TIME                TO WS-DAILY-3RD
             PERFORM WRITE-DAILY.
        GLM-005.
             PERFORM OPEN-011.
@@ -551,6 +569,9 @@
             ELSE
               MOVE 1510 TO POS
               DISPLAY " 2. CbMaster Files Being Processed...." AT POS.
+              MOVE " " TO CB-NUMBER
+              START CB-MASTER KEY NOT LESS CB-NUMBER
+                 INVALID KEY NEXT SENTENCE.
        GLM-010.
             READ CB-MASTER NEXT WITH LOCK
                  AT END
@@ -611,12 +632,15 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -714,18 +738,24 @@
            START CBTRANS-FILE KEY NOT < CBTRANS-PERIOD
                INVALID KEY NEXT SENTENCE.
            IF WS-CBTRANS-ST1 NOT = 0
-               MOVE "NO FUTURE TRANSACTIONS TO POST, 'ESC' TO EXIT."
-                 TO WS-MESSAGE
-               PERFORM ERROR1-MESSAGE
-               GO TO CH-FU-900.
+              MOVE "NO FUTURE TRANSACTIONS TO POST, 'ESC' TO EXIT."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO CH-FU-900.
        CH-FU-010.
            READ CBTRANS-FILE NEXT WITH LOCK
                AT END
                GO TO CH-FU-900.
+
            MOVE 2910 TO POS.
            DISPLAY "CbTrans Being Processed:" AT POS.
            ADD 26 TO POS.
            DISPLAY CBTRANS-REFERENCE AT POS.
+
            IF CBTRANS-NO NOT = WS-CBTRANS-NO
                GO TO CH-FU-010.
            IF CBTRANS-FUTURE NOT = "F"
@@ -778,16 +808,23 @@
            READ CB-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-CB-ST1 = 23 OR 35 OR 49
-               MOVE "CBMASTER FILE DOES NOT EXIST, CALL YOUR SUPERVISOR"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPCB-999.
+              MOVE "CBMASTER FILE DOES NOT EXIST23, 'ESC  TO EXIT."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO UPCB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
-               MOVE "CBMASTER RECORD BUSY ON READ, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPCB-010.
+              MOVE "CBMASTER RECORD BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO UPCB-010.
            ADD CBTRANS-AMOUNT TO CB-BALANCE.
            ADD CBTRANS-AMOUNT TO CB-PER (WS-CBTRANS-NO).
        UPCB-900.
@@ -796,11 +833,14 @@
            IF WS-CB-ST1 = 23 OR 35 OR 49
                GO TO UPCB-999.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
-               MOVE "CBMASTER BUSY ON REWRITE, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPCB-900.
+              MOVE "CBMASTER BUSY ON REWRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO UPCB-900.
        UPCB-960.
            MOVE 2610 TO POS
            DISPLAY "                                          " AT POS.

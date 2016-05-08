@@ -2737,7 +2737,7 @@
            
            MOVE
            "ACC #     ACCOUNT NAME                           " &
-           "CHEQUE #   AMOUNT    DISCOUNT" TO PRINT-REC.
+           "CHEQUE #     AMOUNT    DISCOUNT" TO PRINT-REC.
            WRITE PRINT-REC AFTER 2
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC AFTER 2.

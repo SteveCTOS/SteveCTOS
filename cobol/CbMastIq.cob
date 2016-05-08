@@ -26,13 +26,11 @@
        77  WS-NUMBER          PIC X(12) VALUE " ".
        77  SUB-1-SAVE         PIC S9(5) VALUE 0.
        01  WS-MONTH-BUDGET.
-           03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
+           03  WS-MONTH-BU        PIC S9(8)V99 OCCURS 13.
        01  WS-CB-STATUS.
-           03  WS-CB-ST1    PIC 99.
-      *     03  WS-CB-ST2    PIC 9(2) COMP-X.
+           03  WS-CB-ST1          PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAM-ST1   PIC 99.
-      *     03  WS-GLPARAM-ST2   PIC 9(2) COMP-X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -194,38 +192,41 @@
       *
        READ-CB SECTION.
        R-CB-000.
-             MOVE CB-NUMBER TO WS-NUMBER.
-             START CB-MASTER KEY NOT < CB-KEY.
+            MOVE CB-NUMBER TO WS-NUMBER.
+            START CB-MASTER KEY NOT < CB-KEY.
        R-CB-010.
-             READ CB-MASTER
+            READ CB-MASTER
                  INVALID KEY NEXT SENTENCE.
-             IF WS-CB-ST1 = 23 OR 35 OR 49
+            IF WS-CB-ST1 = 23 OR 35 OR 49
                 PERFORM CLEAR-FORM
                 MOVE "Y" TO NEW-GLNO
                 MOVE WS-NUMBER TO CB-NUMBER
                 GO TO R-CB-999.
-             IF WS-CB-ST1 NOT = 0
-                MOVE 0 TO WS-CB-ST1
-                MOVE "CB RECORD BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-CB-010.
-             MOVE "N" TO NEW-GLNO.
+            IF WS-CB-ST1 NOT = 0
+              MOVE "CB RECORD BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO R-CB-010.
+            MOVE "N" TO NEW-GLNO.
        R-CB-999.
              EXIT.
       *
        START-GL SECTION.
        CB-CB-000.
-              MOVE WS-NUMBER TO CB-NUMBER.
-              START CB-MASTER KEY NOT LESS CB-NUMBER
-                 INVALID KEY NEXT SENTENCE.
+            MOVE WS-NUMBER TO CB-NUMBER.
+            START CB-MASTER KEY NOT LESS CB-NUMBER
+                INVALID KEY NEXT SENTENCE.
        CB-CB-999.
-             EXIT.
+            EXIT.
       *
        READ-CB-NEXT SECTION.
        RSN-005. 
-           READ CB-MASTER NEXT
-             AT END 
+            READ CB-MASTER NEXT
+              AT END 
                MOVE " " TO CB-NUMBER
                            WS-NUMBER
                MOVE "Y" TO WS-END
@@ -235,15 +236,24 @@
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
            IF WS-CB-ST1 = 23 OR 35 OR 49
-               MOVE 0 TO WS-CB-ST1
-               MOVE "CB-MASTER FILE BUSY, PRESS 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
+              MOVE "CB-MASTER FILE BUSY23, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO RSN-005.
            IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
-               PERFORM START-GL
-               GO TO RSN-005.
+              MOVE "CB-MASTER FILE BUSY, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+      *         PERFORM START-GL
+              GO TO RSN-005.
            MOVE CB-NUMBER TO WS-NUMBER.
            MOVE "N" TO NEW-GLNO.
        RSN-999.
@@ -274,25 +284,36 @@
            MOVE 1 TO GLPA-KEY.
            START GLPARAMETER-FILE KEY NOT < GLPA-KEY
               INVALID KEY NEXT SENTENCE.
-           IF WS-GLPARAM-ST1 NOT = 0
-                MOVE "PARAMETER BAD START, PRESS 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-000.
+           IF WS-GLPARAMETER-ST1 NOT = 0
+              MOVE "PARAMETER BAD START, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-000.
        RPR-010.
            READ GLPARAMETER-FILE
                  INVALID KEY NEXT SENTENCE.
-           IF WS-GLPARAM-ST1 = 23 OR 35 OR 49
-                MOVE "PARAMETER RECORD NOT THERE, 'ESC' TO EXIT"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-999.
-           IF WS-GLPARAM-ST1 NOT = 0
-                MOVE 0 TO WS-GLPARAM-ST1
-                MOVE "PARAMETER RECORD BUSY, PRESS 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-010.
+           IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
+              MOVE "PARAMETER RECORD NOT THERE, 'ESC' TO EXIT"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-999.
+           IF WS-GLPARAMETER-ST1 NOT = 0
+              MOVE "PARAMETER RECORD BUSY, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-010.
        RPR-999.
             EXIT.
       *
@@ -300,23 +321,27 @@
        OPEN-000.
            OPEN I-O CB-MASTER.
            IF WS-CB-ST1 NOT = 0
-               MOVE "CBMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-CB-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-000.
+              MOVE "CBMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO OPEN-000.
         OPEN-001.
             OPEN I-O GLPARAMETER-FILE.
-            IF WS-GLPARAM-ST1 NOT = 0
-               MOVE "GLPARAMETER BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE WS-GLPARAM-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-001.
+            IF WS-GLPARAMETER-ST1 NOT = 0
+              MOVE "GLPARAMETER BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO OPEN-001.
             PERFORM READ-PARAMETER-RECORD.
-            IF WS-GLPARAM-ST1 = 23 OR 35 OR 49
+            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                CLOSE GLPARAMETER-FILE
                PERFORM END-OFF.
             CLOSE GLPARAMETER-FILE.
@@ -356,4 +381,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB
