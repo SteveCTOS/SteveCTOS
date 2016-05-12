@@ -74,7 +74,7 @@ set (copy_list
   YearEnd2.Sub01
   YearEnd.Sub02
   YearEnd2.Sub02
-  YearEnd.Sub03 
+  YearEnd.Sub03
   YearEnd2.Sub03
   YearEnd.Sub05
   YearEnd2.Sub05

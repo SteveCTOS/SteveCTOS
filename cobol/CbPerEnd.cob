@@ -198,7 +198,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 1 OR 2
                GO TO CONTROL-900
            ELSE
@@ -210,6 +209,8 @@
       *
        CHECK-GLPERIODS SECTION.
        CH-GLPA-005.
+            MOVE "Checking GlPeriods..............." TO WS-MESSAGE
+            PERFORM ERROR-000.
             PERFORM OPEN-001.
             MOVE 1 TO GLPA-RECORD.
             READ GLPARAMETER-FILE WITH LOCK
@@ -217,6 +218,7 @@
                 MOVE "GLPARAMETER RECORD NOT FOUND!!!" TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO CH-GLPA-999.
+            PERFORM ERROR-020.
        CH-GLPA-010.
             IF GLPA-CURRENT-CBPER = 12
               IF WS-ANSWER1 = "M"
@@ -365,7 +367,11 @@
            MOVE
             "SOME TRANSACTION HAVE NOT BEEN POSTED, 'ESC' TO EXIT."
               TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-000
+              MOVE CBTRANS-KEY TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              CLOSE CBTRANS-FILE
               EXIT PROGRAM.
        CH-TR-PS-900.
            CLOSE CBTRANS-FILE.
@@ -976,7 +982,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
+                PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 MOVE 0 TO WS-CBTRANS-ST1
                 GO TO OPEN-005.
@@ -987,7 +993,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-CB-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
+                PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 MOVE 0 TO WS-CB-LY-ST1
                 GO TO OPEN-010.
@@ -998,7 +1004,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-CB-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
+                PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 MOVE 0 TO WS-CB-ST1
                 GO TO OPEN-011.
@@ -1009,7 +1015,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-CBTRANS-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
+                PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 MOVE 0 TO WS-CBTRANS-LY-ST1
                 GO TO OPEN-012.

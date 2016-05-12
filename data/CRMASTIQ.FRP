@@ -10,11 +10,11 @@
  *         : _________________________                                        *
  *                                              Account Balance : ___________ *
  * Telephone      : ____________________        Balance l/Month : ___________ *
- * Faxcimile      : ____________________        A      Current  : ___________ *
- * Currency       : _____                       G      31 Days  : ___________ *
- * Terms          : _                           I      61 Days  : ___________ *
- * Foreign/Local  : _                           N      91 Days  : ___________ *
- * Payment - A/M  : _                           G     121 Days  : ___________ *
+ * Faxcimile      : ____________________       {A}     Current  : ___________ *
+ * Currency       : _____                      {G}     31 Days  : ___________ *
+ * Terms          : _                          {I}     61 Days  : ___________ *
+ * Foreign/Local  : _                          {N}     91 Days  : ___________ *
+ * Payment - A/M  : _                          {G}    121 Days  : ___________ *
  * Settlement Disc: _____                     Bank Name: ____________________ *
  * Trade Discount : _____                     Bank Account      : ___________ *
  * Supplier A/c No: __________                Branch Number     : ______      *

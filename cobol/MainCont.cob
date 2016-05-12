@@ -170,6 +170,7 @@
            ELSE
                 MOVE "N"   TO WS-OVER-RIDE.
        GET-020.
+           Perform Error-020.
            Move "Y"        to Ws-1stRead.
            MOVE "PassWrds" TO WS-PROGRAM.
            CALL WS-PROGRAM USING WS-LINKAGE.
