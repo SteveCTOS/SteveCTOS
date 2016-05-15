@@ -1508,11 +1508,11 @@
                
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
-            IF LINE-CNT < 34
+            IF LINE-CNT < 43
                GO TO POSXQS-010.
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT > 1
-            IF LINE-CNT < 45
+            IF LINE-CNT < 52
                GO TO POSXQS-010.
                
            MOVE OO-DELIVERY-METHOD       TO WS-DEL-SUB.
@@ -1544,8 +1544,8 @@
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT > 1
-             IF LINE-CNT > 35
-              IF PAGE-CNT > 1
+             IF LINE-CNT > 42
+      *       IF PAGE-CNT > 1
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1615,7 +1615,8 @@
               (B-TOTALPRICE * (OO-DISC / 100)).
            COMPUTE WS-SUPPLIER-AMOUNT = 
                    WS-SUPPLIER-AMOUNT + B-TOTALPRICE.
-           WRITE PRINT-REC FROM SLIP-DETAIL AFTER 1
+           WRITE PRINT-REC FROM SLIP-DETAIL AFTER 1.
+           
            MOVE " " TO PRINT-REC
            ADD 1 TO LINE-CNT
            GO TO POSXQS-005.
