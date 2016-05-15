@@ -14,7 +14,7 @@
           MOVE 
           CONCATENATE('PrintPOrder1 ', ' ', WS-CO-NUMBER, ' ',
            TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER), ' ', 
-            PAGE-CNT, ' ', WS-FAX-Y-N, ' ', WS-ANSWER, ' ',
+            PAGE-CNT, ' ', WS-FAX-Y-N, ' ', WS-PRINTING-TYPE, ' ',
                WS-FAX-NUMBER)
                TO WS-COMMAND-LINE.
       

@@ -238,6 +238,8 @@
        01  WSF-MAIL-QUOTE.
            03  WSF-Q-FIL        PIC X(15) VALUE "/ctools/equote/".
            03  WSF-QUOTE        PIC X(7).
+           03  FILLER           PIC X VALUE "-".
+           03  WSF-PRINTNUMBER  PIC 99.
        01  WSF-FAX-QUOTE.
            03  WSF-F-FIL        PIC X(12) VALUE "/ctools/fax/".
            03  WSF-FAX          PIC X(10).
@@ -396,7 +398,7 @@
            03  FILLER             PIC X(15) VALUE " ".
            03  WS-HYLA-TYPE2      PIC X(30) VALUE "*QUOTATION*".
        01 WS-HYLA-FROM-LINE2.
-           03  FILLER             PIC X(4) VALUE " ".
+           03  FILLER             PIC X(7) VALUE " ".
            03  WS-HYLA-PAGE2      PIC Z9 VALUE " ".
        01  HEAD1.
            03  H1-1                   PIC XX.
@@ -561,7 +563,17 @@
            DISPLAY "PRINT COMMENT OF SUFFICIENT STOCK ON HAND, Y/N: [ ]"
            AT POS
            ADD 49 TO POS
-           ACCEPT WS-PRINT-SUF-COMMENT AT POS.
+
+           MOVE 'Y'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 7         TO CDA-ROW.
+           MOVE 58        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-PRINT-SUF-COMMENT.
+
+      *    ACCEPT WS-PRINT-SUF-COMMENT AT POS.
            IF WS-PRINT-SUF-COMMENT NOT = "N" AND NOT = "Y"
               GO TO CONTROL-008.
            MOVE 2910 TO POS
@@ -633,7 +645,7 @@
                MOVE WS-PRINTER-DOT TO WS-MESSAGE
                PERFORM GET-USER-PRINT-NAME.
            
-      **     MOVE "IN WRITE SECTION" TO WS-MESSAGE
+      *     MOVE "IN WRITE SECTION" TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE
       *     MOVE WS-PRINTER TO WS-MESSAGE
       *     PERFORM ERROR1-000
@@ -1115,21 +1127,23 @@
            MOVE " " TO PRINT-REC WSF-STOCK-LINE.
        WRFAX-020.
            ADD 1 TO SUB-1 LINE-CNT.
+           
            IF Fax-PaNumber = 3
-            IF LINE-CNT > 48
+            IF LINE-CNT > 55
               ADD 1 TO PAGE-CNT
               MOVE PAGE-CNT TO WF-NEWF-PAGE
               WRITE PRINT-REC FROM WF-CONTINUE-LINE
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC BEFORE PAGE
               GO TO WRFAX-003.
+              
            IF Fax-PaNumber = 4
-            IF LINE-CNT > 50
+            IF LINE-CNT > 59
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
                MOVE " " TO PRINT-REC
-             IF PAGE-CNT = 2
+             IF PAGE-CNT > 1
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1169,26 +1183,29 @@
               "150 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-              GO TO WRFAX-500.
+               GO TO WRFAX-500.
            IF B-STOCKNUMBER (SUB-1) = " "
-              GO TO WRFAX-500.
+               GO TO WRFAX-500.
            GO TO WRFAX-010.
        WRFAX-500.
            IF Fax-PaNumber = 3
-            IF LINE-CNT > 32
+            IF LINE-CNT > 45
               ADD 1 TO PAGE-CNT
               MOVE PAGE-CNT TO WF-NEWF-PAGE
               WRITE PRINT-REC FROM WF-CONTINUE-LINE
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC BEFORE PAGE.
+              
            IF Fax-PaNumber = 4
-            IF LINE-CNT > 45
+            IF LINE-CNT > 50
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
                MOVE " " TO PRINT-REC
-             IF PAGE-CNT = 2
+             IF PAGE-CNT > 1
+                 CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
+                 MOVE WS-PRINTER TO WS-PRINTER-PAGE2
                  OPEN OUTPUT PRINT-FILE
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
@@ -1366,6 +1383,7 @@
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-QUOTE-FOR-PDF
+                 
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-QUOTE2-FOR-PDF
                  PERFORM SETUP-MERGE-QUOTE-FOR-PDF.
@@ -3118,7 +3136,9 @@
            MOVE 6            TO F-CBFIELDLENGTH.
            PERFORM WRITE-FIELD-NUMERIC.
 
-           MOVE WS-QUOTATION TO WS-QUOTEREF WSF-QUOTEREF.
+           MOVE WS-QUOTATION     TO WS-QUOTEREF WSF-QUOTEREF.
+           MOVE INCR-COPY-NUMBER TO WSF-PRINTNUMBER
+           ADD 1                 TO WSF-PRINTNUMBER.
            MOVE "Y" TO WS-BELOWF-BODY.
        FINAL-ENTRY-056.
             PERFORM CLEAR-010.
@@ -3143,7 +3163,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *      ACCEPT WS-ANSWER AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO GET-270.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -3175,7 +3194,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALESMAN.
 
-      *      ACCEPT WS-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-055.
@@ -3205,7 +3223,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT1.
 
-      *      ACCEPT WS-COMMENT1 AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-060.
@@ -3231,7 +3248,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMMENT2.
 
-      *      ACCEPT WS-COMMENT2 AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-067.
@@ -3263,7 +3279,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-QUOTE-TERM (SUB-1).
 
-      *      ACCEPT WS-QUOTE-TERM (SUB-1) AT POS.
             IF W-ESCAPE-KEY = 4
              IF SUB-1 > 1
                SUBTRACT 1 FROM SUB-1
@@ -3294,7 +3309,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-TOTALS.
 
-      *      ACCEPT WS-PRINT-TOTALS AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE 1 TO SUB-1
                GO TO FINAL-ENTRY-075.
@@ -3324,7 +3338,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-AUTO-FAX.
 
-      *      ACCEPT WS-AUTO-FAX AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-070.
@@ -3369,7 +3382,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FAX-NUMBER.
 
-      *      ACCEPT WS-FAX-NUMBER AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-080.
@@ -3407,7 +3419,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WSF-MAIL-NUMBER.
 
-      *      ACCEPT WSF-MAIL-NUMBER AT POS.
             IF W-ESCAPE-KEY = 4
                MOVE "1" TO WS-ABOVE-BODY
                GO TO FINAL-ENTRY-080.
@@ -3431,14 +3442,15 @@
            MOVE 2610 TO POS.
            DISPLAY WS-MESSAGE AT POS.
            IF WS-AUTO-FAX  = "E"
-                 GO TO FINAL-ENTRY-950.
+              GO TO FINAL-ENTRY-950.
            IF WS-AUTO-FAX  = "N"
             IF WS-ANSWER = "P"
-                 GO TO FINAL-ENTRY-901.
-           PERFORM CHECK-FAX-NUMBER.
+              GO TO FINAL-ENTRY-901.
+            IF WS-AUTO-FAX  = "F"
+              PERFORM CHECK-FAX-NUMBER.
        FINAL-ENTRY-900.
            IF WS-AUTO-FAX = "N" OR = "E"
-               GO TO FINAL-ENTRY-950.
+              GO TO FINAL-ENTRY-950.
        FINAL-ENTRY-901.
       **********************************
       *fax routine for XQS FAX SYSTEM **
@@ -3476,7 +3488,7 @@
               PERFORM WRITE-FAX-ROUTINE
               PERFORM ERROR1-020
               GO TO FINAL-ENTRY-950.
-      *        PERFORM 
+      *
       **************************************************************
       *fax routine for MURATA SYSTEM & WRITE TO <FX> FOR WORD-PRO **
       **************************************************************
@@ -6171,6 +6183,18 @@
                PERFORM ERROR1-MESSAGE.
        FIND-020.
             MOVE DR-DISCOUNT-CODE  TO WS-DISCOUNT-CODE.
+
+            MOVE "COPYDESC"             TO F-FIELDNAME
+            MOVE 8                      TO F-CBFIELDNAME
+            MOVE " QUOTE COPY NUMBER :" TO F-NAMEFIELD
+            MOVE 20                     TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "COPYNUMBER"     TO F-FIELDNAME
+            MOVE 10               TO F-CBFIELDNAME
+            MOVE INCR-COPY-NUMBER TO F-NAMEFIELD
+            MOVE 2                TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "DEBTORNAME" TO F-FIELDNAME
             MOVE 10           TO F-CBFIELDNAME

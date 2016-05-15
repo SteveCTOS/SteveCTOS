@@ -12,9 +12,17 @@
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED
           MOVE 
-          CONCATENATE('PrintPOrder2 ', ' ',
-              WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE), ' ',
-                TRIM(WS-PRINTER)) TO WS-COMMAND-LINE.
+          CONCATENATE('PrintPOrder2 ', ' ', WS-CO-NUMBER, ' ',
+           TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER), ' ', 
+            PAGE-CNT, ' ', WS-FAX-Y-N, ' ', WS-PRINTING-TYPE, ' ',
+               WS-FAX-NUMBER)
+               TO WS-COMMAND-LINE.
+      *    CONCATENATE('PrintPOrder2 ', ' ',
+      *        WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE), ' ',
+      *          TRIM(WS-PRINTER))
+      *      PAGE-CNT, ' ', WS-FAX-Y-N, ' ', WS-PRINTING-TYPE, ' ',
+      *         WS-FAX-NUMBER)
+      *           TO WS-COMMAND-LINE.
       *          TO WS-COMMAND-LINE.
       
       *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE

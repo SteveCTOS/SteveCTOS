@@ -1,33 +1,32 @@
-********************{** Q U O T A T I O N S   E N T R Y **}********************
+****************{** CUSTOMER ORDER / PICKING SLIP ENTRY **}********************
 Name & Postal Address    ____________________ __      Delivery Address         
 ________________________________________              _________________________
-_________________________ Quote No: ______            _________________________
-_________________________ Acc No  : _______           _________________________
-_________________________ Phone  ____________________                          
-           Post Code ____ Contact____________________            Salesman   : _
-                           Quote ____________________          Date: __________
- Sales Analysis     Deliver Via      Sale Terms  SB Bin No    VAT No     Disc% 
- ______________ ____________________ ___________ __ ______ _____________ _____ 
-   Stock Number  *Order*     Description    *Unit*  Price  * Cost    *Disc%*T  
-  _______________*_____*____________________*____*_________*_________*_____*_  
-  _______________*_____*____________________*____*_________*_________*_____*_  
-  _______________*_____*____________________*____*_________*_________*_____*_  
-  _______________*_____*____________________*____*_________*_________*_____*_  
-  _______________*_____*____________________*____*_________*_________*_____*_  
-  _______________*_____*____________________*____*_________*_________*_____*_  
-  _______________*_____*____________________*____*_________*_________*_____*_  
+_________________________ SLIP No: ______             _________________________
+_________________________ Acc No : _______            _________________________
+_________________________ Phone  ____________________  Allow                   
+           Post Code ____ Contact____________________ PartOrder: _   Salesman:_
+                          P/Order____________________ DelArea:_ Date:__________
+Sales Analysis     Deliver Via      Sale Terms   SB  Bin No    VAT No     Disc%
+______________ ____________________ ___________  __  ______ _____________ _____
+ Stock Number  *Order* Ship*     Description    *Unit*  Price  * Cost    *Disc%
+_______________*_____*_____*____________________*____*_________*_________*_____
+_______________*_____*_____*____________________*____*_________*_________*_____
+_______________*_____*_____*____________________*____*_________*_________*_____
+_______________*_____*_____*____________________*____*_________*_________*_____
+_______________*_____*_____*____________________*____*_________*_________*_____
+_______________*_____*_____*____________________*____*_________*_________*_____
+_______________*_____*_____*____________________*____*_________*_________*_____
                                                                                
-     ________________________________________    Add-On    SubTotal __________ 
-   Comment ______________________________       __________ Cost     __________ 
-   Freight   Postage    Labour     Misc.         VAT       Percent  __________ 
-   _______   _______    _______   _______       __________ Total    __________ 
-*******************************************************************************
-                                                                               
+ ________________________________________        Add-Ons  SubTotal: __________ 
+Comment  ______________________________        __________ Cost    : __________ 
+Freight    Postage   Labour     Misc.             VAT     Percent : __________ 
+_________ _________ _________ _________        __________ Total   : __________ 
+*****************_______________ __________ ________***************************
                                                                                
                                                                                
 
-Form name: SlQuote                         size: 3015  bytes
-height: 26    width: 79    number of fields: 93             
+Form name: SlOrders                        size: 3229  bytes
+height: 26    width: 79    number of fields: 98             
 
 Field name: COPYDESC                                         
 Row: 1    Column: 25   Width: 20                             
@@ -74,36 +73,6 @@ List of values:
 
 
 
-Field name: POSTADD1                                         
-Row: 3    Column: 0    Width: 25                             
-Repeating? No   Index:        (first:        last:      )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: INVOICENUM                                       
-Row: 3    Column: 36   Width: 6                              
-Repeating? No   Index:        (first:        last:      )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
 Field name: DELADD1                                          
 Row: 2    Column: 54   Width: 25                             
 Repeating? No   Index:        (first:        last:      )    
@@ -119,8 +88,8 @@ List of values:
 
 
 
-Field name: POSTADD2                                         
-Row: 4    Column: 0    Width: 25                             
+Field name: POSTADD1                                         
+Row: 3    Column: 0    Width: 25                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -134,8 +103,8 @@ List of values:
 
 
 
-Field name: ACCOUNTNO                                        
-Row: 4    Column: 36   Width: 7                              
+Field name: INVOICENUM                                       
+Row: 3    Column: 35   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -164,8 +133,8 @@ List of values:
 
 
 
-Field name: POSTADD3                                         
-Row: 5    Column: 0    Width: 25                             
+Field name: POSTADD2                                         
+Row: 4    Column: 0    Width: 25                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -179,8 +148,8 @@ List of values:
 
 
 
-Field name: PHONE                                            
-Row: 5    Column: 33   Width: 20                             
+Field name: ACCOUNTNO                                        
+Row: 4    Column: 35   Width: 7                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -209,7 +178,37 @@ List of values:
 
 
 
-Field name: POSTCODE                                         
+Field name: POSTADD3                                         
+Row: 5    Column: 0    Width: 25                             
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: PHONE                                            
+Row: 5    Column: 33   Width: 20                             
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: POSTCODE                                         
 Row: 6    Column: 21   Width: 4                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
@@ -239,7 +238,22 @@ List of values:
 
 
 
-Field name: SALESMAN                                         
+Field name: PART-ORDERS                                      
+Row: 6    Column: 65   Width: 1                              
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: SALESMAN                                         
 Row: 6    Column: 78   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
@@ -254,8 +268,23 @@ List of values:
 
 
 
-Field name: POORDERNO                                        
+Field name: POORDERNO                                        
 Row: 7    Column: 33   Width: 20                             
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: DEL-AREA                                         
+Row: 7    Column: 62   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -285,7 +314,7 @@ List of values:
 
 
 Field name: SALESANALYSIS                                    
-Row: 9    Column: 1    Width: 14                             
+Row: 9    Column: 0    Width: 14                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -300,7 +329,7 @@ List of values:
 
 
 Field name: DELIVERVIA                                       
-Row: 9    Column: 16   Width: 20                             
+Row: 9    Column: 15   Width: 20                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -315,7 +344,7 @@ List of values:
 
 
 Field name: TERMOFSALE                                       
-Row: 9    Column: 37   Width: 11                             
+Row: 9    Column: 36   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -345,7 +374,7 @@ List of values:
 
 
 Field name: BINNO                                            
-Row: 9    Column: 52   Width: 6                              
+Row: 9    Column: 53   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -360,7 +389,7 @@ List of values:
 
 
 Field name: GSTNO                                            
-Row: 9    Column: 59   Width: 13                             
+Row: 9    Column: 60   Width: 13                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -375,7 +404,7 @@ List of values:
 
 
 Field name: INVOICEDISCOUNT                                  
-Row: 9    Column: 73   Width: 5                              
+Row: 9    Column: 74   Width: 5                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -390,7 +419,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 11   Column: 2    Width: 15                             
+Row: 11   Column: 0    Width: 15                             
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -405,7 +434,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 11   Column: 18   Width: 5                              
+Row: 11   Column: 16   Width: 5                              
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -419,8 +448,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 11   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 11   Column: 22   Width: 5                              
+Repeating? Yes  Index: 1      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 11   Column: 28   Width: 20                             
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -435,7 +479,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 11   Column: 45   Width: 4                              
+Row: 11   Column: 49   Width: 4                              
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -450,7 +494,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 11   Column: 50   Width: 9                              
+Row: 11   Column: 54   Width: 9                              
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -464,8 +508,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 11   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 11   Column: 64   Width: 9                              
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -479,23 +523,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 11   Column: 70   Width: 5                              
-Repeating? Yes  Index: 1      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 11   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 11   Column: 74   Width: 5                              
 Repeating? Yes  Index: 1      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -510,7 +539,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 12   Column: 2    Width: 15                             
+Row: 12   Column: 0    Width: 15                             
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -525,7 +554,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 12   Column: 18   Width: 5                              
+Row: 12   Column: 16   Width: 5                              
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -539,8 +568,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 12   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 12   Column: 22   Width: 5                              
+Repeating? Yes  Index: 2      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 12   Column: 28   Width: 20                             
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -555,7 +599,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 12   Column: 45   Width: 4                              
+Row: 12   Column: 49   Width: 4                              
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -570,7 +614,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 12   Column: 50   Width: 9                              
+Row: 12   Column: 54   Width: 9                              
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -584,8 +628,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 12   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 12   Column: 64   Width: 9                              
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -599,23 +643,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 12   Column: 70   Width: 5                              
-Repeating? Yes  Index: 2      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 12   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 12   Column: 74   Width: 5                              
 Repeating? Yes  Index: 2      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -630,7 +659,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 13   Column: 2    Width: 15                             
+Row: 13   Column: 0    Width: 15                             
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -645,7 +674,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 13   Column: 18   Width: 5                              
+Row: 13   Column: 16   Width: 5                              
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -659,8 +688,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 13   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 13   Column: 22   Width: 5                              
+Repeating? Yes  Index: 3      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 13   Column: 28   Width: 20                             
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -675,7 +719,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 13   Column: 45   Width: 4                              
+Row: 13   Column: 49   Width: 4                              
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -690,7 +734,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 13   Column: 50   Width: 9                              
+Row: 13   Column: 54   Width: 9                              
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -704,8 +748,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 13   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 13   Column: 64   Width: 9                              
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -719,23 +763,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 13   Column: 70   Width: 5                              
-Repeating? Yes  Index: 3      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 13   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 13   Column: 74   Width: 5                              
 Repeating? Yes  Index: 3      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -750,7 +779,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 14   Column: 2    Width: 15                             
+Row: 14   Column: 0    Width: 15                             
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -765,7 +794,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 14   Column: 18   Width: 5                              
+Row: 14   Column: 16   Width: 5                              
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -779,8 +808,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 14   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 14   Column: 22   Width: 5                              
+Repeating? Yes  Index: 4      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 14   Column: 28   Width: 20                             
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -795,7 +839,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 14   Column: 45   Width: 4                              
+Row: 14   Column: 49   Width: 4                              
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -810,7 +854,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 14   Column: 50   Width: 9                              
+Row: 14   Column: 54   Width: 9                              
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -824,8 +868,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 14   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 14   Column: 64   Width: 9                              
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -839,23 +883,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 14   Column: 70   Width: 5                              
-Repeating? Yes  Index: 4      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 14   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 14   Column: 74   Width: 5                              
 Repeating? Yes  Index: 4      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -870,7 +899,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 15   Column: 2    Width: 15                             
+Row: 15   Column: 0    Width: 15                             
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -885,7 +914,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 15   Column: 18   Width: 5                              
+Row: 15   Column: 16   Width: 5                              
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -899,8 +928,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 15   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 15   Column: 22   Width: 5                              
+Repeating? Yes  Index: 5      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 15   Column: 28   Width: 20                             
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -915,7 +959,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 15   Column: 45   Width: 4                              
+Row: 15   Column: 49   Width: 4                              
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -930,7 +974,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 15   Column: 50   Width: 9                              
+Row: 15   Column: 54   Width: 9                              
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -944,8 +988,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 15   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 15   Column: 64   Width: 9                              
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -959,23 +1003,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 15   Column: 70   Width: 5                              
-Repeating? Yes  Index: 5      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 15   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 15   Column: 74   Width: 5                              
 Repeating? Yes  Index: 5      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -990,7 +1019,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 16   Column: 2    Width: 15                             
+Row: 16   Column: 0    Width: 15                             
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1005,7 +1034,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 16   Column: 18   Width: 5                              
+Row: 16   Column: 16   Width: 5                              
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1019,8 +1048,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 16   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 16   Column: 22   Width: 5                              
+Repeating? Yes  Index: 6      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 16   Column: 28   Width: 20                             
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1035,7 +1079,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 16   Column: 45   Width: 4                              
+Row: 16   Column: 49   Width: 4                              
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1050,7 +1094,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 16   Column: 50   Width: 9                              
+Row: 16   Column: 54   Width: 9                              
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1064,8 +1108,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 16   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 16   Column: 64   Width: 9                              
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1079,23 +1123,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 16   Column: 70   Width: 5                              
-Repeating? Yes  Index: 6      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 16   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 16   Column: 74   Width: 5                              
 Repeating? Yes  Index: 6      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1110,7 +1139,7 @@ List of values:
 
 
 Field name: STOCKNUMBER                                      
-Row: 17   Column: 2    Width: 15                             
+Row: 17   Column: 0    Width: 15                             
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1125,7 +1154,7 @@ List of values:
 
 
 Field name: ORDERQTY                                         
-Row: 17   Column: 18   Width: 5                              
+Row: 17   Column: 16   Width: 5                              
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1139,8 +1168,23 @@ List of values:
 
 
 
-Field name: STOCKDESCRIPTION                                 
-Row: 17   Column: 24   Width: 20                             
+Field name: SHIPQTY                                          
+Row: 17   Column: 22   Width: 5                              
+Repeating? Yes  Index: 7      (first: 1      last: 7    )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: STOCKDESCRIPTION                                 
+Row: 17   Column: 28   Width: 20                             
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1155,7 +1199,7 @@ List of values:
 
 
 Field name: PERUNIT                                          
-Row: 17   Column: 45   Width: 4                              
+Row: 17   Column: 49   Width: 4                              
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1170,7 +1214,7 @@ List of values:
 
 
 Field name: STOCKPRICE                                       
-Row: 17   Column: 50   Width: 9                              
+Row: 17   Column: 54   Width: 9                              
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1184,8 +1228,8 @@ List of values:
 
 
 
-Field name: STOCKCOST                                        
-Row: 17   Column: 60   Width: 9                              
+Field name: STOCKCOST                                        
+Row: 17   Column: 64   Width: 9                              
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1199,23 +1243,8 @@ List of values:
 
 
 
-Field name: DISCOUNTPERITEM                                  
-Row: 17   Column: 70   Width: 5                              
-Repeating? Yes  Index: 7      (first: 1      last: 7    )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: TAX                                              
-Row: 17   Column: 76   Width: 1                              
+Field name: DISCOUNTPERITEM                                  
+Row: 17   Column: 74   Width: 5                              
 Repeating? Yes  Index: 7      (first: 1      last: 7    )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1230,7 +1259,7 @@ List of values:
 
 
 Field name: ST-DESC                                          
-Row: 19   Column: 5    Width: 40                             
+Row: 19   Column: 1    Width: 40                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1260,7 +1289,7 @@ List of values:
 
 
 Field name: COMMENTLINE                                      
-Row: 20   Column: 11   Width: 30                             
+Row: 20   Column: 9    Width: 30                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1275,7 +1304,7 @@ List of values:
 
 
 Field name: ADDONAMT                                         
-Row: 20   Column: 48   Width: 10                             
+Row: 20   Column: 47   Width: 10                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1320,7 +1349,7 @@ List of values:
 
 
 Field name: ADDONFREIGHT                                     
-Row: 22   Column: 3    Width: 7                              
+Row: 22   Column: 0    Width: 9                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1335,7 +1364,7 @@ List of values:
 
 
 Field name: POSTADDON                                        
-Row: 22   Column: 13   Width: 7                              
+Row: 22   Column: 10   Width: 9                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1350,7 +1379,7 @@ List of values:
 
 
 Field name: HANDADDON                                        
-Row: 22   Column: 24   Width: 7                              
+Row: 22   Column: 20   Width: 9                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1365,7 +1394,7 @@ List of values:
 
 
 Field name: MISC.ADDON                                       
-Row: 22   Column: 34   Width: 7                              
+Row: 22   Column: 30   Width: 9                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1380,7 +1409,7 @@ List of values:
 
 
 Field name: TAXAMT                                           
-Row: 22   Column: 48   Width: 10                             
+Row: 22   Column: 47   Width: 10                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1401,6 +1430,51 @@ Control: Tx  Justification: L   Sequence number:
 Secret? No   Protected? No   Mandatory? No                   
 Default:                                                     
 Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: PULL-DESC                                        
+Row: 23   Column: 17   Width: 15                             
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: A  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: PULL-DATE                                        
+Row: 23   Column: 33   Width: 10                             
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: I  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: PULL-TIME                                        
+Row: 23   Column: 44   Width: 8                              
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: I  Selected: E
 Validation routine:                                          
 Help message:                                                
                                                              

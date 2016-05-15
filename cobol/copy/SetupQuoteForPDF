@@ -18,6 +18,9 @@
                WS-FAX-NUMBER)
                TO WS-COMMAND-LINE.
       
+    
+      *    MOVE "SETUP QUOTE1" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE  
       *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
 
@@ -40,7 +43,7 @@
       *$2 = The company number from 01 to 12     e.g. 07
       *$3 = The Printername to print the file to e.g. MP250
       *$4 = The Print file name which will replace
-      *                /ctools/spl/InPrintCo01 when specified in COBOL
+      *                /ctools/spl/01QuoteCo01 when specified in COBOL
 
       *****************************************************************
       * printing routine - sends disk file to printer....

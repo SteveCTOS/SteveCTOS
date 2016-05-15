@@ -74,6 +74,9 @@
        77  WS-QUES-ACC-PHONE    PIC X(15) VALUE " ".
        77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PAGE3     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PAGE4     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PAGE5     PIC X(100) VALUE " ".
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-ACCOUNT-COMMENT.
            03  WS-ACC-MESSAGE    PIC X(53).
@@ -132,7 +135,7 @@
            03  FILLER             PIC X(15) VALUE " ".
            03  WS-HYLA-TYPE2      PIC X(30) VALUE "*OVERDUE A/C*".
        01 WS-HYLA-FROM-LINE2.
-           03  FILLER             PIC X(4) VALUE " ".
+           03  FILLER             PIC X(7) VALUE " ".
            03  WS-HYLA-PAGE2      PIC Z9 VALUE " ".
        01  WS-FILE-NAME-FOR-FAX.
            03  WS-FOLDER-NAME         PIC X(12) VALUE "/ctools/fax/".
@@ -907,10 +910,16 @@
               GO TO RSIFN-010.
            MOVE "-" TO AL-RATE (SUB-45).
            ADD 1 TO SUB-45.
-           IF PAGE-CNT = 1 
-              MOVE 1 TO AL-RATE (SUB-45)
-           ELSE 
+           IF PAGE-CNT = 1
+              MOVE 1 TO AL-RATE (SUB-45).
+           IF PAGE-CNT = 2
               MOVE 2 TO AL-RATE (SUB-45).
+           IF PAGE-CNT = 3
+              MOVE 3 TO AL-RATE (SUB-45).
+           IF PAGE-CNT = 4
+              MOVE 4 TO AL-RATE (SUB-45).
+           IF PAGE-CNT = 5
+              MOVE 5 TO AL-RATE (SUB-45).
            MOVE ALPHA-RATE TO WS-PRINTER.
        RSIFN-999.
            EXIT.
@@ -1001,9 +1010,10 @@
        PRXQS-010.
            IF LINE-CNT = 999
               PERFORM PRINT-HEADINGS.
+              
            IF Fax-PaNumber = 3
             IF PAGE-CNT = 1
-             IF LINE-CNT > 45
+             IF LINE-CNT > 55
               ADD 1 TO PAGE-CNT
               WRITE PRINT-REC FROM HEAD5 AFTER PAGE
               MOVE " " TO PRINT-REC
@@ -1021,10 +1031,10 @@
               GO TO PRXQS-020.
               
            IF Fax-PaNumber = 4
-            IF PAGE-CNT = 1
-             IF LINE-CNT > 40
+            IF PAGE-CNT > 0
+             IF LINE-CNT > 42
               ADD 1 TO PAGE-CNT
-              IF PAGE-CNT = 2
+              IF PAGE-CNT > 1
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1039,39 +1049,30 @@
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
-                 WRITE PRINT-REC
-                 WRITE PRINT-REC
-      *           PERFORM WR-003
-              ELSE
+                 WRITE PRINT-REC FROM HEAD5
                  MOVE " " TO PRINT-REC
-                 WRITE PRINT-REC BEFORE PAGE
-                 MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
-                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
-                 MOVE SPACES TO PRINT-REC
-                 WRITE PRINT-REC
-                 WRITE PRINT-REC
-                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
-                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
-                 MOVE SPACES TO PRINT-REC
-                 WRITE PRINT-REC
-                 WRITE PRINT-REC
-                 WRITE PRINT-REC.
-      *           PERFORM WR-003.
-      *        WRITE PRINT-REC FROM HEAD5 AFTER PAGE
-      *        MOVE " " TO PRINT-REC
-      *        WRITE PRINT-REC AFTER 1
-      *        MOVE 2 TO LINE-CNT
-      *        GO TO PRXQS-020.
-      *      IF Fax-PaNumber = 4
-      *      IF LINE-CNT > 57
-      *       IF LINE-CNT < 100
-      *        ADD 1 TO PAGE-CNT
-      *        WRITE PRINT-REC FROM HEAD5 AFTER PAGE
-      *        MOVE " " TO PRINT-REC
-      *        WRITE PRINT-REC AFTER 1
-      *        MOVE 2 TO LINE-CNT
-      *        GO TO PRXQS-020.
+                 MOVE 8 TO LINE-CNT.
+      *           WRITE PRINT-REC.
+      *           WRITE PRINT-REC
+      *           PERFORM WR-003
+      *        ELSE
+      *           MOVE " " TO PRINT-REC
+      *           WRITE PRINT-REC BEFORE PAGE
+      *           MOVE SPACES TO PRINT-REC
+      *           WRITE PRINT-REC
+      *           WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+      *           MOVE SPACES TO PRINT-REC
+      *           WRITE PRINT-REC
+      *           WRITE PRINT-REC
+      *           MOVE PAGE-CNT TO WS-HYLA-PAGE2
+      *           WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+      *           MOVE SPACES TO PRINT-REC
+      *           WRITE PRINT-REC
+      *           WRITE PRINT-REC FROM HEAD5
+      *           MOVE " " TO PRINT-REC
+      *           WRITE PRINT-REC
+      *           WRITE PRINT-REC.
        PRXQS-020.
       ******************************************************************
       * CHANGED ON 18/12/2002.                                         *

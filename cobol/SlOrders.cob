@@ -641,7 +641,7 @@
             IF WS-DIS = "Y"
               MOVE WS-INVOICE    TO P-SLIP
               ADD 1              TO INCR-COPY-NUMBER.
-          MOVE INCR-COPY-NUMBER TO P-PRINTNUMBER.
+          MOVE INCR-COPY-NUMBER  TO P-PRINTNUMBER.
            
           MOVE "/ctools/ps"      TO ALPHA-RATE
           MOVE WS-CO-NUMBER      TO WS-COMPANY-DIGITS
@@ -6838,6 +6838,19 @@
                TO WS-MESSAGE
                PERFORM ERROR1-MESSAGE.
        FIND-020.
+
+            MOVE "COPYDESC"             TO F-FIELDNAME
+            MOVE 8                      TO F-CBFIELDNAME
+            MOVE "P/SLIP COPY NUMBER :" TO F-NAMEFIELD
+            MOVE 20                     TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ALPHA.
+
+            MOVE "COPYNUMBER"     TO F-FIELDNAME
+            MOVE 10               TO F-CBFIELDNAME
+            MOVE INCR-COPY-NUMBER TO F-NAMEFIELD
+            MOVE 2                TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-ALPHA.
+
             MOVE "DEBTORNAME" TO F-FIELDNAME
             MOVE 10           TO F-CBFIELDNAME
             MOVE WS-NAME      TO F-NAMEFIELD
@@ -6968,18 +6981,6 @@
             MOVE 11               TO F-CBFIELDNAME.
             MOVE WS-PART-ORDERS   TO F-NAMEFIELD.
             MOVE 1                TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA.
-
-            MOVE "COPYDESC"             TO F-FIELDNAME
-            MOVE 8                      TO F-CBFIELDNAME
-            MOVE "P/SLIP COPY NUMBER :" TO F-NAMEFIELD
-            MOVE 20                     TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA.
-
-            MOVE "COPYNUMBER"     TO F-FIELDNAME
-            MOVE 10               TO F-CBFIELDNAME
-            MOVE INCR-COPY-NUMBER TO F-NAMEFIELD
-            MOVE 2                TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "PULL-DESC"           TO F-FIELDNAME

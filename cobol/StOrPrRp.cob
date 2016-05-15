@@ -61,7 +61,7 @@
        77  WS-COMM-MESSAGE      PIC X(60) VALUE " ".
        77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
-       77  WS-ANSWER            PIC X VALUE " ".
+       77  WS-PRINTING-TYPE            PIC X VALUE " ".
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 5.
@@ -153,7 +153,7 @@
            03  FILLER             PIC X(15) VALUE " ".
            03  WS-HYLA-TYPE2      PIC X(30) VALUE "***ORDER***".
        01 WS-HYLA-FROM-LINE2.
-           03  FILLER             PIC X(4) VALUE " ".
+           03  FILLER             PIC X(7) VALUE " ".
            03  WS-HYLA-PAGE2      PIC Z9 VALUE " ".
        01  WS-FILE-NAME-FOR-FAX.
            03  WS-FOLDER-NAME         PIC X(12) VALUE "/ctools/fax/".
@@ -200,13 +200,14 @@
        01  SLIP-HEAD7.
            03  FILLER          PIC X(78) VALUE ALL "*".
        01  SLIP-HEAD8.
-      *     03  FILLER          PIC X(3) VALUE " No".
+           03  FILLER          PIC X(4) VALUE " No ".
            03  FILLER          PIC X(15) VALUE "STOCK NUMBER".
            03  FILLER          PIC X(42) VALUE "DESCRIPTION".
            03  FILLER          PIC X(5) VALUE "QTY".
            03  FILLER          PIC X(15) VALUE "PER EACH  DISC".
        01  SLIP-DETAIL.
-      *     03  S-ITEM          PIC Z(2)9.
+           03  S-ITEM          PIC Z(2)9.
+           03  FILLER          PIC X(1) VALUE " ".
            03  S-STOCKNO       PIC X(15).
            03  S-DESC1         PIC X(20).
            03  S-DESC2         PIC X(20).
@@ -387,16 +388,16 @@
       * ALL BELOW NOW FOR FAX-PANUMBER = 4
       * NO FAX BUT A PDF PRINT
            IF WS-FAX-Y-N = "N"
-            IF WS-ANSWER = "Y"
+            IF WS-PRINTING-TYPE = "P"
                GO TO CONTROL-017.
       * FAX BUT NO PDF PRINT
            IF WS-FAX-Y-N = "F"
-            IF WS-ANSWER = "N"
+            IF WS-PRINTING-TYPE = "N"
                GO TO CONTROL-017.
 
       * NO FAX NO PDF PRINT - DOT MATRIX PRINT ONLY
            IF WS-FAX-Y-N = "N"
-            IF WS-ANSWER = "N"
+            IF WS-PRINTING-TYPE = "N"
                GO TO CONTROL-040.
            IF Fax-PaNumber = 4
       *         MOVE "HYLAFAX" TO WS-PRINTER
@@ -418,20 +419,20 @@
            PERFORM ERROR-020.
            IF Fax-PaNumber = 3 OR = 4
             IF WS-FAX-Y-N = "F"
-            OR WS-ANSWER = "P"
+            OR WS-PRINTING-TYPE = "P"
                PERFORM PRINT-XQSORDER-SLIP
                PERFORM ERROR-020
                PERFORM ERROR1-020
                GO TO CONTROL-018.
            IF Fax-PaNumber = 3 OR = 4
-             IF WS-ANSWER = "P"
+             IF WS-PRINTING-TYPE = "P"
                PERFORM PRINT-XQSORDER-SLIP
                PERFORM ERROR-020
                PERFORM ERROR1-020
                GO TO CONTROL-018.
               
            IF Fax-PaNumber = 3 OR = 4
-            IF WS-ANSWER = "N"
+            IF WS-PRINTING-TYPE = "N"
              IF WS-FAX-Y-N = "N" 
               PERFORM PRINT-ORDER-SLIP.
            PERFORM ERROR-020.
@@ -442,14 +443,8 @@
            DISPLAY "PLACING PURCHASE ORDER IN FAX QUEUE....." AT POS.
            PERFORM PREPARE-FAX-SENDING.
        CONTROL-018.
-             
-      *       MOVE "CONTROL-018" TO WS-MESSAGE
-      *       PERFORM ERROR-MESSAGE
-             
            CLOSE OUTSTANDING-ORDERS.
-      *     MOVE "Y" TO WS-FAX-Y-N.
            GO TO CONTROL-040.
-      *     GO TO CONTROL-021.
        CONTROL-020.
            PERFORM GET-EMAIL-PORDR-NAME.
            MOVE Spaces              TO WS-PRINTER.
@@ -474,20 +469,13 @@
         CONTROL-040.
            MOVE " " TO WS-PRINTER.
            MOVE WS-PRINTERNAME (21) TO WS-PRINTER.
-           
-      *     MOVE WS-PRINTER TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
         CONTROL-041.
-      *     MOVE WS-FAX-Y-N TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-        
            IF WS-FAX-Y-N NOT = "N"
                PERFORM CONTROL-001
                PERFORM CONTROL-006
                PERFORM ERROR-020
                GO TO CONTROL-015.
-           IF WS-ANSWER NOT = "N"
+           IF WS-PRINTING-TYPE NOT = "N"
                PERFORM CONTROL-001
                PERFORM CONTROL-006
                PERFORM ERROR-020
@@ -562,7 +550,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-STILL-ON-ORDER.
 
-      *     ACCEPT WS-STILL-ON-ORDER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -604,7 +591,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER-ACCEPT.
 
-      *     ACCEPT WS-SUPPLIER-ACCEPT AT POS.
            MOVE WS-SUPPLIER-ACCEPT TO WS-SUPPLIER.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-000.
@@ -686,7 +672,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMM-MESSAGE.
 
-      *     ACCEPT WS-MESSAGE AT POS.
            MOVE WS-COMM-MESSAGE TO WS-COMMENT (SUB-1).
            MOVE " " TO WS-COMM-MESSAGE.
            DISPLAY WS-MESSAGE AT POS.
@@ -718,7 +703,7 @@
            "ENTER: F=FAX, E=EMAIL, N=DOT MATRIX PRINT, P=PDF: [ ]."
               AT POS.
            MOVE 2222 TO POS
-           DISPLAY "ENTER: B=BOTH FAX & PDF PRNITING."
+           DISPLAY "ENTER: B=BOTH FAX & PDF PRINTING."
               AT POS.
            MOVE 2151 TO POS.
 
@@ -731,7 +716,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FAX-Y-N.
 
-      *     ACCEPT WS-FAX-Y-N AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-015.
            IF WS-FAX-Y-N NOT = "E" AND NOT = "F" AND NOT = "N"
@@ -745,18 +729,19 @@
                GO TO UPOO-030.
        UPOO-034.
             IF WS-FAX-Y-N = "N"
-                MOVE "N" TO WS-ANSWER
+                MOVE "N" TO WS-PRINTING-TYPE
                 GO TO UPOO-040.
             IF WS-FAX-Y-N = "F"
-                MOVE "N" TO WS-ANSWER
+                MOVE "N" TO WS-PRINTING-TYPE
                 MOVE CR-FAX TO WS-FAX-NUMBER
                 GO TO UPOO-035.
             IF WS-FAX-Y-N = "P"
-                MOVE "P" TO WS-ANSWER
+                MOVE "P" TO WS-PRINTING-TYPE
                 MOVE "N" TO WS-FAX-Y-N
+                PERFORM ENTER-XQS-DETAILS
                 GO TO UPOO-040.
             IF WS-FAX-Y-N = "B"
-                MOVE "P" TO WS-ANSWER
+                MOVE "P" TO WS-PRINTING-TYPE
                 MOVE "F" TO WS-FAX-Y-N
                 MOVE CR-FAX TO WS-FAX-NUMBER
                 GO TO UPOO-035.
@@ -787,7 +772,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FAX-NUMBER.
 
-      *      ACCEPT WS-FAX-NUMBER AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO UPOO-030.
             MOVE WS-FAX-NUMBER TO WS-FAX-CHECK.
@@ -831,7 +815,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-EMAIL-ADDR.
 
-      *      ACCEPT WS-EMAIL-ADDR AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO UPOO-030.
             IF WS-EMAIL-ADDR = " "
@@ -861,7 +844,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COPIES-ACCEPT.
 
-      *     ACCEPT WS-COPIES-ACCEPT AT POS.
            MOVE WS-COPIES-ACCEPT TO WS-SLIP-COPIES.
            IF W-ESCAPE-KEY = 4
             IF WS-FAX-Y-N = "N"
@@ -1002,7 +984,8 @@
            MOVE " "                 TO WS-FAX-CHECK ALPHA-RATE
            MOVE WS-ORDER-NUMBER     TO WS-XQS-COMMENT
            MOVE " "                 TO WS-FAX-CHECK
-           MOVE WS-XQS-COMMENT      TO WS-FAX-CHECK WS-HYLA-COMMENT
+           MOVE WS-XQS-COMMENT      TO WS-FAX-CHECK WS-HYLA-COMMENT.
+           
            MOVE 1                   TO SUB-2.
            MOVE 1                   TO SUB-1.
        XQS-028.
@@ -1522,19 +1505,22 @@
            PERFORM READ-OUTSTANDING-ORDERS.
            IF WS-OUTORD-ST1 = 10
                GO TO POSXQS-900.
+               
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
-            IF LINE-CNT < 45
+            IF LINE-CNT < 34
                GO TO POSXQS-010.
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT > 1
-            IF LINE-CNT < 56
+            IF LINE-CNT < 45
                GO TO POSXQS-010.
+               
            MOVE OO-DELIVERY-METHOD       TO WS-DEL-SUB.
            MOVE WS-DEL-TERM (WS-DEL-SUB) TO WS-DELVIA.
            MOVE WS-DELVIA                TO S6-DEL.
            MOVE WS-ORDER-NUMBER          TO S6-ORDER.
            MOVE PA-CO-VAT-NO             TO S6-VAT-NO.
+           
            ADD 1 TO PAGE-CNT.
 
           IF Fax-PaNumber = 3 OR = 4
@@ -1548,12 +1534,8 @@
               WRITE PRINT-REC FROM SLIP-HEAD6-2 AFTER 1
               MOVE " "               TO PRINT-REC
               WRITE PRINT-REC FROM SLIP-HEAD7 AFTER 1
-              MOVE " "               TO PRINT-REC.
-          IF Fax-PaNumber = 3
-           IF PAGE-CNT = 1
-              WRITE PRINT-REC FROM SLIP-HEAD8 AFTER 2
-           ELSE
-              WRITE PRINT-REC FROM SLIP-HEAD8 AFTER PAGE.
+              MOVE " "               TO PRINT-REC
+              WRITE PRINT-REC FROM SLIP-HEAD8 AFTER 2.
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 1
@@ -1561,10 +1543,9 @@
                GO TO POSXQS-008.
               
            IF Fax-PaNumber = 4
-            IF PAGE-CNT = 1
-             IF LINE-CNT > 45
-              ADD 1 TO PAGE-CNT
-              IF PAGE-CNT = 2
+            IF PAGE-CNT > 1
+             IF LINE-CNT > 35
+              IF PAGE-CNT > 1
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1573,14 +1554,14 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
-                 WRITE PRINT-REC
+      *           WRITE PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT       TO WS-HYLA-PAGE2
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC
-                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM SLIP-HEAD8 
             ELSE
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
@@ -1588,7 +1569,7 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
-                 WRITE PRINT-REC
+      *           WRITE PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT TO WS-HYLA-PAGE2
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
@@ -1596,11 +1577,10 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC.
-              
        POSXQS-008.
            MOVE " "               TO PRINT-REC
-           WRITE PRINT-REC AFTER 1.
            IF PAGE-CNT = 1
+              WRITE PRINT-REC AFTER 1
               MOVE 8 TO LINE-CNT
            ELSE
               MOVE 2 TO LINE-CNT.
@@ -1608,7 +1588,7 @@
                 ADD 1 TO LINE-CNT.
        POSXQS-010.
            ADD 1                   TO WS-LINE-NO
-      *     MOVE WS-LINE-NO         TO S-ITEM
+           MOVE WS-LINE-NO         TO S-ITEM
            MOVE OO-STOCK-NUMBER    TO S-STOCKNO
            MOVE ST-DESCRIPTION1    TO S-DESC1
            MOVE ST-DESCRIPTION2    TO S-DESC2
@@ -1690,7 +1670,7 @@
       *     PERFORM ERROR-MESSAGE.
 
            IF Fax-PaNumber = 4
-            IF WS-FAX-Y-N = 'F'
+            IF WS-FAX-Y-N = "F"
              IF PAGE-CNT = 1
 
       *     MOVE "WS-FAX = F" TO WS-MESSAGE
@@ -1710,10 +1690,10 @@
                  PERFORM SETUP-MERGE-PORDER-FOR-PDF.
 
            IF Fax-PaNumber = 4
-            IF WS-ANSWER = 'P'
+            IF WS-PRINTING-TYPE = "P"
              IF PAGE-CNT = 1
 
-      *     MOVE "WS-ANSWER = P" TO WS-MESSAGE
+      *     MOVE "WS-PRINTING-TYPE = P" TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE
 
                  PERFORM WORK-OUT-PDF-FILE-NAMES

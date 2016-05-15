@@ -7,12 +7,12 @@
           CONCATENATE('PrintMergePOrder ', ' ', WS-CO-NUMBER, ' ',
            TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER-PAGE1), ' ', 
             TRIM(WS-PRINTER-PAGE2), ' ', 
-            PAGE-CNT, ' ', WS-AUTO-FAX, ' ', WS-ANSWER, ' ',
+            PAGE-CNT, ' ', WS-AUTO-FAX, ' ', WS-PRINTING-TYPE, ' ',
                WS-FAX-NUMBER)
                TO WS-COMMAND-LINE.
       
-          DISPLAY WS-COMMAND-LINE AT 3001
-          PERFORM ERROR-010.
+      *    DISPLAY WS-COMMAND-LINE AT 3001
+      *    PERFORM ERROR-010.
 
           CALL "SYSTEM" USING WS-COMMAND-LINE
                      RETURNING W-STATUS.
