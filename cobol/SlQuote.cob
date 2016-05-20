@@ -1000,17 +1000,6 @@
                PERFORM REMOVE-SPACES-IN-FAX-NAME
                MOVE WS-PRINTER TO WS-PRINTER-PAGE1.
            
-      *     MOVE "IN WRITE FAX SECTION" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     MOVE WS-PRINTER TO WS-MESSAGE
-      *     PERFORM ERROR1-000
-      *     MOVE WS-PRINTER-SAVE TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-      *     PERFORM ERROR1-020.
-      *     MOVE WS-PRINTER-FAX TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     PERFORM ERROR1-020.
-               
            OPEN OUTPUT PRINT-FILE.
            IF Fax-PaNumber = 3
                WRITE PRINT-REC FROM WS-XQS-LINE (1)
@@ -1143,7 +1132,7 @@
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
                MOVE " " TO PRINT-REC
-             IF PAGE-CNT > 1
+             IF PAGE-CNT = 2
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1161,7 +1150,7 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC
                  PERFORM WRFAX-003
-             ELSE
+             IF PAGE-CNT > 2
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
@@ -1197,12 +1186,12 @@
               WRITE PRINT-REC BEFORE PAGE.
               
            IF Fax-PaNumber = 4
-            IF LINE-CNT > 50
+            IF LINE-CNT > 46
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
                MOVE " " TO PRINT-REC
-             IF PAGE-CNT > 1
+             IF PAGE-CNT = 2
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1218,6 +1207,13 @@
                  WRITE PRINT-REC
                  PERFORM WRFAX-003
              ELSE
+      *     IF Fax-PaNumber = 4
+      *      IF LINE-CNT > 50
+      *         ADD 1 TO PAGE-CNT
+      *         MOVE PAGE-CNT TO WF-NEWF-PAGE
+      *         WRITE PRINT-REC FROM WF-CONTINUE-LINE
+      *         MOVE " " TO PRINT-REC
+             IF PAGE-CNT > 2
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
@@ -1366,6 +1362,11 @@
                 PERFORM PRINT-REPORT-INFO.
 
            CLOSE PRINT-FILE.
+      * IF PAGE-CNT > 2 WE MOVE 2 TO PAGE-CNT AS THERE ARE ONLY 
+      * TWO FILES CREATED - 1 AND 2.  2 HAS ALL THE SUBSEQUENT PAGES
+      * INSIDE IT.
+           IF PAGE-CNT > 2 
+              MOVE 2 TO PAGE-CNT.
 
       * In the PrintQuote1 shell script:
       * #1 = WS-CO-NUMBER
@@ -3941,7 +3942,7 @@
                           WS-QTYONRESERVE
                           WS-QTYONORDER
                           WS-QTYONBORDER
-                MOVE 2010 TO POS
+                MOVE 2110 TO POS
                 DISPLAY WS-ONHAND-LINE AT POS
                 PERFORM FILL-COMMENT
              IF SUB-1 < SUB-25
@@ -3998,7 +3999,7 @@
                                         WS-QTYONORDER
                                         WS-QTYONBORDER.
             PERFORM CHECK-IF-ENTERED-BEFORE.
-            MOVE 2010 TO POS.
+            MOVE 2110 TO POS.
             DISPLAY WS-ONHAND-LINE AT POS.
 
            IF SP-1STCHAR = "/"
@@ -4013,7 +4014,7 @@
                           WS-QTYONRESERVE
                           WS-QTYONORDER
                           WS-QTYONBORDER
-                MOVE 2010 TO POS
+                MOVE 2110 TO POS
                 DISPLAY WS-ONHAND-LINE AT POS
              IF SUB-1 < SUB-25
                 MOVE "Y" TO WS-LINECHANGED.
@@ -5352,7 +5353,7 @@
            MOVE ST-QTYONRESERVE TO WS-QTYONRESERVE
            MOVE ST-QTYONORDER   TO WS-QTYONORDER
            MOVE ST-QTYONBORDER  TO WS-QTYONBORDER
-           MOVE 2010 TO POS
+           MOVE 2110 TO POS
            DISPLAY WS-ONHAND-LINE AT POS.
 
            PERFORM SCROLL-050.
@@ -7582,7 +7583,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-IMM-PR.
 
-      *     ACCEPT WS-IMM-PR AT POS.
            IF W-ESCAPE-KEY = 1 OR = 2
                CLOSE PARAMETER-FILE
                EXIT PROGRAM
@@ -7600,76 +7600,103 @@
        OPEN-011.
            OPEN I-O DEBTOR-MASTER.
            IF WS-DEBTOR-ST1 NOT = 0 
-              MOVE 0 TO WS-DEBTOR-ST1
               MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DEBTOR-ST1
               GO TO OPEN-011.
        OPEN-012.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0 
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STOCK-ST1
               GO TO OPEN-012.
        OPEN-013.
            OPEN I-O STPR-MASTER.
            IF WS-STPR-ST1 NOT = 0 
-              MOVE 0 TO WS-STPR-ST1
               MOVE "SPECIAL PRICE FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
               GO TO OPEN-013.
        OPEN-014.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "SLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO OPEN-014.
        OPEN-015.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO OPEN-015.
        OPEN-016.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
               MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-INCR-ST1
               GO TO OPEN-016.
        OPEN-018.
            OPEN I-O Fax-Parameter.
            IF WS-FAX-ST1 NOT = 0 
-              MOVE 0 TO WS-FAX-ST1
               MOVE "FaxParam FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-FAX-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-FAX-ST1
               GO TO OPEN-018.
            Perform Read-FaxParam.
            CLOSE Fax-Parameter.
        OPEN-019.
-            OPEN I-O STDISC-MASTER.
-            IF WS-STDISC-ST1 NOT = 0
-               MOVE 0 TO WS-STDISC-ST1
-               MOVE "STOCK SPEC-DISC BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-019.
+          OPEN I-O STDISC-MASTER.
+          IF WS-STDISC-ST1 NOT = 0
+              MOVE "STOCK SPEC-DISC BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STDISC-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
+              GO TO OPEN-019.
        OPEN-020.
-           OPEN I-O TOOLKITS.
-           IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
-               MOVE "TOOLKIT FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+          OPEN I-O TOOLKITS.
+          IF WS-TOOLKIT-ST1 NOT = 0
+              MOVE "TOOLKIT FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-TOOLKIT-ST1
               GO TO OPEN-020.
        OPEN-021.
            MOVE Ws-Forms-Name   TO F-FILENAME

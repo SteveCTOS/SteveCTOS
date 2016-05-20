@@ -1,6 +1,7 @@
 project (ctools_print)
 
 set (copy_list
+  DB_CONFIG
   fohtotext.py
   PrintCredit
   PrintDrOverdue1

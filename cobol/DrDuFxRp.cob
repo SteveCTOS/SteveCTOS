@@ -911,15 +911,9 @@
            MOVE "-" TO AL-RATE (SUB-45).
            ADD 1 TO SUB-45.
            IF PAGE-CNT = 1
-              MOVE 1 TO AL-RATE (SUB-45).
-           IF PAGE-CNT = 2
+              MOVE 1 TO AL-RATE (SUB-45)
+           ELSE
               MOVE 2 TO AL-RATE (SUB-45).
-           IF PAGE-CNT = 3
-              MOVE 3 TO AL-RATE (SUB-45).
-           IF PAGE-CNT = 4
-              MOVE 4 TO AL-RATE (SUB-45).
-           IF PAGE-CNT = 5
-              MOVE 5 TO AL-RATE (SUB-45).
            MOVE ALPHA-RATE TO WS-PRINTER.
        RSIFN-999.
            EXIT.
@@ -1031,10 +1025,9 @@
               GO TO PRXQS-020.
               
            IF Fax-PaNumber = 4
-            IF PAGE-CNT > 0
+            IF PAGE-CNT = 1
              IF LINE-CNT > 42
               ADD 1 TO PAGE-CNT
-              IF PAGE-CNT > 1
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1053,26 +1046,26 @@
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC
                  MOVE 8 TO LINE-CNT.
-      *           WRITE PRINT-REC.
-      *           WRITE PRINT-REC
-      *           PERFORM WR-003
-      *        ELSE
-      *           MOVE " " TO PRINT-REC
-      *           WRITE PRINT-REC BEFORE PAGE
-      *           MOVE SPACES TO PRINT-REC
-      *           WRITE PRINT-REC
-      *           WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
-      *           MOVE SPACES TO PRINT-REC
-      *           WRITE PRINT-REC
-      *           WRITE PRINT-REC
-      *           MOVE PAGE-CNT TO WS-HYLA-PAGE2
-      *           WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
-      *           MOVE SPACES TO PRINT-REC
-      *           WRITE PRINT-REC
-      *           WRITE PRINT-REC FROM HEAD5
-      *           MOVE " " TO PRINT-REC
-      *           WRITE PRINT-REC
-      *           WRITE PRINT-REC.
+           IF Fax-PaNumber = 4
+            IF PAGE-CNT > 1
+             IF LINE-CNT > 42
+              ADD 1 TO PAGE-CNT
+                 MOVE " " TO PRINT-REC
+                 WRITE PRINT-REC BEFORE PAGE
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM HEAD5
+                 MOVE " " TO PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE 8 TO LINE-CNT.
        PRXQS-020.
       ******************************************************************
       * CHANGED ON 18/12/2002.                                         *
@@ -1160,25 +1153,22 @@
            ADD 2 TO LINE-CNT
            GO TO PRXQS-002.
        PRXQS-900.
-      *      MOVE "HERE AT PRXQS-900" TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
-       
            CLOSE PRINT-FILE.
+
+      * IF PAGE-CNT > 2 WE MOVE 2 TO PAGE-CNT AS THERE ARE ONLY 
+      * TWO FILES CREATED - 1 AND 2.  2 HAS ALL THE SUBSEQUENT PAGES
+      * INSIDE IT.
+           IF PAGE-CNT > 2 
+              MOVE 2 TO PAGE-CNT.
 
            IF Fax-PaNumber = 4
             IF WS-ANSWER = "P" OR = "Y"
              IF PAGE-CNT = 1
-      *           MOVE "HERE PAGE-CNT = 1" TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE                 
-                 
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-OVERDUE-FOR-PDF
              ELSE
-      *           MOVE "HERE PAGE-CNT = 2" TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE                 
-                 
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER

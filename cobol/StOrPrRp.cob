@@ -1506,13 +1506,22 @@
            IF WS-OUTORD-ST1 = 10
                GO TO POSXQS-900.
                
+      *         IF LINE-CNT > 40
+      *            MOVE LINE-CNT TO WS-MESSAGE
+      *            PERFORM ERROR-MESSAGE.
+               
+               
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
             IF LINE-CNT < 43
+      *         MOVE "GOING TO PRINT, PAGE-CNT =1" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT > 1
-            IF LINE-CNT < 52
+            IF LINE-CNT < 58
+      *         MOVE "GOING TO PRINT, PAGE-CNT > 1" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
                
            MOVE OO-DELIVERY-METHOD       TO WS-DEL-SUB.
@@ -1543,9 +1552,12 @@
                GO TO POSXQS-008.
               
            IF Fax-PaNumber = 4
-            IF PAGE-CNT > 1
+            IF PAGE-CNT = 2
              IF LINE-CNT > 42
-      *       IF PAGE-CNT > 1
+             
+      *          MOVE "PG=2 CLOSING PRINT-SLIP" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE
+             
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1554,29 +1566,34 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
-      *           WRITE PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT       TO WS-HYLA-PAGE2
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC
-                 WRITE PRINT-REC FROM SLIP-HEAD8 
-            ELSE
+                 WRITE PRINT-REC FROM SLIP-HEAD8
+                 GO TO POSXQS-008.
+           IF Fax-PaNumber = 4
+            IF PAGE-CNT > 2
+             IF LINE-CNT > 57
+             
+      *          MOVE "PG>2 CLOSING PRINT-SLIP" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE
+             
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
-      *           WRITE PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT TO WS-HYLA-PAGE2
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC
-                 WRITE PRINT-REC.
+                 WRITE PRINT-REC FROM SLIP-HEAD8.
        POSXQS-008.
            MOVE " "               TO PRINT-REC
            IF PAGE-CNT = 1
@@ -1618,7 +1635,8 @@
            WRITE PRINT-REC FROM SLIP-DETAIL AFTER 1.
            
            MOVE " " TO PRINT-REC
-           ADD 1 TO LINE-CNT
+           ADD 1 TO LINE-CNT.
+           
            GO TO POSXQS-005.
        POSXQS-900.
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
@@ -1667,16 +1685,15 @@
        POSXQS-950.
            CLOSE PRINT-SLIP.
 
-      *     MOVE "CLOSED PRINT-SLIP" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
+      * IF PAGE-CNT > 2 WE MOVE 2 TO PAGE-CNT AS THERE ARE ONLY 
+      * TWO FILES CREATED - 1 AND 2.  2 HAS ALL THE SUBSEQUENT PAGES
+      * INSIDE IT.
+           IF PAGE-CNT > 2 
+              MOVE 2 TO PAGE-CNT.
 
            IF Fax-PaNumber = 4
             IF WS-FAX-Y-N = "F"
              IF PAGE-CNT = 1
-
-      *     MOVE "WS-FAX = F" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
@@ -1693,10 +1710,6 @@
            IF Fax-PaNumber = 4
             IF WS-PRINTING-TYPE = "P"
              IF PAGE-CNT = 1
-
-      *     MOVE "WS-PRINTING-TYPE = P" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
@@ -1709,10 +1722,6 @@
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-PORDER2-FOR-PDF
                  PERFORM SETUP-MERGE-PORDER-FOR-PDF.
-
-      *     MOVE "FINISHED AT POSXQS-999" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
        POSXQS-999.
            EXIT.
       *

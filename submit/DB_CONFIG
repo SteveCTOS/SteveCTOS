@@ -1,0 +1,3 @@
+set_memory_init DB_MEM_LOCK         8196
+set_memory_init DB_MEM_LOCKER       8196
+set_memory_init DB_MEM_LOCKOBJECT   8196
