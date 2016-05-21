@@ -1128,11 +1128,12 @@
               
            IF Fax-PaNumber = 4
             IF LINE-CNT > 59
+             IF PAGE-CNT = 1
+      * THIS NEXT SECTION FOR END OF PAGE 1 GOING TO 2
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE
                MOVE " " TO PRINT-REC
-             IF PAGE-CNT = 2
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1150,7 +1151,14 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC
                  PERFORM WRFAX-003
-             IF PAGE-CNT > 2
+             ELSE
+      * THIS NEXT SECTION FOR END OF PAGE 2 ONWARDS........
+            IF LINE-CNT > 65
+             IF PAGE-CNT > 1
+               ADD 1 TO PAGE-CNT
+               MOVE PAGE-CNT TO WF-NEWF-PAGE
+               WRITE PRINT-REC FROM WF-CONTINUE-LINE
+               MOVE " " TO PRINT-REC
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
@@ -1186,7 +1194,9 @@
               WRITE PRINT-REC BEFORE PAGE.
               
            IF Fax-PaNumber = 4
-            IF LINE-CNT > 46
+      * THIS NEXT SECTION FOR END OF ST-TRANS AND BEGINNING OF THE TOTAL
+      * SECTION WHICH REQUIRES 20 LINES TO FINISH
+            IF LINE-CNT > 40
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
                WRITE PRINT-REC FROM WF-CONTINUE-LINE

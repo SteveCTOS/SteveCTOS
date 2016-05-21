@@ -8420,59 +8420,80 @@
        OPEN-011.
            OPEN I-O DEBTOR-MASTER.
            IF WS-DEBTOR-ST1 NOT = 0 
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR FILE BUSY ON OPEN,'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DEBTOR-ST1
               GO TO OPEN-011.
        OPEN-012.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0 
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK FILE BUSY ON OPEN,'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STOCK-ST1
               GO TO OPEN-012.
        OPEN-013.
            OPEN I-O STPR-MASTER.
            IF WS-STPR-ST1 NOT = 0 
-              MOVE 0 TO WS-STPR-ST1
-              MOVE "SPECIAL PRICE BUSY ON OPEN,'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "SPECIAL PRICE FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
               GO TO OPEN-013.
        OPEN-014.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-SLPARAMETER-ST1
-              MOVE "PARAMETER BUSY ON OPEN,'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "SLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO OPEN-014.
        OPEN-015.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-STTRANS-ST1
-              MOVE "ST-TRANS BUSY ON OPEN,'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO OPEN-015.
        OPEN-016.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
-              MOVE "REGISTER BUSY ON OPEN,'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-INCR-ST1
               GO TO OPEN-016.
        OPEN-019.
-            OPEN I-O STDISC-MASTER.
-            IF WS-STDISC-ST1 NOT = 0
-               MOVE 0 TO WS-STDISC-ST1
-               MOVE "STOCK SPEC-DISC BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-019.
+          OPEN I-O STDISC-MASTER.
+          IF WS-STDISC-ST1 NOT = 0
+              MOVE "STOCK SPEC-DISC BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STDISC-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
+              GO TO OPEN-019.
        OPEN-020.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.

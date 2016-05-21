@@ -470,10 +470,14 @@
            START CBTRANS-FILE KEY NOT < CBTRANS-KEY
                INVALID KEY NEXT SENTENCE.
             IF WS-CBTRANS-ST1 NOT = 0
-                MOVE "CBTRANS BUSY ON START, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WCBT-002.
+              MOVE "CBTRANS BUSY ON START, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO WCBT-002.
            GO TO WCBT-010.
        WCBT-005.
            MOVE WS-TRANS (SUB-1) TO CBTRANS-TRANS
@@ -482,10 +486,14 @@
            READ CBTRANS-FILE WITH LOCK
                   INVALID KEY NEXT SENTENCE.
             IF WS-CBTRANS-ST1 NOT = 0
-               MOVE "CBTRANS BUSY ON READ-WCBT-010 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO WCBT-010.
+              MOVE "CBTRANS BUSY ON READ-WCBT-010 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO WCBT-010.
            MOVE WS-NO                     TO CBTRANS-NO
            MOVE Ws-CbMast                 TO CBTRANS-CBMASTER
            MOVE WS-TRANS-DATE (SUB-1)     TO CBTRANS-DATE
@@ -498,10 +506,14 @@
            REWRITE CBTRANS-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-CBTRANS-ST1 NOT = 0
-                MOVE "CBTRANS BUSY ON REWRITE, 'ESC' TO RETRY"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WCBT-018.
+              MOVE "CBTRANS BUSY ON REWRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO WCBT-018.
        WCBT-020.
             ADD 1 TO SUB-1.
             IF SUB-1 < 16
@@ -530,10 +542,13 @@
            IF WS-CBTRANS-ST1 = 23 OR 35 OR 49
               GO TO RONX-030.
            IF WS-CBTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-CBTRANS-ST1
               MOVE "CBTRANS-FILE BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
               GO TO RONX-005.
        RONX-010.
             MOVE CBTRANS-TRANS             TO WS-TRANS (SUB-1)
@@ -578,10 +593,13 @@
               SUBTRACT 1 FROM SUB-25
               GO TO RALL-900.
            IF WS-CBTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-CBTRANS-ST1
               MOVE "CBTRANS-FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
               GO TO RALL-005.
             IF CBTRANS-NO NOT = WS-NO
               GO TO RALL-005.
@@ -625,11 +643,15 @@
                 MOVE 0 TO WS-CBTRANS-ST1
                 GO TO RO-999.
            IF WS-CBTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-CBTRANS-ST1
-                MOVE "CBTRANS BUSY ON READ, PRESS 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RO-010.
+              MOVE "CBTRANS BUSY ON READ, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO RO-010.
        RO-999.
            EXIT.
      *
@@ -644,11 +666,14 @@
                 MOVE " " TO CB-DESCRIPTION
                 GO TO RD-999.
            IF WS-CB-ST1 NOT = 0
-                MOVE 0 TO WS-CB-ST1
-                MOVE "CASH BOOK BUSY ON READ, PRESS 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+              MOVE "CASH BOOK BUSY ON READ, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO RD-010.
        RD-999.
            EXIT.
       *
@@ -685,11 +710,14 @@
                 MOVE " " TO GL-DESCRIPTION
                 GO TO RD-999.
            IF WS-GLMAST-ST1 NOT = 0
-                MOVE 0 TO WS-GLMAST-ST1
-                MOVE "GLMASTER BUSY ON READ, PRESS 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+              MOVE "GLMASTER BUSY ON READ, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO RD-010.
        RD-999.
            EXIT.
       *
@@ -701,11 +729,14 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               MOVE "GLPARAMETER BUSY ON READ RP-010, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RP-010.
+              MOVE "GLPARAMETER BUSY ON READ RP-010, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RP-010.
        RP-999.
            EXIT.
       *
@@ -717,11 +748,15 @@
            READ GLPARAMETER-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               MOVE "GLPARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RPL-010.
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              MOVE "GLPARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPL-010.
        RPL-999.
            EXIT.
       *
@@ -730,11 +765,14 @@
            REWRITE GLPARAMETER-REC
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               MOVE "GLPARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RP-000.
+              MOVE "GLPARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RP-000.
        REWP-999.
            EXIT.
       *
@@ -945,35 +983,47 @@
        OPEN-000.
             OPEN I-O CBTRANS-FILE
             IF WS-CBTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CBTRANS-ST1
-               MOVE "CB-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-000.
+              MOVE "CB-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CBTRANS-ST1
+              GO TO OPEN-000.
         OPEN-008.
             OPEN I-O CB-MASTER.
             IF WS-CB-ST1 NOT = 0
-               MOVE 0 TO WS-CB-ST1
-               MOVE "CB-MASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-008.
+              MOVE "CB-MASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CB-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CB-ST1
+              GO TO OPEN-008.
         OPEN-009.
             OPEN I-O GL-MASTER.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GL-MASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-009.
+              MOVE "GL-MASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO OPEN-009.
        OPEN-012.
            OPEN I-O GLPARAMETER-FILE.
            IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RE-TRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-012.
+              MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RE-TRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO OPEN-012.
 
            PERFORM READ-GLPARAMETER.
            MOVE GLPA-CURRENT-CBPER TO WS-NO.
