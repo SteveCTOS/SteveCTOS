@@ -44,19 +44,16 @@
        77  WS-COLUMN2-ASSETS         PIC S9(8)V99 VALUE 0.
        77  WS-COLUMN3-ASSETS         PIC S9(8)V99 VALUE 0.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1    PIC 99.
-      *     03  WS-GLTRANS-ST2    PIC X.
+           03  WS-GLTRANS-ST1     PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
-               05  WS-HEADER   PIC X(2).
-               05  WS-SUB      PIC X(4).
-           03  WS-REST         PIC X(6).
+               05  WS-HEADER  PIC X(2).
+               05  WS-SUB     PIC X(4).
+           03  WS-REST        PIC X(6).
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -456,12 +453,14 @@
                ADD 1 TO SUB-1
                GO TO PRR-001.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE 3010 TO POS
-               DISPLAY "ERROR IN WS-GLMAST-ST1" AT POS
-               ADD 23 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
-               GO TO PRR-002.
+              MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO PRR-002.
             IF GL-NUMBER < WS-NEXT-NUMBER1
                GO TO PRR-002.
             IF GL-NUMBER > WS-NEXT-NUMBER2
@@ -555,12 +554,15 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING W-ERC
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, RP-000, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -571,15 +573,22 @@
            IF WS-GLMAST-ST1 NOT = 0
              MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
              TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-GLMAST-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             MOVE 0 TO WS-GLMAST-ST1
              GO TO OPEN-000.
        OPEN-012.
            OPEN I-O GLPARAMETER-FILE.
-           IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
+           IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE "GLPARAMETER FILE BUSY, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-012.
 
             PERFORM READ-PARAMETER.
@@ -604,7 +613,11 @@
            IF WS-GLTRANS-ST1 NOT = 0
               MOVE "GLTRANS-ST1 ERROR IN OPENING, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
               GO TO OPEN-250.
        OPEN-260.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -621,7 +634,8 @@
            PERFORM GET-REPORT-Y2K-DATE
            PERFORM PRINT-REPORT-INFO.
        END-500.
-           CLOSE GL-MASTER.
+           CLOSE GL-MASTER
+                 GLTRANS-FILE.
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
        END-900.

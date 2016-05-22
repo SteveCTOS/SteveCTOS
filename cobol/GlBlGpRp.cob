@@ -359,7 +359,10 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON OPEN, GOING TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-MENU-ST1
                GO TO RNC-005.
            MOVE 1 TO PTY-NUMBER.
@@ -376,8 +379,12 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON READ-NEXT, GOING TO RE-TRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
-               GO TO RNC-010.
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-MENU-ST1
+              GO TO RNC-010.
                
            MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-20)
            MOVE PTY-NUMBER  TO LIST-NUMBER (SUB-20)
@@ -537,7 +544,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-GROUP.
 
-      *     ACCEPT WS-GROUP AT POS.
            IF WS-GROUP NOT > " " 
               MOVE "GROUP NUMBER MUST BE > SPACES" TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
@@ -1061,11 +1067,13 @@
                ADD 1 TO SUB-1
                GO TO PRTM-001.
             IF WS-GLMAST-ST1 NOT = 0
+               MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
-               MOVE 3010 TO POS
-               DISPLAY "ERROR IN WS-GLMAST-ST1" AT POS
-               ADD 23 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
                GO TO PRTM-002.
             IF GL-NUMBER < WS-NEXT-NUMBER1
                GO TO PRTM-002.
@@ -1210,12 +1218,15 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING W-ERC
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, RP-000, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -1226,12 +1237,12 @@
            IF WS-GLMAST-ST1 NOT = 0
              MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
              TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             MOVE Ws-GlMaster to WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             MOVE WS-GLMAST-ST1 TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             GO TO OPEN-000.
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO OPEN-000.
              
       *     MOVE "GLMAST OPENED OK" TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -1240,10 +1251,13 @@
        OPEN-012.
            OPEN I-O GLPARAMETER-FILE.
            IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-012.
        OPEN-014.
            PERFORM READ-PARAMETER.
