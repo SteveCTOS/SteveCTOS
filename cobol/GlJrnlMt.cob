@@ -849,11 +849,14 @@
                MOVE "INVALID" TO GL-DESCRIPTION
                GO TO RD-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLMASTER RECORD BUSY ON READ, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RD-010.
+              MOVE "GLMASTER RECORD BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO RD-010.
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
        RD-999.
@@ -865,6 +868,13 @@
            START GL-MASTER KEY NOT < GL-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 NOT = 0
+              MOVE "GLMASTER RECORD BUSY ON START, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
               MOVE " " TO WS-GLNUMBER
               GO TO SGN-000.
        SGN-999.
@@ -883,14 +893,14 @@
                PERFORM START-GL-NEXT
                GO TO RDN-010.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLMASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE GL-NUMBER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM START-GL-NEXT
-               GO TO RDN-010.
+              MOVE "GLMASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO RDN-010.
            MOVE GL-NUMBER TO WS-GLNUMBER.
            IF WS-RESTOFACCOUNT = " "
                GO TO RDN-010.
@@ -929,10 +939,13 @@
                PERFORM ERROR-MESSAGE
                GO TO UPGL-950.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GL RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+              MOVE "GLMASTER RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
                GO TO UPGL-010.
                
            IF WS-JRN-LY-PERIOD NOT = "LYR"
@@ -955,11 +968,14 @@
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                GO TO UPGL-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLMASTER BUSY ON WRITE, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGL-900.
+              MOVE "GLMASTER BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGL-900.
        UPGL-950.
            PERFORM UPDATE-GLHEADER.
            PERFORM UPDATE-GLSUBHEADER.
@@ -979,16 +995,23 @@
            READ GL-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
-               MOVE "GLHEADER FILE DOES NOT EXIST, CALL YOUR SUPERVISOR"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLH-999.
+              MOVE "GLHEADER FILE DOES NOT EXIST, CALL YOUR SUPERVISOR"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGLH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLHEADER FILE BUSY ON READ, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLH-010.
+              MOVE "GLHEADER FILE BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGLH-010.
            IF WS-JRN-LY-PERIOD NOT = "LYR"
                ADD GLJRN-AMOUNT (SUB-1) TO GL-BALANCE
                ADD GLJRN-AMOUNT (SUB-1) TO GL-PER (SUB-3).
@@ -1008,11 +1031,14 @@
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                GO TO UPGLH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLHEADER RECORD BUSY ON WRITE, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLH-900.
+              MOVE "GLHEADER RECORD BUSY ON WRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGLH-900.
        UPGLH-999.
            EXIT.
      *
@@ -1025,16 +1051,23 @@
            READ GL-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
-               MOVE "GLSUBHEAD FILE DOES'NT EXIST, CALL YOUR SUPERVISOR"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLSH-999.
+              MOVE "GLSUBHEAD FILE DOES'NT EXIST, CALL YOUR SUPERVISOR"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGLSH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLSUBHEADER FILE BUSY ON READ, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLSH-010.
+              MOVE "GLSUBHEADER FILE BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGLSH-010.
             IF WS-JRN-LY-PERIOD NOT = "LYR"
                ADD GLJRN-AMOUNT (SUB-1) TO GL-BALANCE
                ADD GLJRN-AMOUNT (SUB-1) TO GL-PER (SUB-3).
@@ -1054,11 +1087,14 @@
            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                GO TO UPGLSH-999.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLSUBHEAD FILE BUSY ON REWRITE, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLSH-900.
+              MOVE "GLSUBHEAD FILE BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO UPGLSH-900.
        UPGLSH-999.
            EXIT.
       *
@@ -1075,18 +1111,25 @@
            READ GL-LY-MASTER WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
-               MOVE "GLMASTER-LY DOES NOT EXIST, CALL YOUR SUPERVISOR"
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE GL-LY-NUMBER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGL-LY950.
+              MOVE "GLMASTER-LY DOES NOT EXIST, CALL YOUR SUPERVISOR"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              MOVE GL-LY-NUMBER TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO UPGL-LY950.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               MOVE "GLMASTER-LY BUSY ON READ-LOCK, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGL-LY010.
+              MOVE "GLMASTER-LY BUSY ON READ-LOCK, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGL-LY010.
            ADD GLJRN-AMOUNT (SUB-1) TO GL-LY-BALANCE.
            ADD GLJRN-AMOUNT (SUB-1) TO GL-LY-PER (SUB-3).
        UPGL-LY900.
@@ -1095,11 +1138,14 @@
            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                GO TO UPGL-LY999.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               MOVE "GLMASTER BUSY ON REWRITE, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGL-LY900.
+              MOVE "GLMASTER-LY BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGL-LY900.
        UPGL-LY950.
            PERFORM UPDATE-GLHEADER-LY.
            PERFORM UPDATE-GLSUBHEADER-LY.
@@ -1120,15 +1166,22 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                MOVE "GLHEADER-LY DOES NOT EXIST, CALL YOUR SUPERVISOR"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLH-LY999.
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGLH-LY999.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               MOVE "GLHEADER-LY BUSY ON READ, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLH-LY010.
+              MOVE "GLHEADER-LY BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGLH-LY010.
            ADD GLJRN-AMOUNT (SUB-1) TO GL-LY-BALANCE.
            ADD GLJRN-AMOUNT (SUB-1) TO GL-LY-PER (SUB-3).
        UPGLH-LY900.
@@ -1137,11 +1190,14 @@
            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                GO TO UPGLH-LY999.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               MOVE "GLHEADER-LY BUSY ON WRITE, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLH-LY900.
+              MOVE "GLHEADER-LY BUSY ON REWRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGLH-LY900.
        UPGLH-LY999.
            EXIT.
      *
@@ -1155,15 +1211,22 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                MOVE "GLSUBHEAD-LY DOESN'T EXIST, CALL YOUR SUPERVISOR"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLSH-LY999.
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGLSH-LY999.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               MOVE "GLSUBHEADER-LY BUSY ON READ, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLSH-LY010.
+              MOVE "GLSUBHEADER-LY BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGLSH-LY010.
            ADD GLJRN-AMOUNT (SUB-1) TO GL-LY-BALANCE.
            ADD GLJRN-AMOUNT (SUB-1) TO GL-LY-PER (SUB-3).
        UPGLSH-LY900.
@@ -1172,11 +1235,14 @@
            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                GO TO UPGLSH-LY999.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               MOVE "GLSUBHEAD FILE BUSY ON WRITE, 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPGLSH-LY900.
+              MOVE "GLSUBHEAD FILE BUSY ON REWRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO UPGLSH-LY900.
        UPGLSH-LY999.
            EXIT.
       *
@@ -1190,19 +1256,17 @@
            READ GLJRN-FILE WITH LOCK
               INVALID KEY NEXT SENTENCE.
            IF WS-GLJRN-ST1 = 23 OR 35 OR 49
-      *         MOVE " STATUS = 23 ETC...." TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-      *        MOVE WS-CURRENTPER TO WS-REST SUB-3
               GO TO RSTT-999.
            IF WS-GLJRN-ST1 NOT = 0
-              MOVE 0 TO WS-GLJRN-ST1
-              MOVE "GLJRN TRANS-RECORD BUSY!!" TO WS-MESSAGE
+              MOVE "GLJRN RECORD BUSY ON READ-LOCK, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
               GO TO RSTT-010.
            IF GLJRN-REFERENCE NOT = WS-JRN
-      *        MOVE "REF NOT = JRN...." TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-      *        MOVE WS-CURRENTPER TO WS-REST SUB-3
               GO TO RSTT-999.
            IF GLJRN-COMPLETE = "Y"
               MOVE 88 TO WS-GLJRN-ST1
@@ -1254,20 +1318,26 @@
            REWRITE GLJRN-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-GLJRN-ST1 NOT = 0
-              MOVE 0 TO WS-GLJRN-ST1
               MOVE "GLJRN REWRITE ERROR - RWST-018, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
               GO TO RWST-018.
            GO TO RWST-999.
        RWST-019.
             WRITE GLJRN-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-GLJRN-ST1 NOT = 0
-              MOVE 0 TO WS-GLJRN-ST1
-              MOVE "GLJRN-TRANS WRITE ERROR - RWST-019, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              MOVE "GLJRN WRITE ERROR - RWST-019, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
               GO TO RWST-019.
        RWST-999.
             EXIT.
@@ -1278,10 +1348,19 @@
        DJRN-005.
            MOVE 3010 TO POS.
            DISPLAY
-            "ENTER Y=YES TO DELETE, N=NO TO STOP THE DELETION. [  ]"
+            "ENTER Y=YES TO DELETE, N=NO TO STOP THE DELETION. [ ]"
                AT POS
            ADD 51 TO POS
-           ACCEPT WS-ANSWER AT POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 60        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-ANSWER.
+
            IF WS-ANSWER NOT = "N" AND NOT = "Y"
               DISPLAY " " AT 3079 WITH BELL
               GO TO DJRN-005.
@@ -1291,9 +1370,13 @@
            DELETE GLJRN-FILE
               INVALID KEY NEXT SENTENCE.
            IF WS-GLJRN-ST1 NOT = 0
-              MOVE 0 TO WS-GLJRN-ST1
-              MOVE "GLJRN-TRANS DELETE ERROR - DJRN-018" TO WS-MESSAGE
+              MOVE "GLJRN BUSY ON DELETE, 'ESC' TO RETRY." 
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
               GO TO DJRN-018.
        DJRN-999.
             EXIT.
@@ -1302,10 +1385,13 @@
        WRTR-000.
            OPEN I-O GLTRANS-FILE.
            IF WS-GLTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-GLTRANS-ST1
               MOVE "GL TRANS. BUSY ON OPEN, PRESS 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
               GO TO WRTR-000.
            MOVE 1 TO SUB-1.
        WRTR-010.
@@ -1330,16 +1416,23 @@
             WRITE GLTRANS-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GLTRANS-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-GLTRANS-ST1
-                MOVE "GLTRANS - NO FILE, 'ESC' TO RETRY" TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WRTR-015.
+              MOVE "GLTRANS BUSY23 ON WRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO WRTR-015.
             IF WS-GLTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-GLTRANS-ST1
-                MOVE "GLTRANS FILE BUSY ON WRITE, 'ESC' TO RETRY"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WRTR-015.
+              MOVE "GLTRANS FILE BUSY ON WRITE, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO WRTR-015.
        WRTR-020.
             ADD 1 TO SUB-1.
             IF SUB-1 < 51
@@ -1353,11 +1446,14 @@
        WRITE-GLTRANS-LY SECTION.
        WRTR-LY-000.
            OPEN I-O GLTRANS-LY-FILE.
-           IF WS-GLTRANS-LY-ST1 NOT = 0 
-              MOVE 0 TO WS-GLTRANS-LY-ST1
+           IF WS-GLTRANS-LY-ST1 NOT = 0
               MOVE "GLTRANS-LY BUSY ON OPEN, PRESS 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
               GO TO WRTR-LY-000.
            MOVE 1 TO SUB-1.
        WRTR-LY-010.
@@ -1378,16 +1474,23 @@
             WRITE GLTRANS-LY-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GLTRANS-LY-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-GLTRANS-LY-ST1
-                MOVE "GLTRANS-LY NO FILE, GOING TO RETRY" TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WRTR-LY-015.
+              MOVE "GLTRANS-LY BUSY23 ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO WRTR-LY-015.
             IF WS-GLTRANS-LY-ST1 NOT = 0
-                MOVE 0 TO WS-GLTRANS-LY-ST1
-                MOVE "GLTRANS-LY BUSY ON WRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WRTR-LY-015.
+              MOVE "GLTRANS-LY BUSY ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO WRTR-LY-015.
        WRTR-LY-020.
             ADD 1 TO SUB-1.
             IF SUB-1 < 51
@@ -1404,14 +1507,21 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               DISPLAY "NO PARAMETER RECORD!!!!"
-               CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+              MOVE "NO GLPARAMETER RECORD READ, CALL THE SUPERVISOR."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -1422,14 +1532,21 @@
            READ GLPARAMETER-FILE WITH LOCK          
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               DISPLAY "NO PARAMETER RECORD!!!!"
-               CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
+              MOVE "NO GLPARAMETER23 ON READ-LOCK, CALL THE SUPERVISOR."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ-LOCK, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RPL-000.
        RPL-999.
            EXIT.
@@ -1439,14 +1556,21 @@
            REWRITE GLPARAMETER-REC
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               DISPLAY "PARAMETER RECORD NOT UPDATED!!!!"
-               CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
-           IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
-              MOVE "PARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
+              MOVE "NO GLPARAMETER23 ON REWRITE, CALL THE SUPERVISOR."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              EXIT PROGRAM.
+           IF WS-GLPARAMETER-ST1 NOT = 0
+              MOVE "GLPARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO REWP-000.
        REWP-999.
            EXIT.
@@ -1777,26 +1901,35 @@
        OPEN-010.
            OPEN I-O GL-LY-MASTER.
            IF WS-GLMAST-ST1 NOT = 0 
-              MOVE 0 TO WS-GLMAST-ST1
               MOVE "GLMASTER-LY FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
               GO TO OPEN-010.
        OPEN-011.
            OPEN I-O GL-MASTER.
            IF WS-GLMAST-ST1 NOT = 0 
-              MOVE 0 TO WS-GLMAST-ST1
               MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
               GO TO OPEN-011.
        OPEN-012.
            OPEN I-O GLPARAMETER-FILE.
            IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-012.
 
            PERFORM READ-PARAMETER.
@@ -1804,9 +1937,13 @@
        OPEN-015.
            OPEN I-O GLJRN-FILE.
            IF WS-GLJRN-ST1 NOT = 0 
-              MOVE 0 TO WS-GLJRN-ST1
-              MOVE "GLJRN FILE BUSY, BE PATIENT!" TO WS-MESSAGE
+              MOVE "GLJRN FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
               GO TO OPEN-015.
        OPEN-016.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -1851,4 +1988,5 @@
        Copy "ClearScreen".
        Copy "ErrorMessage".
        Copy "Error1Message".
+       Copy "CTOSCobolAccept".
       * END-OF-JOB

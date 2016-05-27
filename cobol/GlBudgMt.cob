@@ -14,11 +14,10 @@
            COPY ChlfdGlMast.
       *
        WORKING-STORAGE SECTION.
-       77  WS-ACCEPT                 PIC X.
-       77  WS-LAST-ACC               PIC X(12) VALUE " ".
+       77  WS-ACCEPT           PIC X.
+       77  WS-LAST-ACC         PIC X(12) VALUE " ".
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
+           03  WS-GLMAST-ST1   PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
                05  WS-HEADER   PIC X(2).
@@ -125,12 +124,13 @@
                PERFORM CLEAR-SUBFIELDS
                GO TO PRR-999.
             IF WS-GLMAST-ST1 NOT = 0
+               MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
-               MOVE "ERROR IN WS-ST1 AT PRR-020" TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 2845 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
-               PERFORM ERROR-010 THRU ERROR-020
                GO TO PRR-002.
            MOVE GL-NUMBER TO WS-GLNUMBER WS-LAST-ACC.
 
@@ -185,20 +185,23 @@
                INVALID KEY NEXT SENTENCE.
             IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "HEADER ACCOUNT DOES NOT EXIST." TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 2840 TO POS
-               DISPLAY WS-HEAD-ACC AT POS
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
-               PERFORM ERROR-010 THRU ERROR-020
+               MOVE WS-HEAD-ACC TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RH-010.
             IF WS-GLMAST-ST1 NOT = 0
                MOVE 3010 TO POS
                MOVE "GLMASTER BUSY ON READ-LOCK, WS-GLMAST-ST1 = "
-                TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3040 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
-               PERFORM ERROR-010 THRU ERROR-020
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO RH-010.
            MOVE 0 TO SUB-1.
        RH-030.
@@ -213,18 +216,22 @@
                INVALID KEY NEXT SENTENCE.
             IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "HEADER ACCOUNT NOT RE-WRITTEN." TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3040 TO POS
-               DISPLAY WS-HEAD-ACC AT POS
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
-               PERFORM ERROR-010 THRU ERROR-020
+               MOVE WS-HEAD-ACC TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RH-999.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE "ERROR IN WS-ST1 AT RH-050=" TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3040 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
-               PERFORM ERROR-010 THRU ERROR-020
+               MOVE "GL-MASTER HEADER BUSY ON REWRITE, E'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO RH-050.
        RH-999.
            EXIT.
@@ -238,17 +245,22 @@
                INVALID KEY NEXT SENTENCE.
             IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "SUBHEADER ACCOUNT DOES NOT EXIST" TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3040 TO POS
-               DISPLAY WS-SUBHEAD-ACC AT POS
-               PERFORM ERROR-010 THRU ERROR-020
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
+               MOVE WS-SUBHEAD-ACC TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RSH-010.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE "ERROR IN WS-ST1 AT RSH-010=" TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3038 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
-               PERFORM ERROR-010 THRU ERROR-020
+               MOVE "GL-MAST SUBHEAD BUSY ON REWRITE, E'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO RSH-010.
            MOVE 0 TO SUB-1.
        RSH-030.
@@ -263,17 +275,22 @@
                INVALID KEY NEXT SENTENCE.
             IF WS-GLMAST-ST1 = 23 OR 35 OR 49
                MOVE "SUBHEADER ACCOUNT NOT RE-WRITTEN." TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3045 TO POS
-               DISPLAY WS-SUBHEAD-ACC AT POS
-               PERFORM ERROR-010 THRU ERROR-020
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
+               MOVE WS-SUBHEAD-ACC TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RSH-999.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE "ERROR IN WS-ST1 AT RSH-050=" TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3038 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
-               PERFORM ERROR-010 THRU ERROR-020
+               MOVE "GL-MAST SUBHEAD BUSY ON REWRITE, E'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO RSH-050.
        RSH-999.
            EXIT.
@@ -282,10 +299,14 @@
        OPEN-000.
            OPEN I-O GL-MASTER.
            IF WS-GLMAST-ST1 NOT = 0
-                MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO OPEN-000.
+               MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
+               GO TO OPEN-000.
        OPEN-010.
            PERFORM GET-SYSTEM-Y2K-DATE.
       *    ACCEPT WS-DATE FROM DATE.
@@ -311,5 +332,6 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
        Copy "CTOSCobolAccept".
       *END-OF-JOB.

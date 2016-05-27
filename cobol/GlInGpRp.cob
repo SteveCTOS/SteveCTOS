@@ -82,34 +82,31 @@
        77  WS-COLUMN6-NETT           PIC S9(8)V99 VALUE 0.
        77  WS-COLUMN7-NETT           PIC S9(8)V99 VALUE 0.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-MENU-STATUS.
-           03  WS-MENU-ST1       PIC 99.
-      *     03  WS-MENU-ST2       PIC 9(2) COMP-X.
+           03  WS-MENU-ST1        PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
-               05  WS-HEADER   PIC X(2).
-               05  WS-SUB      PIC X(4).
-           03  WS-REST         PIC X(6).
+               05  WS-HEADER      PIC X(2).
+               05  WS-SUB         PIC X(4).
+           03  WS-REST            PIC X(6).
        01  WS-DATE-SPLIT.
-           03  WS-DATE-CC      PIC 99.
-           03  WS-DATE-YY      PIC 99.
+           03  WS-DATE-CC         PIC 99.
+           03  WS-DATE-YY         PIC 99.
        01  COMPANIES.
-           03  COM-NUM         PIC Z9.
-           03  FILLER          PIC X(2) VALUE ". ".
-           03  COM-NAME        PIC X(42).
-           03  COM-USED        PIC X(15).
+           03  COM-NUM            PIC Z9.
+           03  FILLER             PIC X(2) VALUE ". ".
+           03  COM-NAME           PIC X(42).
+           03  COM-USED           PIC X(15).
        01  COMPANIES-LIST-NAMES.
          02  COMPANIES-LIST OCCURS 20.
-           03  LIST-GROUP       PIC X.
-           03  LIST-NAME        PIC X(40).
-           03  LIST-NUMBER      PIC 99.
-           03  LIST-VOL-DIR     PIC X(25).
-           03  LIST-NOT-THERE   PIC X.
+           03  LIST-GROUP         PIC X.
+           03  LIST-NAME          PIC X(40).
+           03  LIST-NUMBER        PIC 99.
+           03  LIST-VOL-DIR       PIC X(25).
+           03  LIST-NOT-THERE     PIC X.
        01  WS-BRANCH-INFO-NAMES.
          02  WS-BRANCH-INFO OCCURS 20.
            03  WS-BRANCH-TYPE          PIC 9.
@@ -430,7 +427,10 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON OPEN, GOING TO RE-TRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-MENU-ST1
                GO TO RNC-005.
            MOVE 1 TO PTY-NUMBER.
@@ -447,7 +447,11 @@
            IF WS-MENU-ST1 NOT = 0
                MOVE "COMPANY FILE BUSY ON READ-NEXT, GOING TO RE-TRY."
                TO WS-MESSAGE
-               PERFORM ERROR-000
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-MENU-ST1
                GO TO RNC-010.
                
            MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-20)
@@ -601,7 +605,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-GROUP.
 
-      *     ACCEPT WS-GROUP AT POS.
            IF WS-GROUP NOT > " " 
               MOVE "GROUP NUMBER MUST BE > SPACES" TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
@@ -1013,11 +1016,13 @@
                ADD 1 TO SUB-1
                GO TO PRTM-001.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE 3010 TO POS
-               DISPLAY "ERROR IN WS-GLMAST-ST1" AT POS
-               ADD 22 TO POS
-               DISPLAY WS-GLMAST-ST1 AT POS
+               MOVE "GLMASTER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-MENU-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-MENU-ST1
                GO TO PRTM-002.
             IF GL-NUMBER < WS-NEXT-NUMBER
                GO TO PRTM-002.
@@ -1083,7 +1088,8 @@
                MOVE SUB-1 TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-GL-ACCOUNT (SUB-1) TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
                
            MOVE "DON'T KNOW WHAT HAPPENED, STUCK PRTM-050" TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -1433,14 +1439,21 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               MOVE "NO GLPARAMETER RECORD READ, CALL THE SUPERVISOR."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               STOP RUN.
+              MOVE "NO GLPARAMETER RECORD READ, CALL THE SUPERVISOR."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE "GLPARAMETER BUSY ON READ, RP-000, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -1450,16 +1463,24 @@
            OPEN I-O GL-MASTER.
            IF WS-GLMAST-ST1 NOT = 0
                MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-                TO WS-MESSAGE
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO OPEN-000.
        OPEN-005.
            OPEN I-O GLPARAMETER-FILE.
            IF WS-GLPARAMETER-ST1 NOT = 0 
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-             GO TO OPEN-005.
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO OPEN-005.
        OPEN-0051.
            PERFORM READ-PARAMETER
            MOVE GLPA-NAME TO CO-NAME

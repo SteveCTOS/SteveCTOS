@@ -187,7 +187,10 @@
             IF WS-GLMAST-ST1 NOT = 0
                MOVE "GLMASTER FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
                GO TO RGL-002.
        RGL-999.
@@ -200,15 +203,21 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               MOVE "NO PARAMETER RECORD, CALL YOUR SUPERVISOR."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               STOP RUN.
+              MOVE "NO PARAMETER RECORD, CALL YOUR SUPERVISOR."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-010.
        RP-999.
            EXIT.
@@ -228,8 +237,14 @@
                MOVE 0 TO WS-GLJRN-ST1
                GO TO PRR-999.
             IF WS-GLJRN-ST1 NOT = 0
-               MOVE 0 TO WS-GLJRN-ST1
-               GO TO PRR-002.
+              MOVE "GLJRN FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
+              GO TO PRR-002.
       * TAKEN OUT SO ALL JRN'S ARE PRINTED.
       *      IF GLJRN-COMPLETE NOT = "Y"
       *          GO TO PRR-002.
@@ -340,15 +355,23 @@
            IF WS-GLMAST-ST1 NOT = 0
              MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
              TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-GLMAST-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             MOVE 0 TO WS-GLMAST-ST1
              GO TO OPEN-000.
        OPEN-005.
            OPEN I-O GLJRN-FILE.
            IF WS-GLJRN-ST1 NOT = 0
-             MOVE "JRN FILE BUSY ON OPEN, 'ESC' TO RETRY."
-             TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             GO TO OPEN-005.
+              MOVE "GLJRN FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
+              GO TO OPEN-005.
        OPEN-010.
            PERFORM GET-SYSTEM-Y2K-DATE.
       *     ACCEPT WS-DATE FROM DATE.
@@ -357,11 +380,14 @@
            MOVE DISPLAY-DATE TO H1-DATE.
        OPEN-012.
            OPEN I-O GLPARAMETER-FILE.
-           IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
+           IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-012.
 
            PERFORM READ-PARAMETER.
