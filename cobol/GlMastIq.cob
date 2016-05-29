@@ -35,13 +35,11 @@
                05  WS-GLSUBHEADER  PIC X(4).
            03  WS-REST             PIC X(6).
        01  WS-MONTH-BUDGET.
-           03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
+           03  WS-MONTH-BU         PIC S9(8)V99 OCCURS 13.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
-      *     03  WS-GLPARAMETER-ST2   PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -317,10 +315,13 @@
                 MOVE WS-NUMBER TO GL-NUMBER
                 GO TO R-GL-999.
              IF WS-GLMAST-ST1 NOT = 0
-                MOVE 0 TO WS-GLMAST-ST1
-                MOVE "GL RECORD BUSY ON READ, 'ESC' TO RETRY."
+                MOVE "GL-MASTER BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GLMAST-ST1
                 GO TO R-GL-010.
              MOVE "N" TO NEW-GLNO.
        R-GL-999.
@@ -345,15 +346,24 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-GLMAST-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GL-MASTER FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+           IF WS-GLMAST-ST1 = 23 OR 35 OR 49
+               MOVE "GL-MASTER BUSY23 ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO RSN-005.
            IF WS-GLMAST-ST1 NOT = 0
+               MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
-               PERFORM START-GL
+      *         PERFORM START-GL
                GO TO RSN-005.
            MOVE GL-NUMBER TO WS-NUMBER.
            MOVE "N" TO NEW-GLNO.
@@ -372,11 +382,14 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RDPR-999.
-           IF WS-GLMAST-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-GLMAST-ST1
-           MOVE "GL-MASTER BUSY, ON READ-PREVIOUS-LOCK, 'ESC' TO RETRY."
+           IF WS-GLMAST-ST1 = 23 OR 35 OR 49
+           MOVE "GL-MASTER BUSY23, ON READ-PREV-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO RDPR-005.
            IF WS-GLMAST-ST1 NOT = 0
                MOVE 0 TO WS-GLMAST-ST1
@@ -395,16 +408,23 @@
            READ GLPARAMETER-FILE
                  INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-                MOVE "PARAMETER RECORD NOT THERE, 'ESC' TO EXIT"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-999.
+              MOVE "PARAMETER RECORD NOT THERE, 'ESC' TO EXIT"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-999.
            IF WS-GLPARAMETER-ST1 NOT = 0
-                MOVE 0 TO WS-GLPARAMETER-ST1
-                MOVE "PARAMETER RECORD BUSY, PRESS 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-010.
+              MOVE "PARAMETER RECORD BUSY, PRESS 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-010.
        RPR-999.
             EXIT.
       *
@@ -435,19 +455,25 @@
        OPEN-000.
            OPEN I-O GL-MASTER.
            IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
                MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO OPEN-000.
         OPEN-001.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               MOVE "GLPARAMETER BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-001.
+              MOVE "GLPARAMETER BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO OPEN-001.
             PERFORM READ-PARAMETER-RECORD.
             IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                CLOSE GLPARAMETER-FILE
