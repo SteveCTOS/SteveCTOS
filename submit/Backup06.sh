@@ -38,7 +38,7 @@ cp -a /ctools/data11/* /media/ctools/USB/data11
 echo Copying Data12.....
 cp -a /ctools/data12/* /media/ctools/USB/data12
 
-rm /ctools/lock/*
+rm /ctools/lock/_db.*
 
 Submit MainCont TapeBackupFax.Sub01
 

@@ -46,7 +46,7 @@ cp -a /ctools/data12/* /media/ctools/USB/data12
 #cd /ctools/bin
 
 echo Removing Spl and Lock files.....
-rm /ctools/lock/*
+rm /ctools/lock/_db.*
 rm /ctools/spl/*
 
 Submit MainCont TapeBackupVol.Sub01
