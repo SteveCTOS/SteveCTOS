@@ -39,6 +39,7 @@
            77  WS-DEL-DELAY       PIC 99.
            77  WS-ONHAND          PIC 9(6).
            77  WS-AVECOST         PIC 9(6)V99.
+           77  WS-DISCOST         PIC Z(14)9V99.
            77  WS-RANGE1          PIC X(15) VALUE " ".
            77  WS-RANGE2          PIC X(15) VALUE " ".
            77  WS-UP-DESC         PIC X VALUE "N".
@@ -156,9 +157,18 @@
            MOVE 921 TO POS.
            DISPLAY "  TO STOCK NUMBER: [               ]" AT POS
            MOVE 941 TO POS.
-           ACCEPT WS-RANGE2 AT POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 15        TO CDA-DATALEN.
+           MOVE 6         TO CDA-ROW.
+           MOVE 40        TO CDA-COL.
+           MOVE CDA-GREEN TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-RANGE2.
+
            IF W-ESCAPE-KEY = 4
-              GO TO GET-000.
+              GO TO GET-005.
             IF WS-RANGE2 = " "
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-010.
@@ -181,8 +191,8 @@
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 9         TO CDA-ROW.
-           MOVE 71        TO CDA-COL.
+           MOVE 8         TO CDA-ROW.
+           MOVE 70        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
@@ -327,40 +337,61 @@
            PERFORM ENTER-UNIT-OF-SALE.
            
            MOVE PRICE-IMP-OLD-DEALER-PRICE TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-           COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
+      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
            MOVE NUMERIC-RATE               TO PRICE-OLD-DEALER-PRICE
            
            MOVE PRICE-IMP-NEW-DEALER-PRICE TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-           COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
+      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
            MOVE NUMERIC-RATE               TO PRICE-NEW-DEALER-PRICE
            
            MOVE PRICE-IMP-DEALER-DISCOUNT  TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
-           COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100.
+      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100.
            MOVE NUMERIC-RATE               TO PRICE-DEALER-DISCOUNT
 
            MOVE PRICE-IMP-OLD-LIST-PRICE   TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-           COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100.
+      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100.
            MOVE NUMERIC-RATE               TO PRICE-OLD-LIST-PRICE.
 
+
+
+
            MOVE PRICE-IMP-NEW-LIST-PRICE   TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-           COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
+           
+      *     MOVE PRICE-IMP-NEW-LIST-PRICE TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE NUMERIC-RATE TO WS-DISCOST
+      *     MOVE WS-DISCOST TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+      *      COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
            MOVE NUMERIC-RATE               TO PRICE-NEW-LIST-PRICE.
+
+
+      *     MOVE NUMERIC-RATE TO WS-DISCOST
+      *     MOVE WS-DISCOST TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
+      *     MOVE PRICE-NEW-LIST-PRICE TO WS-DISCOST
+      *     MOVE WS-DISCOST TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
        ID-020.
            WRITE PRICE-RECORD.
-           IF WS-PRICE-ST1 = 23 OR 35 OR 49
-      *           MOVE "INVALID WRITE OF PRICE UPDATE, ITEM EXISTS"
-      *            TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-      *           MOVE WS-PRICE-ST1 TO WS-MESSAGE
-      *           PERFORM ERROR1-000
-      *           MOVE WS-PRICE-ST2 TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-      *           PERFORM ERROR1-020
+           IF WS-PRICE-ST1 = 22 OR 23 OR 35 OR 49
+                 MOVE "INVALID WRITE OF PRICE UPDATE, ITEM EXISTS"
+                  TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRICE-ST1 TO WS-MESSAGE
+                 PERFORM ERROR1-MESSAGE
+                 PERFORM ERROR1-020
                  GO TO ID-005.
            IF WS-PRICE-ST1 NOT = 0
                  MOVE "INVALID WRITE OF PRICE UPDATE, 'ESC' TO RETRY."
@@ -372,6 +403,46 @@
                  GO TO ID-020.
            GO TO ID-005.
        ID-999.
+           EXIT.
+      *
+       REMOVE-LEADING-ZEROS SECTION.
+       RLZE-005.
+           MOVE SPACES TO DATA-RATE.
+           MOVE 1 TO SUB-1.
+       RLZE-010.
+           IF AL-RATE (SUB-1) NOT = "0"
+              GO TO RLZE-015.
+
+           MOVE " " TO AL-RATE (SUB-1).
+           IF SUB-1 < 15
+              ADD 1 TO SUB-1
+              GO TO RLZE-010.
+       RLZE-015.
+           MOVE 14 TO SUB-1 SUB-2.
+       RLZE-020.
+           MOVE AL-RATE (SUB-1) TO DAT-RATE (SUB-2).
+           SUBTRACT 1 FROM SUB-1 SUB-2.
+
+           MOVE AL-RATE (SUB-1) TO DAT-RATE (SUB-2).
+           SUBTRACT 1 FROM SUB-1 SUB-2.
+
+           MOVE "." TO DAT-RATE (SUB-2).
+           SUBTRACT 1 FROM SUB-2.
+       RLZE-025.
+           MOVE AL-RATE (SUB-1) TO DAT-RATE (SUB-2).
+           
+           IF SUB-2 > 1
+               SUBTRACT 1 FROM SUB-1 SUB-2
+               GO TO RLZE-025.
+           
+      *     MOVE DATA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR1-000       
+      *     MOVE ALPHA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
+
+           MOVE DATA-RATE TO ALPHA-RATE.
+       RLZE-999.
            EXIT.
       *
        ENTER-UNIT-OF-SALE SECTION.
@@ -878,30 +949,46 @@
                GO TO OPEN-005.
            OPEN I-O PRICE-IMP-MASTER.
            IF WS-STOCK-ST1 NOT = 0
-             MOVE "ERROR ON OPENING IMPORT FILE - /spl/PriceSequ."
+             MOVE 
+             "ERC ON OPENING I-O IMPORT FILE - /ctools/spl/PriceSequ."
               TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE WS-STOCK-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
              GO TO OPEN-003.
+           GO TO OPEN-006.
        OPEN-005.
            OPEN I-O PRICE-MASTER.
            IF WS-PRICE-ST1 NOT = 0
-             MOVE "ERROR ON OPENING PRICE LIST - /spl/Prices."
+             MOVE "ERC ON OPENING I-O PRICE LIST - /ctools/spl/Prices."
               TO WS-MESSAGE
              PERFORM ERROR1-000
-             MOVE WS-STOCK-ST1 TO WS-MESSAGE
+             MOVE WS-PRICE-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
              GO TO OPEN-005.
-       OPEN-010.
-           OPEN I-O STLOOK-MASTER.
-           IF WS-STOCK-ST1 NOT = 0
-             MOVE "ERROR ON OPENING EXCEL FILE - /data01/StockLookup."
+           GO TO OPEN-010.
+       OPEN-006.
+           OPEN OUTPUT PRICE-MASTER.
+           IF WS-PRICE-ST1 NOT = 0
+             MOVE 
+             "ERC ON OPENING OUTPUT PRICE LIST - /ctools/spl/Prices."
               TO WS-MESSAGE
              PERFORM ERROR1-000
-             MOVE WS-STOCK-ST1 TO WS-MESSAGE
+             MOVE WS-PRICE-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             GO TO OPEN-006.
+           GO TO OPEN-015.
+       OPEN-010.
+           OPEN I-O STLOOK-MASTER.
+           IF WS-LOOK-ST1 NOT = 0
+             MOVE 
+           "ERROR ON OPENING EXCEL FILE - /ctools/data01/StockLookup."
+              TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-LOOK-ST1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
              MOVE WS-STOCKLOOKUP TO WS-MESSAGE
              PERFORM ERROR-MESSAGE

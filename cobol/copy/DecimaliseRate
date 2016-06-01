@@ -41,8 +41,8 @@
              MOVE 1 TO SUB-5.
        DR-003.
       * IF SUB-6 = 1 IT MEANS THIS IS THE 1ST '.' WE HAVE FOUND
-      * IF SUB-6 = 2 IT MEANS THIS IS THE 2ND '.' FOUND THEREFORE WE MUST
-      *            MOVE 0 TO THIS POS.
+      * IF SUB-6 = 2 IT MEANS THIS IS THE 2ND '.' FOUND THEREFORE WE
+      *                                         MUST MOVE 0 TO THIS POS.
              IF AL-RATE (SUB-5) = "."
               IF SUB-6 = 1
                  MOVE 2 TO SUB-6
