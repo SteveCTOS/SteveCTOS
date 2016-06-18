@@ -190,29 +190,39 @@
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLJRN-ST1
 
-                MOVE "GL-MASTERLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-GL-LY-ST1
+              MOVE "GL-MASTERLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
 
-                MOVE "GL-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-GL-LY-ST1
+              MOVE "GL-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
 
-                MOVE "GL-MASTER BUSY ON OPEN I-O, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-GLMAST-ST1
+            MOVE "GLMASTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-GLMAST-ST1
+
+              MOVE "GL-MASTER BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
 
               MOVE "GL-TRANSLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
               TO WS-MESSAGE

@@ -24,7 +24,7 @@
            03  WS-NAME          PIC X(42) VALUE " ".
            03  WS-TYPE          PIC X(44) VALUE " ".
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1    PIC 99.
+           03  WS-GL-LY-ST1     PIC 99.
        01  WS-GLACC.
            03  WS-SUBHEADER.
                05  WS-GLHEADER     PIC X(2).
@@ -100,24 +100,18 @@
                START GL-LY-MASTER KEY NOT < GL-LY-KEY
                    INVALID KEY NEXT SENTENCE.
                    
-            MOVE 0 TO F-EXIT-CH.
             IF WS-GL-LY-ST1 NOT = 0
-                MOVE 3010 TO POS
-                DISPLAY "BAD START, TRY AGAIN LATER, 'ESC' TO EXIT."
-                 AT POS
-                ADD 30 TO POS
-                DISPLAY WS-GL-LY-ST1 AT POS
-                MOVE 0 TO WS-GL-LY-STATUS
-                CLOSE GL-LY-MASTER
-                CALL "LOCKKBD"
-                GO TO READ-999.
-            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
-                MOVE 3010 TO POS
-                DISPLAY "TRY ONE THAT EXISTS, 'ESC' TO EXIT." AT POS
-                MOVE 0 TO WS-GL-LY-STATUS
-                CLOSE GL-LY-MASTER
-                CALL "LOCKKBD"
-                GO TO READ-999.
+               MOVE "GLMASTER-LY BUSY ON START, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GL-LY-ST1
+               CLOSE GL-LY-MASTER
+               GO TO READ-999.
+
+            MOVE 0 TO F-EXIT-CH.
             MOVE 0 TO SUB-2 SUB-3.
             MOVE 800 TO WS-SUB1.
         READ-010.
@@ -132,14 +126,18 @@
                 GO TO READ-999.
             IF F-EXIT-CH = 1
              READ GL-LY-MASTER PREVIOUS.
-            IF WS-GL-LY-ST1 = 91
-                MOVE 0 TO WS-GL-LY-STATUS
-                MOVE "GL-ST1 = 91 ON READ NEXT, 'ESC' TO RETRY."
-                   TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                PERFORM CLEAR-MIDDLE
-                CLOSE GL-LY-MASTER
-                GO TO READ-999.
+            IF WS-GL-LY-ST1 NOT = 0
+               MOVE "GLMASTER-LY BUSY ON READ-NEXT, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GL-LY-ST1
+               GO TO READ-010.
+      *          PERFORM CLEAR-MIDDLE
+      *          CLOSE GL-LY-MASTER
+      *          GO TO READ-999.
             IF WS-1ST = "Y"
               IF GL-LY-DESCRIPTION NOT = " "
                 MOVE GL-LY-DESCRIPTION TO WS-SPLIT-INPUT-ACC
@@ -273,9 +271,10 @@
             IF WS-GL-LY-ST1 NOT = 0
                MOVE "GLMasterLY BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GL-LY-ST1
                GO TO OPEN-000.
        OPEN-010.

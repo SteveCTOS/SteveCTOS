@@ -52,30 +52,30 @@
                05  WS-GLSUBHEADER  PIC X(4).
            03  WS-RESTOFACCOUNT    PIC X(6).
        01  WS-DAILY-MESSAGE.
-           03  WS-DAILY-1ST     PIC X(20) VALUE " ".
-           03  WS-DAILY-2ND     PIC X(20) VALUE " ".
-           03  WS-DAILY-3RD     PIC X(20) VALUE " ".
-           03  WS-DAILY-4TH     PIC X(20) VALUE " ".
+           03  WS-DAILY-1ST        PIC X(20) VALUE " ".
+           03  WS-DAILY-2ND        PIC X(20) VALUE " ".
+           03  WS-DAILY-3RD        PIC X(20) VALUE " ".
+           03  WS-DAILY-4TH        PIC X(20) VALUE " ".
        01  SPLIT-TIME.
-           03  SPLIT-HR         PIC 99.
-           03  SPLIT-FIL1       PIC X.
-           03  SPLIT-MN         PIC 99.
-           03  SPLIT-FIL2       PIC X.
-           03  SPLIT-SC         PIC 99.
+           03  SPLIT-HR            PIC 99.
+           03  SPLIT-FIL1          PIC X.
+           03  SPLIT-MN            PIC 99.
+           03  SPLIT-FIL2          PIC X.
+           03  SPLIT-SC            PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1     PIC 99.
+           03  WS-GLTRANS-ST1      PIC 99.
        01  WS-GLTRANS-LY-STATUS.
-           03  WS-GLTRANS-LY-ST1  PIC 99.
+           03  WS-GLTRANS-LY-ST1   PIC 99.
        01  WS-GLJRN-STATUS.
-           03  WS-GLJRN-ST1       PIC 99.
+           03  WS-GLJRN-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1 PIC 99.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1      PIC 99.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1       PIC 99.
+           03  WS-GL-LY-ST1        PIC 99.
        01  WS-DAILY-STATUS.
-           03  WS-DAILY-ST1       PIC 99.
+           03  WS-DAILY-ST1        PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
@@ -291,12 +291,15 @@
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
                DISPLAY "NO GLPARAMETER RECORD!!!!"
                CALL "LOCKKBD" USING W-ERC
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY."
-               TO WS-MESSAGE
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -420,10 +423,14 @@
            START GLJRN-FILE KEY NOT < GLJRN-KEY
                INVALID KEY NEXT SENTENCE.
            IF WS-GLJRN-ST1 NOT = 0
-               MOVE "ERROR IN START ON GLJRN, 'ESC' TO EXIT."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO DGLJ-900.
+              MOVE "ERROR IN START ON GLJRN, 'ESC' TO EXIT."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLJRN-ST1
+              GO TO DGLJ-900.
        DGLJ-010.
            READ GLJRN-FILE NEXT WITH LOCK
                AT END
@@ -636,10 +643,14 @@
            START GL-MASTER KEY NOT < GL-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-GLMAST-ST1 NOT = 0
-                MOVE
+              MOVE
            "WE HAVE A PROBLEM IN THE START OF GLMASTER GLM-005."
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE.
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1.
            IF WS-MONTH-YEAR = "Y"
                MOVE 1710 TO POS
                DISPLAY " 4. GlMaster Files Being Processed." AT POS
@@ -734,10 +745,14 @@
             PERFORM OPEN-000.
             MOVE 1 TO GLPA-RECORD.
             READ GLPARAMETER-FILE WITH LOCK
-                INVALID KEY
-                MOVE "GLPARAMETER RECORD NOT FOUND!!!" TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO PAR-999.
+              INVALID KEY
+              MOVE "GLPARAMETER RECORD NOT FOUND!!!" TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO PAR-999.
        PAR-010.
             ADD 1 TO GLPA-CURRENT-GLPER.
             MOVE "N" TO GLPA-RECJRN-POST.

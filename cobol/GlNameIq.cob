@@ -100,21 +100,18 @@
                START GL-MASTER KEY NOT < GL-KEY
                    INVALID KEY NEXT SENTENCE.
                    
-            MOVE 0 TO F-EXIT-CH.
             IF WS-GLMAST-ST1 NOT = 0
-                MOVE 3010 TO POS
-                DISPLAY "BAD START, TRY AGAIN LATER !!!!!" AT POS
-                ADD 30 TO POS
-                DISPLAY WS-GLMAST-ST1 AT POS
-                MOVE 0 TO WS-GLMAST-STATUS
-                CLOSE GL-MASTER
-                GO TO READ-999.
-            IF WS-GLMAST-ST1 = 23 OR 35 OR 49
-                MOVE 3010 TO POS
-                DISPLAY "TRY ONE THAT EXISTS!!!" AT POS
-                MOVE 0 TO WS-GLMAST-STATUS
-                CLOSE GL-MASTER
-                GO TO READ-999.
+               MOVE "GL-MASTER BUSY ON START, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
+               CLOSE GL-MASTER
+               GO TO READ-999.
+
+            MOVE 0 TO F-EXIT-CH.
             MOVE 0 TO SUB-2 SUB-3.
             MOVE 800 TO WS-SUB1.
         READ-010.
@@ -129,15 +126,18 @@
                 GO TO READ-999.
             IF F-EXIT-CH = 1
               READ GL-MASTER PREVIOUS.
-            IF WS-GLMAST-ST1 = 91
-                MOVE 0 TO WS-GLMAST-STATUS
-                MOVE 2910 TO POS
-                MOVE "THERE IS A SYSTEM ERROR 91, 'ESC' TO EXIT."
-                TO WS-MESSAGE
-                PERFORM ERROR1-MESSAGE
-                PERFORM CLEAR-MIDDLE
-                CLOSE GL-MASTER
-                GO TO READ-999.
+            IF WS-GLMAST-ST1 NOT = 0
+               MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
+               GO TO READ-010.
+      *          PERFORM CLEAR-MIDDLE
+      *          CLOSE GL-MASTER
+      *          GO TO READ-999.
             IF WS-1ST = "Y"
               IF GL-DESCRIPTION NOT = " "
                 MOVE GL-DESCRIPTION TO WS-SPLIT-INPUT-ACC
@@ -258,9 +258,10 @@
             IF WS-GLMAST-ST1 NOT = 0
                MOVE "GLMaster BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-000
                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GLMAST-ST1
                GO TO OPEN-000.
        OPEN-010.

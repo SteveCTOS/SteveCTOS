@@ -37,13 +37,11 @@
                05  WS-GLSUBHEADER  PIC X(4).
            03  WS-REST             PIC X(6).
        01  WS-MONTH-BUDGET.
-           03  WS-MONTH-BU   PIC S9(8)V99 OCCURS 13.
+           03  WS-MONTH-BU         PIC S9(8)V99 OCCURS 13.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1   PIC 99.
-           03  WS-GL-LY-ST2   PIC X.
+           03  WS-GL-LY-ST1        PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1   PIC 99.
-           03  WS-GLPARAMETER-ST2   PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -926,8 +924,14 @@
             DELETE GL-LY-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
-               GO TO DSR-010. 
+                MOVE "GL-MASTERLY BUSY ON DELETE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GL-LY-ST1
+                GO TO DSR-010. 
        DSR-999.
             EXIT. 
       *
@@ -939,16 +943,23 @@
            READ GLPARAMETER-FILE
                  INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-                MOVE "PARAMETER RECORD NOT THERE, 'ESC' TO EXIT"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-999.
+              MOVE "PARAMETER RECORD NOT THERE, 'ESC' TO EXIT"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-999.
            IF WS-GLPARAMETER-ST1 NOT = 0
-                MOVE 0 TO WS-GLPARAMETER-ST1
-                MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RPR-010.
+              MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RPR-010.
        RPR-999.
             EXIT.
       *
@@ -965,43 +976,52 @@
           REWRITE GL-LY-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-GL-LY-ST1 NOT = 0
-              MOVE 0 TO WS-GL-LY-ST1
-              MOVE "GL RECORD BUSY ON REWRITE, 'ESC' TO RETRY."
+              MOVE "GL-MASTERLY BUSY ON REWRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
               GO TO RSR-010.
           GO TO RSR-999.
        RSR-020.
           WRITE GL-LY-RECORD
               INVALID KEY NEXT SENTENCE.
           IF WS-GL-LY-ST1 NOT = 0
-              MOVE 0 TO WS-GL-LY-ST1
-              MOVE "GL RECORD BUSY ON WRITE, 'ESC' TO RETRY."
+             MOVE "GLMASTER-LY BUSY ON WRITE, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
               GO TO RSR-020.
        RSR-999.
-          EXIT.
+            EXIT.
       *
        READ-GL SECTION.
        R-GL-LY-000.
-             MOVE GL-LY-NUMBER TO WS-NUMBER.
-             START GL-LY-MASTER KEY NOT < GL-LY-KEY.
+            MOVE GL-LY-NUMBER TO WS-NUMBER.
+            START GL-LY-MASTER KEY NOT < GL-LY-KEY.
        R-GL-LY-010.
-             READ GL-LY-MASTER
+            READ GL-LY-MASTER
                  INVALID KEY NEXT SENTENCE.
-             IF WS-GL-LY-ST1 = 23 OR 35 OR 49
+            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                 PERFORM CLEAR-FORM
                 MOVE "Y" TO NEW-GLNO
                 MOVE WS-NUMBER TO GL-LY-NUMBER
                 GO TO R-GL-LY-900.
-             IF WS-GL-LY-ST1 NOT = 0
-                MOVE 0 TO WS-GL-LY-ST1
-                MOVE "GL-LY RECORD BUSY ON READ, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-GL-LY-010.
-             MOVE "N" TO NEW-GLNO.
+            IF WS-GL-LY-ST1 NOT = 0
+              MOVE "GLMASTER-LY BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO R-GL-LY-010.
+            MOVE "N" TO NEW-GLNO.
        R-GL-LY-900.
              MOVE "N" TO WS-HEAD-VALID
                          WS-SUB-VALID.
@@ -1037,36 +1057,45 @@
                 MOVE WS-TYPE TO GL-LY-P-B.
                 GO TO R-GL-LY-999.
              IF WS-GL-LY-ST1 NOT = 0
-                MOVE 0 TO WS-GL-LY-ST1
-                MOVE "GL RECORD BUSY ON READ, 'ESC' TO RETRY."
+                MOVE "GLMASTER-LY BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GL-LY-ST1
                 GO TO R-GL-LY-950.
        R-GL-LY-999.
              EXIT.
       *
        READ-HEADER SECTION.
        R-HEAD-000.
-             START GL-LY-MASTER KEY NOT < GL-LY-KEY.
+            START GL-LY-MASTER KEY NOT < GL-LY-KEY.
        R-HEAD-010.
-             READ GL-LY-MASTER
+            READ GL-LY-MASTER
                  INVALID KEY NEXT SENTENCE.
-             IF WS-GL-LY-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-GL-LY-ST1
-                MOVE "ENTER A HEADER ACC BEFORE ENTERING A DETAIL ACC."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-HEAD-999.
-             IF WS-GL-LY-ST1 NOT = 0
-                MOVE 0 TO WS-GL-LY-ST1
-                MOVE "GL HEADER RECORD BUSY,  'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-HEAD-010.
-             MOVE GL-LY-P-B TO WS-TYPE.
-             MOVE "Y" TO WS-HEAD-VALID.
+            IF WS-GL-LY-ST1 = 23 OR 35 OR 49
+              MOVE "ENTER A HEADER ACC BEFORE ENTERING A DETAIL ACC."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO R-HEAD-999.
+            IF WS-GL-LY-ST1 NOT = 0
+              MOVE "GLMASTER-LY HEADER RECORD BUSY,  'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO R-HEAD-010.
+            MOVE GL-LY-P-B TO WS-TYPE.
+            MOVE "Y" TO WS-HEAD-VALID.
        R-HEAD-999.
-             EXIT.
+            EXIT.
       *
        READ-SUBHEADER SECTION.
        R-SUB-000.
@@ -1075,18 +1104,24 @@
              READ GL-LY-MASTER
                  INVALID KEY NEXT SENTENCE.
              IF WS-GL-LY-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-GL-LY-ST1
                 MOVE
                 "ENTER A SUBHEADER ACC BEFORE ENTERING A DETAIL ACC."
                 TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GL-LY-ST1
                 GO TO R-SUB-999.
              IF WS-GL-LY-ST1 NOT = 0
-                MOVE 0 TO WS-GL-LY-ST1
-                MOVE "GL SUB-HEADER RECORD BUSY ON READ, 'ESC'"
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO R-SUB-010.
+               MOVE "GLMASTER-LY SUB-HEADER RECORD BUSY ON READ, 'ESC'"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GL-LY-ST1
+               GO TO R-SUB-010.
              MOVE "Y" TO WS-SUB-VALID.
        R-SUB-999.
              EXIT.
@@ -1110,16 +1145,26 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RSN-999.
-           IF WS-GL-LY-ST1 = 23 OR 35 OR 49 OR 51
+           IF WS-GL-LY-ST1 = 23 OR 35 OR 49
+               MOVE 
+               "GLMASTER-LY BUSY23 ON READ-NEXT-LOCK, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GL-LY-ST1
+               GO TO RSN-005.
+           IF WS-GL-LY-ST1 NOT = 0
                MOVE 
                "GLMASTER-LY BUSY ON READ-NEXT-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               GO TO RSN-005.
-           IF WS-GL-LY-ST1 NOT = 0
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GL-LY-ST1
-               PERFORM START-GL
+      *         PERFORM START-GL
                GO TO RSN-005.
            MOVE GL-LY-NUMBER TO WS-NUMBER.
            MOVE "N" TO NEW-GLNO.
@@ -1140,16 +1185,26 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO RDPREV-999.
-           IF WS-GL-LY-ST1 = 23 OR 35 OR 49 OR 51
-               MOVE 0 TO WS-GL-LY-ST1
+           IF WS-GL-LY-ST1 = 23 OR 35 OR 49
                MOVE 
-               "GLMASTER-LY BUSY ON READ-PREVIOUS-LOCK, 'ESC' TO RETRY."
+               "GLMASTER-LY BUSY23 ON READ-PREV-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GL-LY-ST1
                GO TO RDPREV-005.
            IF WS-GL-LY-ST1 NOT = 0
+               MOVE 
+               "GLMASTER-LY BUSY ON READ-PREV-LOCK, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GL-LY-ST1
-               PERFORM START-GL
+      *         PERFORM START-GL
                GO TO RDPREV-005.
            MOVE GL-LY-NUMBER TO WS-NUMBER.
            MOVE "N" TO NEW-GLNO.
@@ -1186,18 +1241,24 @@
        OPEN-000.
            OPEN I-O GL-LY-MASTER.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GL-LY-ST1
                MOVE "GLMASTERLY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GL-LY-ST1
                GO TO OPEN-000.
         OPEN-001.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
                MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY"
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLPARAMETER-ST1
                GO TO OPEN-001.
             PERFORM READ-PARAMETER-RECORD.
             IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
@@ -1243,4 +1304,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

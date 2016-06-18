@@ -185,7 +185,7 @@
            MOVE 2610 TO POS
            DISPLAY "OPENING HOME OFFICE FILES........" AT POS.
            PERFORM CHECK-DATA-NAMES.
-           MOVE WS-VOL-DIR TO LIST-VOL-DIR (SUB-40).
+           MOVE WS-VOL-DIR TO LIST-VOL-DIR (SUB-50).
            PERFORM CHECK-BRANCH-DATA-NAMES.
            PERFORM END-OFF.
        CONT-999.
@@ -257,7 +257,7 @@
           MOVE " " TO ALPHA-RATE.
           MOVE 0   TO SUB-1.
        CBDN-010.
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
        CBDN-015.
           ADD 1 TO SUB-1.
           IF SUB-1 NOT > 60
@@ -275,7 +275,7 @@
        CBDN-030.
           MOVE ALPHA-RATE TO WS-DATA
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           PERFORM OPEN-DATA
           IF F-ERROR5 NOT = 0 AND NOT = 220
@@ -290,7 +290,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-STOCK
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           SUBTRACT SUB-2 FROM SUB-1
           ADD 1 TO SUB-1
@@ -299,7 +299,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-STTRANS
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           SUBTRACT SUB-2 FROM SUB-1
           ADD 1 TO SUB-1
@@ -308,7 +308,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-STRECEIPT
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           SUBTRACT SUB-2 FROM SUB-1
           ADD 1 TO SUB-1
@@ -317,7 +317,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-STRECEIPTLY
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           SUBTRACT SUB-2 FROM SUB-1
           ADD 1 TO SUB-1
@@ -326,7 +326,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-STORDERS
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           SUBTRACT SUB-2 FROM SUB-1
           ADD 1 TO SUB-1
@@ -335,7 +335,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-STIMPORTS
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
 
           SUBTRACT SUB-2 FROM SUB-1
           ADD 1 TO SUB-1
@@ -344,7 +344,7 @@
           PERFORM CBDN-025
           MOVE ALPHA-RATE TO WS-TOOLKIT
           MOVE " " TO ALPHA-RATE DATA-RATE
-          MOVE LIST-VOL-DIR (SUB-40) TO ALPHA-RATE.
+          MOVE LIST-VOL-DIR (SUB-50) TO ALPHA-RATE.
        CBDN-999.
           EXIT.
       *
@@ -497,11 +497,12 @@
                PERFORM ERROR1-000
                MOVE WS-DATA-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               
                MOVE DATA-NUMBER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
+               PERFORM ERROR1-000
                MOVE WS-DATA TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                GO TO OPEN-DATA-005.
        OPEN-DATA-999.
            EXIT.
@@ -528,16 +529,16 @@
                GO TO SB-005.
            MOVE WS-COMPANY-UPDATE TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
-           MOVE NUMERIC-RATE TO SUB-40.
-           DISPLAY SUB-40 AT POS.
-           IF LIST-NAME (SUB-40) = " "
+           MOVE NUMERIC-RATE TO SUB-50.
+           DISPLAY SUB-50 AT POS.
+           IF LIST-NAME (SUB-50) = " "
                MOVE
             "PLEASE ENTER A COMPANY THAT EXISTS, PLEASE RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO SB-005.
            PERFORM ERROR-020.
-           IF LIST-NAME (SUB-40) = WS-CO-NUMBER
+           IF LIST-NAME (SUB-50) = WS-CO-NUMBER
                MOVE 
             "YOU MAY NOT UPDATE YOUR OWN COMPANY, PLEASE RE-ENTER."
                TO WS-MESSAGE
@@ -546,9 +547,9 @@
            MOVE 0810 TO POS
            DISPLAY"Company Selected :" AT POS
            ADD 19 TO POS
-           DISPLAY LIST-NAME (SUB-40) AT POS
+           DISPLAY LIST-NAME (SUB-50) AT POS
            MOVE 0929 TO POS
-           DISPLAY List-VOL-DIR (SUB-40) AT POS.
+           DISPLAY List-VOL-DIR (SUB-50) AT POS.
        SB-020.
            MOVE 1010 TO POS
            DISPLAY "ARE YOU SURE THIS IS THE COMPANY TO UPDATE [ ]"
@@ -594,7 +595,7 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-MENU-ST1 NOT = 0
                GO TO RNC-900.
-           MOVE 1 TO SUB-40.
+           MOVE 1 TO SUB-50.
        RNC-010.
            READ COMPANY-MENU NEXT
                AT END NEXT SENTENCE.
@@ -609,12 +610,12 @@
                PERFORM ERROR1-020
                MOVE 0 TO WS-MENU-ST1
                GO TO RNC-010.
-           MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-40)
-           MOVE PTY-NUMBER  TO LIST-NUMBER (SUB-40)
-           MOVE PTY-CO-NAME TO LIST-NAME (SUB-40).
+           MOVE PTY-VOL-DIR TO LIST-VOL-DIR (SUB-50)
+           MOVE PTY-NUMBER  TO LIST-NUMBER (SUB-50)
+           MOVE PTY-CO-NAME TO LIST-NAME (SUB-50).
            
-           IF SUB-40 < 20
-              ADD 1 TO SUB-40
+           IF SUB-50 < 20
+              ADD 1 TO SUB-50
               GO TO RNC-010.
        RNC-900.
            CLOSE COMPANY-MENU.
@@ -748,7 +749,7 @@
            IF WS-RANGE4 = "N"
               PERFORM END-000
               PERFORM CHECK-DATA-NAMES
-              MOVE WS-VOL-DIR TO LIST-VOL-DIR (SUB-40)
+              MOVE WS-VOL-DIR TO LIST-VOL-DIR (SUB-50)
               PERFORM CHECK-BRANCH-DATA-NAMES
               PERFORM END-900.
        GET-999.
@@ -774,7 +775,7 @@
        DSR-010.
             DELETE STOCK-MASTER
                INVALID KEY NEXT SENTENCE.
-            IF WS-STOCK-ST1 NOT = 23
+            IF WS-STOCK-ST1 = 23
                GO TO DSR-999.
             IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCKFILE BUSY ON DELETE, 'ESC' TO RETRY."
@@ -785,7 +786,7 @@
                MOVE ST-STOCKNUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
-             IF ST-STOCKNUMBER = " "
+             IF ST-STOCKNUMBER = "GONE           "
                GO TO DSR-999
              ELSE
                GO TO DSR-010. 

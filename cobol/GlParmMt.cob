@@ -20,7 +20,6 @@
        77  WS-SAVE            PIC 9 VALUE 0.
        01  WS-GLPARAMETER-STATUS.
            03  WS-GLPARAMETER-ST1   PIC 99.
-      *     03  WS-GLPARAMETER-ST2   PIC X.
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -2030,8 +2029,14 @@
             DELETE GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               GO TO DDR-010.
+              MOVE "GLPARAMETER BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO DDR-010.
        DDR-999.
            EXIT.
       *
@@ -2043,21 +2048,27 @@
             REWRITE GLPARAMETER-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-                MOVE 0 TO WS-GLPARAMETER-ST1
-                MOVE "PARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RDR-020.
+              MOVE "PARAMETER BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RDR-020.
             GO TO RDR-999.
        RDR-020.
             WRITE GLPARAMETER-REC
-                INVALID KEY NEXT SENTENCE.
+              INVALID KEY NEXT SENTENCE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-                MOVE 0 TO WS-GLPARAMETER-ST1
-                MOVE "PARAMETER BUSY ON WRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RDR-010.
+              MOVE "PARAMETER BUSY ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RDR-010.
        RDR-999.
             EXIT.
       *
@@ -2069,17 +2080,19 @@
            READ GLPARAMETER-FILE WITH LOCK
                  INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-                MOVE 0 TO WS-GLPARAMETER-ST1
                 PERFORM CLEAR-FORM
                 MOVE "Y" TO NEW-NO
                 MOVE WS-NUMBER TO GLPA-RECORD
                 GO TO RD-999.
            IF WS-GLPARAMETER-ST1 NOT = 0
-                MOVE 0 TO WS-GLPARAMETER-ST1
-                MOVE "PARAMETER BUSY ON READ, PRESS 'ESC' TO RETRY"
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+              MOVE "GLPARAMETER BUSY ON READ, PRESS 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO RD-010.
            MOVE "N" TO NEW-NO.
            MOVE GLPA-RECORD TO WS-SAVE.
        RD-999.
@@ -2096,11 +2109,14 @@
        OPEN-000.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0
-               MOVE 0 TO WS-GLPARAMETER-ST1
-               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-000.
+              MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              GO TO OPEN-000.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.
