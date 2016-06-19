@@ -248,7 +248,7 @@
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLTRANS-LY-ST1
 
-              MOVE "GL-TRANSLY BUSY ON OPEN I-O, 'ESC' TO RETRY."
+              MOVE "GL-TRANS BUSY ON OPEN I-O, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
