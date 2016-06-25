@@ -220,9 +220,9 @@
                 MOVE 3015 TO POS 
                 DISPLAY
                "Enter A Number & Press <GO> To Edit The Entry." AT POS
-      *          MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
-      *          MOVE 7           TO F-CBFIELDLENGTH
-      *          PERFORM WRITE-FIELD-ALPHA
+                MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
+                MOVE 7           TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA
                 PERFORM USER-FILL-FIELD
                 MOVE 7           TO F-CBFIELDLENGTH
                 PERFORM READ-FIELD-ALPHA.
@@ -234,9 +234,9 @@
                 MOVE 3015 TO POS 
                 DISPLAY
                 "Enter A Number & Press <GO> To Edit The Entry." AT POS
-      *          MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
-      *          MOVE 7           TO F-CBFIELDLENGTH
-      *          PERFORM WRITE-FIELD-ALPHA
+                MOVE " "         TO F-NAMEFIELD WS-SHORTNAME
+                MOVE 7           TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA
                 PERFORM USER-FILL-FIELD
                 MOVE 7           TO F-CBFIELDLENGTH
                 PERFORM READ-FIELD-ALPHA.

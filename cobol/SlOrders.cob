@@ -6606,8 +6606,16 @@
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE "STOCK TRANS-RECORD BUSY ON READ, RSTT-010."
-              TO WS-MESSAGE
+               MOVE 
+              "ST-TRANS BUSY ON READ-NEXT, RSTT-010, 'ESC' TO SEE MORE."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 
+            "ST-TRANS STOCK ITEM SHOWN BELOW IS LOCKED, 'ESC' TO RETRY."
+               TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE STTR-STOCK-NUMBER TO WS-MESSAGE
                PERFORM ERROR-MESSAGE

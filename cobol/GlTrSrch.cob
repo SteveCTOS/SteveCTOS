@@ -37,24 +37,21 @@
        77  WS-TOTAL-DEBIT       PIC S9(8)V99 VALUE 0.
        77  WS-TOTAL-CREDIT      PIC S9(8)V99 VALUE 0.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
+           03  WS-GLMAST-ST1      PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1    PIC 99.
-      *     03  WS-GLTRANS-ST2    PIC X.
+           03  WS-GLTRANS-ST1     PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  BATCH-TOTALS.
            03  WS-BATCH-TOTALS OCCURS 50.
-               05  WS-BATCH-NAME PIC X(10).
-               05  WS-DEBITS     PIC S9(8)V99.
-               05  WS-CREDITS    PIC S9(8)V99.
+               05  WS-BATCH-NAME  PIC X(10).
+               05  WS-DEBITS      PIC S9(8)V99.
+               05  WS-CREDITS     PIC S9(8)V99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
-               05  WS-HEADER   PIC X(2).
-               05  WS-SUB      PIC X(4).
-           03  WS-REST         PIC X(6).
+               05  WS-HEADER      PIC X(2).
+               05  WS-SUB         PIC X(4).
+           03  WS-REST            PIC X(6).
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -151,7 +148,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *     ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -174,7 +170,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF WS-RANGE2 = " "
@@ -199,7 +194,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PERIOD.
 
-      *     ACCEPT WS-PERIOD AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-010.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -221,7 +215,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TR-CODE.
 
-      *     ACCEPT WS-TR-CODE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-015.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -244,7 +237,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BATCH.
 
-      *     ACCEPT WS-BATCH AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-025.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -267,7 +259,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FUTURE.
 
-      *     ACCEPT WS-FUTURE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-030.
            IF WS-FUTURE NOT = "Y" AND NOT = "N" AND NOT = "O"
@@ -298,7 +289,14 @@
            IF WS-GLTRANS-ST1 = 10
                GO TO RALT-900.
            IF WS-GLTRANS-ST1 NOT = 0
-               GO TO RALT-010.
+              MOVE "GL-TRANS BUSY ON READ-ALL-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO RALT-010.
            IF WS-RANGE1 = WS-RANGE2
             IF GLTRANS-ACCOUNT-NUMBER NOT = WS-RANGE1
                GO TO RALT-900.
@@ -464,15 +462,18 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               MOVE "NO PARAMETER RECORD, CALL YOUR SUPERVISOR."
+               MOVE "NO GLPARAMETER RECORD, CALL YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
-              MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
+              MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-010.
        RP-999.
            EXIT.
@@ -481,18 +482,24 @@
        OPEN-000.
            OPEN I-O GL-MASTER.
            IF WS-GLMAST-ST1 NOT = 0
-              MOVE 0 TO WS-GLMAST-ST1
               MOVE "MASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
               GO TO OPEN-000.
        OPEN-005.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-005.
             PERFORM READ-PARAMETER.
             MOVE GLPA-NAME TO CO-NAME.
@@ -504,7 +511,11 @@
            IF WS-GLTRANS-ST1 NOT = 0
               MOVE "GLTRANS BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
               GO TO OPEN-008.
         OPEN-010.
            PERFORM GET-SYSTEM-Y2K-DATE.

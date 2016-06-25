@@ -566,7 +566,7 @@
               GO TO OPEN-000.
        OPEN-005.
             OPEN I-O GLPARAMETER-FILE.
-            IF WS-GLPARAMETER-ST1 NOT = 0 
+            IF WS-GLPARAMETER-ST1 NOT = 0
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
@@ -583,7 +583,7 @@
         OPEN-008.
            OPEN I-O GLTRANS-LY-FILE.
            IF WS-GLTRANS-LY-ST1 NOT = 0
-              MOVE "GLTRANS BUSY ON OPEN, 'ESC' TO RETRY."
+              MOVE "GLTRANS-LY BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE

@@ -38,14 +38,11 @@
        77  LINES-DISPLAYED      PIC 9(5) VALUE 0.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
        01  WS-GL-LY-STATUS.
-           03  WS-GL-LY-ST1    PIC 99.
-      *     03  WS-GL-LY-ST2    PIC 9(2) COMP-X.
+           03  WS-GL-LY-ST1       PIC 99.
        01  WS-GLTRANS-LY-STATUS.
-           03  WS-GLTRANS-LY-ST1    PIC 99.
-      *     03  WS-GLTRANS-LY-ST2    PIC 9(2) COMP-X.
+           03  WS-GLTRANS-LY-ST1  PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC 9(2) COMP-X.
+           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-PERIOD.
            03  WS-1ST-CHAR        PIC X.
            03  WS-PER             PIC 99.
@@ -339,6 +336,13 @@
        RDTR-000.
            OPEN I-O GLTRANS-LY-FILE.
            IF WS-GLTRANS-LY-ST1 NOT = 0
+              MOVE "GLTRANS-LY BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
               CLOSE GLTRANS-LY-FILE
               GO TO RDTR-000.
            MOVE 1 TO F-INDEX.
@@ -350,9 +354,9 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-GLTRANS-LY-ST1 = 23 OR 35 OR 49
                MOVE "DESC" TO F-FIELDNAME
-               MOVE 4 TO F-CBFIELDNAME
-               MOVE 25 TO F-CBFIELDLENGTH
-               MOVE 1 TO F-INDEX
+               MOVE 4      TO F-CBFIELDNAME
+               MOVE 25     TO F-CBFIELDLENGTH
+               MOVE 1      TO F-INDEX
                CLOSE GLTRANS-LY-FILE
                GO TO RDTR-900.
        RDTR-010.
@@ -374,9 +378,14 @@
                CLOSE GLTRANS-LY-FILE
                GO TO RDTR-900.
            IF WS-GLTRANS-LY-ST1 NOT = 0
-               MOVE 2910 TO POS
-               DISPLAY "Be Patient, Status not = 0, Re-reading." AT POS
-               GO TO RDTR-010.
+              MOVE "GLTRANS-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO RDTR-010.
 
            IF F-EXIT-CH = 1
            IF GLTRANS-LY-ACCNO NOT = GL-LY-NUMBER
@@ -468,6 +477,13 @@
        RALT-000.
            OPEN I-O GLTRANS-LY-FILE.
            IF WS-GLTRANS-LY-ST1 NOT = 0
+              MOVE "GLTRANS-LY BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
               CLOSE GLTRANS-LY-FILE
               GO TO RALT-000.
            PERFORM ERROR1-020.
@@ -475,6 +491,7 @@
            DISPLAY "Reading All transactions......" AT POS.
        RALT-005.
            MOVE 0 TO WS-NO-OF-TRANS WS-TRANS-AMT.
+
            MOVE GL-LY-NUMBER TO GLTRANS-LY-ACCNO.
            MOVE 0            TO GLTRANS-LY-DATE.
            START GLTRANS-LY-FILE KEY NOT < GLTRANS-LY-ACC-DATE
@@ -487,6 +504,13 @@
            IF WS-GLTRANS-LY-ST1 = 10
                GO TO RALT-900.
            IF WS-GLTRANS-LY-ST1 NOT = 0
+               MOVE "GLTRANS-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLTRANS-LY-ST1
                GO TO RALT-010.
            IF GLTRANS-LY-ACCNO NOT = GL-LY-NUMBER
                GO TO RALT-900.
@@ -521,10 +545,14 @@
                MOVE "UNKNOWN" TO GL-LY-DESCRIPTION
                GO TO RD-999.
            IF WS-GL-LY-ST1 NOT = 0
-               MOVE"GLMASTER RECORD ERROR, RD-015 'ESC' TO RETRY"
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO RD-015.
+              MOVE "GLMASTER-LY BUSY ON READ, RD-015, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GL-LY-ST1
+              GO TO RD-015.
            MOVE GL-LY-NUMBER TO WS-GLNUMBER.
        RD-999.
            EXIT.
@@ -541,9 +569,15 @@
              READ GL-LY-MASTER NEXT
                  AT END NEXT SENTENCE.
              IF WS-GL-LY-ST1 NOT = 0
-                 MOVE 0 TO WS-GL-LY-ST1
-                 PERFORM START-GLMASTER
-                 GO TO R-ST-NX-005.
+                MOVE "GLMASTER-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GL-LY-ST1
+      *          PERFORM START-GLMASTER
+                GO TO R-ST-NX-005.
        R-ST-NX-010.
            MOVE GL-LY-NUMBER TO WS-GLNUMBER.
            IF WS-GLSUBHEADER = "    "
@@ -559,9 +593,15 @@
              READ GL-LY-MASTER PREVIOUS
                  AT END NEXT SENTENCE.
              IF WS-GL-LY-ST1 NOT = 0
-                 MOVE 0 TO WS-GL-LY-ST1
-                 PERFORM START-GLMASTER
-                 GO TO RDPREV-005.
+                MOVE "GLMASTER-LY BUSY ON READ-PREV, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GL-LY-ST1
+      *          PERFORM START-GLMASTER
+                GO TO RDPREV-005.
        RDPREV-010.
            MOVE GL-LY-NUMBER TO WS-GLNUMBER.
            IF WS-GLSUBHEADER = "    "
@@ -591,8 +631,14 @@
                MOVE 0 TO WS-GLTRANS-LY-ST1
                GO TO PRR-900.
             IF WS-GLTRANS-LY-ST1 NOT = 0
-               MOVE 0 TO WS-GLTRANS-LY-ST1
-               GO TO PRR-002.
+              MOVE "GLTRANSLY FILE BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO PRR-002.
             IF GLTRANS-LY-ACCNO < GL-LY-NUMBER
                GO TO PRR-002.
             IF GLTRANS-LY-ACCNO > GL-LY-NUMBER
@@ -802,14 +848,22 @@
            READ GLPARAMETER-FILE
                INVALID KEY NEXT SENTENCE.
            IF WS-GLPARAMETER-ST1 = 23 OR 35 OR 49
-               DISPLAY "NO glPARAMETER RECORD!!!!"
-               CALL "LOCKKBD" USING F-FIELDNAME
-               STOP RUN.
-           IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
-              MOVE "glPARAMETER BUSY ON READ, 'ESC' TO RETRY"
+              MOVE "GLPARAMETER FILE BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
+              EXIT PROGRAM.
+           IF WS-GLPARAMETER-ST1 NOT = 0
+              MOVE "GLPARAMETER BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
            EXIT.
@@ -820,16 +874,22 @@
             IF WS-GL-LY-ST1 NOT = 0
                MOVE "GLMASTLY FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GL-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-GL-LY-ST1
                GO TO OPEN-000.
        OPEN-005.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-005.
             PERFORM READ-PARAMETER.
             MOVE GLPA-NAME TO CO-NAME.

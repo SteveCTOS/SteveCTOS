@@ -198,13 +198,13 @@
               PERFORM ERROR1-020
               MOVE 0 TO WS-GL-LY-ST1
 
-              MOVE "GL-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              PERFORM ERROR1-020
-              MOVE 0 TO WS-GL-LY-ST1
+                 MOVE "GL-MASTERLY BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-GL-LY-ST1
 
             MOVE "GLMASTER BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE

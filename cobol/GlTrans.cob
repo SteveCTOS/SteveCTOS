@@ -22,11 +22,9 @@
        77  WS-TRANSNO         PIC 9(6) VALUE 0.
        77  WS-TYPE            PIC 99 VALUE 0.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1   PIC 99.
-      *     03  WS-GLTRANS-ST2   PIC X.
+           03  WS-GLTRANS-ST1 PIC 99.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1   PIC 99.
-      *     03  WS-GLMAST-ST2   PIC X.
+           03  WS-GLMAST-ST1  PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
                05  WS-GLHEADER     PIC X(2).
@@ -524,8 +522,14 @@
             DELETE GLTRANS-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-GLTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-GLTRANS-ST1
-               GO TO DO-010.
+              MOVE "GL-TRANS BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO DO-010.
        DO-999.
            EXIT.
       *
@@ -555,27 +559,33 @@
             REWRITE GLTRANS-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GLTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-GLTRANS-ST1
-                MOVE "GLTRANS BUSY ON REWRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO ROR-010.
+              MOVE "GLTRANS BUSY ON REWRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO ROR-010.
             GO TO ROR-999.
        ROR-020.
             WRITE GLTRANS-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-GLTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-GLTRANS-ST1
-                MOVE "GLTRANS BUSY ON WRITE, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO ROR-020.
+              MOVE "GLTRANS BUSY ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO ROR-020.
        ROR-999.
             EXIT.
       *
        READ-TRANS SECTION.
        RO-000.
-           MOVE 0 TO WS-GLTRANS-ST1.
+           MOVE 0                 TO WS-GLTRANS-ST1.
            MOVE GLTRANS-REFERENCE TO WS-REFERENCE.
            MOVE GLTRANS-TRANS     TO WS-TRANSNO.
            MOVE GLTRANS-TYPE      TO WS-TYPE.
@@ -589,11 +599,14 @@
                 MOVE "Y" TO NEW-ORDER
                 GO TO RO-999.
            IF WS-GLTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-GLTRANS-ST1
-                MOVE "GLTRANS BUSY ON READ, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RO-010.
+              MOVE "GLTRANS BUSY ON READ-LOCK, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO RO-010.
            MOVE "N" TO NEW-ORDER.
            MOVE GLTRANS-REFERENCE TO WS-REFERENCE.
            MOVE GLTRANS-TRANS     TO WS-TRANSNO.
@@ -613,11 +626,14 @@
                 MOVE " " TO GL-DESCRIPTION
                 GO TO RD-999.
            IF WS-GLMAST-ST1 NOT = 0
-                MOVE 0 TO WS-GLMAST-ST1
-                MOVE "GLMASTER BUSY ON READ, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO RD-010.
+              MOVE "GLMASTER BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO RD-010.
        RD-999.
            EXIT.
       *
@@ -648,12 +664,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RONX-999.
            IF WS-GLTRANS-ST1 NOT = 0
-                MOVE "GLTRANS BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-GLTRANS-ST1
-               PERFORM START-TRANS
-               GO TO RONX-005.
+              MOVE "GLTRANS BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+      *        PERFORM START-TRANS
+              GO TO RONX-005.
            MOVE GLTRANS-REFERENCE TO WS-REFERENCE.
            MOVE GLTRANS-TRANS     TO WS-TRANSNO.
            MOVE GLTRANS-TYPE      TO WS-TYPE.
@@ -679,12 +698,15 @@
               PERFORM ERROR-MESSAGE
               GO TO RTPRE-999.
            IF WS-GLTRANS-ST1 NOT = 0
-                MOVE "GLTRANS BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-GLTRANS-ST1
-               PERFORM START-TRANS
-               GO TO RTPRE-005.
+              MOVE "GLTRANS BUSY ON READ-PREVIOUS, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+      *        PERFORM START-TRANS
+              GO TO RTPRE-005.
            MOVE GLTRANS-REFERENCE TO WS-REFERENCE.
            MOVE GLTRANS-TRANS     TO WS-TRANSNO.
            MOVE GLTRANS-TYPE      TO WS-TYPE.
@@ -696,19 +718,25 @@
        OPEN-000.
             OPEN I-O GLTRANS-FILE
             IF WS-GLTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-GLTRANS-ST1
-               MOVE "GL TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-000.
+              MOVE "GL-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO OPEN-000.
        OPEN-008.
             OPEN I-O GL-MASTER.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-008.
+              MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO OPEN-008.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.
@@ -744,4 +772,5 @@
        Copy "ConvertDateFormat".
        Copy "ClearScreen".
        Copy "ErrorMessage".
+       Copy "Error1Message".
       * END-OF-JOB

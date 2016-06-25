@@ -58,19 +58,16 @@
        77  WS-DETAIL-CNT        PIC 9(6) VALUE 0.
        77  WS-NO-OF-TRANS       PIC 9(6) VALUE 0.
        01  WS-GLMAST-STATUS.
-           03  WS-GLMAST-ST1        PIC 99.
-      *     03  WS-GLMAST-ST2        PIC X.
+           03  WS-GLMAST-ST1       PIC 99.
        01  WS-GLTRANS-STATUS.
-           03  WS-GLTRANS-ST1    PIC 99.
-      *     03  WS-GLTRANS-ST2    PIC X.
+           03  WS-GLTRANS-ST1      PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1     PIC 99.
-      *     03  WS-GLPARAMETER-ST2     PIC X.
+           03  WS-GLPARAMETER-ST1  PIC 99.
        01  WS-GLNUMBER.
            03  WS-HEAD-SUB.
-               05  WS-HEADER   PIC X(2).
-               05  WS-SUB      PIC X(4).
-           03  WS-REST         PIC X(6).
+               05  WS-HEADER  PIC X(2).
+               05  WS-SUB     PIC X(4).
+           03  WS-REST        PIC X(6).
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -271,7 +268,14 @@
            IF WS-GLTRANS-ST1 = 10
                GO TO RALT-900.
            IF WS-GLTRANS-ST1 NOT = 0
-               GO TO RALT-010.
+              MOVE "GL-TRANS FILE BUSY READ-NEXT, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
+              GO TO RALT-010.
            IF GLTRANS-ACCOUNT-NUMBER NOT = GL-NUMBER
                GO TO RALT-900.
            IF GLTRANS-FUTURE = "F"
@@ -347,10 +351,13 @@
                PERFORM PTFH-010
                GO TO PRR-999.
             IF WS-GLMAST-ST1 NOT = 0
-               MOVE 0 TO WS-GLMAST-ST1
-               MOVE "WS-GLMAST-ST1 NOT = 0 ON READ, 'ESC' TO RETRY."
+               MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-GLMAST-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-GLMAST-ST1
                GO TO PRR-002.
             IF GL-NUMBER < WS-RANGE1
                GO TO PRR-002.
@@ -537,12 +544,15 @@
                MOVE "NO PARAMETER RECORD, CALL YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-GLPARAMETER-ST1 NOT = 0
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-010.
        RP-999.
            EXIT.
@@ -551,18 +561,24 @@
        OPEN-000.
            OPEN I-O GL-MASTER.
            IF WS-GLMAST-ST1 NOT = 0
-              MOVE 0 TO WS-GLMAST-ST1
               MOVE "GLMASTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
               GO TO OPEN-000.
        OPEN-005.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-005.
             PERFORM READ-PARAMETER.
             MOVE GLPA-NAME TO CO-NAME.
@@ -574,7 +590,11 @@
            IF WS-GLTRANS-ST1 NOT = 0
               MOVE "GLTRANS BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-ST1
               GO TO OPEN-008.
         OPEN-010.
            PERFORM GET-SYSTEM-Y2K-DATE.
