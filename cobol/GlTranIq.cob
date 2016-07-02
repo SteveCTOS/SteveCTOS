@@ -29,6 +29,7 @@
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-NO-OF-TRANS       PIC 9(5) VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
+       77  WS-END               PIC X VALUE " ".
        77  WS-NEWINPUT          PIC X VALUE " ".
        77  WS-GLMASTERNUMBER    PIC X(15) VALUE " ".
        77  WS-DESC-SORT         PIC X(11) VALUE " ".
@@ -166,6 +167,9 @@
                  GO TO GET-999.
             IF F-EXIT-CH = X"0C"
                  PERFORM READ-GLMASTER-NEXT
+             IF WS-END = "Y"
+                 GO TO GET-000
+             ELSE
                  GO TO GET-010.
             IF F-EXIT-CH = X"05"
                  PERFORM READ-GLMASTER-PREVIOUS
@@ -574,11 +578,18 @@
       *
        READ-GLMASTER-NEXT SECTION.
        R-ST-NX-000.
-             MOVE 0 TO WS-GLMAST-ST1.
+             MOVE "N" TO WS-END
              PERFORM ERROR-020.
        R-ST-NX-005. 
              READ GL-MASTER NEXT
                  AT END NEXT SENTENCE.
+             IF WS-GLMAST-ST1 = 10
+              MOVE "END OF NEXT-PAGE SEQUENCE, ENTER A NEW IDENTIFIER."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM START-GLMASTER
+                 MOVE "Y" TO WS-END
+                 GO TO R-ST-NX-999.
              IF WS-GLMAST-ST1 NOT = 0
               MOVE "GL-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
                  TO WS-MESSAGE
@@ -587,7 +598,7 @@
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  MOVE 0 TO WS-GLMAST-ST1
-      *           PERFORM START-GLMASTER
+                 PERFORM START-GLMASTER
                  GO TO R-ST-NX-005.
        R-ST-NX-010.
            MOVE GL-NUMBER TO WS-GLNUMBER.
@@ -606,6 +617,12 @@
        RDPREV-005. 
              READ GL-MASTER PREVIOUS
                  AT END NEXT SENTENCE.
+             IF WS-GLMAST-ST1 = 10
+              MOVE "END OF NEXT-PAGE SEQUENCE, 'ESC' TO EXIT."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM START-GLMASTER
+                 GO TO RDPREV-999.
              IF WS-GLMAST-ST1 NOT = 0
               MOVE "GL-MASTER BUSY ON READ-PREV, 'ESC' TO RETRY."
                  TO WS-MESSAGE
@@ -614,7 +631,7 @@
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  MOVE 0 TO WS-GLMAST-ST1
-      *           PERFORM START-GLMASTER
+                 PERFORM START-GLMASTER
                  GO TO RDPREV-005.
        RDPREV-010.
            MOVE GL-NUMBER TO WS-GLNUMBER.
