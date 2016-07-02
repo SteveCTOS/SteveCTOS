@@ -60,11 +60,19 @@ set (copy_list
   MonthEnd09.sh
   MonthEnd10.sh
   MonthEnd11.sh
-  MonthEnd12.sh
+  MonthEnd12.sh 
+  Pay1Rename.sh
+  Pay2Rename.sh
   rename.py
   renamegl.py
   renamegp.py
   renameorig.py
+  renamebank.py
+  renamecams.py
+  renamecc.py
+  renameend.py
+  renamepay.py
+  renametax.py
   StockCheck.Sub01
   StockCheck.sh
   TapeBackup.Sub01
