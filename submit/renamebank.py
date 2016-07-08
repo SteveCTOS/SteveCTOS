@@ -6,7 +6,7 @@ months = ['Mar16', 'Apr16', 'May16', 'Jun16', 'Jul16', 'Aug16', 'Sep16', 'Oct16'
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):
-  for file in glob.glob('/media/ctools/RMB/%sBANK*' % (comp)):
+  for file in glob.glob('/ctools/temp/%sBANK*' % (comp)):
     file2 = file.replace('%sBANK' % (comp), '%sBank%s' % (month, comp))
     os.rename(file, file2)
 if month in months and comp == 'ALL':

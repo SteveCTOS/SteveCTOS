@@ -63,6 +63,9 @@ set (copy_list
   MonthEnd12.sh 
   Pay1Rename.sh
   Pay2Rename.sh
+  Pay3Rename.sh
+  FnbRename.sh
+  PrintCams.sh
   rename.py
   renamegl.py
   renamegp.py
@@ -71,7 +74,11 @@ set (copy_list
   renamecams.py
   renamecc.py
   renameend.py
+  renamefnl.py
+  renamemain.py
+  renamefnbcams.py
   renamepay.py
+  renamepen.py
   renametax.py
   StockCheck.Sub01
   StockCheck.sh

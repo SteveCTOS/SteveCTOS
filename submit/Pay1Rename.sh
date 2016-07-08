@@ -1,4 +1,4 @@
-# *** THIS PROCESS MUST BE RUN ON THE LINUX SERVER ONLY *****
+# **COPY THE FILES FROM USB TO /ctools/temp/ BEFORE RUNNING THIS SCRIPT**
 
 # Enter ALL to get All as $1 is all the companies renamed to the Month below.
 # Enter a Month Name like Jun16, Aug16 etc. as $2 input.

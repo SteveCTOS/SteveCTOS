@@ -823,8 +823,7 @@
                MOVE 0 TO INCR-INVOICE
                GO TO UOR-999.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO WS-INCR-ST1
-               MOVE "P/SLP REGISTER BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               MOVE "P/SLIP REGISTER BUSY ON READ-LOCK, 'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE

@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-# The renaming of Payslyp 'TAX' Files to 'Tax' & add in the month & year for filing
+# The renaming of Payslyp 'MAIN' Files to 'Main' & add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
 months = ['Mar16', 'Apr16', 'May16', 'Jun16', 'Jul16', 'Aug16', 'Sep16', 'Oct16', 'Nov16', 'Dec16', 'Jan17', 'Feb17']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):
-  for file in glob.glob('/ctools/temp/%sTAX*' % (comp)):
-    file2 = file.replace('%sTAX' % (comp), '%sTax%s' % (month, comp))
+  for file in glob.glob('/ctools/temp/%sMAIN*' % (comp)):
+    file2 = file.replace('%sMAIN' % (comp), '%sMain%s' % (month, comp))
     os.rename(file, file2)
 if month in months and comp == 'ALL':
   for comp in comps:
