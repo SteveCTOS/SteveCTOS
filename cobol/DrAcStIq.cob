@@ -136,6 +136,14 @@
         GET-000.
             MOVE "N" TO WS-ANSWER.
             MOVE "                         " TO F-NAMEFIELD.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+           "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
+            AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Account Number." AT POS
+
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
@@ -161,8 +169,10 @@
                 PERFORM DISPLAY-FORM
                 GO TO GET-000.
             PERFORM READ-DEBTORS.
-
         GET-010.
+            PERFORM ERROR1-020.
+            PERFORM ERROR-020.
+
             MOVE "ACCNO"           TO F-FIELDNAME.
             MOVE 5                 TO F-CBFIELDNAME.
             MOVE DR-ACCOUNT-NUMBER TO F-NAMEFIELD
@@ -338,6 +348,9 @@
 
             PERFORM READ-TRANSACTIONS.
        GET-040.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+        
             IF WS-ANSWER = "Y"
                 CLOSE DEBTOR-TRANS-FILE
                 GO TO GET-999.

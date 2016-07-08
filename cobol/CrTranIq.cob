@@ -153,6 +153,14 @@
        GET-000.
             MOVE "                               " TO F-NAMEFIELD.
             MOVE "N" TO WS-ANSWER.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+           "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
+            AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Account Number." AT POS
+
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
@@ -188,6 +196,9 @@
             MOVE 15 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+        
             MOVE "NAME" TO F-FIELDNAME.
             MOVE 4 TO F-CBFIELDNAME.
             MOVE CR-NAME TO F-NAMEFIELD.
@@ -248,6 +259,9 @@
                   GO TO GET-900.
             PERFORM READ-TRANSACTIONS.
        GET-900.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+        
             IF WS-ANSWER = "Y"
                CLOSE CRTR-FILE
                GO TO GET-999.
