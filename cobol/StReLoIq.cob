@@ -133,11 +133,11 @@
             
            MOVE 2910 TO POS
            DISPLAY
-           "Enter Stocknumber, # & Trans Number To View By Trans. #,"
+           "Enter Stocknumber, # & Trans Number To View By Trans #,"
               AT POS
            MOVE 3010 TO POS
            DISPLAY
-           "OR P/O.... To View Trans. By P/Order Number." AT POS
+           "OR P/O.... To View Transactions By P/Order Number." AT POS
               
             
             MOVE "STOCK" TO F-FIELDNAME.
@@ -285,12 +285,12 @@
                 GO TO GET-999.
             IF F-INDEX < 15
              IF F-INDEX NOT = "07"
-               MOVE 2910 TO POS
+               MOVE 2905 TO POS
                DISPLAY "Press 'ESC' To Clear The Screen." AT POS
-               MOVE 3010 TO POS
-               DISPLAY "Or Press 'F10' To Print All Receipts"
+               MOVE 3005 TO POS
+               DISPLAY " Or Press 'F10' To Print All Receipts"
                   AT POS
-               ADD 37 TO POS
+               ADD 38 TO POS
                DISPLAY "For This Stock Number." AT POS
                MOVE "PORDER" TO F-FIELDNAME
                MOVE 6        TO F-CBFIELDNAME
@@ -301,12 +301,15 @@
             IF F-EXIT-CH NOT = X"07" AND NOT = X"1F"
                 MOVE 1 TO F-INDEX
                 GO TO GET-900.
-            MOVE 2910 TO POS.
-            DISPLAY "                                   " AT POS.
-            MOVE 3010 TO POS.
-            DISPLAY "                                   " AT POS.
-            ADD 30 TO POS.
-            DISPLAY "                                   " AT POS.
+                
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+      *      MOVE 2910 TO POS.
+      *      DISPLAY "                                   " AT POS.
+      *      MOVE 3010 TO POS.
+      *      DISPLAY "                                   " AT POS.
+      *      ADD 30 TO POS.
+      *      DISPLAY "                                   " AT POS.
             IF F-EXIT-CH = X"07"
                 PERFORM CLEAR-TRANSACTIONS
                 GO TO GET-999.
@@ -410,15 +413,15 @@
                PERFORM ERROR1-020.
        RDTR-020. 
            IF F-INDEX > 15
-                MOVE 2910 TO POS
+                MOVE 2905 TO POS
                 DISPLAY "Press 'PgDn' For More, 'PgUp' for Previous,"
                  AT POS
                 ADD 44 TO POS
-                DISPLAY "Or 'ESC' To Clear The Screen !" AT POS
-                MOVE 3010 TO POS
-                DISPLAY "Or Press 'F10' To Print All Receipts"
+                DISPLAY "Or 'Esc' To Clear The Screen !" AT POS
+                MOVE 3005 TO POS
+                DISPLAY " Or Press 'F10' To Print All Receipts"
                    AT POS
-                ADD 37 TO POS
+                ADD 38 TO POS
                 DISPLAY "For This Stock Number." AT POS
                 MOVE 15 TO F-INDEX
                 PERFORM USER-FILL-FIELD.

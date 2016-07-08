@@ -554,7 +554,7 @@
            MOVE 1010 TO POS
            DISPLAY "ARE YOU SURE THIS IS THE COMPANY TO UPDATE [ ]"
            AT POS
-           ADD 44 TO POS
+           ADD 44 TO POS 
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.

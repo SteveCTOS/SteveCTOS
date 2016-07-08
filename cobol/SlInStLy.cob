@@ -162,6 +162,14 @@
             MOVE 0   TO WS-ACCOUNT-NUMBER.
             MOVE "N" TO WS-ANSWER WS-ANSWER1.
             PERFORM ERROR1-020.
+            PERFORM ERROR-020.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+            "Press 'PgDn' For Next Stock, 'PgUp' For Previous Stock,"
+             AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Stock Number." AT POS
 
             MOVE "STOCK" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
@@ -202,6 +210,9 @@
             MOVE 15             TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+        
             MOVE SPACES          TO WS-STDESC
             MOVE ST-DESCRIPTION1 TO WS-DESC1
             MOVE ST-DESCRIPTION2 TO WS-DESC2.
@@ -222,6 +233,9 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-000.
+           IF F-EXIT-CH = X"07"
+               PERFORM DISPLAY-FORM
+               GO TO GET-000.
             MOVE 7        TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             IF F-NAMEFIELD = "  "
@@ -251,6 +265,9 @@
            MOVE 4      TO F-CBFIELDNAME
            PERFORM USER-FILL-FIELD.
            IF F-EXIT-CH = X"01"
+               GO TO GET-000.
+           IF F-EXIT-CH = X"07"
+               PERFORM DISPLAY-FORM
                GO TO GET-000.
            MOVE 10       TO F-CBFIELDLENGTH.
            PERFORM READ-FIELD-ALPHA.
@@ -284,14 +301,17 @@
 
             PERFORM READ-TRANSACTIONS.
        GET-900.
+            PERFORM ERROR1-020.
+            PERFORM ERROR-020.
+
             IF WS-ANSWER = "Y"
                CLOSE STOCK-TRANSLY-FILE
                GO TO GET-999.
             IF F-INDEX < 15
-               MOVE 2910 TO POS
+               MOVE 2905 TO POS
                DISPLAY "Press 'ESC' To Clear The Screen." AT POS
-               MOVE 3010 TO POS
-               DISPLAY "Or Press 'F10' To Print All Invoiced Orders."
+               MOVE 3005 TO POS
+               DISPLAY " Or Press 'F10' To Print All Invoiced Orders."
                   AT POS
                MOVE 15 TO F-INDEX
                PERFORM USER-FILL-FIELD.
@@ -415,13 +435,13 @@
            PERFORM ERROR-020.
        RDTR-020. 
            IF F-INDEX > 15
-                MOVE 2910 TO POS
+                MOVE 2905 TO POS
                 DISPLAY "Press 'PgDn' For More, 'PgUp' for Previous,"
                  AT POS
-                ADD 43 TO POS
-                DISPLAY "OR 'ESC' To Clear The Screen !" AT POS
-                MOVE 3010 TO POS
-                DISPLAY "Or Press 'F10' To Print All Invoiced Orders."
+                ADD 44 TO POS
+                DISPLAY "Or 'Esc' To Clear The Screen !" AT POS
+                MOVE 3005 TO POS
+                DISPLAY " Or Press 'F10' To Print All Invoiced Orders."
                    AT POS
                 MOVE 15 TO F-INDEX
                 PERFORM USER-FILL-FIELD.

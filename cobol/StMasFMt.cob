@@ -149,12 +149,12 @@
             MOVE 555 TO POS
             DISPLAY WS-BEG-STOCK AT POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 15        TO CDA-DATALEN.
-           MOVE 2         TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-BEG-STOCK TO CDA-DATA.
+           MOVE 15           TO CDA-DATALEN.
+           MOVE 2            TO CDA-ROW.
+           MOVE 54           TO CDA-COL.
+           MOVE CDA-WHITE    TO CDA-COLOR.
+           MOVE 'F'          TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-BEG-STOCK.
 
@@ -171,12 +171,12 @@
             MOVE 755 TO POS
             DISPLAY WS-END-STOCK AT POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 15        TO CDA-DATALEN.
-           MOVE 4         TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-END-STOCK TO CDA-DATA.
+           MOVE 15           TO CDA-DATALEN.
+           MOVE 4            TO CDA-ROW.
+           MOVE 54           TO CDA-COL.
+           MOVE CDA-WHITE    TO CDA-COLOR.
+           MOVE 'F'          TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-END-STOCK.
 
@@ -201,7 +201,7 @@
             MOVE 1055 TO POS
             DISPLAY WS-FIELD AT POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE WS-FIELD  TO CDA-DATA.
            MOVE 20        TO CDA-DATALEN.
            MOVE 7         TO CDA-ROW.
            MOVE 54        TO CDA-COL.
@@ -257,12 +257,12 @@
             MOVE 1155 TO POS
             DISPLAY WS-FIELD-MUST-MATCH AT POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 8         TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-FIELD-MUST-MATCH TO CDA-DATA.
+           MOVE 1                   TO CDA-DATALEN.
+           MOVE 8                   TO CDA-ROW.
+           MOVE 54                  TO CDA-COL.
+           MOVE CDA-WHITE           TO CDA-COLOR.
+           MOVE 'F'                 TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FIELD-MUST-MATCH.
 
@@ -285,12 +285,12 @@
             MOVE 1255 TO POS
             DISPLAY WS-MATCH-FIELD AT POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 20        TO CDA-DATALEN.
-           MOVE 9         TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-MATCH-FIELD TO CDA-DATA.
+           MOVE 20             TO CDA-DATALEN.
+           MOVE 9              TO CDA-ROW.
+           MOVE 54             TO CDA-COL.
+           MOVE CDA-WHITE      TO CDA-COLOR.
+           MOVE 'F'            TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MATCH-FIELD.
 
@@ -324,12 +324,12 @@
            MOVE 1355 TO POS
            DISPLAY WS-NEW-DATA AT POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 20        TO CDA-DATALEN.
-           MOVE 10        TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-NEW-DATA TO CDA-DATA.
+           MOVE 20          TO CDA-DATALEN.
+           MOVE 10          TO CDA-ROW.
+           MOVE 54          TO CDA-COL.
+           MOVE CDA-WHITE   TO CDA-COLOR.
+           MOVE 'F'         TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-NEW-DATA.
 
@@ -361,12 +361,12 @@
            MOVE 1755 TO POS
            DISPLAY WS-CHANGE-FILE AT POS
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
-           MOVE 14         TO CDA-ROW.
-           MOVE 54        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-CHANGE-FILE TO CDA-DATA.
+           MOVE 1              TO CDA-DATALEN.
+           MOVE 14             TO CDA-ROW.
+           MOVE 54             TO CDA-COL.
+           MOVE CDA-WHITE      TO CDA-COLOR.
+           MOVE 'F'            TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CHANGE-FILE.
 
