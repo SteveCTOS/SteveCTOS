@@ -1,7 +1,37 @@
-1
-CTJ-MONTH
+8
+CSC-MONTH
 2
 3
+
+4
+1
+Y
+CTC
+CTC ZZZZ
+D
+Y
+N
+
+
+4
+1
+Y
+SFC
+SFC ZZZZ
+D
+Y
+N
+
+
+4
+1
+Y
+A
+ZZZZZZZ
+N
+Y
+Y
+
 
 4
 3
@@ -10,7 +40,7 @@ A
 ZZZZZZZ
 N
 Y
-N
+Y
 
 
 4
@@ -21,16 +51,6 @@ ZZZZZZZ
 N
 Y
 Y
-
-
-4
-8
-Y
-A
-ZZZZZZZ
-N
-Y
-N
 
 
 4

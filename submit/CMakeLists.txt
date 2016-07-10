@@ -15,6 +15,12 @@ set (copy_list
   Backup07.sh
   Branch01.Sub
   Branch01.sh
+  Branch03.Sub
+  Branch03.sh
+  Branch07.Sub
+  Branch07.sh
+  Branch08.Sub
+  Branch08.sh
   CrMaint.sh
   DataTestAll.sh
   DB_CONFIG

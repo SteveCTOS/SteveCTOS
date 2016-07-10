@@ -1,13 +1,23 @@
-1
-CTJ-MONTH
+3
+CTN-MONTH
 2
 3
 
 4
-3
+1
+Y
+CTN
+CTN ZZZZ
+D
+Y
+N
+
+
+4
+1
 Y
 A
-ZZZZZZZ
+ZZZ
 N
 Y
 N
@@ -32,7 +42,6 @@ N
 Y
 N
 
-
 4
 6
 Y
@@ -41,6 +50,8 @@ ZZZZZZZ
 Y
 Y
 N
+
+
 
 
 #04
