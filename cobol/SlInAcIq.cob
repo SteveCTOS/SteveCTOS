@@ -361,9 +361,10 @@
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-000.
+       RDTR-020.
            PERFORM ERROR1-020.
            PERFORM ERROR-020.
-       RDTR-020.
+
            IF F-INDEX > 15
                 MOVE 2905 TO POS
                 DISPLAY "Press 'PgDn' For More, 'PgUp' For Previous,"
@@ -402,8 +403,9 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 GO TO RDTR-999.
-           IF F-EXIT-CH NOT = X"04" AND NOT = X"0C"
-                    AND NOT = X"07" AND NOT = " " AND NOT = X"1F"
+           IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
+                    AND NOT = X"07" AND NOT = " "   AND NOT = X"1F"
+                    AND NOT = 1
                 MOVE 16 TO F-INDEX
                 GO TO RDTR-020.
            IF STTR-REFERENCE1 NOT = INCR-INVOICE

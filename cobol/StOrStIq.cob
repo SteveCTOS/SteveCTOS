@@ -116,6 +116,14 @@
        GET-DATA SECTION.
        GET-000.
             MOVE "N" TO WS-ANSWER.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+            "Press 'PgDn' For Next Stock, 'PgUp' For Previous Stock,"
+             AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Stock Number." AT POS
+
             MOVE "STOCK" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
@@ -144,6 +152,9 @@
             MOVE 15 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             MOVE "DESC" TO F-FIELDNAME.
             MOVE 4 TO F-CBFIELDNAME.
             MOVE ST-DESCRIPTION1 TO F-NAMEFIELD.
@@ -163,6 +174,9 @@
 
             PERFORM READ-TRANSACTIONS.
        GET-900.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             IF WS-ANSWER = "Y"
                 GO TO GET-999.
             IF F-INDEX < 15

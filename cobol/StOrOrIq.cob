@@ -121,6 +121,14 @@
        GET-DATA SECTION.
        GET-000.
             MOVE "N" TO WS-ANSWER.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+            "Press 'PgDn' For Next P/O#, 'PgUp' For Previous P/O#,"
+             AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Purchase Order Number." AT POS
+
             MOVE "ORDER" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
@@ -213,6 +221,9 @@
 
             PERFORM READ-TRANSACTIONS.
        GET-900.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             IF WS-ANSWER = "Y"
                 GO TO GET-999.
             IF F-INDEX < 15

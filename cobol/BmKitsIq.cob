@@ -133,23 +133,28 @@
        GET-000.
             MOVE 0     TO WS-PRICE WS-TOTAL-PRICE WS-TOTAL-COST.
             MOVE "N"   TO WS-ANSWER.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+            "Press 'PgDn' For Next Toolkit List, Or Enter a Toolkit."
+              AT POS.
+
             MOVE "KIT" TO F-FIELDNAME.
             MOVE 3     TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"04"
                  PERFORM END-OFF.
             IF F-EXIT-CH = X"0C"
-                 MOVE TO-TOOLKIT-NUMBER TO WS-STOCKNUMBER
-                 PERFORM START-STOCK-NEXT
-                 PERFORM READ-STOCK-NEXT
+                 PERFORM RDTR-000
+                 MOVE WS-TOOLKIT-NUMBER TO TO-TOOLKIT-NUMBER
+                 MOVE "ZZZZZZ"          TO TO-COMPONENT-NUMBER
+                 START TOOLKITS KEY NOT < TO-KEY
+                 READ TOOLKITS NEXT
+                 MOVE TO-TOOLKIT-NUMBER TO ST-STOCKNUMBER
+                 PERFORM READ-STOCK
                  MOVE ST-STOCKNUMBER TO WS-TOOLKIT-NUMBER
                                         TO-TOOLKIT-NUMBER
-                 PERFORM GET-010
-                 GO TO GET-020.
-            IF F-EXIT-CH = X"05"
-                 PERFORM READ-STOCK-PREVIOUS
-                 MOVE ST-STOCKNUMBER TO WS-TOOLKIT-NUMBER
-                                        TO-TOOLKIT-NUMBER
+                 CLOSE TOOLKITS
                  PERFORM GET-010
                  GO TO GET-020.
             MOVE 15 TO F-CBFIELDLENGTH.
@@ -165,7 +170,9 @@
                 PERFORM DISPLAY-FORM
                 GO TO GET-000.
             PERFORM READ-STOCK.
-            IF ST-DESCRIPTION1 = "UNKNOWN"
+            MOVE ST-STOCKNUMBER TO WS-TOOLKIT-NUMBER
+                                   TO-TOOLKIT-NUMBER.
+            IF ST-DESCRIPTION1 = "*** UNKNOWN ITEM / D"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO GET-000.
             GO TO GET-020.
@@ -179,6 +186,8 @@
             MOVE TO-TOOLKIT-NUMBER TO ST-STOCKNUMBER.
             PERFORM READ-STOCK.
        GET-020.
+            PERFORM ERROR1-020.
+            
             MOVE SPACES          TO WS-STDESC
             MOVE ST-DESCRIPTION1 TO WS-DESC1
             MOVE ST-DESCRIPTION2 TO WS-DESC2.
@@ -206,10 +215,10 @@
             PERFORM READ-TRANSACTIONS.
        GET-900.
             IF WS-ANSWER = "Y"
-               MOVE TO-TOOLKIT-NUMBER TO ST-STOCKNUMBER
-               START STOCK-MASTER KEY > ST-STOCKNUMBER
-               PERFORM READ-STOCK-NEXT
-               MOVE WS-STOCKNUMBER TO TO-TOOLKIT-NUMBER
+      *         MOVE TO-TOOLKIT-NUMBER TO ST-STOCKNUMBER
+      *         START STOCK-MASTER KEY > ST-STOCKNUMBER
+      *         PERFORM READ-STOCK-NEXT
+      *         MOVE WS-STOCKNUMBER TO TO-TOOLKIT-NUMBER
                CLOSE TOOLKITS
                GO TO GET-999.
             IF F-INDEX < 15
@@ -260,8 +269,8 @@
               PERFORM ERROR1-000
               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              PERFORM ERROR-020
               CALL "C$SLEEP" USING 1
+              PERFORM ERROR-020
               GO TO RDTR-000.
            MOVE 1 TO F-INDEX.
            MOVE "Y" TO WS-NEWINPUT.
@@ -358,15 +367,16 @@
                 INVALID KEY NEXT SENTENCE.
             IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER
-                MOVE "UNKNOWN" TO ST-DESCRIPTION1
+                MOVE "*** UNKNOWN ITEM / D" TO ST-DESCRIPTION1
+                MOVE "ELETED ITEM ***"      TO ST-DESCRIPTION2
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK BUSY ON READ - RS-010, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-STOCK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
+                MOVE "STOCK BUSY ON READ - RS-010, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
                 GO TO RS-010.
        RS-999.
             EXIT.
@@ -653,10 +663,13 @@
        OPEN-005.
             OPEN I-O STOCK-MASTER.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE 0 TO WS-STOCK-ST1
                MOVE "STOCKMASTER BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-STOCK-ST1
+               PERFORM ERROR1-020
                GO TO OPEN-005.
        OPEN-006.
            MOVE Ws-Co-Name TO CO-NAME.

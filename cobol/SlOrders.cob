@@ -3802,7 +3802,7 @@
                 MOVE 9              TO F-CBFIELDNAME
                 MOVE ST-AVERAGECOST TO F-EDNAMEFIELDAMOUNT
                                        B-STOCKCOST (SUB-1)
-                MOVE 9 TO F-CBFIELDLENGTH
+                MOVE 9              TO F-CBFIELDLENGTH
                 PERFORM WRITE-FIELD-AMOUNT
             ELSE
                 MOVE ST-AVERAGECOST TO B-STOCKCOST (SUB-1).
@@ -4798,8 +4798,6 @@
             ELSE
               GO TO CQS-020.
 
-      *     IF ST-QTYONRESERVE < ST-QTYONBORDER
-      
            PERFORM READ-ALL-LINE-ITEMS.
               
            IF WS-STTR-SHIPQTY > ST-QTYONRESERVE
@@ -4838,7 +4836,6 @@
            
            COMPUTE WS-AVE-COST-OF-ALLOC-STOCK =
               B-SHIPQTY (SUB-1) * B-STOCKCOST (SUB-1).
-           
            COMPUTE WS-AVE-COST-OF-STOCK = 
               (ST-QTYONHAND - B-SHIPQTY (SUB-1)) * ST-AVERAGECOST.
 
@@ -4886,6 +4883,61 @@
               MOVE "Y" TO WS-LINECHANGED.
            MOVE " " TO B-PULL (SUB-1).
        CQS-999.
+           EXIT.
+      *
+       READ-ALL-LINE-ITEMS SECTION.
+       RALI-000.
+           MOVE 0 TO WS-STTR-ORDERQTY
+                     WS-STTR-SHIPQTY.
+           MOVE "N"                   TO STTR-ST-COMPLETE.
+           MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER.
+           START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
+              INVALID KEY NEXT SENTENCE.
+       RALI-010.
+           READ STOCK-TRANS-FILE NEXT
+              AT END NEXT SENTENCE.
+           IF WS-STTRANS-ST1 = 10
+              MOVE 0 TO WS-STTRANS-ST1
+              MOVE 0    TO STTR-TYPE
+              GO TO RALI-999.
+           IF WS-STTRANS-ST1 NOT = 0
+              MOVE "READ-ALL-LINE-ITEMS ST-TRANS BUSY, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO RALI-010.
+      ******************************************************************
+      *NEW SECTION TO TAKE CARE OF HAVING THE SAME STOCKNUMBER         *
+      *ENTERED TWICE ON A SINGLE P/SLIP.  THIS CAN HAPPEN PARTICULARLY *
+      *IF MERGING QUOTES INTO ONE P/SLIP.          7/2/2000            *
+      *ONLY VALID IF <F5> IS PRESSED ON ONE OF THE DUPLICATE NUMBERS.  *
+      *THIS CHECKS IF THE ONE READ IS THE ONE IN MEMORY ON THE LINE    *
+      *WHERE <F5> IS PRESSED.  IF NUMBER SAME BUT ST-TRANS-NUM NOT THEN*
+      *ITEM READ MUST BE THE DUPLICATE.                                *
+      ******************************************************************
+           IF STTR-STOCK-NUMBER = B-STOCKNUMBER (SUB-1)
+            IF STTR-REFERENCE1 = WS-INVOICE
+             IF STTR-TRANSACTION-NUMBER = B-STTRANS (SUB-1)
+                 GO TO RALI-010
+             ELSE
+                 GO TO RALI-020.
+              
+           IF STTR-STOCK-NUMBER NOT = B-STOCKNUMBER (SUB-1)
+              GO TO RALI-999.
+           IF STTR-REFERENCE1 = WS-INVOICE
+              GO TO RALI-010.
+           IF STTR-ST-COMPLETE NOT = "N"
+              GO TO RALI-999.
+           IF STTR-TYPE NOT = 4 AND NOT = 7
+              GO TO RALI-010.
+       RALI-020.
+           ADD STTR-ORDERQTY TO WS-STTR-ORDERQTY
+           ADD STTR-SHIPQTY  TO WS-STTR-SHIPQTY
+           GO TO RALI-010.
+       RALI-999.
            EXIT.
       *
        CANCEL-STOCK-TRANS SECTION.
@@ -5095,62 +5147,6 @@
 
            PERFORM SCROLL-050.
        DLI-999.
-           EXIT.
-      *
-       READ-ALL-LINE-ITEMS SECTION.
-       RALI-000.
-           MOVE 0 TO WS-STTR-ORDERQTY
-                     WS-STTR-SHIPQTY.
-           MOVE "N"                   TO STTR-ST-COMPLETE.
-           MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER.
-           START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
-              INVALID KEY NEXT SENTENCE.
-       RALI-010.
-           READ STOCK-TRANS-FILE NEXT
-              AT END NEXT SENTENCE.
-           IF WS-STTRANS-ST1 = 10
-              MOVE 0 TO WS-STTRANS-ST1
-              MOVE 0   TO STTR-TYPE
-              GO TO RALI-999.
-           IF WS-STTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-STTRANS-ST1
-              MOVE "READ-NEXT STOCK TRANS-RECORD BUSY, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-               MOVE 0 TO WS-STTRANS-ST1
-               GO TO RALI-010.
-      ******************************************************************
-      *NEW SECTION TO TAKE CARE OF HAVING THE SAME STOCKNUMBER         *
-      *ENTERED TWICE ON A SINGLE P/SLIP.  THIS CAN HAPPEN PARTICULARLY *
-      *IF MERGING QUOTES INTO ONE P/SLIP.          7/2/2000            *
-      *ONLY VALID IF <F5> IS PRESSED ON ONE OF THE DUPLICATE NUMBERS.  *
-      *THIS CHECKS IF THE ONE READ IS THE ONE IN MEMORY ON THE LINE    *
-      *WHERE <F5> IS PRESSED.  IF NUMBER SAME BUT ST-TRANS-NUM NOT THEN*
-      *ITEM READ MUST BE THE DUPLICATE.                                *
-      ******************************************************************
-           IF STTR-STOCK-NUMBER = B-STOCKNUMBER (SUB-1)
-            IF STTR-REFERENCE1 = WS-INVOICE
-             IF STTR-TRANSACTION-NUMBER = B-STTRANS (SUB-1)
-                 GO TO RALI-010
-             ELSE
-                 GO TO RALI-020.
-              
-           IF STTR-STOCK-NUMBER NOT = B-STOCKNUMBER (SUB-1)
-              GO TO RALI-999.
-           IF STTR-REFERENCE1 = WS-INVOICE
-              GO TO RALI-010.
-           IF STTR-ST-COMPLETE NOT = "N"
-              GO TO RALI-999.
-           IF STTR-TYPE NOT = 4 AND NOT = 7
-              GO TO RALI-010.
-       RALI-020.
-           ADD STTR-ORDERQTY TO WS-STTR-ORDERQTY
-           ADD STTR-SHIPQTY  TO WS-STTR-SHIPQTY
-           GO TO RALI-010.
-       RALI-999.
            EXIT.
       *
        RUNNING-TOTAL SECTION.

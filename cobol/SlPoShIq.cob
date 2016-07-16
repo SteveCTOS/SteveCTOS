@@ -205,12 +205,19 @@
             MOVE 20 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-850.
+            MOVE 2705 TO POS.
+            DISPLAY
+            "                                                       " &
+            "                                          " AT POS.
             MOVE "                         " TO F-NAMEFIELD.
             MOVE "ACCNUM" TO F-FIELDNAME.
             MOVE 6 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-000.
+           IF F-EXIT-CH = X"07"
+               PERFORM DISPLAY-FORM
+               GO TO GET-000.
             MOVE 7 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
@@ -224,9 +231,9 @@
                 CLOSE INCR-REGISTER
                 GO TO GET-999.
             IF F-INDEX < 15
-               MOVE 2910 TO POS
+               MOVE 2905 TO POS
                DISPLAY "Press 'ESC' To Clear The Screen," AT POS
-               MOVE 3010 TO POS
+               MOVE 3005 TO POS
                DISPLAY "Or Press 'F10' To Print All Information." AT POS
                MOVE 15 TO F-INDEX
                PERFORM USER-FILL-FIELD.
@@ -365,12 +372,12 @@
                GO TO RDTR-010.
        RDTR-020. 
            IF F-INDEX > 15
-             MOVE 2910 TO POS
+             MOVE 2905 TO POS
              DISPLAY "Press 'PgDn' For More, 'PgUp' For Previous,"
               AT POS
              ADD 44 TO POS
              DISPLAY "OR 'ESC' To Clear The Screen !" AT POS
-             MOVE 3020 TO POS
+             MOVE 3010 TO POS
              DISPLAY "Or Press 'F10' To Print All Information." AT POS
              MOVE 15 TO F-INDEX
              PERFORM USER-FILL-FIELD.

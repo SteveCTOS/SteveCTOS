@@ -1983,13 +1983,18 @@
             DELETE STOCK-TRANS-FILE
                INVALID KEY NEXT SENTENCE.
             IF WS-STTRANS-ST1 NOT = 0
-               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "ST-TRANS FILE BUSY ON DELETE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               MOVE 0 TO WS-STTRANS-ST1
-               GO TO DO-010.
+               PERFORM ERROR1-020
+               CLOSE STOCK-TRANS-FILE
+               PERFORM OPEN-000
+               ADD 1 TO WS-TRANSNO
+               PERFORM START-TRANS
+               MOVE 0 TO WS-STTRANS-ST1.
+      *         GO TO DO-010.
        DO-999.
            EXIT.
       *

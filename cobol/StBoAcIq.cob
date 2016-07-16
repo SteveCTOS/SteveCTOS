@@ -113,6 +113,14 @@
       *
        GET-DATA SECTION.
        GET-000.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+           "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
+            AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Account Number." AT POS
+
             MOVE "N" TO WS-ANSWER.
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
@@ -147,6 +155,9 @@
             MOVE 7 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+        
             MOVE "NAME"  TO F-FIELDNAME.
             MOVE 4       TO F-CBFIELDNAME.
             MOVE DR-NAME TO F-NAMEFIELD.
@@ -177,6 +188,9 @@
             MOVE " " TO F-EXIT-CH.
             PERFORM READ-TRANSACTIONS.
        GET-900.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             IF WS-ANSWER = "Y"
                 CLOSE STOCK-TRANS-FILE
                 GO TO GET-999.

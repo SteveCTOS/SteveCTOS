@@ -118,6 +118,14 @@
        GET-DATA SECTION.
        GET-000.
             MOVE "N" TO WS-ANSWER.
+
+            MOVE 2905 TO POS
+            DISPLAY 
+            "Press 'PgDn' For Next Stock, 'PgUp' For Previous Stock,"
+             AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Stock Number." AT POS
+
             MOVE "STOCK" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
@@ -145,6 +153,9 @@
             MOVE 15 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             MOVE "DESC" TO F-FIELDNAME.
             MOVE 4 TO F-CBFIELDNAME.
             MOVE ST-DESCRIPTION1 TO F-NAMEFIELD.
@@ -164,6 +175,9 @@
 
             PERFORM READ-TRANSACTIONS.
        GET-900.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             IF WS-ANSWER = "Y"
                 CLOSE STOCK-TRANS-FILE
                 GO TO GET-999.
@@ -228,13 +242,24 @@
            IF WS-STTRANS-ST1 NOT = 0
               CLOSE STOCK-TRANS-FILE
               PERFORM RDTR-999.
+           MOVE " " TO F-EXIT-CH.
        RDTR-010.
-           READ STOCK-TRANS-FILE NEXT
+           IF F-EXIT-CH = " "
+            READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
-           IF WS-STTRANS-ST1 = 10 OR = 23
+           IF F-EXIT-CH = 1
+            READ STOCK-TRANS-FILE PREVIOUS
+               AT END NEXT SENTENCE.
+           IF F-EXIT-CH = " "
+            IF WS-STTRANS-ST1 = 10
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
+           IF F-EXIT-CH = 1
+            IF WS-STTRANS-ST1 = 10
+               MOVE 1 TO F-INDEX
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-000.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
@@ -246,25 +271,73 @@
                PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
                GO TO RDTR-010.
-           IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
-               MOVE 1 TO F-INDEX
-               CLOSE STOCK-TRANS-FILE
-               GO TO RDTR-999.
            IF STTR-TYPE NOT = 8
+               MOVE 2910 TO POS
+               DISPLAY "Reading Next Valid Transaction...." AT POS
                GO TO RDTR-010.
-          IF STTR-COMPLETE NOT = "Q"
+           IF F-EXIT-CH = " "
+            IF STTR-ST-COMPLETE NOT = "Q"
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
-           IF WS-MESSAGE NOT = " "
-               PERFORM ERROR-020.
+           IF F-EXIT-CH = 1
+            IF STTR-ST-COMPLETE NOT = "Q"
+               MOVE 1 TO F-INDEX
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-000.
+           IF F-EXIT-CH = " "
+             IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
+               MOVE 1 TO F-INDEX
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-999.
+           IF F-EXIT-CH = 1
+             IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
+               MOVE 1 TO F-INDEX
+               CLOSE STOCK-TRANS-FILE
+               GO TO RDTR-000.
+           PERFORM ERROR-020.
+
+
+
+
+
+      *     READ STOCK-TRANS-FILE NEXT
+      *         AT END NEXT SENTENCE.
+      *     IF WS-STTRANS-ST1 = 10 OR = 23
+      *         MOVE 1 TO F-INDEX
+      *         CLOSE STOCK-TRANS-FILE
+      *         GO TO RDTR-999.
+      *     IF WS-STTRANS-ST1 NOT = 0
+      *        MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+      *         PERFORM ERROR-000
+      *         CALL "C$SLEEP" USING 1
+      *         PERFORM ERROR1-020
+      *         PERFORM ERROR-020
+      *         MOVE 0 TO WS-STTRANS-ST1
+      *         GO TO RDTR-010.
+      *     IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
+      *         MOVE 1 TO F-INDEX
+      *         CLOSE STOCK-TRANS-FILE
+      *         GO TO RDTR-999.
+      *     IF STTR-TYPE NOT = 8
+      *         GO TO RDTR-010.
+      *    IF STTR-COMPLETE NOT = "Q"
+      *         MOVE 1 TO F-INDEX
+      *         CLOSE STOCK-TRANS-FILE
+      *         GO TO RDTR-999.
+      *     IF WS-MESSAGE NOT = " "
+      *         PERFORM ERROR-020.
        RDTR-020. 
            IF F-INDEX > 15
-                MOVE 2910 TO POS
-                DISPLAY "Press 'Pgdn' For More, Or" AT POS
-                ADD 27 TO POS
-                DISPLAY "'ESC' To Clear The Screen !" AT POS
-                MOVE 3010 TO POS
+                MOVE 2905 TO POS
+                DISPLAY "Press 'PgDn' For More, 'PgUp' For Previous,"
+                 AT POS
+                ADD 44 TO POS
+                DISPLAY "Or 'Esc' To Clear The Screen !" AT POS
+                MOVE 3005 TO POS
                 DISPLAY "Or Press 'F10' To Print All Quote Items"
                    AT POS
                 ADD 40 TO POS
@@ -278,6 +351,10 @@
             IF F-EXIT-CH = X"0C"
                 PERFORM CLEAR-TRANSACTIONS
                 MOVE " " TO F-EXIT-CH
+                MOVE 1 TO F-INDEX.
+            IF F-EXIT-CH = X"05"
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE 1 TO F-EXIT-CH
                 MOVE 1 TO F-INDEX.
             IF F-EXIT-CH = X"07"
                 PERFORM CLEAR-TRANSACTIONS
@@ -293,8 +370,9 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 GO TO RDTR-999.
-           IF F-EXIT-CH NOT = X"04" AND NOT = X"0C"
-                    AND NOT = X"07" AND NOT = " " AND NOT = X"1F"
+           IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
+                    AND NOT = X"07" AND NOT = " "   AND NOT = X"1F"
+                    AND NOT = 1
                 MOVE 16 TO F-INDEX
                 GO TO RDTR-020.
            PERFORM READ-ORDER-REGISTER.
