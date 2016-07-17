@@ -4891,6 +4891,7 @@
                      WS-STTR-SHIPQTY.
            MOVE "N"                   TO STTR-ST-COMPLETE.
            MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER.
+           MOVE 0                     TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
               INVALID KEY NEXT SENTENCE.
        RALI-010.
@@ -4898,7 +4899,7 @@
               AT END NEXT SENTENCE.
            IF WS-STTRANS-ST1 = 10
               MOVE 0 TO WS-STTRANS-ST1
-              MOVE 0    TO STTR-TYPE
+              MOVE 0 TO    STTR-TYPE
               GO TO RALI-999.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "READ-ALL-LINE-ITEMS ST-TRANS BUSY, 'ESC' TO RETRY."
