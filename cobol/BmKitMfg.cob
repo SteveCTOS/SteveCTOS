@@ -1975,8 +1975,8 @@
            MOVE 0 TO WS-STTR-ORDERQTY
                      WS-STTR-SHIPQTY.
            MOVE "N"                   TO STTR-ST-COMPLETE
-           MOVE 0                     TO STTR-ST-DATE 
-           MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER.
+           MOVE B-STOCKNUMBER (SUB-1) TO STTR-STOCK-NUMBER
+           MOVE 0                     TO STTR-ST-DATE.
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
               INVALID KEY NEXT SENTENCE.
        RALI-010.
