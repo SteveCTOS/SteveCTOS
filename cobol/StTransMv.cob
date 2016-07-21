@@ -121,6 +121,8 @@
            ELSE
                OPEN I-O STOCK-TRANS-FILE.
            
+      *     MOVE WS-ACCEPT TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
@@ -161,11 +163,17 @@
         BE-010.
            WRITE STOCK1-TRANS-REC
                  INVALID KEY
-             MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
+             MOVE "INVALID WRITE FOR ISAM-EXPORT FILE..." TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE WS-STAT1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             PERFORM ERROR1-020.
+             MOVE STTR1-KEY TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             ADD 1 TO STTR-TRANSACTION-NUMBER
+                      STTR-REFERENCE1
+                      START STOCK-TRANS-FILE KEY > STTR-KEY.
+                      
       *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
       *       DISPLAY WS-STAT1
       *         EXIT PROGRAM.

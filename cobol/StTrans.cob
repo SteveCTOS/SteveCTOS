@@ -2002,7 +2002,19 @@
        OPEN-000.
             OPEN I-O STOCK-TRANS-FILE.
             IF WS-STTRANS-ST1 NOT = 0
-               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "ST-TRANS FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO OPEN-005.
+            GO TO OPEN-010.
+       OPEN-005.
+            OPEN OUTPUT STOCK-TRANS-FILE.
+            IF WS-STTRANS-ST1 NOT = 0
+               MOVE "ST-TRANS FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
