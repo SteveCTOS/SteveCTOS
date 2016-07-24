@@ -6,6 +6,7 @@ set (copy_list
   PrintDrOverdue1
   PrintDrOverdue2
   PrintInvoice
+  PrintInvoicePdfOnly
   PrintMergeDrOverdue
   PrintMergePOrder 
   PrintMergeQuote
