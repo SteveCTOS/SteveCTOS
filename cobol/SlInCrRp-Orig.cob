@@ -43,7 +43,6 @@
        77  WS-ADD-TOGETHER      PIC X VALUE " ".
        77  Ws-EnterOption       PIC X VALUE " ".
        77  WS-PRINT-NUM         PIC 9.
-       77  WS-PRINT-Y-N         PIC X VALUE "Y".
        77  WS-TYPE-OF-DOCUMENT  PIC 9.
        77  WS-NUMBER            PIC 9(6) VALUE 0.
        77  WS-RANGE1            PIC 9(6) VALUE 0.
@@ -388,9 +387,7 @@
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
        CONT-031.
-      *D=dOCBASE ASCII TEXT,
-      *X=NEW PDF FORMAT PRINT
-           IF WS-INVCRED = "D" OR = "X"
+           IF WS-INVCRED = "D"
                GO TO CONT-032.
       *1=MASTER PRINTER - DOT MATRIX
            IF WS-PRINT-NUM = 1
@@ -426,7 +423,7 @@
            Perform Error-Message.
            PERFORM END-OFF.
        CONT-032.
-           IF WS-INVCRED NOT = "D" AND NOT = "X"
+           IF WS-INVCRED NOT = "D"
                PERFORM WORK-OUT-PRINT-FILE-NAME
                GO TO CONT-035.
       *     IF WS-INVCRED = "I" OR = "P" OR = "Q"
@@ -442,8 +439,10 @@
                MOVE WS-CO-DIG2   TO AL-RATE (23)
                MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME
                OPEN OUTPUT PRINT-FILE
-               GO TO CONT-036.
-           IF WS-INVCRED = "X"
+               
+      *         MOVE "HERE AT OPEN D TYPE PRINT FILE" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
                GO TO CONT-036.
        CONT-035.
            IF WS-PRINT-NUM NOT = 4 AND NOT = 5
@@ -465,27 +464,47 @@
                 PERFORM ERROR-MESSAGE
                 GO TO CONT-035.
                 
-           IF WS-INVCRED = "D" OR = "X"
+           IF WS-INVCRED = "D"
                GO TO CONT-036.
+      *     IF WS-PRINT-NUM = 1
+      *         MOVE WTELL-PAUSE TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE " " TO PRINT-REC
+      *         WRITE PRINT-REC BEFORE PAGE.
            IF WS-PRINT-NUM = 4
               PERFORM ZL1-LASER-HEADINGS.
                 
+      *     MOVE "LASER HEADINGS NOW OPENED" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+               
            IF WS-INVCRED = "P"
                MOVE WS-RANGE1 TO WS-NUMBER.
        CONT-036.
            PERFORM READ-DATA.
            IF WS-FOUND = " "
-            IF WS-INVCRED NOT = "D" AND NOT = "X"
+            IF WS-INVCRED NOT = "D"
                MOVE "NOTHING TO PRINT IN THAT RANGE!!!" TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
-           IF WS-INVCRED = "D" OR = "X"
+           IF WS-INVCRED = "D"
                CLOSE PRINT-FILE
                PERFORM END-OFF.
+      *         GO TO CONT-038.
+      *     IF WS-PRINT-NUM = 1
+      *         MOVE " " TO PRINT-REC
+      *         WRITE PRINT-REC BEFORE PAGE
+      *         MOVE W-NULL TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE WTELL-PAUSE TO PRINT-REC
+      *         WRITE PRINT-REC
+      *         MOVE " " TO PRINT-REC.
        CONT-038.
-           IF WS-INVCRED NOT = "X"
-            IF WS-PRINT-NUM NOT = 4
+           IF WS-PRINT-NUM NOT = 4
                CLOSE PRINT-FILE
-            ELSE
+           ELSE
                CLOSE LASER-FILE.
        CONT-040.
       * WS-PRINT-NUM = 5.  EMAIL PRINTOUT  SEE CONT-036 NEW ENTRY
@@ -514,10 +533,17 @@
 
            IF WS-PRINT-NUM = 4
             IF WS-INVCRED = "I" OR = "P" OR = "Q"
+                
+      *      MOVE "SET UP INVOICE TO PDF" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+           
                PERFORM SETUP-INVOICE-FOR-PDF
             ELSE
                PERFORM SETUP-CREDIT-FOR-PDF.
                 
+      *      MOVE "SET UP 2 INVOICE TO PDF" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+
       *      PERFORM SEND-REPORT-TO-PRINTER.
 
       *      MOVE "SENT REPORT TO PRINTER" TO WS-MESSAGE
@@ -602,46 +628,6 @@
        WOPFN-999.
             EXIT.
       *
-       WORK-OUT-PDF-FILE-NAME SECTION.
-       WOPDF-001.
-           MOVE SPACES TO ALPHA-RATE DATA-RATE.
-       WOPDF-005.
-           MOVE "/ctools/pdf" TO ALPHA-RATE.
-           MOVE WS-CO-NUMBER  TO DATA-RATE.
-           MOVE 12 TO SUB-1
-           MOVE 1  TO SUB-2.
-       WOPDF-010.
-           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
-           ADD 1 TO SUB-1 SUB-2.
-           IF SUB-1 < 100
-            IF DAT-RATE (SUB-2) NOT = " "
-               GO TO WOPDF-010.
-           MOVE "/" TO AL-RATE (SUB-1).
-           ADD 1 TO SUB-1.
-       WOPDF-020.
-      *     MOVE "IN WOPDF-020." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
-           MOVE SPACES     TO DATA-RATE.
-           MOVE WS-INVOICE TO DATA-RATE.
-           MOVE 1  TO SUB-2.
-       WOPDF-025.
-           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
-           ADD 1 TO SUB-1 SUB-2.
-           IF SUB-1 < 100
-            IF DAT-RATE (SUB-2) NOT = " "
-               GO TO WOPDF-025.
-       WOPDF-030.
-           MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
-           
-      *     MOVE WS-PRINTER TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
-      *     MOVE W-FILENAME TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-       WOPDF-999.
-            EXIT.
-      *
        READ-DATA SECTION.
        RD-000.
            MOVE " " TO WS-FOUND.
@@ -653,16 +639,6 @@
            IF WS-INVCRED = "P"
               PERFORM READ-REGISTER.
               
-           IF WS-INVCRED = "X"
-            IF WS-DATE = 0
-              PERFORM GET-SYSTEM-Y2K-DATE
-              MOVE 01 TO WS-DD
-              MOVE WS-DATE TO INCR-DATE
-              START INCR-REGISTER KEY NOT < INCR-DATE
-                 INVALID KEY NEXT SENTENCE.
-           IF WS-INVCRED = "X"
-              PERFORM READ-PDF-REGISTER.
-              
            IF WS-INVCRED = "D"
             IF WS-DATE = 0
               PERFORM GET-SYSTEM-Y2K-DATE
@@ -673,28 +649,8 @@
            IF WS-INVCRED = "D"
               PERFORM READ-DOCU-REGISTER.
               
-      * PRINTING DONE OF ONE TRANSACTION, NOW TO SEE IF THERE ARE MORE
-      * IF COMPLETE THEN GO TO RD-999.
-      
-      *     MOVE INCR-INVOICE TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-      
            IF WS-COMPLETE = "Y" OR = "E"
                GO TO RD-999.
-
-           IF WS-INVCRED = "X"
-              PERFORM WORK-OUT-PDF-FILE-NAME
-              OPEN OUTPUT LASER-FILE
-              PERFORM ZL1-LASER-HEADINGS
-              PERFORM PDF-PRINT-INVOICE
-              MOVE INCR-INVOICE TO WS-INVOICE
-              CLOSE LASER-FILE
-            IF INCR-TRANS = 1
-              PERFORM SETUP-INVOICE-FOR-PDF-ONLY
-              GO TO RD-010
-            ELSE
-      *        PERFORM SETUP-CREDIT-FOR-PDF-ONLY
-              GO TO RD-010.
            IF WS-PRINT-NUM NOT = 4 AND NOT = 5
               PERFORM PRINT.
            IF WS-PRINT-NUM = 4
@@ -742,12 +698,11 @@
                 GO TO GET-010.
             IF WS-INVCRED = "P"
                 GO TO GET-005.
-            IF WS-INVCRED = "D" OR = "X"
-                MOVE 1 TO WS-PRINT-NUM WS-PROG-TYPE
+            IF WS-INVCRED = "D"
+                MOVE 1 TO WS-PRINT-NUM
                 GO TO GET-900.
             MOVE
-            "ENTER I=INVOICE, C=CREDIT, D=D/BASE OR P=PROFORMA " &
-            " INVOICE, X=PDF MONTH-END PRINT"
+            "ENTER I=INVOICE, C=CREDIT, D=D/BASE OR P=PROFORMA INVOICE."
              TO WS-MESSAGE
             PERFORM ERROR-MESSAGE
             GO TO GET-000.
@@ -933,635 +888,6 @@
                PERFORM END-OFF.
        GET-999.
             EXIT.
-      *
-       PDF-PRINT-INVOICE SECTION.
-       LP-PDF-000.
-           MOVE 1 TO WS-PAGE SUB-1 SUB-2
-           MOVE " " TO PDET.
-           MOVE INCR-TRANS TO STTR-TYPE
-              GO TO LP-PDF-005.
-           MOVE 0 TO WS-SUBTOTAL WS-INVOICETOTAL.
-       LP-PDF-005.
-           MOVE INCR-INVOICE TO STTR-REFERENCE1.
-           MOVE 1            TO STTR-TRANSACTION-NUMBER.
-           
-           START STOCK-TRANS-FILE KEY NOT < STTR-KEY
-              INVALID KEY NEXT SENTENCE.
-       LP-PDF-010.
-           IF WS-PAGE > 1
-               MOVE " "                     TO LASER-REC
-               MOVE "¶"                     TO PLCONT-CHAR
-               MOVE WS-PAGE                 TO PL-CONT-PAGE
-               MOVE "Continued To.....Page" TO PL-CONT-NAME
-               WRITE LASER-REC FROM PL-CONTINUED
-               MOVE " "     TO LASER-REC
-               MOVE "¶"     TO LASER-REC
-               WRITE LASER-REC
-               WRITE LASER-REC
-               WRITE LASER-REC
-               WRITE LASER-REC.
-
-           MOVE " "     TO LASER-REC
-           MOVE "´¶"    TO PLCR-CHAR1
-           IF INCR-TRANS = 1
-              MOVE "      TAX INVOICE     " TO PL-TYPE
-              GO TO LP-PDF-011.
-           IF INCR-TRANS = 6
-              MOVE "     TAX CREDIT NOTE  " TO PL-TYPE.
-       LP-PDF-011.
-           MOVE PA-NAME TO PL-NAME.
-           WRITE LASER-REC FROM LASER-PCREDITLINE.
-           MOVE " "     TO LASER-REC.
-       LP-PDF-012.
-           MOVE "¶"                      TO PL1-CHAR
-           MOVE INCR-GSTNO               TO PL-GSTNO
-           MOVE INCR-ACCOUNT             TO PL-ACCNO.
-           MOVE PA-ADD1                  TO PL-ADDNAME
-           WRITE LASER-REC FROM LASER-PLINE1.
-           
-           MOVE " "       TO LASER-REC LASER-PLINE2
-           MOVE "¶"       TO PL2-CHAR
-           MOVE PA-ADD2   TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-DEL1  TO PL-ADD
-           MOVE PA-ADD3    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-DEL2  TO PL-ADD
-           MOVE PA-DEL1    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-DEL3  TO PL-ADD
-           MOVE PA-DEL2    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE PA-DEL3    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-
-           MOVE " "             TO LASER-REC LASER-PLINE2.
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-NAME       TO PL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-ADD1  TO PL-ADD
-           MOVE PA-PHONE   TO SUPPL-DIG30
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "             TO LASER-REC LASER-PLINE2
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-ADD2       TO PL-ADDRESS
-           MOVE PA-FAX          TO SUPPL-DIG30
-           WRITE LASER-REC       FROM LASER-PLINE2.
-           
-           MOVE " "             TO LASER-REC LASER-PLINE2
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-ADD3       TO PL-ADD
-           MOVE PA-CO-REG-NO    TO SUPPL-DIG30
-           WRITE LASER-REC       FROM LASER-PLINE2.
-
-           MOVE " "             TO LASER-REC LASER-PLINE2.
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-CODE       TO PL-ADD
-           MOVE PA-CO-VAT-NO    TO SUPPL-DIG30
-           ACCEPT WS-TIME FROM TIME
-           MOVE WS-HR           TO SPLIT-HR
-           MOVE ":"             TO SPLIT-HR-FIL
-                                   SPLIT-MN-FIL
-           MOVE WS-MIN          TO SPLIT-MN
-           MOVE WS-SEC          TO SPLIT-SC
-           MOVE WS-TIME-DISPLAY TO SUPPL-TIME
-           MOVE INCR-PULLBY     TO PL-PULLBY
-           MOVE INCR-AREA       TO PL-AREA
-           MOVE PA-CO-VAT-NO    TO SUPPL-DIG30
-           WRITE LASER-REC      FROM LASER-PLINE2.
-
-           MOVE " "              TO LASER-REC LASER-PLINE2 LASER-PLINE4.
-           MOVE "¶"              TO PL4-CHAR
-           IF WS-ADD-TOGETHER = "Y"
-            IF PL-PO = " "
-               MOVE INCR-TERMS       TO PL-TERMS
-               MOVE INCR-PORDER      TO PL-PO
-               MOVE INCR-SALES       TO PL-SOLD
-               MOVE INCR-DELIVERY    TO PL-VIA
-               MOVE INCR-BIN         TO PL-BIN
-               MOVE INCR-SB-TYPE     TO PL-SOLDBY.
-           IF WS-ADD-TOGETHER NOT = "Y"
-               MOVE INCR-TERMS       TO PL-TERMS
-               MOVE INCR-PORDER      TO PL-PO
-               MOVE INCR-SALES       TO PL-SOLD
-               MOVE INCR-DELIVERY    TO PL-VIA
-               MOVE INCR-BIN         TO PL-BIN
-               MOVE INCR-SB-TYPE     TO PL-SOLDBY.
-               
-           IF WS-INVCRED = "X"
-            IF INCR-BO-INV-NO NOT = WS-INVOICE
-             MOVE INCR-BO-DATE     TO SPLIT-DATE
-             PERFORM CONVERT-DATE-FORMAT
-             MOVE DISPLAY-DATE     TO PL-ORDERDATE
-             MOVE INCR-BO-INV-NO   TO PL-SLIP
-             MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
-
-             MOVE INCR-DATE        TO SPLIT-DATE
-             PERFORM CONVERT-DATE-FORMAT
-             MOVE DISPLAY-DATE     TO PL-DATE.
-             
-           MOVE WS-INVOICE         TO PL-INV.
-           MOVE WS-PAGE            TO PL-PAGE
-           WRITE LASER-REC FROM LASER-PLINE4.
-           
-           MOVE " "              TO LASER-REC LASER-PLINE4
-                                    LASER-PDET.
-      *         MOVE "AT LP-PDF-020, STARTING STOCK LINES" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE.
-
-       LP-PDF-020.
-           IF SUB-1 < 299
-            IF SUB-1 = SUB-20
-               SUBTRACT 1 FROM SUB-2
-               GO TO LP-PDF-031.
-           IF SUB-2 > 20
-               MOVE 1 TO SUB-2
-               ADD 1  TO WS-PAGE
-               GO TO LP-PDF-010.
-           IF SUB-1 > 300
-               GO TO LP-PDF-031.
-               
-      *     MOVE "READING STOCK-TRANS IN PDF SECTION" TO WS-MESSAGE
-      *     PERFORM ERROR1-010
-      *     MOVE SUB-1 TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     PERFORM ERROR1-020.
-
-           PERFORM READ-STOCK-TRANSACTIONS
-           MOVE 0 TO WS-BO-QTY.
-
-           MOVE "¶"                         TO PLDET-CHAR
-           MOVE B-STOCKNUMBER TO SPLIT-STOCK.
-           IF SP-1STCHAR = "*"
-            IF INCR-TRANS = 1
-               MOVE C-LINE    TO PLDET-REST
-               GO TO LP-PDF-025.
-           IF SP-1STCHAR = "*"
-            IF INCR-TRANS = 6
-               MOVE C-CR-LINE TO PLDET-REST
-               GO TO LP-PDF-025.
-
-           MOVE B-STOCKNUMBER       TO PL-STOCK
-           MOVE B-STOCKDESCRIPTION  TO PL-DESC
-           MOVE B-STOCKDESCRIPTION2 TO PL-DESC2
-           MOVE B-UNIT              TO PL-UNIT.
-           IF INCR-TRANS = 1
-             MOVE B-ORDERQTY        TO PL-ORDER.
-           MOVE B-SHIPQTY           TO PL-SHIP.
-           IF INCR-TRANS = 1
-             COMPUTE WS-BO-QTY = B-ORDERQTY - (B-SHIPQTY + B-SHIPPEDQTY)
-             MOVE WS-BO-QTY         TO PL-BO
-             MOVE B-SHIPPEDQTY      TO PL-SHIPPED.
-           MOVE B-STOCKPRICE        TO PL-PRICE
-           MOVE B-DISCOUNTPERITEM   TO PL-DISCOUNT
-           MOVE B-NETT              TO PL-NETT.
-       LP-PDF-025.
-           MOVE SUB-1 TO PL-NO
-           WRITE LASER-REC FROM LASER-PDET.
-           MOVE " " TO LASER-REC
-                       LASER-PDET
-                       BODY-FIELDS
-                       COMM-LINES
-                       COMM-CR-LINES.
-           ADD 1 TO SUB-1 SUB-2.
-           IF SUB-1 < 301
-              GO TO LP-PDF-020.
-       LP-PDF-030.
-           IF WS-COMPLETE = "Y"
-              GO TO LP-PDF-031
-           ELSE
-              ADD 1 TO SUB-2
-              PERFORM LP-PDF-005
-              SUBTRACT 1 FROM SUB-20
-              GO TO LP-PDF-020.
-       LP-PDF-031.
-           IF SUB-2 < 20
-              MOVE "¶" TO PLDET-CHAR
-              WRITE LASER-REC FROM LASER-PDET
-              ADD 1 TO SUB-2
-              GO TO LP-PDF-031.
-       LP-PDF-035.
-           MOVE " "              TO LASERPL-COMMENTLINE
-           MOVE "¶"              TO PLCOM-CHAR
-           MOVE INCR-COMMENT     TO PL-BO-MESSAGE
-           MOVE WS-SPEC-COMMENT  TO PL-REST-OF-LINE
-           WRITE LASER-REC       FROM LASERPL-COMMENTLINE.
-
-           MOVE " "              TO LASERPL-COMMENTLINE.
-           MOVE "¶"              TO PLCOM-CHAR
-           IF WS-BO-FOUND = "Y"
-              MOVE INCR-CONTACT  TO PL-BO-MESSAGE.
-           MOVE PA-COMMENT       TO PL-COMM
-           WRITE LASER-REC       FROM LASERPL-COMMENTLINE.
-
-           MOVE " " TO LASER-REC LASERPL-ADDLINE LASERPL-COMMENTLINE.
-           MOVE "¶"              TO PLADD-CHAR
-           IF WS-BO-FOUND = "Y"
-              MOVE INCR-PHONE    TO PL-PHONE.
-           WRITE LASER-REC        FROM LASERPL-ADDLINE.
-
-           MOVE " " TO LASER-REC LASERPL-ADDLINE LASERPL-COMMENTLINE.
-           MOVE "¶"              TO PLADD-CHAR
-           MOVE INCR-ADDFREIGHT  TO PL-ADD1
-           MOVE INCR-ADDLABOUR   TO PL-ADD2.
-      **********************************************************
-      *NEXT FEW LINES ADDED TO ADD IN THE ADD-ONS FOR PRINTING *
-      **********************************************************
-           MOVE WS-TAXAMT        TO PL-ADD3
-           WRITE LASER-REC     FROM LASERPL-ADDLINE.
-
-           MOVE " "              TO LASERPL-ADDLINE LASER-REC.
-           MOVE "¶"              TO PLADD-CHAR
-           MOVE INCR-ADDPOST     TO PL-ADD1
-           MOVE INCR-ADDMISC     TO PL-ADD2
-           MOVE WS-SUBTOTAL      TO PL-ADD3.
-           MOVE "ZAR"            TO PL-CURRENCY.
-           MOVE WS-INVOICETOTAL  TO PL-ADD4.
-           WRITE LASER-REC     FROM LASERPL-ADDLINE.
-       LP-PDF-036.
-           MOVE " " TO LASERPL-ADDLINE LASER-REC WS-COMPLETE. 
-       LP-PDF-999.
-           EXIT.
-      *
-       LASER-PRINT-INVOICE SECTION.
-       LP-000.
-           MOVE 1 TO WS-PAGE SUB-1 SUB-2
-           MOVE " " TO PDET.
-           MOVE INCR-TRANS TO STTR-TYPE
-              GO TO LP-005.
-           MOVE 0 TO WS-SUBTOTAL WS-INVOICETOTAL.
-       LP-003.
-           IF WS-PROF-TYPE = "Q"
-              MOVE 8         TO STTR-TYPE.
-           IF WS-PROF-TYPE = "P"
-              MOVE 4         TO STTR-TYPE.
-       LP-005.
-           MOVE INCR-INVOICE TO STTR-REFERENCE1.
-           MOVE 1            TO STTR-TRANSACTION-NUMBER.
-           
-           START STOCK-TRANS-FILE KEY NOT < STTR-KEY
-              INVALID KEY NEXT SENTENCE.
-       LP-010.
-           IF WS-PAGE > 1
-               MOVE " "                     TO LASER-REC
-               MOVE "¶"                     TO PLCONT-CHAR
-               MOVE WS-PAGE                 TO PL-CONT-PAGE
-               MOVE "Continued To.....Page" TO PL-CONT-NAME
-               WRITE LASER-REC FROM PL-CONTINUED
-               MOVE " "     TO LASER-REC
-               MOVE "¶"     TO LASER-REC
-               WRITE LASER-REC
-               WRITE LASER-REC
-               WRITE LASER-REC
-               WRITE LASER-REC.
-               
-           MOVE " "     TO LASER-REC
-           MOVE "´¶"    TO PLCR-CHAR1
-           IF WS-INVCRED = "P"
-              MOVE "    PROFORMA INVOICE  " TO PL-TYPE
-              GO TO LP-011.
-           IF WS-INVCRED = "I"
-            IF WS-TYPE-OF-DOCUMENT = 1
-              MOVE "      TAX INVOICE     " TO PL-TYPE
-              GO TO LP-011.
-           IF WS-INVCRED = "I"
-            IF WS-TYPE-OF-DOCUMENT = 2
-              MOVE "SUPPLIER DELIVERY NOTE" TO PL-TYPE
-              GO TO LP-011.
-           IF WS-INVCRED = "I"
-            IF WS-TYPE-OF-DOCUMENT = 3
-              MOVE "CUSTOMER DELIVERY NOTE" TO PL-TYPE
-              GO TO LP-011.
-           IF WS-INVCRED = "C"
-              MOVE "     TAX CREDIT NOTE  " TO PL-TYPE.
-       LP-011.
-           MOVE PA-NAME TO PL-NAME.
-           WRITE LASER-REC FROM LASER-PCREDITLINE.
-           MOVE " "     TO LASER-REC.
-       LP-012.
-           MOVE "¶"                      TO PL1-CHAR
-           MOVE INCR-GSTNO               TO PL-GSTNO
-           MOVE INCR-ACCOUNT             TO PL-ACCNO.
-           MOVE PA-ADD1                  TO PL-ADDNAME
-           WRITE LASER-REC FROM LASER-PLINE1.
-           
-           MOVE " "       TO LASER-REC LASER-PLINE2
-           MOVE "¶"       TO PL2-CHAR
-           MOVE PA-ADD2   TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-DEL1  TO PL-ADD
-           MOVE PA-ADD3    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-DEL2  TO PL-ADD
-           MOVE PA-DEL1    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-DEL3  TO PL-ADD
-           MOVE PA-DEL2    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE PA-DEL3    TO SUPPL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-
-           MOVE " "             TO LASER-REC LASER-PLINE2.
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-NAME       TO PL-ADD
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "        TO LASER-REC LASER-PLINE2
-           MOVE "¶"        TO PL2-CHAR
-           MOVE INCR-ADD1  TO PL-ADD
-           MOVE PA-PHONE   TO SUPPL-DIG30
-           WRITE LASER-REC FROM LASER-PLINE2.
-           
-           MOVE " "             TO LASER-REC LASER-PLINE2
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-ADD2       TO PL-ADDRESS
-           MOVE PA-FAX          TO SUPPL-DIG30
-           WRITE LASER-REC       FROM LASER-PLINE2.
-           
-           MOVE " "             TO LASER-REC LASER-PLINE2
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-ADD3       TO PL-ADD
-           MOVE PA-CO-REG-NO    TO SUPPL-DIG30
-           WRITE LASER-REC       FROM LASER-PLINE2.
-
-           MOVE " "             TO LASER-REC LASER-PLINE2.
-           MOVE "¶"             TO PL2-CHAR
-           MOVE INCR-CODE       TO PL-ADD
-           MOVE PA-CO-VAT-NO    TO SUPPL-DIG30
-           ACCEPT WS-TIME FROM TIME
-           MOVE WS-HR           TO SPLIT-HR
-           MOVE ":"             TO SPLIT-HR-FIL
-                                   SPLIT-MN-FIL
-           MOVE WS-MIN          TO SPLIT-MN
-           MOVE WS-SEC          TO SPLIT-SC
-           MOVE WS-TIME-DISPLAY TO SUPPL-TIME
-           MOVE INCR-PULLBY     TO PL-PULLBY
-           MOVE INCR-AREA       TO PL-AREA
-           MOVE PA-CO-VAT-NO    TO SUPPL-DIG30
-           WRITE LASER-REC      FROM LASER-PLINE2.
-
-           MOVE " "              TO LASER-REC LASER-PLINE2 LASER-PLINE4.
-           MOVE "¶"              TO PL4-CHAR
-           IF WS-ADD-TOGETHER = "Y"
-            IF PL-PO = " "
-               MOVE INCR-TERMS       TO PL-TERMS
-               MOVE INCR-PORDER      TO PL-PO
-               MOVE INCR-SALES       TO PL-SOLD
-               MOVE INCR-DELIVERY    TO PL-VIA
-               MOVE INCR-BIN         TO PL-BIN
-               MOVE INCR-SB-TYPE     TO PL-SOLDBY.
-           IF WS-ADD-TOGETHER NOT = "Y"
-               MOVE INCR-TERMS       TO PL-TERMS
-               MOVE INCR-PORDER      TO PL-PO
-               MOVE INCR-SALES       TO PL-SOLD
-               MOVE INCR-DELIVERY    TO PL-VIA
-               MOVE INCR-BIN         TO PL-BIN
-               MOVE INCR-SB-TYPE     TO PL-SOLDBY.
-               
-           IF WS-INVCRED = "I" OR = "P" OR = "D"
-            IF INCR-BO-INV-NO NOT = WS-INVOICE
-             MOVE INCR-BO-DATE     TO SPLIT-DATE
-             PERFORM CONVERT-DATE-FORMAT
-             MOVE DISPLAY-DATE     TO PL-ORDERDATE
-             MOVE INCR-BO-INV-NO   TO PL-SLIP
-             MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
-           IF WS-ADD-TOGETHER = "Y"
-             IF PL-DATE = " "
-              MOVE INCR-DATE        TO SPLIT-DATE
-              PERFORM CONVERT-DATE-FORMAT
-              MOVE DISPLAY-DATE     TO PL-DATE.
-           IF WS-ADD-TOGETHER NOT = "Y"
-              MOVE INCR-DATE        TO SPLIT-DATE
-              PERFORM CONVERT-DATE-FORMAT
-              MOVE DISPLAY-DATE     TO PL-DATE.
-           
-           IF WS-ADD-TOGETHER = "Y"
-              MOVE WS-NUMBER     TO PL-INV
-           ELSE
-              MOVE WS-INVOICE    TO PL-INV.
-           MOVE WS-PAGE          TO PL-PAGE
-           WRITE LASER-REC FROM LASER-PLINE4.
-           
-           MOVE " "              TO LASER-REC LASER-PLINE4
-                                    LASER-PDET.
-       LP-020.
-           IF SUB-1 < 299
-            IF SUB-1 = SUB-20
-              SUBTRACT 1 FROM SUB-2
-              GO TO LP-030.
-           IF SUB-2 > 20
-               MOVE 1 TO SUB-2
-               ADD 1  TO WS-PAGE
-               GO TO LP-010.
-           IF SUB-1 > 300
-               GO TO LP-030.
-               
-      *         MOVE "READING STOCK-TRANS" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE.
-
-           PERFORM READ-STOCK-TRANSACTIONS
-           MOVE 0 TO WS-BO-QTY.
-
-           MOVE "¶"                         TO PLDET-CHAR
-           MOVE B-STOCKNUMBER TO SPLIT-STOCK.
-           IF SP-1STCHAR = "*"
-            IF INCR-TRANS = 1
-               MOVE C-LINE    TO PLDET-REST
-               GO TO LP-025.
-           IF SP-1STCHAR = "*"
-            IF WS-INVCRED = "P"
-               MOVE C-LINE    TO PLDET-REST
-               GO TO LP-025.
-           IF SP-1STCHAR = "*"
-            IF INCR-TRANS = 6
-               MOVE C-CR-LINE TO PLDET-REST
-               GO TO LP-025.
-
-           MOVE B-STOCKNUMBER       TO PL-STOCK
-           MOVE B-STOCKDESCRIPTION  TO PL-DESC
-           MOVE B-STOCKDESCRIPTION2 TO PL-DESC2
-           MOVE B-UNIT              TO PL-UNIT.
-           IF WS-INVCRED = "I" OR = "D"
-             MOVE B-ORDERQTY        TO PL-ORDER.
-           MOVE B-SHIPQTY           TO PL-SHIP.
-           IF WS-INVCRED = "I" OR = "D"
-             COMPUTE WS-BO-QTY = B-ORDERQTY - (B-SHIPQTY + B-SHIPPEDQTY)
-             MOVE WS-BO-QTY         TO PL-BO
-             MOVE B-SHIPPEDQTY      TO PL-SHIPPED.
-           MOVE B-STOCKPRICE        TO PL-PRICE
-           MOVE B-DISCOUNTPERITEM   TO PL-DISCOUNT
-           MOVE B-NETT              TO PL-NETT.
-             
-           IF WS-INVCRED NOT = "P"
-             GO TO LP-025.
-             
-           MOVE B-ORDERQTY        TO PL-ORDER
-                                     PL-SHIP
-           COMPUTE B-NETT = B-ORDERQTY *
-             (B-STOCKPRICE - (B-STOCKPRICE * B-DISCOUNTPERITEM / 100))
-           MOVE B-NETT  TO PL-NETT
-           ADD B-NETT   TO WS-SUBTOTAL.
-       LP-025.
-           MOVE SUB-1 TO PL-NO
-           WRITE LASER-REC FROM LASER-PDET.
-           MOVE " " TO LASER-REC
-                       LASER-PDET
-                       BODY-FIELDS
-                       COMM-LINES
-                       COMM-CR-LINES.
-           ADD 1 TO SUB-1 SUB-2.
-           IF SUB-1 < 301
-              GO TO LP-020.
-       LP-030.
-           IF WS-ADD-TOGETHER = "Y"
-              PERFORM READ-REGISTER
-            IF WS-COMPLETE = "Y"
-              GO TO LP-031
-            ELSE
-              ADD 1 TO SUB-2
-              PERFORM LP-003 THRU LP-005
-              SUBTRACT 1 FROM SUB-20
-              GO TO LP-020.
-       LP-031.
-           IF SUB-2 < 20
-              MOVE "¶" TO PLDET-CHAR
-              WRITE LASER-REC FROM LASER-PDET
-              ADD 1 TO SUB-2
-              GO TO LP-031.
-       LP-035.
-           MOVE " "              TO LASERPL-COMMENTLINE
-           MOVE "¶"              TO PLCOM-CHAR
-           MOVE INCR-COMMENT     TO PL-BO-MESSAGE
-           MOVE WS-SPEC-COMMENT  TO PL-REST-OF-LINE
-           WRITE LASER-REC       FROM LASERPL-COMMENTLINE.
-
-           MOVE " "              TO LASERPL-COMMENTLINE.
-           MOVE "¶"              TO PLCOM-CHAR
-           IF WS-BO-FOUND = "Y"
-              MOVE INCR-CONTACT  TO PL-BO-MESSAGE.
-           MOVE PA-COMMENT       TO PL-COMM
-           WRITE LASER-REC       FROM LASERPL-COMMENTLINE.
-
-           MOVE " " TO LASER-REC LASERPL-ADDLINE LASERPL-COMMENTLINE.
-           MOVE "¶"              TO PLADD-CHAR
-           IF WS-BO-FOUND = "Y"
-              MOVE INCR-PHONE    TO PL-PHONE.
-           WRITE LASER-REC        FROM LASERPL-ADDLINE.
-
-           MOVE " " TO LASER-REC LASERPL-ADDLINE LASERPL-COMMENTLINE.
-           MOVE "¶"              TO PLADD-CHAR
-           MOVE INCR-ADDFREIGHT  TO PL-ADD1
-           MOVE INCR-ADDLABOUR   TO PL-ADD2.
-      **********************************************************
-      *NEXT FEW LINES ADDED TO ADD IN THE ADD-ONS FOR PRINTING *
-      **********************************************************
-           IF WS-INVCRED = "P"
-              ADD INCR-ADDFREIGHT TO WS-SUBTOTAL
-              ADD INCR-ADDLABOUR  TO WS-SUBTOTAL
-              ADD INCR-ADDPOST    TO WS-SUBTOTAL
-              ADD INCR-ADDMISC    TO WS-SUBTOTAL.
-           
-           IF WS-INVCRED = "P"
-            IF INCR-GSTNO NOT = "EXPORT"
-              COMPUTE WS-TAXAMT ROUNDED =
-                   WS-SUBTOTAL * PA-GST-PERCENT / 100
-            ELSE
-              MOVE 0 TO WS-TAXAMT.
-           MOVE WS-TAXAMT        TO PL-ADD3
-           WRITE LASER-REC     FROM LASERPL-ADDLINE.
-
-           MOVE " "              TO LASERPL-ADDLINE LASER-REC.
-           MOVE "¶"              TO PLADD-CHAR
-           MOVE INCR-ADDPOST     TO PL-ADD1
-           MOVE INCR-ADDMISC     TO PL-ADD2
-           MOVE WS-SUBTOTAL      TO PL-ADD3.
-           IF WS-INVCRED = "P"
-              COMPUTE WS-INVOICETOTAL = WS-SUBTOTAL + WS-TAXAMT.
-           MOVE "ZAR"            TO PL-CURRENCY.
-           MOVE WS-INVOICETOTAL  TO PL-ADD4.
-           WRITE LASER-REC     FROM LASERPL-ADDLINE.
-       LP-036.
-           MOVE " " TO LASERPL-ADDLINE LASER-REC.
-           
-      * TO DETERMINE WHAT HEADING FOR THE DOCUMENT TO PRINT SEE BELOW:
-      * WS-PROG-TYPE: 1=INVOICE ONLY
-      *               2=D/NOTES ONLY
-      *               3=INVOICE & D/NOTES
-      *               4=CREDIT NOTES
-      
-      *PRINT INVOICE / C/NOTE ONLY
-           IF WS-PROG-TYPE = 1 OR = 4
-               GO TO LP-999.
-               
-      *PRINT DELIVERY NOTES ONLY
-           IF WS-PROG-TYPE = 2
-            IF WS-TYPE-OF-DOCUMENT = 2
-               MOVE 3 TO WS-TYPE-OF-DOCUMENT
-               CLOSE STOCK-TRANS-FILE
-               PERFORM OPEN-005
-               
-      *         MOVE "GOING FOR THE 2ND RUN" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-               MOVE WS-INVOICE TO INCR-INVOICE
-               MOVE 1          TO INCR-TRANS
-      *          WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-           
-      *         MOVE 1 TO STTR-REFERENCE1
-      *         MOVE 1 TO STTR-TRANSACTION-NUMBER
-           
-      *         START STOCK-TRANS-FILE KEY NOT < STTR-KEY
-      *         MOVE "2ND START ON ST-TRANS FILE" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-               
-               GO TO LP-000.
-               
-           IF WS-PROG-TYPE = 2
-            IF WS-TYPE-OF-DOCUMENT = 3
-               GO TO LP-999.
-               
-      *PRINT INVOICE & DELIVERY NOTES
-           IF WS-PROG-TYPE = 3
-            IF WS-TYPE-OF-DOCUMENT < 3
-               ADD 1 TO WS-TYPE-OF-DOCUMENT
-               CLOSE STOCK-TRANS-FILE
-               PERFORM OPEN-005
-               MOVE WS-INVOICE TO INCR-INVOICE
-               MOVE 1          TO INCR-TRANS
-               GO TO LP-000.
-           IF WS-PROG-TYPE = 2 OR = 3
-            IF WS-TYPE-OF-DOCUMENT = 3
-               GO TO LP-999.
-       LP-999.
-           EXIT.
       *
        PRINT SECTION.
        P-000.
@@ -1842,6 +1168,384 @@
                  GO TO P-999.
            WRITE PRINT-REC BEFORE PAGE.
        P-999.
+           EXIT.
+      *
+       LASER-PRINT-INVOICE SECTION.
+       LP-000.
+           MOVE 1 TO WS-PAGE SUB-1 SUB-2
+           MOVE " " TO PDET.
+           MOVE INCR-TRANS TO STTR-TYPE
+              GO TO LP-005.
+           MOVE 0 TO WS-SUBTOTAL WS-INVOICETOTAL.
+       LP-003.
+           IF WS-PROF-TYPE = "Q"
+              MOVE 8         TO STTR-TYPE.
+           IF WS-PROF-TYPE = "P"
+              MOVE 4         TO STTR-TYPE.
+       LP-005.
+      *     MOVE INCR-INVOICE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+           MOVE INCR-INVOICE TO STTR-REFERENCE1.
+           MOVE 1            TO STTR-TRANSACTION-NUMBER.
+           
+           START STOCK-TRANS-FILE KEY NOT < STTR-KEY
+              INVALID KEY NEXT SENTENCE.
+              
+      *     MOVE STTR-KEY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+       LP-010.
+           IF WS-PAGE > 1
+               MOVE " "                     TO LASER-REC
+               MOVE "¶"                     TO PLCONT-CHAR
+               MOVE WS-PAGE                 TO PL-CONT-PAGE
+               MOVE "Continued To.....Page" TO PL-CONT-NAME
+               WRITE LASER-REC FROM PL-CONTINUED
+               MOVE " "     TO LASER-REC
+               MOVE "¶"     TO LASER-REC
+               WRITE LASER-REC
+               WRITE LASER-REC
+               WRITE LASER-REC
+               WRITE LASER-REC.
+               
+      *     MOVE "´"     TO LASER-REC
+      *     WRITE LASER-REC.
+  
+           MOVE " "     TO LASER-REC
+           MOVE "´¶"    TO PLCR-CHAR1
+           IF WS-INVCRED = "P"
+              MOVE "    PROFORMA INVOICE  " TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "I"
+            IF WS-TYPE-OF-DOCUMENT = 1
+              MOVE "      TAX INVOICE     " TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "I"
+            IF WS-TYPE-OF-DOCUMENT = 2
+              MOVE "SUPPLIER DELIVERY NOTE" TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "I"
+            IF WS-TYPE-OF-DOCUMENT = 3
+              MOVE "CUSTOMER DELIVERY NOTE" TO PL-TYPE
+              GO TO LP-011.
+           IF WS-INVCRED = "C"
+              MOVE "     TAX CREDIT NOTE  " TO PL-TYPE.
+       LP-011.
+           MOVE PA-NAME TO PL-NAME.
+           WRITE LASER-REC FROM LASER-PCREDITLINE.
+           MOVE " "     TO LASER-REC.
+       LP-012.
+           MOVE "¶"                      TO PL1-CHAR
+           MOVE INCR-GSTNO               TO PL-GSTNO
+           MOVE INCR-ACCOUNT             TO PL-ACCNO.
+           MOVE PA-ADD1                  TO PL-ADDNAME
+           WRITE LASER-REC FROM LASER-PLINE1.
+           
+           MOVE " "       TO LASER-REC LASER-PLINE2
+           MOVE "¶"       TO PL2-CHAR
+           MOVE PA-ADD2   TO SUPPL-ADD
+           WRITE LASER-REC FROM LASER-PLINE2.
+           
+           MOVE " "        TO LASER-REC LASER-PLINE2
+           MOVE "¶"        TO PL2-CHAR
+           MOVE INCR-DEL1  TO PL-ADD
+           MOVE PA-ADD3    TO SUPPL-ADD
+           WRITE LASER-REC FROM LASER-PLINE2.
+           
+           MOVE " "        TO LASER-REC LASER-PLINE2
+           MOVE "¶"        TO PL2-CHAR
+           MOVE INCR-DEL2  TO PL-ADD
+           MOVE PA-DEL1    TO SUPPL-ADD
+           WRITE LASER-REC FROM LASER-PLINE2.
+           
+           MOVE " "        TO LASER-REC LASER-PLINE2
+           MOVE "¶"        TO PL2-CHAR
+           MOVE INCR-DEL3  TO PL-ADD
+           MOVE PA-DEL2    TO SUPPL-ADD
+           WRITE LASER-REC FROM LASER-PLINE2.
+           
+           MOVE " "        TO LASER-REC LASER-PLINE2
+           MOVE "¶"        TO PL2-CHAR
+           MOVE PA-DEL3    TO SUPPL-ADD
+           WRITE LASER-REC FROM LASER-PLINE2.
+
+           MOVE " "             TO LASER-REC LASER-PLINE2.
+           MOVE "¶"             TO PL2-CHAR
+           MOVE INCR-NAME       TO PL-ADD
+           WRITE LASER-REC FROM LASER-PLINE2.
+           
+           MOVE " "        TO LASER-REC LASER-PLINE2
+           MOVE "¶"        TO PL2-CHAR
+           MOVE INCR-ADD1  TO PL-ADD
+           MOVE PA-PHONE   TO SUPPL-DIG30
+           WRITE LASER-REC FROM LASER-PLINE2.
+           
+           MOVE " "             TO LASER-REC LASER-PLINE2
+           MOVE "¶"             TO PL2-CHAR
+           MOVE INCR-ADD2       TO PL-ADDRESS
+           MOVE PA-FAX          TO SUPPL-DIG30
+           WRITE LASER-REC       FROM LASER-PLINE2.
+           
+           MOVE " "             TO LASER-REC LASER-PLINE2
+           MOVE "¶"             TO PL2-CHAR
+           MOVE INCR-ADD3       TO PL-ADD
+           MOVE PA-CO-REG-NO    TO SUPPL-DIG30
+           WRITE LASER-REC       FROM LASER-PLINE2.
+
+           MOVE " "             TO LASER-REC LASER-PLINE2.
+           MOVE "¶"             TO PL2-CHAR
+           MOVE INCR-CODE       TO PL-ADD
+           MOVE PA-CO-VAT-NO    TO SUPPL-DIG30
+           ACCEPT WS-TIME FROM TIME
+           MOVE WS-HR           TO SPLIT-HR
+           MOVE ":"             TO SPLIT-HR-FIL
+                                   SPLIT-MN-FIL
+           MOVE WS-MIN          TO SPLIT-MN
+           MOVE WS-SEC          TO SPLIT-SC
+           MOVE WS-TIME-DISPLAY TO SUPPL-TIME
+           MOVE INCR-PULLBY     TO PL-PULLBY
+           MOVE INCR-AREA       TO PL-AREA
+           MOVE PA-CO-VAT-NO    TO SUPPL-DIG30
+           WRITE LASER-REC      FROM LASER-PLINE2.
+
+           MOVE " "              TO LASER-REC LASER-PLINE2 LASER-PLINE4.
+           MOVE "¶"              TO PL4-CHAR
+           IF WS-ADD-TOGETHER = "Y"
+            IF PL-PO = " "
+               MOVE INCR-TERMS       TO PL-TERMS
+               MOVE INCR-PORDER      TO PL-PO
+               MOVE INCR-SALES       TO PL-SOLD
+               MOVE INCR-DELIVERY    TO PL-VIA
+               MOVE INCR-BIN         TO PL-BIN
+               MOVE INCR-SB-TYPE     TO PL-SOLDBY.
+           IF WS-ADD-TOGETHER NOT = "Y"
+               MOVE INCR-TERMS       TO PL-TERMS
+               MOVE INCR-PORDER      TO PL-PO
+               MOVE INCR-SALES       TO PL-SOLD
+               MOVE INCR-DELIVERY    TO PL-VIA
+               MOVE INCR-BIN         TO PL-BIN
+               MOVE INCR-SB-TYPE     TO PL-SOLDBY.
+               
+           IF WS-INVCRED = "I" OR = "P" OR = "D"
+            IF INCR-BO-INV-NO NOT = WS-INVOICE
+             MOVE INCR-BO-DATE     TO SPLIT-DATE
+             PERFORM CONVERT-DATE-FORMAT
+             MOVE DISPLAY-DATE     TO PL-ORDERDATE
+             MOVE INCR-BO-INV-NO   TO PL-SLIP
+             MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
+           IF WS-ADD-TOGETHER = "Y"
+             IF PL-DATE = " "
+              MOVE INCR-DATE        TO SPLIT-DATE
+              PERFORM CONVERT-DATE-FORMAT
+              MOVE DISPLAY-DATE     TO PL-DATE.
+           IF WS-ADD-TOGETHER NOT = "Y"
+              MOVE INCR-DATE        TO SPLIT-DATE
+              PERFORM CONVERT-DATE-FORMAT
+              MOVE DISPLAY-DATE     TO PL-DATE.
+           
+           IF WS-ADD-TOGETHER = "Y"
+              MOVE WS-NUMBER     TO PL-INV
+           ELSE
+              MOVE WS-INVOICE    TO PL-INV.
+           MOVE WS-PAGE          TO PL-PAGE
+           WRITE LASER-REC FROM LASER-PLINE4.
+           
+           MOVE " "              TO LASER-REC LASER-PLINE4
+                                    LASER-PDET.
+               
+      *         MOVE "AT LP-020, STARTING STOCK LINES" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE.
+
+       LP-020.
+           IF SUB-1 < 299
+            IF SUB-1 = SUB-20
+              SUBTRACT 1 FROM SUB-2
+              GO TO LP-030.
+           IF SUB-2 > 20
+               MOVE 1 TO SUB-2
+               ADD 1  TO WS-PAGE
+               GO TO LP-010.
+           IF SUB-1 > 300
+               GO TO LP-030.
+               
+      *         MOVE "READING STOCK-TRANS" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE.
+
+           PERFORM READ-STOCK-TRANSACTIONS
+           MOVE 0 TO WS-BO-QTY.
+
+           MOVE "¶"                         TO PLDET-CHAR
+           MOVE B-STOCKNUMBER TO SPLIT-STOCK.
+           IF SP-1STCHAR = "*"
+            IF INCR-TRANS = 1
+               MOVE C-LINE    TO PLDET-REST
+               GO TO LP-025.
+           IF SP-1STCHAR = "*"
+            IF WS-INVCRED = "P"
+               MOVE C-LINE    TO PLDET-REST
+               GO TO LP-025.
+           IF SP-1STCHAR = "*"
+            IF INCR-TRANS = 6
+               MOVE C-CR-LINE TO PLDET-REST
+               GO TO LP-025.
+
+           MOVE B-STOCKNUMBER       TO PL-STOCK
+           MOVE B-STOCKDESCRIPTION  TO PL-DESC
+           MOVE B-STOCKDESCRIPTION2 TO PL-DESC2
+           MOVE B-UNIT              TO PL-UNIT.
+           IF WS-INVCRED = "I" OR = "D"
+             MOVE B-ORDERQTY        TO PL-ORDER.
+           MOVE B-SHIPQTY           TO PL-SHIP.
+           IF WS-INVCRED = "I" OR = "D"
+             COMPUTE WS-BO-QTY = B-ORDERQTY - (B-SHIPQTY + B-SHIPPEDQTY)
+             MOVE WS-BO-QTY         TO PL-BO
+             MOVE B-SHIPPEDQTY      TO PL-SHIPPED.
+           MOVE B-STOCKPRICE        TO PL-PRICE
+           MOVE B-DISCOUNTPERITEM   TO PL-DISCOUNT
+           MOVE B-NETT              TO PL-NETT.
+             
+           IF WS-INVCRED NOT = "P"
+             GO TO LP-025.
+             
+           MOVE B-ORDERQTY        TO PL-ORDER
+                                     PL-SHIP
+           COMPUTE B-NETT = B-ORDERQTY *
+             (B-STOCKPRICE - (B-STOCKPRICE * B-DISCOUNTPERITEM / 100))
+           MOVE B-NETT  TO PL-NETT
+           ADD B-NETT   TO WS-SUBTOTAL.
+       LP-025.
+           MOVE SUB-1 TO PL-NO
+           WRITE LASER-REC FROM LASER-PDET.
+           MOVE " " TO LASER-REC
+                       LASER-PDET
+                       BODY-FIELDS
+                       COMM-LINES
+                       COMM-CR-LINES.
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 301
+              GO TO LP-020.
+       LP-030.
+           IF WS-ADD-TOGETHER = "Y"
+              PERFORM READ-REGISTER
+            IF WS-COMPLETE = "Y"
+              GO TO LP-031
+            ELSE
+              ADD 1 TO SUB-2
+              PERFORM LP-003 THRU LP-005
+              SUBTRACT 1 FROM SUB-20
+              GO TO LP-020.
+       LP-031.
+           IF SUB-2 < 20
+              MOVE "¶" TO PLDET-CHAR
+              WRITE LASER-REC FROM LASER-PDET
+              ADD 1 TO SUB-2
+              GO TO LP-031.
+       LP-035.
+           MOVE " "              TO LASERPL-COMMENTLINE
+           MOVE "¶"              TO PLCOM-CHAR
+           MOVE INCR-COMMENT     TO PL-BO-MESSAGE
+           MOVE WS-SPEC-COMMENT  TO PL-REST-OF-LINE
+           WRITE LASER-REC       FROM LASERPL-COMMENTLINE.
+
+           MOVE " "              TO LASERPL-COMMENTLINE.
+           MOVE "¶"              TO PLCOM-CHAR
+           IF WS-BO-FOUND = "Y"
+              MOVE INCR-CONTACT  TO PL-BO-MESSAGE.
+           MOVE PA-COMMENT       TO PL-COMM
+           WRITE LASER-REC       FROM LASERPL-COMMENTLINE.
+
+           MOVE " " TO LASER-REC LASERPL-ADDLINE LASERPL-COMMENTLINE.
+           MOVE "¶"              TO PLADD-CHAR
+           IF WS-BO-FOUND = "Y"
+              MOVE INCR-PHONE    TO PL-PHONE.
+           WRITE LASER-REC        FROM LASERPL-ADDLINE.
+
+           MOVE " " TO LASER-REC LASERPL-ADDLINE LASERPL-COMMENTLINE.
+           MOVE "¶"              TO PLADD-CHAR
+           MOVE INCR-ADDFREIGHT  TO PL-ADD1
+           MOVE INCR-ADDLABOUR   TO PL-ADD2.
+      **********************************************************
+      *NEXT FEW LINES ADDED TO ADD IN THE ADD-ONS FOR PRINTING *
+      **********************************************************
+           IF WS-INVCRED = "P"
+              ADD INCR-ADDFREIGHT TO WS-SUBTOTAL
+              ADD INCR-ADDLABOUR  TO WS-SUBTOTAL
+              ADD INCR-ADDPOST    TO WS-SUBTOTAL
+              ADD INCR-ADDMISC    TO WS-SUBTOTAL.
+           
+           IF WS-INVCRED = "P"
+            IF INCR-GSTNO NOT = "EXPORT"
+              COMPUTE WS-TAXAMT ROUNDED =
+                   WS-SUBTOTAL * PA-GST-PERCENT / 100
+            ELSE
+              MOVE 0 TO WS-TAXAMT.
+           MOVE WS-TAXAMT        TO PL-ADD3
+           WRITE LASER-REC     FROM LASERPL-ADDLINE.
+
+           MOVE " "              TO LASERPL-ADDLINE LASER-REC.
+           MOVE "¶"              TO PLADD-CHAR
+           MOVE INCR-ADDPOST     TO PL-ADD1
+           MOVE INCR-ADDMISC     TO PL-ADD2
+           MOVE WS-SUBTOTAL      TO PL-ADD3.
+           IF WS-INVCRED = "P"
+              COMPUTE WS-INVOICETOTAL = WS-SUBTOTAL + WS-TAXAMT.
+           MOVE "ZAR"            TO PL-CURRENCY.
+           MOVE WS-INVOICETOTAL  TO PL-ADD4.
+           WRITE LASER-REC     FROM LASERPL-ADDLINE.
+       LP-036.
+           MOVE " " TO LASERPL-ADDLINE LASER-REC.
+           
+      * TO DETERMINE WHAT HEADING FOR THE DOCUMENT TO PRINT SEE BELOW:
+      * WS-PROG-TYPE: 1=INVOICE ONLY
+      *               2=D/NOTES ONLY
+      *               3=INVOICE & D/NOTES
+      *               4=CREDIT NOTES
+      
+      *PRINT INVOICE / C/NOTE ONLY
+           IF WS-PROG-TYPE = 1 OR = 4
+               GO TO LP-999.
+               
+      *PRINT DELIVERY NOTES ONLY
+           IF WS-PROG-TYPE = 2
+            IF WS-TYPE-OF-DOCUMENT = 2
+               MOVE 3 TO WS-TYPE-OF-DOCUMENT
+               CLOSE STOCK-TRANS-FILE
+               PERFORM OPEN-005
+               
+      *         MOVE "GOING FOR THE 2ND RUN" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               MOVE WS-INVOICE TO INCR-INVOICE
+               MOVE 1          TO INCR-TRANS
+      *          WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+           
+      *         MOVE 1 TO STTR-REFERENCE1
+      *         MOVE 1 TO STTR-TRANSACTION-NUMBER
+           
+      *         START STOCK-TRANS-FILE KEY NOT < STTR-KEY
+      *         MOVE "2ND START ON ST-TRANS FILE" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
+               GO TO LP-000.
+               
+           IF WS-PROG-TYPE = 2
+            IF WS-TYPE-OF-DOCUMENT = 3
+               GO TO LP-999.
+               
+      *PRINT INVOICE & DELIVERY NOTES
+           IF WS-PROG-TYPE = 3
+            IF WS-TYPE-OF-DOCUMENT < 3
+               ADD 1 TO WS-TYPE-OF-DOCUMENT
+               CLOSE STOCK-TRANS-FILE
+               PERFORM OPEN-005
+               MOVE WS-INVOICE TO INCR-INVOICE
+               MOVE 1          TO INCR-TRANS
+               GO TO LP-000.
+           IF WS-PROG-TYPE = 2 OR = 3
+            IF WS-TYPE-OF-DOCUMENT = 3
+               GO TO LP-999.
+       LP-999.
            EXIT.
       *
        EMAIL-PRINT-INVOICE SECTION.
@@ -2203,9 +1907,7 @@
            IF SPLIT-MM > WS-MM
                MOVE "Y" TO WS-COMPLETE
               GO TO RDUR-999.
-           IF SPLIT-YY > WS-YY
-               MOVE "Y" TO WS-COMPLETE
-              GO TO RDUR-999.
+              
        RDUR-100.
            IF WS-FOUND = " "
               MOVE "Y" TO WS-FOUND.
@@ -2231,71 +1933,6 @@
        RDUR-999.
            EXIT.
       *
-       READ-PDF-REGISTER SECTION.
-       RPDF-000.
-           IF WS-INCR-ST1 NOT = 0
-               MOVE "Y" TO WS-COMPLETE
-               GO TO RPDF-999.
-             
-           MOVE " " TO WS-BO-REDUCED-MESSAGE
-                       WS-BO-FOUND.
-           MOVE 0 TO SUB-1.
-       RPDF-055.
-           READ INCR-REGISTER NEXT
-               AT END NEXT SENTENCE.
-           IF WS-INCR-ST1 = 10 OR = 23
-               MOVE "Y" TO WS-COMPLETE
-               GO TO RPDF-999.
-           IF WS-INCR-ST1 NOT = 0
-               MOVE "ERROR IN REGISTER FILE, PRESS 'ESC' TO EXIT = "
-               TO WS-MESSAGE
-               PERFORM ERROR-000
-               MOVE 3060 TO POS
-               DISPLAY WS-INCR-ST1 AT POS
-               ADD 5 TO POS
-               DISPLAY INCR-INVOICE AT POS
-               PERFORM ERROR-010
-               PERFORM ERROR-020
-               MOVE 0 TO WS-INCR-ST1
-               MOVE "E" TO WS-COMPLETE
-               GO TO RPDF-055.
-           IF INCR-TRANS NOT = 1 AND NOT = 6
-              GO TO RPDF-055.
-              
-           IF INCR-DATE < WS-DATE
-              GO TO RPDF-055.
-           MOVE INCR-DATE TO SPLIT-DATE.
-           IF SPLIT-MM > WS-MM
-               MOVE "Y" TO WS-COMPLETE
-              GO TO RPDF-999.
-           IF SPLIT-YY > WS-YY
-               MOVE "Y" TO WS-COMPLETE
-              GO TO RPDF-999.
-       RPDF-100.
-           IF WS-FOUND = " "
-              MOVE "Y" TO WS-FOUND.
-              
-           PERFORM ERROR2-020
-           MOVE 2910 TO POS
-           DISPLAY "PDF RECORD BEING READ:" AT POS
-           ADD 23 TO POS
-           DISPLAY INCR-INVOICE AT POS
-           ADD 8 TO POS.
-           IF INCR-TRANS = 1
-             DISPLAY "INVOICE" AT POS
-           ELSE
-             DISPLAY "C/NOTE" AT POS.
-              
-           MOVE INCR-INVOICE        TO WS-INVOICE
-           MOVE INCR-INVCRED-AMT    TO WS-INVOICETOTAL
-           MOVE INCR-TAX            TO WS-TAXAMT
-           MOVE INCR-ADDONS         TO WS-ADDONAMT
-           COMPUTE WS-SUBTOTAL =
-                WS-INVOICETOTAL - (WS-TAXAMT + WS-ADDONAMT).
-           MOVE INCR-LINENO         TO SUB-20.
-       RPDF-999.
-           EXIT.
-      *
        READ-INVOICE-REGISTER SECTION.
        RIR-000.
            IF WS-INVCRED = "I"
@@ -2305,7 +1942,7 @@
            MOVE " "   TO WS-BO-REDUCED-MESSAGE
                          WS-BO-FOUND.
            MOVE 0 TO SUB-1.
-      * PRINT ALL INVOICE / C-NOTES ONLY IF THEY HAVE NOT YET PRINTED     
+           
            IF Ws-EnterOption = "1"
               GO TO RIR-050.
        RIR-002.
@@ -2398,7 +2035,7 @@
            MOVE INCR-TAX            TO WS-TAXAMT
            MOVE INCR-ADDONS         TO WS-ADDONAMT
            COMPUTE WS-SUBTOTAL =
-                WS-INVOICETOTAL - (WS-TAXAMT + WS-ADDONAMT).
+                WS-INVOICETOTAL - (WS-TAXAMT + WS-ADDONAMT)
            MOVE INCR-LINENO         TO SUB-20.
 
            IF WS-PRINT-NUM = 5
@@ -2535,16 +2172,9 @@
               PERFORM ERROR1-020
               MOVE 0 TO WS-STTRANS-ST1
               GO TO RSTT-010.
-              
-      *     MOVE STTR-REFERENCE1 TO WS-MESSAGE
-      *     PERFORM ERROR1-000
-      *     MOVE WS-INVOICE TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     PERFORM ERROR1-020.
-              
            IF STTR-REFERENCE1 NOT = WS-INVOICE
            
-      *        MOVE "STTR-REF NOT = INVOICE NUMBER" TO WS-MESSAGE
+      *        MOVE "NOT = INVOICE NUMBER" TO WS-MESSAGE
       *        PERFORM ERROR-MESSAGE
       *        MOVE STTR-KEY TO WS-MESSAGE
       *        PERFORM ERROR-MESSAGE
@@ -2592,10 +2222,10 @@
               MOVE "Y" TO WS-BO-FOUND.
            GO TO RSTT-999.
        RSTT-030.
-           IF WS-INVCRED = "D" OR = "X"
+           IF WS-INVCRED = "D"
              IF STTR-TYPE = 6
               GO TO RSTT-035.
-           IF WS-INVCRED = "D" OR = "X"
+           IF WS-INVCRED = "D"
              IF STTR-TYPE = 1
               GO TO RSTT-031.
 
@@ -2890,7 +2520,6 @@
        Copy "OrderPassword".
        Copy "CTOSCobolAccept".
        Copy "SetupInvoiceForPDF".
-       Copy "SetupInvoiceForPDFOnly".
        Copy "SetupCreditForPDF".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".

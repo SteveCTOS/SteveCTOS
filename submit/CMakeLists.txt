@@ -72,6 +72,9 @@ set (copy_list
   Pay3Rename.sh
   FnbRename.sh
   PrintCams.sh
+  PrintPayBank.sh
+  PrintPaySlyps.sh
+  PrintPayTax.sh
   rename.py
   renamegl.py
   renamegp.py

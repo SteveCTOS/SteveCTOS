@@ -14,7 +14,7 @@ cp /ctools/spl/ctoolsDrLaserCo10 /ctools/qtm/drlaserco10
 #cp /ctools/spl/drnomalco10 /ctools/qtm/drnomalco10
 #cp /ctools/spl/dremailco10 /ctools/qtm/dremailco10
 #cp /ctools/qtm/sl11 /ctools/spl/qtmdrage
-cp /ctools/spl/DBPrintCo10 /ctools/qtm/DBPrintCo10
+cp /ctools/spl/DBPrintCo10 /ctools/qtm/dbprintco10
 
 #mkdir /media/ctools/USB/data10
 
