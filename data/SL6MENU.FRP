@@ -5,9 +5,9 @@
 *  *   *  1. Register File Entry / Edit            16. Pullby Entry / Edit    *
 *  *   *  2. Register File - Change Acc Number     17. Register Xport/Import  *
 *  *   *  3. Soldby Initial's Change: Inv / Order                             *
-*  *   *                                                                      *
+*  *   *                                            {Special Submit Routines} *
 *  *   *  {Last Year Information Programs}                                    *
-*  *   *                                                                      *
+*  *   *                                           18. Auto Allocations Run   *
 *  *   *  4. Invoice / C-Note Print                                           *
 *  *   *  5. Invoice Enquiry By Account                                       *
 *  *   *  6. Invoice Enquiry By Stock                                         *

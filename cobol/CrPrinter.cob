@@ -108,7 +108,7 @@
                GO TO CONT-900.
            IF WS-ACCEPT = "B" OR = "R"
                GO TO CONT-000.
-           IF WS-ACCEPT = "X" OR = "XX"
+           IF WS-ACCEPT = "X" OR = "x" OR = "XX" OR = "xx"
              PERFORM ENTER-OWN-FILE
             IF W-ESCAPE-KEY = 3
              GO TO CONT-020
@@ -182,10 +182,10 @@
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO EOF-010.
        EOF-020.
-           IF WS-ACCEPT = "X"
-               MOVE F-FIELDNAME            TO WS-OWN-FILE-NAME
-                                              WS-PRINTERSELECTED.
-           IF WS-ACCEPT = "XX"
+           IF WS-ACCEPT = "X" OR = "x"
+               MOVE F-FIELDNAME        TO WS-OWN-FILE-NAME
+                                          WS-PRINTERSELECTED.
+           IF WS-ACCEPT = "XX" OR = "xx"
                MOVE F-FIELDNAME            TO WS-OWN-PRINT-FILE
                MOVE 88                     TO WS-PRINTERSELECTED.
 

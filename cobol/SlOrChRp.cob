@@ -1370,13 +1370,16 @@
            REWRITE INCR-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-               MOVE 
-             "REGISTER BUSY ON REWRITE-RIR900, 'ESC' TO RETRY."
+               MOVE
+            "REGISTER BUSY ON RE-WRITE RIR900, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR1-000
+               PERFORM ERROR1-000 
                MOVE WS-INCR-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-INCR-ST1
                GO TO RIR-900.
        RIR-999.
@@ -1421,12 +1424,15 @@
                   INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
                MOVE
-             "REGISTER BUSY ON REWRITE-RBM900, 'ESC' TO RETRY."
+            "REGISTER BUSY ON RE-WRITE RBM900, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR1-000
+               PERFORM ERROR1-000 
                MOVE WS-INCR-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-INCR-ST1
                GO TO RBM-900.
        RBM-999.
@@ -1505,8 +1511,8 @@
                PERFORM ERROR1-020 
                PERFORM ERROR-020
                CALL "C$SLEEP" USING 1
-              MOVE 0 TO WS-STTRANS-ST1
-              GO TO RSTT-010.
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO RSTT-010.
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
            IF STTR-TYPE NOT = INCR-TRANS
@@ -1551,12 +1557,16 @@
            REWRITE STOCK-TRANS-REC
                   INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
-               MOVE "ST-TRANS FILE BUSY ON RE-WRITE, 'ESC' TO RETRY."
+              MOVE
+             "ST-TRANS BUSY READ-NEXT RSTT030, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
-               PERFORM ERROR1-000
+               PERFORM ERROR1-000 
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-STTRANS-ST1
                GO TO RSTT-030.
        RSTT-050.
@@ -1802,41 +1812,73 @@
        OPEN-005.
            OPEN I-O SBREP-MASTER.
            IF WS-SBREP-ST1 NOT = 0 
-              MOVE 0 TO WS-SBREP-ST1
-              MOVE "SBREP FILE BUSY ON READ, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-005.
+              MOVE "SB-REP BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-SBREP-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-SBREP-ST1
+               GO TO OPEN-005.
        OPEN-010.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
-              MOVE "REGISTER BUSY ON OPEN, 'ESC' TO RETRY." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-010.
+              MOVE "REGISTER BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-INCR-ST1
+               GO TO OPEN-010.
        OPEN-011.
            OPEN I-O DEBTOR-MASTER.
            IF WS-DEBTOR-ST1 NOT = 0 
-              MOVE 0 TO WS-DEBTOR-ST1
-              MOVE "DEBTOR FILE BUSY, BE PATIENT!" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-011.
+              MOVE "DEBTOR BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO OPEN-011.
        OPEN-012.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0 
-              MOVE 0 TO WS-STOCK-ST1
-              MOVE "STOCK FILE BUSY, BE PATIENT!" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-012.
+              MOVE "STOCK BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO OPEN-012.
        OPEN-014.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-SLPARAMETER-ST1
-              MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-014.
+              MOVE "PARAMATER BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO OPEN-014.
            PERFORM READ-INVQUES-FILE.
            PERFORM READ-PARAMETER.
            MOVE PA-GST-PERCENT TO WS-GST-PERCENT.
@@ -1845,11 +1887,17 @@
        OPEN-015.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-STTRANS-ST1
-              MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY." 
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO OPEN-015.
+              MOVE "ST-TRANS BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-STTRANS-ST1
+               GO TO OPEN-015.
        OPEN-999.
            EXIT.
       *      

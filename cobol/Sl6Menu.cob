@@ -3,6 +3,10 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -12,6 +16,9 @@
        FILE SECTION.
 
        WORKING-STORAGE SECTION.
+       01  W-CRTSTATUS              PIC 9(4) value 0.
+       01  WS-COMMAND-LINE          PIC X(256).                                    
+       01  W-STATUS                 PIC 9(4) BINARY COMP.
        Copy "WsMenuDateInfo".
 
        LINKAGE SECTION.
@@ -55,8 +62,9 @@
                      AND NOT = " 7" AND NOT = " 8" AND NOT = " 9"
                      AND NOT = "10" AND NOT = "11" AND NOT = "12"
                      AND NOT = "13" AND NOT = "14" AND NOT = "15"
-                     AND NOT = "16" AND NOT = "17" AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 17, Re-Enter."
+                     AND NOT = "16" AND NOT = "17" AND NOT = "18"
+                     AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 18, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -119,6 +127,19 @@
                 MOVE "CoPuByMt" TO WS-PROGRAM.
            IF WS-ANSWER = "17"
                 MOVE "SlRegisterMv" TO WS-PROGRAM.
+           IF WS-ANSWER = "18"
+                Move "Auto.sh" TO Ws-Data-Name
+                PERFORM SETUP-MONTH-FILES
+                MOVE "The Auto Allocation Has Been Run....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
 
            Call Ws-Program Using Ws-Linkage.
            PERFORM CLEAR-SCREEN
@@ -128,6 +149,28 @@
            GO TO GET-010.
        GET-999.
             EXIT.
+      *
+       SETUP-MONTH-FILES SECTION.
+       SUQFD-002.
+           MOVE "./Auto" TO ALPHA-RATE
+           MOVE WS-CO-NUMBER TO DATA-RATE
+           MOVE DAT-RATE (1) TO AL-RATE (7)
+           MOVE DAT-RATE (2) TO AL-RATE (8)
+           MOVE "."          TO AL-RATE (9)
+           MOVE "s"          TO AL-RATE (10)
+           MOVE "h"          TO AL-RATE (11)
+           MOVE ALPHA-RATE   TO WS-DATA-NAME.
+
+           MOVE CONCATENATE(WS-DATA-NAME) TO WS-COMMAND-LINE.
+      
+      *    MOVE WS-COMMAND-LINE TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    ACCEPT WS-ACCEPT.
+       SUQFD-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUQFD-999.
+           EXIT.
       *
        OPEN-FILES SECTION.
        OPEN-010.

@@ -542,6 +542,8 @@
             MOVE 12 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"07"
+                 PERFORM ERROR1-020
+                 PERFORM ERROR-020
                 GO TO GET-000.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"07" AND NOT = X"8A"
                 GO TO GET-825.
