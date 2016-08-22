@@ -81,7 +81,7 @@ add_subdirectory(tools/cocoR/cpp)
 add_subdirectory(installs)
 add_subdirectory(decode)
 
-#THE NEXT LINES CAN DONE ALPHABETICALLY OR IN ANY ORDER.
+#THE NEXT LINES CAN BE DONE ALPHABETICALLY OR IN ANY OTHER ORDER.
 add_subdirectory(ascii)
 add_subdirectory(cobol)
 add_subdirectory(print)

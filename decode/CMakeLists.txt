@@ -24,6 +24,7 @@ set (atg_source
 source_group("CocoR Files"    REGULAR_EXPRESSION ".*[.](atg|frame)$" )
 
 ##message (STATUS "${COCO} ${CMAKE_CURRENT_SOURCE_DIR}/ctosio.atg -o ${CMAKE_CURRENT_BINARY_DIR}")
+  
 add_custom_command (
   OUTPUT  ${generated}
   COMMAND ${COCO} ${CMAKE_CURRENT_SOURCE_DIR}/ctosio.atg -o ${CMAKE_CURRENT_BINARY_DIR}
