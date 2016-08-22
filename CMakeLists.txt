@@ -75,11 +75,14 @@ set (COBOL_C_OUTPUT
 )  
 
 set (INSTALL_DIR  "/ctools/bin")
-
+#THE FIRST THREE SYSTEM SUB-DIRECTORIES HERE MUST BE IN THIS SEQUENCE
+#SO THAT 'MAKE CLEAN' & 'MAKE INSTALL' WORKS PROPERLY.
 add_subdirectory(tools/cocoR/cpp)
+add_subdirectory(installs)
+add_subdirectory(decode)
+
+#THE NEXT LINES CAN DONE ALPHABETICALLY OR IN ANY ORDER.
 add_subdirectory(ascii)
 add_subdirectory(cobol)
-add_subdirectory(decode)
-add_subdirectory(installs)
 add_subdirectory(print)
 add_subdirectory(submit)
