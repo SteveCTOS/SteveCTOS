@@ -12,12 +12,12 @@
 *    Facsimile No  : ____________________   VAT Reg No     : _______________  *
 *    Comment Field : ____________________                                     *
 *                                                                             *
-*    Order Number                : ______   V.A.T. Percent          : _____   *
+*    P/Slip & B/M Number         : ______   V.A.T. Percent          : _____   *
 *    Invoice Number              : ______   Debtor Trans Number     : ______  *
 *    Credit Note Number          : ______   Stock Trans Number      : ______  *
-*    Cash Receipt Number         : ______   Current Week Number     : __      *
+*    Debtor Cash Receipt Number  : ______   Current Week Number     : __      *
 *    Stock Receipt Number        : ______   Current Month Number    : __      *
-*    Journal Number              : ______   Current Year Number     : ____    *
+*    Debtor Journal Number       : ______   Current Year Number     : ____    *
 *    Quotation Number            : ______                                     *
 *    Supplier Order Number       : ______                                     *
 *******************************************************************************

@@ -184,7 +184,7 @@
             PERFORM ERROR1-020.
             PERFORM CLEAR-FIELDS.
             PERFORM CONTROL-050.
-            MOVE 2707 TO POS
+            MOVE 2907 TO POS
             DISPLAY
            "ENTER ALL 'X' FOR SUPPLIER ORDER ENQUIRY, 'STOCK' FOR " &
            "STOCK ENQUIRY," AT POS
@@ -363,6 +363,11 @@
             MOVE 1 TO SUB-1 SUB-2.
             PERFORM FILL-011.
        FILL-005.
+            MOVE 2915 TO POS
+            DISPLAY 
+            "PRESS 'TAB' OR 'ESC' TO CLEAR THE SCREEN WHEN DONE."
+               AT POS.
+
             PERFORM ERROR-020
             MOVE 3010 TO POS
             DISPLAY "    BODY LINE: " AT POS

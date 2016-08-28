@@ -317,6 +317,7 @@
            DISPLAY "PRINTING BILL-OF-MATERIALS...." AT POS.
            PERFORM PRINT-TOOLKIT.
       ********************************************************
+      *     WS-TYPE-OF-FINISH                                *
       * 'F5' =X"19"   TYPE=1     UPDATE & PRINT              *
       * 'F10'=X"1F"   TYPE=2     PRINT ONLY                  *
       ********************************************************
@@ -791,17 +792,17 @@
             PERFORM ERROR-020.
             PERFORM ERROR1-020.
             PERFORM CLEAR-FIELDS.
-           PERFORM DISPLAY-FORM.
+            PERFORM DISPLAY-FORM.
        GET-0110.
             PERFORM CONTROL-050.
             MOVE 2901 TO POS
             DISPLAY
            "ENTER ALL 'X' FOR SUPPLIER ORDER ENQUIRY, 'STOCK' FOR" &
            " STOCK ENQUIRY," AT POS
-              MOVE 3001 TO POS
-              DISPLAY
+            MOVE 3001 TO POS
+            DISPLAY
            " '*' & NUMBER FOR EXISTING BILL OR LEAVE BLANK TO CREATE" &
-           " A NEW BILL OF MATERIAL." AT POS
+           " A NEW BILL OF MATERIAL." AT POS.
       
             MOVE "REFNO" TO F-FIELDNAME.
             MOVE 5       TO F-CBFIELDNAME.
@@ -894,8 +895,8 @@
        GET-011.
            PERFORM ERROR1-020
            PERFORM ERROR-020.
-           PERFORM CLEAR-010
-           PERFORM CLEAR-020.
+      *     PERFORM CLEAR-010
+      *     PERFORM CLEAR-020.
            IF F-EXIT-CH = X"1F"
             IF WS-NEWORDER = "N"
               MOVE 2910 TO POS
@@ -1238,6 +1239,12 @@
            PERFORM WRITE-FIELD-KITQTY.
             
            PERFORM CHECK-ORDER-COMPLETE.
+           
+      *     MOVE "WS-ORDER-COMPLETE = " TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-ORDER-COMPLETE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR-020.
            
            IF WS-TYPE-OF-FINISH = "2"
                  GO TO GET-400.
@@ -2548,6 +2555,15 @@
        CHECK-ORDER-COMPLETE SECTION.
        COC-010.
            MOVE 0 TO SUB-1.
+           
+      *     MOVE WS-KITQTY TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-SHPDQTY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020
+      *     MOVE WS-MFGQTY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
            IF WS-KITQTY = WS-SHPDQTY + WS-MFGQTY
               MOVE "Y" TO WS-ORDER-COMPLETE
               GO TO COC-015
@@ -2616,8 +2632,23 @@
             MOVE 7777777            TO INCR-ACCOUNT
             MOVE INCR-INVOICE       TO INCR-PORDER
             MOVE WS-KITQTY          TO INCR-KITQTY.
+            
+            IF INCR-KITSHPDQTY NOT > 0
+            MOVE 0                  TO INCR-KITSHPDQTY.
             IF WS-TYPE-OF-FINISH = "1"
                ADD WS-MFGQTY        TO INCR-KITSHPDQTY.
+               
+      *      MOVE "WS-MFGQTY = " TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WS-MFGQTY TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+      *      MOVE "INCR-KITSHPDQTY = " TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE INCR-KITSHPDQTY TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020.
+               
             IF WS-TYPE-OF-FINISH = "2"
              IF INCR-KITSHPDQTY NOT > 0
                MOVE 0               TO INCR-KITSHPDQTY.
@@ -2678,7 +2709,10 @@
            MOVE INCR-KITNAME     TO WS-KIT-SAVE.
            MOVE INCR-KITQTY      TO WS-KITQTY.
            MOVE 0                TO WS-MFGQTY.
-           MOVE INCR-KITSHPDQTY  TO WS-SHPDQTY.
+           IF INCR-KITSHPDQTY > 0
+             MOVE INCR-KITSHPDQTY  TO WS-SHPDQTY
+           ELSE
+             MOVE 0              TO WS-SHPDQTY.  
            MOVE INCR-KITPRICE    TO WS-KIT-PRICE.
            MOVE INCR-KITDESC1    TO WS-KIT-DESC1.
            MOVE INCR-KITDESC2    TO WS-KIT-DESC2. 

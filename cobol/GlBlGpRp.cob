@@ -658,6 +658,7 @@
                                    WS-MARGIN-MV-YTD
                                    WS-MARGIN-MV-LAST
                                    WS-MARGIN
+                                   WS-MARGIN-PERC
                 MOVE "75-020-10-05" TO WS-NEXT-NUMBER1
                 MOVE "75-020-10-15" TO WS-NEXT-NUMBER2
                 MOVE "N" TO WS-PRINT
@@ -694,6 +695,7 @@
                 MOVE 0 TO WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "N" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 11
@@ -712,6 +714,7 @@
                 MOVE 0 TO WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 12
@@ -736,6 +739,7 @@
                                    WS-MARGIN-MV-YTD
                                    WS-MARGIN-MV-LAST
                                    WS-MARGIN
+                                   WS-MARGIN-PERC
                 MOVE "75-030-05-00" TO WS-NEXT-NUMBER1
                 MOVE "75-030-05-19" TO WS-NEXT-NUMBER2
                 MOVE "N" TO WS-PRINT
@@ -795,6 +799,7 @@
                                    WS-MARGIN-MV-YTD
                                    WS-MARGIN-MV-LAST
                                    WS-MARGIN
+                                   WS-MARGIN-PERC
                 MOVE "NETT CURRENT ASSETS/LIABILITIES(-)" TO D-NAME
                 MOVE WS-COLUMN1-ASSETS         TO D-MV-YTD
                 MOVE WS-COLUMN2-ASSETS         TO D-MV-LAST
@@ -815,6 +820,7 @@
                           WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "75-040-05-00" TO WS-NEXT-NUMBER1
                 MOVE "75-040-99-99" TO WS-NEXT-NUMBER2
                 MOVE "Y" TO WS-PRINT
@@ -950,7 +956,8 @@
            IF WS-PRINT = "Y"
                MOVE 0 TO WS-MARGIN-MV-YTD
                          WS-MARGIN-MV-LAST
-                         WS-MARGIN.
+                         WS-MARGIN
+                         WS-MARGIN-PERC.
        CF-015.
            ADD WS-GL-AMOUNT (SUB-1 SUB-40)       TO WS-MARGIN-MV-YTD
            ADD WS-GL-AMOUNT-LY (SUB-1 SUB-40)    TO WS-MARGIN-MV-LAST
