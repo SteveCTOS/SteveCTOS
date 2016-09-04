@@ -6,17 +6,16 @@
              *            Proforma from Q=Quote, P=P/Slip   : _   *            
              *            Add Proforma's Into ONE Invoice   : _   *            
              *                                                    *            
-             * Select Option   : _          Printer Option  : _   *            
-             * 1= Range Of Numbers            1=Master Printer    *            
-             * 2= Selected Numbers (Max. 4)   2=Counter Printer   *            
-             *                                3=Stores Printer    *            
-             * Currency Type   : ___          4=Hp Laser Printer  *            
-             * Currency Rate   : __________   5=Create EMail File *            
+             * Select Range Option  : _     Printer Option  : _   *            
+             *   1= Range Of Numbers          1=Master Printer    *            
+             *   2= Selected Numbers          2=Counter Printer   *            
+             *        (Max. 4)                3=Stores Printer    *            
+             *                                4=Hp Laser Printer  *            
+             * Type Of Print:       : _       5=Create EMail File *            
              *                                                    *            
-             * Type Of Print:  : _          NB 2,3+4 Will Print   *            
-             *   1 = Invoice Only              Immediately the    *            
-             *   2 = D/Notes Only              Report Is Ready.   *            
-             *   3 = Invoice & D/Notes                            *            
+             *   1 = Invoice Only           NB 2,3+4 Will Print   *            
+             *   2 = D/Notes Only              Immediately the    *            
+             *   3 = Invoice & D/Notes         Report Is Ready.   *            
              *                                                    *            
              *  Range 1: Enter The Beginning And Ending Numbers,  *            
              *    OR  2: Enter Up To Four Individual Numbers.     *            
@@ -28,7 +27,7 @@
                                                                                
 
 Form name: SlInCrRp                        size: 1502  bytes
-height: 27    width: 79    number of fields: 13             
+height: 27    width: 79    number of fields: 11             
 
 Field name: INVCRED                                          
 Row: 2    Column: 62   Width: 1                              
@@ -76,7 +75,7 @@ List of values:
 
 
 Field name: OPTION                                           
-Row: 8    Column: 33   Width: 1                              
+Row: 8    Column: 38   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -85,7 +84,7 @@ Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
 Validation routine:                                          
 Help message:                                                
                                                              
-Selected Color Number: 4           Unselected Color Number: 0
+Selected Color Number: 7           Unselected Color Number: 2
 List of values:                                              
 
 
@@ -100,42 +99,13 @@ Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
 Validation routine:                                          
 Help message:                                                
                                                              
-Selected Color Number: 4           Unselected Color Number: 0
+Selected Color Number: 7           Unselected Color Number: 2
 List of values:                                              
 
-
-
-Field name: CURRENCY                                         
-Row: 12   Column: 33   Width: 3                              
-Repeating? No   Index:        (first:        last:      )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                              
-
-
-
-Field name: EXCHANGERATE                                     
-Row: 13   Column: 33   Width: 10                             
-Repeating? No   Index:        (first:        last:      )    
-Control: Tx  Justification: L   Sequence number:             
-Secret? No   Protected? No   Mandatory? No                   
-Default:                                                     
-Show default? Yes  Auto-exit? No   Unselected: F  Selected: E
-Validation routine:                                          
-Help message:                                                
-                                                             
-Selected Color Number: 4           Unselected Color Number: 0
-List of values:                                
 
 
 Field name: PROG-TYPE                                        
-Row: 15   Column: 33   Width: 1                              
+Row: 13   Column: 38   Width: 1                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -150,7 +120,7 @@ List of values:
 
 
 Field name: RANGE1                                           
-Row: 23   Column: 19   Width: 6                              
+Row: 22   Column: 19   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -165,7 +135,7 @@ List of values:
 
 
 Field name: RANGE2                                           
-Row: 23   Column: 31   Width: 6                              
+Row: 22   Column: 31   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -180,7 +150,7 @@ List of values:
 
 
 Field name: RANGE3                                           
-Row: 23   Column: 43   Width: 6                              
+Row: 22   Column: 43   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -195,7 +165,7 @@ List of values:
 
 
 Field name: RANGE4                                           
-Row: 23   Column: 55   Width: 6                              
+Row: 22   Column: 55   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   

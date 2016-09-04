@@ -13,7 +13,11 @@
          Copy "SelectStTrans".
          Copy "SelectSlRegister".
          Copy "SelectSlParameter".
+         Copy "SelectCrCurrency".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
+                ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-PRINTFILE-STATUS.
+           SELECT PDFPRINT-FILE ASSIGN TO WS-PDFPRINTER
                 ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-PRINTFILE-STATUS.
            SELECT LASER-FILE ASSIGN TO W-FILENAME
@@ -26,9 +30,14 @@
            COPY ChlfdStTrans.
            COPY ChlfdRegister.
            COPY ChlfdParam.
+           COPY ChlfdCrCurr.
       *
        FD  PRINT-FILE.
        01  PRINT-REC.
+           03  FILLER           PIC X(132).
+      *
+       FD  PDFPRINT-FILE.
+       01  PDFPRINT-REC.
            03  FILLER           PIC X(132).
       *
        FD  LASER-FILE.
@@ -37,6 +46,7 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-FOUND             PIC X VALUE " ".
+       77  WS-PDFFILE-OPENED    PIC X VALUE " ".
        77  WS-INVOICE           PIC 9(6) VALUE 0.
        77  WS-INVCRED           PIC X VALUE " ".
        77  WS-PROF-TYPE         PIC X VALUE " ".
@@ -50,6 +60,8 @@
        77  WS-RANGE2            PIC 9(6) VALUE 0.
        77  WS-RANGE3            PIC 9(6) VALUE 0.
        77  WS-RANGE4            PIC 9(6) VALUE 0.
+       77  WS-CURRENCY          PIC X(5) VALUE " ".
+       77  WS-EXCHANGERATE      PIC 9(3)V9(5) VALUE 0.
        77  WS-TEMPDATE          PIC 99/99/9999.
        77  WS-SUBTOTAL          PIC 9(7)V99 VALUE 0.
        77  WS-ADDONAMT          PIC 9(7)V99 VALUE 0.
@@ -79,6 +91,8 @@
            03  WS-LF-ST1          PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1      PIC 99.
+       01  WS-CURRENCY-STATUS.
+           03  WS-CURRENCY-ST1     PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
@@ -141,6 +155,18 @@
            03  WS-MINS          PIC 99.
            03  WS-SECS          PIC 99.
            03  WS-100S          PIC 99.
+       01  PDFLIST-LINE.
+           03  PDF-GROUP-NUMBER PIC 99.
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-TYPE         PIC X.
+           03  PDF-NUMBER       PIC 9(6).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-ACCOUNT      PIC 9(7).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-PORDER       PIC X(20).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-TOTAL        PIC X(10).
+           03  FILLER           PIC X VALUE ",".
        01  PCREDITLINE.
            03  FILLER           PIC X(50) VALUE " ".
            03  P-XES            PIC X(20) VALUE " ".
@@ -618,6 +644,11 @@
                GO TO WOPDF-010.
            MOVE "/" TO AL-RATE (SUB-1).
            ADD 1 TO SUB-1.
+           IF INCR-TRANS = 1
+              MOVE "I" TO AL-RATE (SUB-1)
+           ELSE
+              MOVE "C" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
        WOPDF-020.
       *     MOVE "IN WOPDF-020." TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -640,6 +671,43 @@
       *     MOVE W-FILENAME TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
        WOPDF-999.
+            EXIT.
+      *
+       WORK-OUT-CSV-FILE-NAME SECTION.
+       WOCSV-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       WOCSV-005.
+           MOVE "/ctools/pdf" TO ALPHA-RATE.
+           MOVE WS-CO-NUMBER  TO DATA-RATE.
+           MOVE 12 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOCSV-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOCSV-010.
+           MOVE "/" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+       WOCSV-020.
+      *     MOVE "IN WOCSV-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES        TO DATA-RATE.
+           MOVE "PDFList.csv" TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOCSV-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOCSV-025.
+       WOCSV-030.
+           MOVE ALPHA-RATE   TO WS-PDFPRINTER.
+           
+      *     MOVE WS-PDFPRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOCSV-999.
             EXIT.
       *
        READ-DATA SECTION.
@@ -680,6 +748,10 @@
       *     PERFORM ERROR-MESSAGE.
       
            IF WS-COMPLETE = "Y" OR = "E"
+            IF WS-INVCRED = "X"
+               CLOSE PRINT-FILE
+               GO TO RD-999
+            ELSE
                GO TO RD-999.
 
            IF WS-INVCRED = "X"
@@ -689,12 +761,14 @@
               PERFORM PDF-PRINT-INVOICE
               MOVE INCR-INVOICE TO WS-INVOICE
               CLOSE LASER-FILE
+              PERFORM WRITE-INDEX-KEY
             IF INCR-TRANS = 1
               PERFORM SETUP-INVOICE-FOR-PDF-ONLY
               GO TO RD-010
             ELSE
-      *        PERFORM SETUP-CREDIT-FOR-PDF-ONLY
+              PERFORM SETUP-CREDIT-FOR-PDF-ONLY
               GO TO RD-010.
+
            IF WS-PRINT-NUM NOT = 4 AND NOT = 5
               PERFORM PRINT.
            IF WS-PRINT-NUM = 4
@@ -709,6 +783,36 @@
            
            GO TO RD-010.
        RD-999.
+           EXIT.
+      *
+       WRITE-INDEX-KEY SECTION.
+       WIK-001.
+            IF WS-PDFFILE-OPENED = "Y"
+              GO TO WIK-005.
+              PERFORM WORK-OUT-CSV-FILE-NAME
+              OPEN OUTPUT PDFPRINT-FILE
+              MOVE 
+           "#GROUP NUM, TRANS NUM, ACCOUNT, PORDER NUM, TRANS TOTAL." 
+                 TO PDFPRINT-REC
+              WRITE PDFPRINT-REC AFTER 1.
+           MOVE "Y" TO WS-PDFFILE-OPENED.
+       WIK-005.
+           MOVE WS-CO-NUMBER      TO PDF-GROUP-NUMBER.
+           IF INCR-TRANS = 1
+              MOVE "I"            TO PDF-TYPE
+           ELSE
+              MOVE "C"            TO PDF-TYPE.
+           MOVE INCR-INVOICE      TO PDF-NUMBER.
+           MOVE INCR-ACCOUNT      TO PDF-ACCOUNT
+           MOVE INCR-PORDER       TO PDF-PORDER.
+      * SEE PL-ADD4 MOVE TO PDF-TOTAL IN LASER-PRINT SECTION
+      *     MOVE INCR-INVCRED-AMT  TO PDF-TOTAL.
+           
+      *     MOVE PDFLIST-LINE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+           WRITE PDFPRINT-REC FROM PDFLIST-LINE AFTER 1.
+       WIK-999.
            EXIT.
       *
        GET-DATA SECTION.
@@ -824,6 +928,82 @@
            MOVE 1 TO F-CBFIELDLENGTH.
            MOVE WS-PRINT-NUM TO F-NAMEFIELD.
            PERFORM WRITE-FIELD-ALPHA.
+           IF F-EXIT-CH NOT = X"1D"
+              GO TO GET-025.
+       GET-022.
+            PERFORM ERROR1-020.
+            PERFORM ERROR-020.
+            
+            MOVE "                   " TO F-NAMEFIELD.
+            MOVE "CURRENCY" TO F-FIELDNAME.
+            MOVE 8 TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            IF F-EXIT-CH = X"01"
+                GO TO GET-020.
+            MOVE 5 TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD TO WS-CURRENCY.
+            
+            PERFORM READ-CURRENCY.
+            IF WS-CURRENCY-ST1 = 23 OR 35 OR 49
+              GO TO GET-022.
+            PERFORM ERROR-020.
+            PERFORM ERROR1-020.
+       GET-024.
+            MOVE "                   " TO F-NAMEFIELD.
+            MOVE "EXCHANGERATE"    TO F-FIELDNAME
+            MOVE 12                TO F-CBFIELDNAME
+            MOVE 10                TO F-CBFIELDLENGTH
+            MOVE IMRE-EXCHANGERATE TO F-EDNAMEFIELDNUMDEC
+            MOVE 10                TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-NUM-DEC.
+            
+            MOVE 2910 TO POS
+            DISPLAY "1      = R" AT POS
+            COMPUTE WS-CURRENCY-TEMP = 1 / IMRE-EXCHANGERATE
+            ADD 2 TO POS 
+            DISPLAY IMRE-CURRENCY AT POS
+            ADD 8 TO POS
+            MOVE WS-CURRENCY-TEMP TO WS-EXCHANGE-DIS
+            DISPLAY WS-EXCHANGE-DIS AT POS.
+            MOVE 3010 TO POS
+            DISPLAY
+            "ENTER MULTIPLE RAND TO A CURRENCY, PRESS <F8> TO CONVERT."
+               AT POS.
+            
+            MOVE "EXCHANGERATE" TO F-FIELDNAME.
+            MOVE 12 TO F-CBFIELDNAME.
+            PERFORM USER-FILL-FIELD.
+            IF F-EXIT-CH = X"01"
+                GO TO GET-022.
+            MOVE 10 TO F-CBFIELDLENGTH.
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD TO ALPHA-RATE.
+            PERFORM DECIMALISE-RATE.
+            
+            IF F-EXIT-CH = X"1D"
+            COMPUTE NUMERIC-RATE = 1 / NUMERIC-RATE.
+            
+            MOVE NUMERIC-RATE TO IMRE-EXCHANGERATE
+                                 F-EDNAMEFIELDNUMDEC.
+            MOVE 10 TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-NUM-DEC.
+            IF IMRE-EXCHANGERATE = 0
+               MOVE "EXCHANGE RATE CANNOT BE ZERO" TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO GET-024.
+            
+            MOVE 2910 TO POS
+            DISPLAY "1      = R" AT POS
+            COMPUTE WS-CURRENCY-TEMP = 1 / IMRE-EXCHANGERATE
+            ADD 2 TO POS 
+            DISPLAY IMRE-CURRENCY AT POS
+            ADD 8 TO POS
+            MOVE WS-CURRENCY-TEMP TO WS-EXCHANGE-DIS
+            DISPLAY WS-EXCHANGE-DIS AT POS.
+           
+           
+           
        GET-025.
             IF WS-PRINT-NUM NOT = 4
                GO TO GET-030.
@@ -837,6 +1017,8 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                GO TO GET-020.
+            IF F-EXIT-CH = X"1D"
+              GO TO GET-024.
             MOVE 1            TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD  TO ALPHA-RATE.
@@ -933,6 +1115,41 @@
                PERFORM END-OFF.
        GET-999.
             EXIT.
+      *
+       READ-CURRENCY SECTION.
+       R-CUR-000.
+           MOVE WS-CURRENCY TO CU-KEY.
+           START CURRENCY-MASTER KEY NOT < CU-KEY
+              INVALID KEY NEXT SENTENCE.
+           IF WS-CURRENCY-ST1 NOT = 0
+               MOVE "INVALID START ON CURRENCY FILE, 'ESC' TO EXIT"
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO R-CUR-999.
+        R-CUR-010.
+           READ CURRENCY-MASTER
+                 INVALID KEY NEXT SENTENCE.
+           IF WS-CURRENCY-ST1 = 23 OR 35 OR 49
+               MOVE "NO SUCH CURRENCY, 'ESC' TO RE-ENTER"
+               TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CURRENCY-ST1
+                GO TO R-CUR-999.
+           IF WS-CURRENCY-ST1 NOT = 0
+                MOVE "CURRENCY BUSY ON READ, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-CURRENCY-ST1
+                GO TO R-CUR-010.
+           MOVE CU-VALUE TO IMRE-EXCHANGERATE.
+       R-CUR-999.
+             EXIT.
       *
        PDF-PRINT-INVOICE SECTION.
        LP-PDF-000.
@@ -1192,7 +1409,8 @@
            MOVE INCR-ADDMISC     TO PL-ADD2
            MOVE WS-SUBTOTAL      TO PL-ADD3.
            MOVE "ZAR"            TO PL-CURRENCY.
-           MOVE WS-INVOICETOTAL  TO PL-ADD4.
+           MOVE WS-INVOICETOTAL  TO PL-ADD4
+           MOVE PL-ADD4          TO PDF-TOTAL.
            WRITE LASER-REC     FROM LASERPL-ADDLINE.
        LP-PDF-036.
            MOVE " " TO LASERPL-ADDLINE LASER-REC WS-COMPLETE. 
@@ -2792,35 +3010,58 @@
        OPEN-001.
            OPEN I-O DEBTOR-MASTER.
            IF WS-DEBTOR-ST1 NOT = 0 
-              MOVE 0 TO WS-DEBTOR-ST1
               MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DEBTOR-ST1
               GO TO OPEN-001.
        OPEN-005.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "STOCK TRANS. FILE BUSY ON OPEN, 'ESC' TO  RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO OPEN-005.
        OPEN-007.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
               MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO  RETRY." 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-INCR-ST1
               GO TO OPEN-007.
        OPEN-008.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO  RETRY." 
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO OPEN-008.
+       OPEN-009.
+            OPEN I-O CURRENCY-MASTER.
+            IF WS-CURRENCY-ST1 NOT = 0
+              MOVE "CURRENCY FILE BUSY ON OPEN, 'CANCEL TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CURRENCY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-CURRENCY-ST1
+              GO TO OPEN-009.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME
@@ -2864,12 +3105,13 @@
       *
        END-OFF SECTION.
        END-000.
-           MOVE 2820 TO POS
-           DISPLAY "                                      " AT POS.
+           PERFORM ERROR1-020
+           PERFORM ERROR-020.
            CLOSE DEBTOR-MASTER
                  STOCK-TRANS-FILE 
                  INCR-REGISTER
                  PARAMETER-FILE
+                 CURRENCY-MASTER.
            EXIT PROGRAM.
        END-999.
            EXIT.
@@ -2892,6 +3134,7 @@
        Copy "SetupInvoiceForPDF".
        Copy "SetupInvoiceForPDFOnly".
        Copy "SetupCreditForPDF".
+       Copy "SetupCreditForPDFOnly".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
       ******************

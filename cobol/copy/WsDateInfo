@@ -22,6 +22,7 @@
        77  SUB-50               PIC 9(2) VALUE 0.
        77  WS-PRINTER           PIC X(100) VALUE " ".
        77  WS-PRINTER-SAVE      PIC X(100) VALUE " ".
+       77  WS-PDFPRINTER        PIC X(100) VALUE " ".
        77  WS-CALC-PERIOD       PIC 9(2) VALUE 0.
        77  WS-PROG-TYPE         PIC 9 VALUE 0.
        77  Ws-PrintProg         PIC X(12) VALUE " ".

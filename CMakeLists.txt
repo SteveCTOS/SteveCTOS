@@ -82,6 +82,7 @@ add_subdirectory(installs)
 add_subdirectory(decode)
 
 #THE NEXT LINES CAN BE DONE ALPHABETICALLY OR IN ANY OTHER ORDER.
+#ADD ENTRIES AS YOU ADD SUB-DIRECTORIES TO BE USED IN THE COMPILE.
 add_subdirectory(ascii)
 add_subdirectory(cobol)
 add_subdirectory(print)
