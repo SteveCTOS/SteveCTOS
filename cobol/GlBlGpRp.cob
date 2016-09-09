@@ -570,6 +570,10 @@
                 MOVE " " TO PRINT-REC DETAIL-LINE
                 MOVE "70-015-10-00" TO WS-NEXT-NUMBER1
                 MOVE "70-015-99-00" TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 2
@@ -578,6 +582,7 @@
                 MOVE 0 TO WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "N" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 3
@@ -604,6 +609,10 @@
                 MOVE " " TO PRINT-REC DETAIL-LINE
                 MOVE "70-010      " TO WS-NEXT-NUMBER1
                 MOVE "70-010      " TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 4
@@ -629,11 +638,19 @@
                           WS-COLUMN3 WS-COLUMN3-CAPIT
                 MOVE "75-010      " TO WS-NEXT-NUMBER1
                 MOVE "75-010      " TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 5
                 MOVE "75-020-05-00" TO WS-NEXT-NUMBER1
                 MOVE "75-020-05-00" TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 6
@@ -677,16 +694,28 @@
                 
                 MOVE "75-020-05-05" TO WS-NEXT-NUMBER1
                 MOVE "75-020-05-05" TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 8
                 MOVE "75-030-15-00" TO WS-NEXT-NUMBER1
                 MOVE "75-030-15-00" TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 9
                 MOVE "75-020-15-00" TO WS-NEXT-NUMBER1
                 MOVE "75-020-20-99" TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 10
@@ -757,6 +786,10 @@
                 MOVE " " TO PRINT-REC DETAIL-LINE
                 MOVE "75-030-05-20" TO WS-NEXT-NUMBER1
                 MOVE "75-030-15-99" TO WS-NEXT-NUMBER2
+                MOVE 0 TO WS-MARGIN-MV-YTD
+                          WS-MARGIN-MV-LAST
+                          WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "Y" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 14
@@ -765,6 +798,7 @@
                 MOVE 0 TO WS-MARGIN-MV-YTD
                           WS-MARGIN-MV-LAST
                           WS-MARGIN
+                          WS-MARGIN-PERC
                 MOVE "N" TO WS-PRINT
                 GO TO GET-999.
             IF SUB-1 = 15
