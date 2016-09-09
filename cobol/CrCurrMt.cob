@@ -79,6 +79,8 @@
                  PERFORM CLEAR-FORM
                  PERFORM DISPLAY-FORM
                  GO TO GET-001.
+            IF CU-CURRENCY-TYPE NOT > " "
+                 GO TO GET-000.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
                  DISPLAY " " AT 3079 WITH BELL
                  GO TO GET-000.

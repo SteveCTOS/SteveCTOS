@@ -12,10 +12,10 @@
              *                                3=Stores Printer    *            
              * Currency Type   : ___          4=Hp Laser Printer  *            
              * Currency Rate   : __________   5=Create EMail File *            
-             *                                                    *            
-             * Type Of Print:  : _          NB 2,3+4 Will Print   *            
-             *   1 = Invoice Only              Immediately the    *            
-             *   2 = D/Notes Only              Report Is Ready.   *            
+             *                                NB 2,3+4 Will Print *            
+             * Type Of Print:  : _               Immediately The  *            
+             *   1 = Invoice Only                Report Is Ready. *            
+             *   2 = D/Notes Only                                 *            
              *   3 = Invoice & D/Notes                            *            
              *                                                    *            
              *  Range 1: Enter The Beginning And Ending Numbers,  *            
@@ -106,7 +106,7 @@ List of values:
 
 
 Field name: CURRENCY                                         
-Row: 12   Column: 33   Width: 3                              
+Row: 12   Column: 33   Width: 5                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
