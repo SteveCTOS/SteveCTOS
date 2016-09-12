@@ -567,7 +567,7 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-020.
-            MOVE 4 TO F-CBFIELDLENGTH.
+            MOVE 5 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO IMRE-CURRENCY.
             

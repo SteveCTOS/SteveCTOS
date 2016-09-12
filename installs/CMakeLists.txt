@@ -54,6 +54,18 @@ file (MAKE_DIRECTORY
   /ctools/lock
   /ctools/orx
   /ctools/ps
+  /ctools/pdf01
+  /ctools/pdf02
+  /ctools/pdf03
+  /ctools/pdf04
+  /ctools/pdf05
+  /ctools/pdf06
+  /ctools/pdf07
+  /ctools/pdf08
+  /ctools/pdf09
+  /ctools/pdf10
+  /ctools/pdf11
+  /ctools/pdf12
   /ctools/payslyp
   /ctools/payzip
   /ctools/ps01
@@ -73,6 +85,7 @@ file (MAKE_DIRECTORY
   /ctools/sfj
   /ctools/spl
   /ctools/stuff
+  /ctools/tt
   /ctools/tax
   /ctools/temp
   /ctools/uif

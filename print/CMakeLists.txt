@@ -3,6 +3,7 @@ project (ctools_print)
 set (copy_list
   fohtotext.py
   PrintCredit
+  PrintCreditPdfOnly
   PrintDrOverdue1
   PrintDrOverdue2
   PrintInvoice

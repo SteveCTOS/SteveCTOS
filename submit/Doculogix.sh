@@ -1,5 +1,6 @@
-# $1 is the Year & Month numbers e.g 1510 = Sep 2015
-
+# $1 is the Year & Month numbers e.g 1510 = Oct 2015
+# e.g. 
+#     Doculogix.sh 1510
 echo Doculogix Submit Routine
 
 cd /ctools/spl

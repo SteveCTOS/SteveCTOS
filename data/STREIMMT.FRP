@@ -2,7 +2,7 @@
 *                                                                             *
 * Supplier          :_______     Rand Duty :___________  Date     :__________ *
 * Invoice No        :__________  Freight   :___________  Rate Paid:__________ *
-* Currency Type     :____        Wharfage  :___________  Rand Paid:___________*
+* Currency Type     :_____       Wharfage  :___________  Rand Paid:___________*
 * Currency Rate     :__________  Clearing  :___________  Mark Up %:______     *
 * Foreign Inv. Amt. :___________ Surcharge :___________  On Cost %:______     *
 * Foreign Extras    :___________ Total Chrg:___________                       *
@@ -119,7 +119,7 @@ List of values:
 
 
 Field name: CURRENCY                                         
-Row: 4    Column: 21   Width: 4                              
+Row: 4    Column: 21   Width: 5                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
