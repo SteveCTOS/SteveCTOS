@@ -2487,6 +2487,8 @@
                GO TO UPGL-999.
            MOVE WS-CURRENTGLPER TO SUB-3.
        UPGL-005.
+           IF CRJRN-GLACC (SUB-1) NOT > " "
+               GO TO UPGL-999.
            MOVE CRJRN-GLACC (SUB-1) TO GL-NUMBER.
            START GL-MASTER KEY NOT < GL-KEY.
        UPGL-010.
@@ -2524,6 +2526,8 @@
            IF WS-CURRENTPER NOT = WS-CURRENTGLPER
                GO TO UPGLH-999.
            MOVE WS-CURRENTGLPER TO SUB-3.
+           IF CRJRN-GLACC (SUB-1) NOT > " "
+               GO TO UPGLH-999.
            MOVE CRJRN-GLACC (SUB-1) TO WS-GLNUMBER.
            MOVE WS-GLHEADER TO GL-NUMBER.
            START GL-MASTER KEY NOT < GL-KEY.
@@ -2562,6 +2566,8 @@
            IF WS-CURRENTPER NOT = WS-CURRENTGLPER
                GO TO UPGLSH-999.
            MOVE WS-CURRENTGLPER TO SUB-3.
+           IF CRJRN-GLACC (SUB-1) NOT > " "
+               GO TO UPGLSH-999.
            MOVE CRJRN-GLACC (SUB-1) TO WS-GLNUMBER.
            MOVE WS-HEAD-SUB TO GL-NUMBER.
            START GL-MASTER KEY NOT < GL-KEY.

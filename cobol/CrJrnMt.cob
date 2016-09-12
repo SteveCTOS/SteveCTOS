@@ -1089,9 +1089,9 @@
            MOVE 8 TO F-CBFIELDNAME.
            PERFORM USER-FILL-FIELD.
 
-           IF F-EXIT-CH = X"0B" 
-            IF CRJRN-GLACC (SUB-1) = " "
-               GO TO FILL-GL-010.
+      *     IF F-EXIT-CH = X"0B" 
+      *      IF CRJRN-GLACC (SUB-1) = " "
+      *         GO TO FILL-GL-010.
 
            IF F-EXIT-CH = X"01" AND F-INDEX = 1
                MOVE 12 TO F-CBFIELDLENGTH
@@ -1108,6 +1108,12 @@
 
            MOVE 12 TO F-CBFIELDLENGTH.
            PERFORM READ-FIELD-ALPHA.
+
+           IF F-EXIT-CH = X"1D"
+            IF F-NAMEFIELD = " "
+              MOVE SPACES TO CRJRN-GLACC (SUB-1)
+               GO TO FILL-GL-020.
+
            IF F-EXIT-CH = X"01"
             IF CRJRN-GLACC (SUB-1) = "  "
                SUBTRACT 1 FROM F-INDEX SUB-1
@@ -1229,14 +1235,20 @@
             MOVE 11 TO F-CBFIELDLENGTH.
             IF F-EXIT-CH = X"01"
                GO TO FILL-GL-010.
-            IF F-EXIT-CH NOT = X"0A"
-               DISPLAY " " AT 3079 WITH BELL
-               GO TO FILL-GL-020.
             MOVE "                       " TO F-NAMEFIELD.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
             PERFORM DECIMALISE-RATE.
             MOVE NUMERIC-RATE TO CRJRN-GLAMT (SUB-1).
+
+           IF F-EXIT-CH = X"1D"
+            IF CRJRN-GLACC (SUB-1) = " "
+               GO TO FILL-GL-050.
+
+            IF F-EXIT-CH NOT = X"0A"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-GL-020.
+
             IF CRJRN-GLAMT (SUB-1) = 0
                 MOVE 2801 TO POS
                 DISPLAY " " AT 3079 WITH BELL
@@ -1297,6 +1309,10 @@
             MOVE NUMERIC-RATE TO CRJRN-GLDISC (SUB-1).
             ADD CRJRN-GLDISC (SUB-1) TO WS-SETT-DISC.
  
+           IF F-EXIT-CH = X"1D" 
+            IF CRJRN-GLACC (SUB-1) = " "
+               GO TO FILL-GL-090.
+
             IF CRJRN-GLAMT (SUB-1) > 0
              IF WS-SETT-DISC > CRJRN-SETT-DISC
                 MOVE "THIS AMOUNT IS MORE THAN THE ORIGINAL DISCOUNT."
