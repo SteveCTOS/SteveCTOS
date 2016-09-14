@@ -4000,6 +4000,57 @@
        CCFA-999.
            EXIT.
       *
+       CLEAR-CRJRN-RECORD SECTION.
+       CCJR-001.
+            MOVE " "        TO CRJRN-REFERENCE
+                               CRJRN-FUTURE
+                               CRJRN-INV-NO
+                               CRJRN-DNOTE-NO
+                               CRJRN-COMPLETE.
+            MOVE 0          TO CRJRN-TRANS
+                               CRJRN-TYPE
+                               CRJRN-NO
+                               CRJRN-CRACC-NUMBER
+                               CRJRN-INV-DATE
+                               CRJRN-DUE-DATE
+                               CRJRN-LOC-AMT
+
+
+               05  CRJRN-TRANS       PIC 9(6).
+               05  CRJRN-TYPE        PIC 9.
+           03  CRJRN-PERIOD.
+               05  CRJRN-FUTURE      PIC X.
+               05  CRJRN-NO          PIC 9(2).
+           03  CRJRN-CRACC-NUMBER    PIC 9(7).
+           03  CRJRN-INV-NO          PIC X(10).
+           03  CRJRN-DNOTE-NO        PIC X(10).
+           03  CRJRN-INV-DATE        PIC 9(8).
+           03  CRJRN-DUE-DATE        PIC 9(8).
+           03  CRJRN-LOC-AMT         PIC S9(7)V99.
+           03  CRJRN-VAT-AMT         PIC S9(7)V99.
+           03  CRJRN-UNAPPLIED-AMT   PIC S9(7)V99.
+           03  CRJRN-FOR-AMT         PIC S9(7)V99.
+           03  CRJRN-EXCHANGE        PIC 9(3)V9(5).
+           03  CRJRN-SETT-DISC       PIC S9(7)V99.
+           03  CRJRN-COMPLETE        PIC X.
+           03  CRJRN-GL-DATA OCCURS 10.
+               05  CRJRN-GLACC       PIC X(12).
+               05  CRJRN-GLAMT       PIC S9(7)V99.
+               05  CRJRN-GLDISC      PIC S9(7)V99.
+               05  CRJRN-GLDESC      PIC X(40).
+                               
+       CCJR-005.
+            MOVE 1 TO SUB-20.
+       CCJR-010.
+            MOVE SPACES TO FL-DNOTE (SUB-20)
+            MOVE 0      TO FL-FOR-AMT (SUB-20)
+                           FL-LOC-AMT (SUB-20).
+            ADD 1 TO SUB-20.
+            IF SUB-20 < 11
+               GO TO CCJR-010.
+       CCJR-999.
+           EXIT.
+      *
        READ-CREDITOR SECTION.
        RCR-000.
            MOVE "N" TO WS-NEXT.
@@ -4103,6 +4154,8 @@
             PERFORM DISPLAY-FORM.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
+            
+            PERFORM CLEAR-CRJRN-RECORD.
             
             MOVE 2701 TO POS.
             MOVE 
