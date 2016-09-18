@@ -30,6 +30,7 @@
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  WS-TOT-ONLY          PIC X VALUE " ".
        77  WS-ANSWER            PIC X VALUE " ".
+       77  WS-ANSWER2           PIC X VALUE " ".
        77  WS-SALE              PIC S9(7)V99 VALUE 0.
        77  WS-COST              PIC S9(7)V99 VALUE 0.
        77  WS-SALE-AMT          PIC S9(7)V99 VALUE 0.
@@ -182,10 +183,35 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-040.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
-               GO TO CONTROL-050
+               GO TO CONTROL-045
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-040.
+       CONTROL-045.
+           MOVE 1710 TO POS.
+           DISPLAY "Do you wish to DELETE the file after Printing: [ ]"
+           AT POS.
+           MOVE 1758 TO POS.
+           
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 14        TO CDA-ROW.
+           MOVE 57        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-ANSWER2.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO CONTROL-040.
+           IF WS-ANSWER2 NOT = "Y" AND NOT = "N"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-045.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO CONTROL-050
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-045.
        CONTROL-050.
            MOVE 2510 TO POS.
            DISPLAY "The Report Is Being Compiled, Please Be Patient."
@@ -314,7 +340,24 @@
            ADD 23 TO POS
            DISPLAY LINE-DISPLAY AT POS.
                
+           IF WS-ANSWER2 = "Y"
+                PERFORM PR-050.
+               
            GO TO PR-001.
+       PR-050.
+      * TEMP FIX TO REMOVE PREVIOUS DATA NOT DELETED BEFORE.
+           IF SP-DATE-OF-INVOICE < 20160900
+             DELETE SPECIALS-FILE
+               INVALID KEY NEXT SENTENCE.
+           IF WS-SPECIALS-ST1 NOT = 0
+               MOVE "SPECIALS FILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SPECIALS-ST1
+               GO TO PR-050.
        PR-999.
            EXIT.
       *

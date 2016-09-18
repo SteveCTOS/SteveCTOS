@@ -409,8 +409,8 @@
                IF BANK-CAMS-AMOUNT NOT = "      CLOSING "
                 IF WS-VAT-POSTED NOT = "Y"
                  MOVE "BANK CHRG VAT"   TO BANK-CAMS-FILL7
-                 MOVE WS-TOTAL-VAT-AMT  TO F-EDNAMEFIELDSALE
-                 MOVE F-EDNAMEFIELDSALE TO BANK-CAMS-VAT-AMT
+                 MOVE WS-TOTAL-VAT-AMT  TO F-EDRUNNINGAMOUNT
+                 MOVE F-EDRUNNINGAMOUNT TO BANK-CAMS-VAT-AMT
                  PERFORM WRITE-FINAL-BANK-CBTRANS
                  PERFORM UPDATE-CASHBOOK
                  GO TO RCF-035.
@@ -1517,8 +1517,8 @@
              COMPUTE WS-BANK-NETT-AMT
               = WS-BANK-GROSS-AMT - WS-BANK-VAT-AMT.
            
-             MOVE WS-BANK-VAT-AMT   TO F-EDNAMEFIELDSALE
-             MOVE F-EDNAMEFIELDSALE TO BANK-CAMS-VAT-AMT
+             MOVE WS-BANK-VAT-AMT   TO F-EDRUNNINGAMOUNT
+             MOVE F-EDRUNNINGAMOUNT TO BANK-CAMS-VAT-AMT
              ADD WS-BANK-VAT-AMT    TO WS-TOTAL-VAT-AMT.
        ABV-999.
            EXIT.
@@ -1543,30 +1543,30 @@
              GO TO AFV-020.
 
            IF SUB-3 = 3
-             MOVE WS-NAR-1-21    TO WS-FX-ENTRY (SUB-3)
-             MOVE WS-NAR-46-47   TO WS-FX-FNL (SUB-3)
-             MOVE WS-CAMS-AMOUNT TO WS-FX-GROSS-AMT (SUB-3)
-             MOVE 0              TO WS-FX-VAT-AMT (SUB-3)
-             MOVE WS-CAMS-AMOUNT TO WS-FX-NETT-AMT (SUB-3).
+             MOVE WS-NAR-1-21              TO WS-FX-ENTRY (SUB-3)
+             MOVE WS-NAR-46-47             TO WS-FX-FNL (SUB-3)
+             MOVE WS-CAMS-AMOUNT           TO WS-FX-GROSS-AMT (SUB-3)
+             MOVE 0                        TO WS-FX-VAT-AMT (SUB-3)
+             MOVE WS-CAMS-AMOUNT           TO WS-FX-NETT-AMT (SUB-3).
        AFV-010.
            IF SUB-3 = 3
-              ADD WS-FX-VAT-AMT (1)     TO WS-FX-VAT-AMT (3)
-              ADD WS-FX-VAT-AMT (2)     TO WS-FX-VAT-AMT (3)
-              ADD WS-FX-NETT-AMT (1)    TO WS-FX-NETT-AMT (3)
-              ADD WS-FX-NETT-AMT (2)    TO WS-FX-NETT-AMT (3)
-              MOVE WS-FX-NETT-AMT (3)   TO WS-CAMS-AMOUNT
-              MOVE WS-CAMS-AMOUNT       TO WS-BANK-CAMS-AMT.
+              ADD WS-FX-VAT-AMT (1)        TO WS-FX-VAT-AMT (3)
+              ADD WS-FX-VAT-AMT (2)        TO WS-FX-VAT-AMT (3)
+              ADD WS-FX-NETT-AMT (1)       TO WS-FX-NETT-AMT (3)
+              ADD WS-FX-NETT-AMT (2)       TO WS-FX-NETT-AMT (3)
+              MOVE WS-FX-NETT-AMT (3)      TO WS-CAMS-AMOUNT
+              MOVE WS-CAMS-AMOUNT          TO WS-BANK-CAMS-AMT.
        AFV-020.
-           MOVE SUB-4                     TO WS-CALC-PERIOD
-           MOVE WS-CALC-PERIOD            TO BANK-CAMS-FOUND.
+           MOVE SUB-4                      TO WS-CALC-PERIOD
+           MOVE WS-CALC-PERIOD             TO BANK-CAMS-FOUND.
            
            IF SUB-3 = 1 OR = 2
-               MOVE WS-FX-VAT-AMT (SUB-3) TO F-EDNAMEFIELDSALE
-               MOVE F-EDNAMEFIELDSALE     TO BANK-CAMS-VAT-AMT
-               ADD WS-FX-VAT-AMT (SUB-3)  TO WS-TOTAL-VAT-AMT.
+               MOVE WS-FX-VAT-AMT (SUB-3)  TO F-EDRUNNINGAMOUNT
+               MOVE F-EDRUNNINGAMOUNT      TO BANK-CAMS-VAT-AMT
+               ADD WS-FX-VAT-AMT (SUB-3)   TO WS-TOTAL-VAT-AMT.
            IF SUB-3 = 3
-               MOVE WS-FX-NETT-AMT (SUB-3) TO F-EDNAMEFIELDSALE
-               MOVE F-EDNAMEFIELDSALE      TO BANK-CAMS-VAT-AMT.
+               MOVE WS-FX-NETT-AMT (SUB-3) TO F-EDRUNNINGAMOUNT
+               MOVE F-EDRUNNINGAMOUNT      TO BANK-CAMS-VAT-AMT.
        AFV-500.
            IF SUB-3 = 3
               ADD 1  TO SUB-4

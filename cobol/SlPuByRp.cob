@@ -184,7 +184,7 @@
            AT POS.
            MOVE 1758 TO POS.
            
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'N'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 14        TO CDA-ROW.
            MOVE 57        TO CDA-COL.

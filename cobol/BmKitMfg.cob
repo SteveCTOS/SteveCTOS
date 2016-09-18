@@ -446,28 +446,29 @@
            MOVE WS-PAGE           TO H1-PAGE
            MOVE INCR-COPY-NUMBER  TO H1-COPY.
            WRITE PRINT-REC      FROM COMPANY-LINE
-           MOVE " "            TO PRINT-REC
+           MOVE " "               TO PRINT-REC
            WRITE PRINT-REC      FROM HEADER1
-           MOVE " "            TO PRINT-REC
+           MOVE " "               TO PRINT-REC
            WRITE PRINT-REC
-           MOVE WS-KIT-SAVE    TO H2-KIT
-           MOVE WS-KIT-DESC1   TO H2-DESC1
-           MOVE WS-KIT-DESC2   TO H2-DESC2
+           MOVE WS-KIT-SAVE       TO H2-KIT
+           MOVE WS-KIT-DESC1      TO H2-DESC1
+           MOVE WS-KIT-DESC2      TO H2-DESC2
            IF WS-PRINT-AMTS = "Y"
-             MOVE WS-KIT-PRICE TO H2-PRICE.
-           WRITE PRINT-REC FROM HEADER2
-           MOVE " " TO PRINT-REC
+             MOVE WS-KIT-PRICE    TO H2-PRICE.
+           WRITE PRINT-REC      FROM HEADER2
+           MOVE " "               TO PRINT-REC
            MOVE WS-KITQTY         TO H3-QTY
-           MOVE WS-MFGQTY      TO H3-MFGQTY
-           MOVE WS-SHPDQTY     TO H3-SHPDQTY
-           MOVE WS-KIT-COMMENT TO H3-COMMENT
-           WRITE PRINT-REC FROM HEADER3
-           MOVE " " TO PRINT-REC
+           MOVE WS-MFGQTY         TO H3-MFGQTY
+           MOVE WS-SHPDQTY        TO H3-SHPDQTY
+           MOVE WS-KIT-COMMENT    TO H3-COMMENT
+           WRITE PRINT-REC      FROM HEADER3
+           MOVE " "               TO PRINT-REC
            WRITE PRINT-REC
-           WRITE PRINT-REC FROM HEADER4
-           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC      FROM HEADER4
+           MOVE " "               TO PRINT-REC
            WRITE PRINT-REC
            MOVE 8 TO SUB-2.
+           MOVE " " TO DETAIL-LINE.
        PR-020.
            IF SUB-1 < 149
             IF SUB-1 = SUB-25

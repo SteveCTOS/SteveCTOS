@@ -466,6 +466,7 @@
             DISPLAY WS-PRINTER-INFO AT POS.
        GET-002.
             PERFORM CLEAR-ORDER-TOTALS.
+            PERFORM CLEAR-CRJRN-RECORD.
             MOVE 0 TO WS-FOREIGN-CHECK-VAL
                       WS-DUTY-AMOUNT
                       IMRE-RATEPAID
@@ -1020,6 +1021,7 @@
                GO TO GET-999.
 
             PERFORM WRITE-FOREIGN-CRJRN-TRANS.
+            PERFORM CLEAR-CRJRN-RECORD.
             PERFORM WRITE-FREIGHT-CRJRN-TRANS.
        GET-960.
             MOVE " " TO WS-YN
@@ -1786,8 +1788,7 @@
                ADD 1 TO SUB-1
                GO TO CFOV-010.
        CFOV-900.
-            MOVE 2710 TO POS
-            DISPLAY "                                          " AT POS.
+            PERFORM ERROR1-020.
        CFOV-999.
             EXIT.
       *     
@@ -3127,13 +3128,22 @@
                MOVE "ST-RECEIPT BUSY ON WRITE, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
-               MOVE WS-IMPRECEIPT-ST1 TO WS-MESSAGE
+               MOVE WS-STKRECEIPT-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
-               MOVE 0 TO WS-IMPRECEIPT-ST1
+               MOVE 0 TO WS-STKRECEIPT-ST1
                GO TO UPST-975.
        UPST-980.
            PERFORM UPDATE-OUT-ORDERS.
+           
+           IF WS-STOCK-CHANGE = "Y"
+            IF WS-UP-SELL = "Y"
+               PERFORM WRITE-STOCK-CHANGES
+               GO TO UPST-985.
+           IF WS-STOCK-CHANGE = "Y"
+             IF WS-UP-FORGN = "Y"
+               PERFORM WRITE-STOCK-CHANGES.
+       UPST-985.
            ADD 1 TO SUB-1.
            IF SUB-1 < 401
               GO TO UPST-010.
@@ -4014,37 +4024,18 @@
                                CRJRN-INV-DATE
                                CRJRN-DUE-DATE
                                CRJRN-LOC-AMT
-
-
-               05  CRJRN-TRANS       PIC 9(6).
-               05  CRJRN-TYPE        PIC 9.
-           03  CRJRN-PERIOD.
-               05  CRJRN-FUTURE      PIC X.
-               05  CRJRN-NO          PIC 9(2).
-           03  CRJRN-CRACC-NUMBER    PIC 9(7).
-           03  CRJRN-INV-NO          PIC X(10).
-           03  CRJRN-DNOTE-NO        PIC X(10).
-           03  CRJRN-INV-DATE        PIC 9(8).
-           03  CRJRN-DUE-DATE        PIC 9(8).
-           03  CRJRN-LOC-AMT         PIC S9(7)V99.
-           03  CRJRN-VAT-AMT         PIC S9(7)V99.
-           03  CRJRN-UNAPPLIED-AMT   PIC S9(7)V99.
-           03  CRJRN-FOR-AMT         PIC S9(7)V99.
-           03  CRJRN-EXCHANGE        PIC 9(3)V9(5).
-           03  CRJRN-SETT-DISC       PIC S9(7)V99.
-           03  CRJRN-COMPLETE        PIC X.
-           03  CRJRN-GL-DATA OCCURS 10.
-               05  CRJRN-GLACC       PIC X(12).
-               05  CRJRN-GLAMT       PIC S9(7)V99.
-               05  CRJRN-GLDISC      PIC S9(7)V99.
-               05  CRJRN-GLDESC      PIC X(40).
-                               
+                               CRJRN-VAT-AMT
+                               CRJRN-UNAPPLIED-AMT
+                               CRJRN-FOR-AMT
+                               CRJRN-EXCHANGE
+                               CRJRN-SETT-DISC.
        CCJR-005.
             MOVE 1 TO SUB-20.
        CCJR-010.
-            MOVE SPACES TO FL-DNOTE (SUB-20)
-            MOVE 0      TO FL-FOR-AMT (SUB-20)
-                           FL-LOC-AMT (SUB-20).
+            MOVE SPACES TO CRJRN-GLACC (SUB-20)
+                           CRJRN-GLDESC (SUB-20).
+            MOVE 0      TO CRJRN-GLAMT (SUB-20)
+                           CRJRN-GLDISC (SUB-20).
             ADD 1 TO SUB-20.
             IF SUB-20 < 11
                GO TO CCJR-010.
@@ -4154,8 +4145,6 @@
             PERFORM DISPLAY-FORM.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
-            
-            PERFORM CLEAR-CRJRN-RECORD.
             
             MOVE 2701 TO POS.
             MOVE 

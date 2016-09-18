@@ -67,7 +67,7 @@
        77  WS-RANGE4          PIC X VALUE " ".      
        77  WS-RANGE5          PIC X VALUE " ".      
        77  WS-CATEGORY        PIC X(3) VALUE " ".      
-       77  WS-NUMBER          PIC 9(4) VALUE 0.
+       77  WS-NUMBER          PIC 9(6) VALUE 0.
        77  WS-LEAP-YEAR       PIC X VALUE " ".
        77  WS-AMOUNT          PIC 9(3)V99 VALUE 0.
        01  WS-MERGE-STOCK.
