@@ -159,14 +159,19 @@
            03  WS-SECS          PIC 99.
            03  WS-100S          PIC 99.
        01  PDFLIST-LINE.
-           03  PDF-GROUP-NUMBER PIC 99.
+           03  PDF-GROUP-NUMBER PIC XX.
            03  FILLER           PIC X VALUE ",".
            03  PDF-TYPE         PIC X.
-           03  PDF-NUMBER       PIC 9(6).
            03  FILLER           PIC X VALUE ",".
-           03  PDF-ACCOUNT      PIC 9(7).
+           03  PDF-NUMBER       PIC X(6).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-ACCOUNT      PIC X(7).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-NAME         PIC X(40).
            03  FILLER           PIC X VALUE ",".
            03  PDF-PORDER       PIC X(20).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-DATE         PIC X(10).
            03  FILLER           PIC X VALUE ",".
            03  PDF-TOTAL        PIC X(10).
            03  FILLER           PIC X VALUE ",".
@@ -797,7 +802,8 @@
               PERFORM WORK-OUT-CSV-FILE-NAME
               OPEN OUTPUT PDFPRINT-FILE
               MOVE 
-           "#GROUP NUM, TRANS NUM, ACCOUNT, PORDER NUM, TRANS TOTAL." 
+           "#GROUP NUM, TYPE, TRANS NUM, ACCOUNT NUM, ACCOUNT NAME, " &
+           "PORDER NUM, DATE, TRANS TOTAL." 
                  TO PDFPRINT-REC
               WRITE PDFPRINT-REC AFTER 1.
            MOVE "Y" TO WS-PDFFILE-OPENED.
@@ -809,7 +815,11 @@
               MOVE "C"            TO PDF-TYPE.
            MOVE INCR-INVOICE      TO PDF-NUMBER.
            MOVE INCR-ACCOUNT      TO PDF-ACCOUNT
+           MOVE INCR-NAME         TO PDF-NAME.
            MOVE INCR-PORDER       TO PDF-PORDER.
+           MOVE DISPLAY-DATE      TO PDF-DATE.
+      *     MOVE PL-ADD4           TO PDF-TOTAL.
+
       * SEE PL-ADD4 MOVE TO PDF-TOTAL IN LASER-PRINT SECTION
       *     MOVE INCR-INVCRED-AMT  TO PDF-TOTAL.
            

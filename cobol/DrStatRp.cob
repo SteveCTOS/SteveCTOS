@@ -17,6 +17,8 @@
          Copy "SelectSlDaily".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                ORGANIZATION IS LINE SEQUENTIAL.
+           SELECT PDF-FILE ASSIGN TO WS-PDFPRINTER
+               ORGANIZATION IS LINE SEQUENTIAL.
       *
        DATA DIVISION.
        FILE SECTION.
@@ -29,8 +31,12 @@
        FD  PRINT-FILE.
        01  PRINT-REC               PIC X(132).
       *
+       FD  PDF-FILE.
+       01  PDF-REC                 PIC X(132).
+      *
        WORKING-STORAGE SECTION.
        77  WS-TRANSACTIONS      PIC 9(4) VALUE 0.
+       77  WS-PDFFILE-OPENED    PIC X VALUE " ".
        77  WS-FOUND             PIC X VALUE " ".
        77  WS-TRANS-COUNT       PIC Z(3)9.
        77  WS-ACCPRINTED-COUNT  PIC 9(4) VALUE 0.
@@ -93,6 +99,23 @@
            03  WS-LP-YY         PIC 9999.
            03  WS-LP-MM         PIC 99.
            03  WS-LP-DD         PIC 99.
+       01  PDFLIST-LINE.
+           03  PDF-GROUP-NUMBER PIC XX.
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-TYPE         PIC X.
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-NUMBER       PIC X(6).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-ACCOUNT      PIC X(7).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-NAME         PIC X(40).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-PORDER       PIC X(20).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-DATE         PIC X(10).
+           03  FILLER           PIC X VALUE ",".
+           03  PDF-TOTAL        PIC X(10).
+           03  FILLER           PIC X VALUE ",".
        01  HEAD2.
            03  FILLER           PIC X(5) VALUE " ".
            03  P21-NAME         PIC X(65).
@@ -297,12 +320,13 @@
            PERFORM DISPLAY-FORM.
            PERFORM GET-DATA.
            PERFORM OPEN-SPOOLER-FILES.
-           MOVE 0     TO WS-ACCPRINTED-COUNT
-           MOVE WS-YY TO WS-LP-YY
-           MOVE WS-MM TO WS-LP-MM
-           SUBTRACT 1 FROM WS-LP-MM.
+           MOVE 0          TO WS-ACCPRINTED-COUNT
+           MOVE "N"        TO WS-PDFFILE-OPENED.
+           MOVE WS-YY      TO WS-LP-YY
+           MOVE WS-MM      TO WS-LP-MM
+           SUBTRACT 1    FROM WS-LP-MM.
            IF WS-LP-MM = 0
-              MOVE 12 TO WS-LP-MM
+              MOVE 12      TO WS-LP-MM
               SUBTRACT 1 FROM WS-LP-YY.
        CONT-010.
       * NEXT LINE USED TO ZERO SUB-1 AND MOVE SPACES TO ALPHA-RATE
@@ -322,6 +346,10 @@
                MOVE WS-EMAIL-STATEMENT TO WS-PRINTER
                                            W-FILENAME
                GO TO CONT-030.
+           IF WS-PRINTER-TYPE = 6
+      *         PERFORM WORK-OUT-CSV-FILE-NAME
+      *         OPEN OUTPUT PDF-FILE
+               GO TO CONT-035.
                
       *NEXT LINE USED TO CHECK THE VALUE OF SUB-1 WHICH IS THE NAME
       * LENGTH PLUS 1 POS SO WE CAN ADD THE COMPANY NUMBER TO THE NAME
@@ -351,6 +379,10 @@
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
                GO TO CONT-030.
+       CONT-035.
+           IF WS-PRINTER-TYPE = 6
+              PERFORM PRINT-PDF-ONLY
+              GO TO CONT-950.
            IF WS-PRINTER-TYPE = 1
       *        MOVE WTELL-PAUSE TO PRINT-REC
       *        WRITE PRINT-REC
@@ -501,6 +533,116 @@
        WOPFN-999.
             EXIT.
       *
+       WORK-OUT-CSV-FILE-NAME SECTION.
+       WOCSV-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       WOCSV-005.
+           MOVE "/ctools/pdf" TO ALPHA-RATE.
+           MOVE WS-CO-NUMBER  TO DATA-RATE.
+           MOVE 12 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOCSV-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOCSV-010.
+           MOVE "/" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+       WOCSV-020.
+      *     MOVE "IN WOCSV-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES        TO DATA-RATE.
+           MOVE "PDFState.csv" TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOCSV-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOCSV-025.
+       WOCSV-030.
+           MOVE ALPHA-RATE   TO WS-PDFPRINTER.
+           
+      *     MOVE WS-PDFPRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOCSV-999.
+            EXIT.
+      *
+       WORK-OUT-PDF-FILE-NAME SECTION.
+       WOPDF-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       WOPDF-005.
+           MOVE "/ctools/pdf" TO ALPHA-RATE.
+           MOVE WS-CO-NUMBER  TO DATA-RATE.
+           MOVE 12 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOPDF-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPDF-010.
+           MOVE "/" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+           MOVE "S" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+       WOPDF-020.
+      *     MOVE "IN WOPDF-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES     TO DATA-RATE.
+           MOVE DR-ACCOUNT-NUMBER TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOPDF-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPDF-025.
+       WOPDF-030.
+           MOVE ALPHA-RATE    TO WS-PRINTER W-FILENAME.
+           
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+      *     MOVE W-FILENAME TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPDF-999.
+            EXIT.
+      *
+       WRITE-INDEX-KEY SECTION.
+       WIK-001.
+           IF WS-PDFFILE-OPENED = "Y"
+              GO TO WIK-005.
+           PERFORM WORK-OUT-CSV-FILE-NAME
+           OPEN OUTPUT PDF-FILE.
+           MOVE 
+           "#GROUP NUM, TYPE, TRANS NUM, ACCOUNT NUM, ACCOUNT NAME, " &
+           "PORDER NUM, DATE, TRANS TOTAL." 
+                TO PDF-REC
+           WRITE PDF-REC AFTER 1.
+           MOVE "Y" TO WS-PDFFILE-OPENED.
+       WIK-005.
+           MOVE WS-CO-NUMBER      TO PDF-GROUP-NUMBER.
+           MOVE "S"               TO PDF-TYPE.
+           MOVE " "               TO PDF-NUMBER.
+           MOVE DR-NAME           TO PDF-NAME.
+           MOVE DR-ACCOUNT-NUMBER TO PDF-ACCOUNT.
+           MOVE " "               TO PDF-PORDER.
+           MOVE P2-DATE-LHS       TO PDF-DATE.
+           MOVE PL7-AMOUNT-TO-PAY TO PDF-TOTAL.
+      * SEE PL-ADD4 MOVE TO PDF-TOTAL IN LASER-PRINT SECTION
+      *     MOVE INCR-INVCRED-AMT  TO PDF-TOTAL.
+           
+      *     MOVE PDFLIST-LINE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+           WRITE PDF-REC FROM PDFLIST-LINE AFTER 1.
+       WIK-999.
+           EXIT.
+      *
        GET-DATA SECTION.
        GET-000.
             MOVE " " TO WS-FOUND.
@@ -612,16 +754,19 @@
                GO TO GET-069.
             GO TO GET-068.
        GET-069.
-      *******************************************************************
-      * PRINTER TYPES                                                   *
-      * TYPE 1=DOTMATRIX                                                *
-      *      2=LASER, ALL STATEMENTS PRINTED EVEN IF THEY HAVE AN EMAIL *
-      *      3=LASER, E-MAIL ONLY, NO PRINT OF STATEMENTS               *
-      *      4=LASER, ALL E-MAILABLE STATEMENTS IGNORED IN THIS PRINT   *
-      *      5=laser format but to /estat/, Once off statements         *
-      *      1=DrStateCoxx  2=DrLaserCoxx  3=DrEmailCoxx  4=DrNoMalCoxx *
-      *      5=Account Number = The File Name                           *
-      *******************************************************************
+      ******************************************************************
+      * PRINTER TYPES                                                  *
+      * TYPE 1=DOTMATRIX                                               *
+      *      2=LASER, ALL STATEMENTS PRINTED EVEN IF THEY HAVE AN EMAIL*
+      *      3=LASER, E-MAIL ONLY, NO PRINT OF STATEMENTS              *
+      *      4=LASER, ALL E-MAILABLE STATEMENTS IGNORED IN THIS PRINT  *
+      *      5=laser format but to /estat/, Once off statements        *
+      *      1=DrStateCoxx  2=DrLaserCoxx  3=DrEmailCoxx  4=DrNoMalCoxx*
+      *      5=Account Number = The File Name                          *
+      *      6=.Pdf creation of statements for DocuSearch purposes.    *
+      *         this replaces the COLD format files created to send to *
+      *         Document Warehouse 22/9/2016                           *
+      ******************************************************************
            MOVE "P-TYPE" TO F-FIELDNAME
            MOVE 6        TO F-CBFIELDNAME.
            PERFORM USER-FILL-FIELD.
@@ -631,13 +776,14 @@
            PERFORM READ-FIELD-ALPHA.
            MOVE F-NAMEFIELD TO WS-PRINTER-TYPE.
            IF WS-LONG-FORMAT = "Y"
-            IF WS-PRINTER-TYPE = "2" OR = "3" OR = "4" OR = "5"
+            IF WS-PRINTER-TYPE = "2" OR = "3" OR = "4" OR = "5" or = "6"
               MOVE
              "YOU CAN'T PRINT LONG FORMAT TO A LASER PRINTER, RE-ENTER"
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO GET-069.
-           IF WS-PRINTER-TYPE = "1" OR = "2" OR = "3" OR = "4" OR = "5"
+           IF WS-PRINTER-TYPE = "1" OR = "2" OR = "3" OR = "4"
+                           OR = "5" OR = "6"
               GO TO GET-070.
            GO TO GET-069.
        GET-070.
@@ -646,7 +792,7 @@
               OR WS-LONG-FORMAT = "Y"
                OR WS-MONTH-END = "Y"
                  MOVE
-         "FOR PRINTER TYPE 5 YOU MUST ANSWER 'N' TO ALL ABOVE QUESTONS."
+       "FOR PRINTER OPTION 5 YOU MUST ANSWER 'N' TO ALL ABOVE QUESTONS."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO GET-065.
@@ -1300,6 +1446,299 @@
        PRL-999.
             EXIT.
       *
+       PRINT-PDF-ONLY SECTION.
+       PR-PDF-000.
+      * THIS SECTIO USED FOR PRINTING .PDF FILES FOR EXPORT TO 
+      * DOCUMENT WAREHOUSE TO REPLACE THE OLD STYLE COLD DOC'S
+           MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
+           START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
+              INVALID KEY NEXT SENTENCE.
+           IF WS-DRTRANS-ST1 NOT = 0
+              MOVE 10 TO WS-DRTRANS-ST1
+              GO TO PR-PDF-999.
+       PR-PDF-001.
+           MOVE 0 TO WS-BF-BAL.
+           READ DEBTOR-TRANS-FILE NEXT
+              AT END NEXT SENTENCE.
+      * 10=END OF FILE, 23=KEY NOT FOUND, 46=READ ERC
+           IF WS-DRTRANS-ST1 = 10 OR = 23 OR = 46
+              MOVE " " TO PRINT-REC
+              WRITE PRINT-REC AFTER 1
+              PERFORM PR-PDF-050
+              GO TO PR-PDF-999.
+           IF WS-DRTRANS-ST1 = 91
+              MOVE 10 TO WS-DRTRANS-ST1
+              MOVE " " TO DEBTOR-TRANS-REC
+              PERFORM PR-PDF-050
+              GO TO PR-PDF-999.
+           IF WS-DRTRANS-ST1 NOT = 0
+             MOVE "DRTRANS1 BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
+              GO TO PR-PDF-001.
+           IF WS-MESSAGE NOT = " "
+              PERFORM ERROR-020.
+           IF DRTR-ACCOUNT-NUMBER < WS-ACCNOBEGIN
+              GO TO PR-PDF-001.
+           IF DRTR-ACC-KEY = SPACES OR DRTR-ACCOUNT-NUMBER = 0
+              GO TO PR-PDF-001.
+       PR-PDF-005.
+           IF DRTR-ACCOUNT-NUMBER > WS-ACCNOEND
+              MOVE 10 TO WS-DRTRANS-ST1
+              MOVE " " TO PRINT-REC
+              PERFORM PR-PDF-050
+              GO TO PR-PDF-999.
+            MOVE DRTR-ACCOUNT-NUMBER TO DR-ACCOUNT-NUMBER.
+            
+            READ DEBTOR-MASTER
+               INVALID KEY NEXT SENTENCE.
+            IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
+               GO TO PR-PDF-001.
+            IF WS-DEBTOR-ST1 NOT = 0
+              MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               GO TO PR-PDF-005.
+               
+           IF WS-MESSAGE NOT = " "
+              PERFORM ERROR-020.
+              
+            IF DR-BALANCE = 0
+             IF DR-BAL-LAST-STATE = 0
+              IF DR-SALES-PTD = 0
+               IF DR-COST-PTD = 0
+               GO TO PR-PDF-001.
+            IF WS-ALL-DEB-CRED = "A"
+               GO TO PR-PDF-008.
+            IF WS-ALL-DEB-CRED = "D"
+               AND DR-BALANCE > 0
+               GO TO PR-PDF-008.
+            IF WS-ALL-DEB-CRED = "C"
+               AND DR-BALANCE < 0
+               GO TO PR-PDF-008.
+            GO TO PR-PDF-001.
+       PR-PDF-008.
+           MOVE DRTR-DATE TO WS-BF-DATE.
+           IF WS-BFORWARD-OPEN = "O"
+              GO TO PR-PDF-009.
+           IF WS-BF-DATE < WS-LAST-PERIOD-DATE
+           OR WS-BF-DATE = WS-LAST-PERIOD-DATE
+              GO TO PR-PDF-0080.
+           GO TO PR-PDF-009.
+       PR-PDF-0080.
+           IF DRTR-TYPE = 1 OR = 3 OR = 4 OR = 7 OR = 10
+             IF WS-BFORWARD-OPEN = "O"
+              ADD DRTR-AMT-OUTSTANDING TO WS-BF-BAL
+             ELSE
+              ADD DRTR-AMT-OF-INVOICE TO WS-BF-BAL.
+           IF DRTR-TYPE = 2 OR = 5 OR = 6 OR = 8 OR = 9 OR = 11
+             IF WS-BFORWARD-OPEN = "O"
+              SUBTRACT DRTR-AMT-OUTSTANDING FROM WS-BF-BAL
+             ELSE
+              SUBTRACT DRTR-AMT-OF-INVOICE FROM WS-BF-BAL.
+           IF WS-BFORWARD-OPEN = "B"
+              PERFORM READ-DEBTOR-TRANS.
+           IF WS-DRTRANS-ST1 = 10
+               GO TO PR-PDF-009.
+           IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
+              IF WS-BF-DATE < WS-LAST-PERIOD-DATE
+              OR WS-BF-DATE = WS-LAST-PERIOD-DATE
+                 GO TO PR-PDF-008.
+       PR-PDF-009.
+           IF WS-BFORWARD-OPEN = "O"
+               MOVE WS-BF-BAL TO PL3-BAL-FORW
+                                 WS-WORKTOTAL
+            ELSE
+               MOVE DR-BAL-LAST-STATE TO PL3-BAL-FORW
+                                         WS-WORKTOTAL.
+            MOVE 1 TO WS-PAGE
+            MOVE 0 TO WS-DEFERRED.
+            
+            PERFORM PR-PDF-045.
+       PR-PDF-010.
+      ***************************************
+      *STATEMENT BEGIN CHAR = HEXB4=´       *
+      *NEXT LINE BEGIN CHAR = HEXB6=¶       *
+      *                                     *
+      ***************************************
+            MOVE "´¶"         TO WS-DELIM-F.
+            MOVE " "          TO PL1-NAME
+            MOVE PA-PHONE     TO PL1-TEL
+            MOVE PL1-SPECIAL  TO WS-DATA-F
+            WRITE PRINT-REC FROM WS-FST-LINE AFTER 1.
+ 
+            MOVE "¶"          TO PL1-CHAR
+            MOVE PA-NAME      TO PL1-NAME
+            MOVE PA-FAX       TO PL1-FAX
+            WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
+            
+            MOVE PA-ADD1      TO PL1-NAME
+            MOVE " "          TO PL1-FAX
+            WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
+            
+            MOVE PA-ADD2      TO PL1-NAME
+            MOVE PA-CO-REG-NO TO PL1-TEL
+            WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
+            
+            MOVE PA-CO-VAT-NO TO PL1-TEL
+            MOVE PA-ADD3      TO PL1-NAME
+            WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
+            
+            MOVE " "          TO PRINT-REC LASER-PLINE1
+            MOVE "¶"          TO PL1-CHAR
+            MOVE PA-CODE      TO PL1-NAME
+            WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
+            
+            MOVE " "          TO PRINT-REC LASER-PLINE1
+
+      ***************************************
+      *DEBTOR INFO STARTS HERE              *
+      ***************************************
+            MOVE "¶"               TO PL2-CHAR
+            MOVE DR-NAME           TO PL2-NAME
+            WRITE PRINT-REC FROM LASER-PLINE2 AFTER 1
+            
+            MOVE DR-ADDRESS1       TO PL2-NAME
+            MOVE DR-ACCOUNT-NUMBER TO PL2-ACCOUNT
+            MOVE P2-DATE-SAVE      TO PL2-DATE
+            MOVE WS-PAGE           TO PL2-PAGE
+            WRITE PRINT-REC FROM LASER-PLINE2 AFTER 1
+            
+            MOVE " "               TO PRINT-REC LASER-PLINE2
+            MOVE "¶"               TO PL2-CHAR
+            MOVE DR-ADDRESS2       TO PL2-NAME
+            WRITE PRINT-REC FROM LASER-PLINE2 AFTER 1
+            
+            MOVE "¶"               TO PL2-CHAR
+            MOVE DR-ADDRESS3       TO PL2-NAME
+            WRITE PRINT-REC FROM LASER-PLINE2 AFTER 1
+            
+            MOVE "¶"               TO PL2-CHAR
+            MOVE DR-POST-CODE      TO PL2-NAME
+            WRITE PRINT-REC FROM LASER-PLINE2 AFTER 1
+
+            MOVE " " TO PRINT-REC 
+
+            MOVE "¶"              TO PL1-CHAR
+            MOVE WS-STATE-COMMENT TO PL1-NAME
+            WRITE PRINT-REC FROM LASER-PLINE1 AFTER 1
+            
+            MOVE " "              TO PRINT-REC LASER-PLINE2
+            MOVE 0 TO L-CNT.
+            
+            IF WS-PAGE = 1 
+              AND WS-BFORWARD-OPEN = "B"
+                MOVE "¶"          TO PL3-CHAR
+                WRITE PRINT-REC FROM LASER-PLINE3 AFTER 1
+                MOVE " "          TO PRINT-REC
+                ADD 1 TO L-CNT.
+       PR-PDF-020.
+            IF WS-BFORWARD-OPEN = "O"
+              GO TO PR-PDF-022.
+            IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
+                GO TO PR-PDF-040.
+                
+            MOVE DRTR-DATE       TO SPLIT-DATE
+            PERFORM CONVERT-DATE-FORMAT
+            
+            MOVE "¶"             TO PL5-CHAR
+            MOVE DISPLAY-DATE    TO PL5-DATE
+            MOVE DRTR-REFERENCE1 TO PL5-ORDER-NO
+            MOVE DRTR-REFERENCE2 TO PL5-REFERENCE
+            MOVE DRTR-TYPE       TO PL5-CODE.
+            IF DRTR-TYPE = 1 OR = 3 OR = 4 OR = 7 OR = 10
+               MOVE DRTR-AMT-OF-INVOICE TO PL5-CHARGES
+               ADD DRTR-AMT-OF-INVOICE  TO WS-WORKTOTAL
+            ELSE
+               MOVE DRTR-AMT-OF-INVOICE       TO PL5-PAYMENTS
+               SUBTRACT DRTR-AMT-OF-INVOICE FROM WS-WORKTOTAL.
+            MOVE WS-WORKTOTAL                 TO PL5-BALANCE.
+            WRITE PRINT-REC FROM LASER-PLINE5 AFTER 1
+            
+            MOVE " " TO PRINT-REC LASER-PLINE5
+            ADD 1 TO L-CNT.
+       PR-PDF-022.
+            IF WS-BFORWARD-OPEN = "B"
+              GO TO PR-PDF-025.
+            IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
+                GO TO PR-PDF-040.
+                
+            MOVE DRTR-DATE       TO SPLIT-DATE
+            PERFORM CONVERT-DATE-FORMAT
+            
+            MOVE "¶"             TO PL5-CHAR
+            MOVE DISPLAY-DATE    TO PL5-DATE
+            MOVE DRTR-REFERENCE1 TO PL5-ORDER-NO
+            MOVE DRTR-REFERENCE2 TO PL5-REFERENCE
+            MOVE DRTR-TYPE       TO PL5-CODE.
+            IF DRTR-TYPE = 1 OR = 3 OR = 4 OR = 7 OR = 10
+               MOVE DRTR-AMT-OUTSTANDING       TO PL5-CHARGES
+               ADD DRTR-AMT-OUTSTANDING        TO WS-WORKTOTAL
+            ELSE
+               MOVE DRTR-AMT-OUTSTANDING       TO PL5-PAYMENTS
+               SUBTRACT DRTR-AMT-OUTSTANDING FROM WS-WORKTOTAL.
+            MOVE WS-WORKTOTAL                  TO PL5-BALANCE.
+            WRITE PRINT-REC FROM LASER-PLINE5 AFTER 1.
+
+            MOVE " " TO PRINT-REC LASER-PLINE5.
+            ADD 1 TO L-CNT.
+       PR-PDF-025.
+            PERFORM READ-DEBTOR-TRANS.
+            IF WS-DRTRANS-ST1 = 10
+               MOVE " " TO DEBTOR-TRANS-REC
+               PERFORM PRINT-LASER-TRAILING
+               PERFORM PR-PDF-050
+               GO TO PR-PDF-999.
+            IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
+                GO TO PR-PDF-030.
+            IF DRTR-ACCOUNT-NUMBER > WS-ACCNOEND
+               PERFORM PRINT-LASER-TRAILING
+               PERFORM PR-PDF-050
+               GO TO PR-PDF-999.
+            GO TO PR-PDF-040.
+       PR-PDF-030.
+            IF L-CNT = 24
+                MOVE " "     TO PRINT-REC
+                MOVE "¶"     TO PL8-CHAR
+                ADD 1         TO WS-PAGE
+                                 WS-TOTAL-PAGES
+                MOVE WS-PAGE TO PL8-PAGE
+                WRITE PRINT-REC FROM LASER-PLINE8 AFTER 1
+                ADD 1 TO L-CNT
+                PERFORM WRITE-BLANK-FOOTER
+                GO TO PR-PDF-010.
+            IF L-CNT < 24
+                GO TO PR-PDF-020.
+       PR-PDF-040.
+            PERFORM PRINT-LASER-TRAILING
+            MOVE 0 TO WS-BF-BAL.
+            
+            PERFORM PR-PDF-050.
+            
+            GO TO PR-PDF-005.
+       PR-PDF-045.
+            PERFORM WORK-OUT-PDF-FILE-NAME.
+            OPEN OUTPUT PRINT-FILE.
+            PERFORM Z1-HEADINGS.
+       PR-PDF-050.
+            CLOSE PRINT-FILE.
+            PERFORM WRITE-INDEX-KEY.
+            PERFORM SETUP-STATEMENT-FOR-PDF-ONLY. 
+       PR-PDF-999.
+            EXIT.
+      *
        ENTER-EMAIL-ADDRESS SECTION.
        EEA-005.
            PERFORM CLEAR-010.
@@ -1469,10 +1908,15 @@
               MOVE " " TO DEBTOR-TRANS-REC
               GO TO RDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DR-TRANS BUSY ON READ-NEXT RDT-000, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE 0 TO WS-DRTRANS-ST1
+             MOVE "DRTRANS2 BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DRTRANS-ST1
               GO TO RDT-000.
            IF WS-MESSAGE NOT = " "
               PERFORM ERROR-020.
@@ -1804,6 +2248,7 @@
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
        Copy "SetupStatementForPDF".
+       Copy "SetupStatementForPDFOnly".
        Copy "SetupStatementNoMailForPDF".
       ******************
       *Mandatory Copies*

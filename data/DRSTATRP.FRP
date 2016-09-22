@@ -21,6 +21,7 @@
       *          {P} 3=Print Acc's with eMail Address Only             *       
       *          { } 4=Print Acc's with NO eMail Address Only          *       
       *              5=eMail Individual Once Off Statements - NO Print *       
+      *              6=Create Monthend .Pdf files for DocuShare        *       
       ******************************************************************       
                                                                                
                                                                                

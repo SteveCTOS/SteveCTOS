@@ -1,34 +1,11 @@
-python fohtotext.py -r statement -T /ctools/spl/$1.temp0.txt /ctools/spl/$1DrLaserCo$2
-text2pdf /ctools/spl/$1.temp0.txt -fCourier-Bold -x595 -y842 -l66 -c88 -V18 -H41 > /ctools/spl/$1.temp1.pdf
-pdftk /ctools/spl/$1.temp1.pdf background /ctools/dev/source/print/StatementOverlay$2.pdf output /ctools/spl/$1DrLaserCo$2.pdf
-lp -d $3 /ctools/spl/$1DrLaserCo$2.pdf
+python fohtotext.py -r statement -T /ctools/pdf$2/S$1.temp0.txt /ctools/pdf$2/S$1
+text2pdf /ctools/pdf$2/S$1.temp0.txt -fCourier-Bold -x595 -y842 -l66 -c88 -V18 -H41 > /ctools/pdf$2/S$1.temp1.pdf
+pdftk /ctools/pdf$2/S$1.temp1.pdf background /ctools/dev/source/print/StatementOverlay$2.pdf output /ctools/pdf$2/S$1.pdf
 
-
-
-
-
-python fohtotext.py -r invoice -T /ctools/pdf$2/I$1.temp0.txt /ctools/pdf$2/I$1
-text2pdf /ctools/pdf$2/I$1.temp0.txt -fCourier-Bold -t8 -s10 -x842 -y605 -c135 -l48 > /ctools/pdf$2/I$1.temp1.pdf
-pdftk /ctools/pdf$2/I$1.temp1.pdf background /ctools/dev/source/print/InvoiceOverlay$2.pdf output /ctools/pdf$2/I$1.temp2.pdf
-pdftk /ctools/pdf$2/I$1.temp2.pdf cat 1-endwest output /ctools/pdf$2/I$1.pdf
-
-rm /ctools/pdf$2/I$1
-rm /ctools/pdf$2/I$1.temp0.txt
-rm /ctools/pdf$2/I$1.temp1.pdf
-rm /ctools/pdf$2/I$1.temp2.pdf
+rm /ctools/pdf$2/S$1
+rm /ctools/pdf$2/S$1.temp0.txt
+rm /ctools/pdf$2/S$1.temp1.pdf
 
 #--So far the variables which will be specified from inside the COBOL programs are:                
 #---$1 = The Account Number                   e.g. 123456
 #---$2 = The company number from 01 to 12     e.g. 07                                              
-
-
-
-
-#FORMAT FOR PRINTING IS:
-#lp -d W-PRINTERNAME W-PRINTFILE
-
-#--So far the variables which will be specified from inside the COBOL programs are:
-#---$1 = The username                         e.g. steve
-#---$2 = The company number from 01 to 12     e.g. 07
-#---$3 = The Printername to print the file to e.g. MP250
-#---$4 = The Print file name which will replace /ctools/spl/InPrintCo01.pdf when specified in COBOL

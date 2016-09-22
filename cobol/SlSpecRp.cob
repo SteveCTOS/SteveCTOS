@@ -339,7 +339,7 @@
            DISPLAY "Number of Records Read:" AT POS
            ADD 23 TO POS
            DISPLAY LINE-DISPLAY AT POS.
-               
+         
            IF WS-ANSWER2 = "Y"
                 PERFORM PR-050.
                

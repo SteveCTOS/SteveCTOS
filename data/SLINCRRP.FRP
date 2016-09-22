@@ -1,7 +1,7 @@
              *********{** PRINT INVOICES/CREDIT NOTES **}**********            
              *                                                    *            
-             *   I=Invoice, C=C/Notes, P=Proforma Invoice   : _   *            
-             *           OR D=DocuBase Monthly Disk File          *            
+             *   I=Invoice, C=C/Notes, P=Proforma Invoice,  : _   *            
+             *    D=DocuBase or X=PDF Monthly Disk File           *            
              *                                                    *            
              *            Proforma from Q=Quote, P=P/Slip   : _   *            
              *            Add Proforma's Into ONE Invoice   : _   *            

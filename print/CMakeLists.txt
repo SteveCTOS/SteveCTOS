@@ -17,6 +17,7 @@ set (copy_list
   PrintQuote2
   PrintStatement
   PrintStatementNoMail
+  PrintStatementPdfOnly
 #  creditnote01
 #  invoice01
 #  statement01

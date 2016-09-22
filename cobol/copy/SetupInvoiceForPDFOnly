@@ -17,8 +17,6 @@
       *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
 
-      *     DISPLAY WS-COMMAND-LINE  AT 2810
-      *     ACCEPT W-ENTER.
           CALL "SYSTEM" USING WS-COMMAND-LINE.
       *               RETURNING W-STATUS.
       
