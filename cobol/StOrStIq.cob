@@ -337,9 +337,10 @@
             READ STOCK-MASTER
                 INVALID KEY NEXT SENTENCE.
             IF WS-STOCK-ST1 = 23 OR 35 OR 49
-                MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER
+                MOVE WS-STOCKNUMBER        TO ST-STOCKNUMBER
                 MOVE "UNKNOWN            " TO ST-DESCRIPTION1
                 MOVE "                   " TO ST-DESCRIPTION2
+                PERFORM START-STOCK
                 GO TO RS-999.
             IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
