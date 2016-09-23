@@ -1468,6 +1468,7 @@
                 PERFORM SCROLL-PREVIOUS
                 GO TO FILL-010.
             IF F-EXIT-CH = X"13"
+                PERFORM SCROLL-DOWN
                 GO TO FILL-010.
       *****************
       * TAB CHARACTER *
@@ -3677,6 +3678,34 @@
              MOVE SUB-1 TO WS-BODY-LINE
              DISPLAY WS-BODY-LINE AT POS.
        PREV-999.
+             EXIT.
+      *
+       SCROLL-DOWN SECTION.
+       SCROLL-DOWN-000.
+            SUBTRACT 1 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       SCROLL-DOWN-010.
+            PERFORM SCROLLING.
+       SCROLL-DOWN-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF SUB-1 > 139
+                GO TO SCROLL-DOWN-030.
+            IF F-INDEX < 12
+                GO TO SCROLL-DOWN-010.
+       SCROLL-DOWN-030.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 12 FROM SUB-1.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+            MOVE 3010 TO POS
+            DISPLAY "    BODY LINE: " AT POS
+            ADD 16 TO POS
+            MOVE SUB-1 TO WS-BODY-LINE
+            DISPLAY WS-BODY-LINE AT POS.
+       SCROLL-DOWN-999.
              EXIT.
       *
        SCROLLING SECTION.

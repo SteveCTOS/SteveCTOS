@@ -7501,13 +7501,13 @@
              READ STOCK-MASTER WITH LOCK
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
-                 MOVE " " TO ST-STOCKNUMBER
-                             ST-DESCRIPTION1
-                             ST-DESCRIPTION2
-                 MOVE 0 TO ST-PRICE
-                           ST-AVERAGECOST
-                           ST-DISCOUNT1
-                  MOVE "ERR" TO WS-ERR
+                 MOVE " "   TO ST-STOCKNUMBER
+                               ST-DESCRIPTION1
+                               ST-DESCRIPTION2
+                 MOVE 0     TO ST-PRICE
+                               ST-AVERAGECOST
+                               ST-DISCOUNT1
+                 MOVE "ERR" TO WS-ERR
                  GO TO R-STL-999.
              IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK BUSY ON READ-LOCK, 'ESC' TO RETRY."
@@ -8241,8 +8241,16 @@
                 GO TO CAN-010.
            MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER.
            PERFORM READ-STOCK-LOCK.
-           IF WS-ERR = "ERR" 
-              GO TO CAN-010.
+           IF WS-ERR = "ERR"
+              MOVE
+         "THERE WAS AN ERROR IN READING THAT STOCK ITEM, 'ESC' TO EXIT."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STOCK-ST1
+              GO TO CAN-999.
       *********************************************************
       *NEXT 7 LINES NEW FOR RE-AVERAGING THE COST IF ITEM     *
       *DELETED OFF THE P/SLIP JUST IN CASE ST-AVERAGECOST IS  *
@@ -8264,12 +8272,12 @@
            IF ST-QTYONRESERVE > B-SHIPQTY (SUB-1)
                SUBTRACT B-SHIPQTY (SUB-1) FROM ST-QTYONRESERVE
            ELSE
-                MOVE 0                      TO ST-QTYONRESERVE.
+               MOVE 0                       TO ST-QTYONRESERVE.
                 
            IF ST-QTYONBORDER > B-ORDERQTY (SUB-1)
                SUBTRACT B-ORDERQTY (SUB-1) FROM ST-QTYONBORDER
            ELSE
-                MOVE 0                       TO ST-QTYONBORDER.
+               MOVE 0                        TO ST-QTYONBORDER.
            IF ST-QTYONRESERVE = ST-QTYONBORDER
                 GO TO CAN-008.
            IF ST-QTYONRESERVE < ST-QTYONBORDER

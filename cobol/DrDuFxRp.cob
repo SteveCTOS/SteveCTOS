@@ -421,6 +421,7 @@
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-090.
+            PERFORM ERROR-020.
        GET-100.
             MOVE "                        " TO F-NAMEFIELD
             MOVE "NOTIFY"  TO F-FIELDNAME
@@ -436,6 +437,7 @@
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-100.
+            PERFORM ERROR-020.
        GET-105.
             MOVE "                        " TO F-NAMEFIELD
             MOVE "PRINT"   TO F-FIELDNAME
@@ -452,6 +454,7 @@
                PERFORM ERROR-000
                GO TO GET-105.
             MOVE WS-PRINT-Y-N TO WS-ANSWER.
+            PERFORM ERROR-020.
        GET-110.
             MOVE "                        " TO F-NAMEFIELD
             MOVE "BAD-FAX" TO F-FIELDNAME
@@ -472,6 +475,7 @@
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-110.
+            PERFORM ERROR-020.
        GET-120.
             MOVE "                        " TO F-NAMEFIELD
             MOVE "CASHACC" TO F-FIELDNAME
@@ -492,6 +496,7 @@
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-120.
+            PERFORM ERROR-020.
        GET-130.
             MOVE "                        " TO F-NAMEFIELD
             MOVE "BY-DATE" TO F-FIELDNAME
@@ -511,6 +516,8 @@
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-130.
+            PERFORM ERROR-020.
+
             IF WS-BY-DATE = "D"
                GO TO GET-999.
        GET-140.
@@ -534,10 +541,8 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SPEC-MESSAGE.
 
-           IF W-ESCAPE-KEY = 4
-               GO TO GET-130.
-
-      *      ACCEPT WS-SPEC-MESSAGE AT POS.
+      *     IF W-ESCAPE-KEY = 4
+      *         GO TO GET-130.
        GET-999.
             EXIT.
       *
@@ -725,15 +730,16 @@
               MOVE WS-ACCOUNT-COMMENT TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RDM-999.
-      ***************************************
-      * W-DELAY =1000  IS 1.5MIN  (100 SEC) *
-      ***************************************
-           IF WS-DELAY-FAX = "Y"
-            CALL "C$SLEEP" USING 2.
+      *******************************************
+      * W-DELAY =1000  IS 1MIN 40 SEC (100 SEC) *
+      *******************************************
       *        MOVE 600    TO W-DELAY
       *        CALL "&DELAY" USING
       *                       W-ERROR
       *                       W-DELAY.
+
+           IF WS-DELAY-FAX = "Y"
+               CALL "C$SLEEP" USING 2.
            MOVE " " TO WS-PRINTER.
            MOVE WS-DOTPRINTER TO WS-PRINTER.
            GO TO RDM-010.
@@ -1316,7 +1322,7 @@
            IF WS-BY-DATE = "D"
               MOVE "TRANSACTIONS BASED ON DELIVERY DATE." TO PRINT-REC
            ELSE
-              MOVE "TRANSACTIONS BASED ON INVOICE DATE." TO PRINT-REC.
+              MOVE "TRANSACTIONS BASED ON INVOICE DATE. " TO PRINT-REC.
               
            WRITE PRINT-REC AFTER 1.
        SUB-500.
