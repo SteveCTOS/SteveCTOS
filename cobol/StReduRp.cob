@@ -137,7 +137,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -159,7 +158,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-ANSWER2 = " "
@@ -184,7 +182,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CAT-ONLY.
 
-      *     ACCEPT WS-CAT-ONLY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-012.
            IF WS-CAT-ONLY NOT = "Y" AND NOT = "N"
@@ -214,7 +211,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DATE-ACCEPT.
 
-      *     ACCEPT WS-DATE-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-015.
            MOVE WS-DATE-ACCEPT TO ALPHA-RATE.
@@ -251,7 +247,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DATE-ZERO.
 
-      *     ACCEPT WS-DATE-ZERO AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-020.
            IF WS-DATE-ZERO NOT = "Y" AND NOT = "N"
@@ -279,7 +274,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COST-SELL.
 
-      *     ACCEPT WS-COST-SELL AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-030.
            IF WS-COST-SELL NOT = "Y" AND NOT = "N"
@@ -317,7 +311,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-REDUN-TYPE.
 
-      *     ACCEPT WS-REDUN-TYPE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-035.
            IF WS-REDUN-TYPE NOT = "Y" AND NOT = "N"
@@ -353,7 +346,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANALYSIS.
 
-      *     ACCEPT WS-ANALYSIS AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-040.
            IF WS-ANALYSIS NOT = "D" AND NOT = "N" AND NOT = "S"
@@ -384,8 +376,8 @@
        PRINT-ROUTINE SECTION.
        PRR-000.
            IF WS-COST-SELL = "Y"
-               MOVE "AVE COST REP COST"      TO H4-1
-               MOVE "AVE COST   REP COST"    TO H4-2
+               MOVE "AVE COST REP COST"     TO H4-1
+               MOVE "AVE COST   REP COST"   TO H4-2
                MOVE "VALUE AT"              TO H3-1
            ELSE
                MOVE "                    "  TO H4-1

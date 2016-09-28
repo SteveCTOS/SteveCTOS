@@ -14,11 +14,11 @@
 *         2 _ : _____      __________ _______       Orders - Suppliers: ______*
 *         3 _ : _____      __________ _______       Orders - Customers: ______*
 *         4 _ : _____                                                         *
-*         5 _ : _____                             D  Item Created : __________*
-*         6 _ : _____                             A  Price Changed: __________*
-*         7 _ : _____                             T  Last Sale    : __________*
-*         8 _ : _____                             E  Last Receipt : __________*
-*         9 _ : _____                                Last Ordered : __________*
+*         5 _ : _____                            {D} Item Created : __________*
+*         6 _ : _____                            {A} Price Changed: __________*
+*         7 _ : _____                            {T} Last Sale    : __________*
+*         8 _ : _____                            {E} Last Receipt : __________*
+*         9 _ : _____                            { } Last Ordered : __________*
 *                                                                             *
 *Average Cost : _________   Analysis Type  : _    ____________________        *
 *Last Cost    : _________   Catalogue Page : _____                            *

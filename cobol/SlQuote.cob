@@ -3933,7 +3933,7 @@
              ELSE
                 GO TO FILL-010.
       *
-      *<CODE-PREVT-PAGE> TO READ PREVIOUS STOCK ITEM.
+      *<CODE-PREV-PAGE> TO READ PREVIOUS STOCK ITEM.
             IF F-EXIT-CH = X"85"
              IF SUB-1 NOT < SUB-25
                 PERFORM READ-PREV-STOCK-ITEM
@@ -4187,6 +4187,8 @@
       
             IF SP-1STCHAR NOT = "/" AND NOT = "*"
                 PERFORM READ-QUOTE-BY-ACCOUNT. 
+            
+            PERFORM CHECK-DATE-LAST-SOLD.
        FILL-020.
             MOVE "                   " TO F-NAMEFIELD.
             MOVE "ORDERQTY" TO F-FIELDNAME.
@@ -5366,8 +5368,34 @@
            MOVE 2110 TO POS
            DISPLAY WS-ONHAND-LINE AT POS.
 
+           PERFORM CHECK-DATE-LAST-SOLD.
            PERFORM SCROLL-050.
        DLI-999.
+           EXIT.
+      *
+       CHECK-DATE-LAST-SOLD SECTION.
+       CDLS-005.
+           IF ST-QTYONHAND > 0
+           OR ST-QTYONRESERVE > 0
+               GO TO CDLS-999.
+               
+           MOVE WS-DATE TO    WS-AGE-DATE.
+           IF WS-AGE-MM > 3
+              SUBTRACT 3 FROM WS-AGE-MM
+           ELSE
+              ADD 12       TO WS-AGE-MM
+              SUBTRACT 1 FROM WS-AGE-YY.
+
+           IF ST-LASTSALEDATE NOT > WS-AGE-DATE
+             MOVE "THIS ITEM WAS PREV SOLD OVER 3 MONTHS AGO & PRICES" &
+             "/ COSTS MAY HAVE CHANGED." TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE 
+             "PLEASE CHECK PRICES & COSTS BEFORE QUOTING NEW CUSTOMER."
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+       CDLS-999.
            EXIT.
       *
        CHANGE-DISCOUNT-PER-LINE SECTION.

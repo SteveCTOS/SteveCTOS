@@ -98,7 +98,7 @@
                AT POS.
             MOVE 2910 TO POS
             DISPLAY 
-            "ST-CAT=Catlogue, ST-ALT=Alternatives, Blank=Desc Inq."
+            "ST-CAT=Catalogue, ST-ALT=Alternatives, Blank=Desc Inq."
                AT POS.
             MOVE "N" TO NEW-STPRICENO
                         WS-END.
@@ -169,6 +169,9 @@
 
             IF F-EXIT-CH = X"0C"
                  PERFORM READ-STOCK-NEXT
+                 GO TO GET-003.
+            IF F-EXIT-CH = X"05"
+                 PERFORM READ-STOCK-PREV
                  GO TO GET-003.
             IF F-EXIT-CH = X"04"
                  PERFORM CLEAR-SCREEN
@@ -579,7 +582,7 @@
        GET-200.
             IF DR-DISCOUNT-CODE = " " OR = "0"
                 PERFORM CLEAR-DISCOUNT-TAG
-                GO TO GET-002.
+                GO TO GET-205.
                 
             MOVE DR-DISCOUNT-CODE TO SUB-1
             MOVE SUB-1            TO F-INDEX.
@@ -589,7 +592,9 @@
             MOVE "*"         TO F-NAMEFIELD.
             MOVE 1           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
-
+       GET-205.
+            PERFORM CHECK-DATE-LAST-SOLD.
+ 
             GO TO GET-002.
        GET-999.
             EXIT.
@@ -650,7 +655,7 @@
                 MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER
                 MOVE "Enter An Existing St" TO ST-DESCRIPTION1
                 MOVE "ock Item, Try Again!" TO ST-DESCRIPTION2
-                GO TO R-ST-900.
+                GO TO R-ST-999.
              IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
@@ -659,7 +664,7 @@
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
-                GO TO R-ST-000.
+               GO TO R-ST-000.
        R-ST-900.
              PERFORM READ-SPECIAL-PRICES.
              PERFORM READ-STDISC.
@@ -700,8 +705,36 @@
                GO TO R-ST-NX-005.
        R-ST-NX-900.
              PERFORM READ-SPECIAL-PRICES.
+             PERFORM READ-STDISC.
              PERFORM ERROR-020.
        R-ST-NX-999.
+             EXIT.
+      *
+       READ-STOCK-PREV SECTION.
+       R-ST-PREV-005. 
+           IF WS-END = "Y"
+               MOVE "End of NEXT-PAGE seq" TO ST-DESCRIPTION1
+               MOVE "uence, RE-ENTER.    " TO ST-DESCRIPTION2
+               GO TO R-ST-PREV-999.
+           READ STOCK-MASTER NEXT
+               AT END NEXT SENTENCE.
+           IF WS-STOCK-ST1 = 0
+               GO TO R-ST-PREV-900
+           ELSE
+               MOVE "STOCK FILE BUSY ON READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               PERFORM START-STOCK
+               GO TO R-ST-PREV-005.
+       R-ST-PREV-900.
+             PERFORM READ-SPECIAL-PRICES.
+             PERFORM READ-STDISC.
+             PERFORM ERROR-020.
+       R-ST-PREV-999.
              EXIT.
       *
        READ-SPECIAL-PRICES SECTION.
@@ -751,6 +784,31 @@
               MOVE 0 TO WS-STCAT-ST1
               GO TO RCREF-005.
        RCREF-999.
+           EXIT.
+      *
+       CHECK-DATE-LAST-SOLD SECTION.
+       CDLS-005.
+           IF ST-QTYONHAND > 0
+           OR ST-QTYONRESERVE > 0
+               GO TO CDLS-999.
+               
+           MOVE WS-DATE TO    WS-AGE-DATE.
+           IF WS-AGE-MM > 3
+              SUBTRACT 3 FROM WS-AGE-MM
+           ELSE
+              ADD 12       TO WS-AGE-MM
+              SUBTRACT 1 FROM WS-AGE-YY.
+
+           IF ST-LASTSALEDATE NOT > WS-AGE-DATE
+             MOVE "THIS ITEM WAS PREV SOLD OVER 3 MONTHS AGO & PRICES" &
+             "/ COSTS MAY HAVE CHANGED." TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE 
+             "PLEASE CHECK PRICES & COSTS BEFORE QUOTING NEW CUSTOMER."
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+       CDLS-999.
            EXIT.
       *
        READ-PARAMETER SECTION.
