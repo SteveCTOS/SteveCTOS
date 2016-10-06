@@ -1,4 +1,6 @@
 rm /ctools/ctn/*
+rm /ctools/pdf03/*
+
 
 Submit MainCont MonthEnd.Sub03
 

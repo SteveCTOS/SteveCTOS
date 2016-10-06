@@ -1,4 +1,6 @@
 rm /ctools/grc/*
+rm /ctools/pdf02/*
+
 
 Submit MainCont MonthEnd.Sub02
 

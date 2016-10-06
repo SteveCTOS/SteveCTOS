@@ -225,6 +225,12 @@
             PERFORM WRITE-FIELD-REC.
         GET-025.
             MOVE "                               " TO F-NAMEFIELD.
+            MOVE "GLDESCIQ"   TO F-FIELDNAME.
+            MOVE 8            TO F-CBFIELDNAME.
+            MOVE WS-DESC-SORT TO F-NAMEFIELD.
+            MOVE 11           TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+
             MOVE "GLDESCIQ" TO F-FIELDNAME.
             MOVE 8          TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.

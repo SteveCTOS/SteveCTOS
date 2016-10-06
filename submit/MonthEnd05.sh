@@ -1,4 +1,6 @@
 rm /ctools/orx/*
+rm /ctools/pdf05/*
+
 
 Submit MainCont MonthEnd.Sub05
 

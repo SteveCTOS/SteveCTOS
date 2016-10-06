@@ -1,4 +1,6 @@
 rm /ctools/sfj/*
+rm /ctools/pdf07/*
+
 
 Submit MainCont MonthEnd.Sub07
 

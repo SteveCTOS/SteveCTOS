@@ -5378,7 +5378,18 @@
            IF ST-QTYONHAND > 0
            OR ST-QTYONRESERVE > 0
                GO TO CDLS-999.
-               
+                      
+           MOVE WS-DATE TO    WS-AGE-DATE.
+           IF WS-AGE-MM > 3
+              SUBTRACT 3 FROM WS-AGE-MM
+           ELSE
+              ADD 12       TO WS-AGE-MM
+              SUBTRACT 1 FROM WS-AGE-YY.
+           IF ST-LASTPRICECHANGE NOT > WS-AGE-DATE
+              GO TO CDLS-010
+           ELSE
+              GO TO CDLS-999.
+       CDLS-010.
            MOVE WS-DATE TO    WS-AGE-DATE.
            IF WS-AGE-MM > 3
               SUBTRACT 3 FROM WS-AGE-MM
@@ -5388,7 +5399,7 @@
 
            IF ST-LASTSALEDATE NOT > WS-AGE-DATE
              MOVE "THIS ITEM WAS PREV SOLD OVER 3 MONTHS AGO & PRICES" &
-             "/ COSTS MAY HAVE CHANGED." TO WS-MESSAGE
+             "/COSTS MAY HAVE CHANGED." TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE 
              "PLEASE CHECK PRICES & COSTS BEFORE QUOTING NEW CUSTOMER."

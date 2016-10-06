@@ -157,9 +157,9 @@
        GET-DATA SECTION.
        GET-000.
             MOVE "                               " TO F-NAMEFIELD.
-            MOVE "N" TO WS-ANSWER.
+            MOVE "N"     TO WS-ANSWER.
             MOVE "ACCNO" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE 5       TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"04"
                  PERFORM END-OFF.
@@ -231,6 +231,12 @@
             PERFORM WRITE-FIELD-REC.
        GET-025.
             MOVE "                               " TO F-NAMEFIELD.
+            MOVE "GLDESCIQ"   TO F-FIELDNAME.
+            MOVE 8            TO F-CBFIELDNAME.
+            MOVE WS-DESC-SORT TO F-NAMEFIELD.
+            MOVE 11           TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+
             MOVE "GLDESCIQ" TO F-FIELDNAME.
             MOVE 8          TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
