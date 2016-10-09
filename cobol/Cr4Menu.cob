@@ -53,9 +53,10 @@
                MOVE F-NAMEFIELD TO WS-ANSWER.
             IF WS-ANSWER NOT = " 1" AND NOT = " 2" AND NOT = " 3"
                      AND NOT = " 4" AND NOT = " 5" AND NOT = " 6"
-                     AND NOT = " 7" AND NOT = " 8"
+                     AND NOT = " 7" AND NOT = " 8" AND NOT = " 9"
+                     AND NOT = "10"
                      AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 8, Re-Enter."
+                MOVE "Selection Must Be Between 1 & 10, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -100,6 +101,10 @@
                MOVE "CrReTrMt" TO WS-PROGRAM.
            IF WS-ANSWER = " 8"
                MOVE "CrMasOld" TO WS-PROGRAM.
+           IF WS-ANSWER = " 9"
+               MOVE "CrTransMv" TO WS-PROGRAM.
+           IF WS-ANSWER = "10"
+               MOVE "CrJrnMv" TO WS-PROGRAM.
            Call Ws-Program Using Ws-Linkage.
            PERFORM CLEAR-SCREEN
            CANCEL WS-PROGRAM

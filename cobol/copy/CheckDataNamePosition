@@ -141,5 +141,11 @@
             Move Alpha-Rate to Ws-SlRegTemp.
            If Sub-4 = 70
             Move Alpha-Rate to Ws-OfisData.
+      *     If Sub-4 = 71
+      *      Move Alpha-Rate to Ws-CrTransTemp.
+      *     If Sub-4 = 72
+      *      Move Alpha-Rate to Ws-CrJrnTemp.
+      *     If Sub-4 = 73
+      *      Move Alpha-Rate to Ws-DrTransTemp.
        CDNN-999.
            Exit.

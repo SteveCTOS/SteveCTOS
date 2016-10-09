@@ -45,7 +45,7 @@
       *
        GET-DATA SECTION.
        GET-000.
-            MOVE " " TO CRTR-REC.
+      *      MOVE " " TO CRTR-REC.
             MOVE "N" TO NEW-ORDER
                         WS-END.
        GET-001.              
@@ -61,9 +61,9 @@
                                  F-EDNAMEFIELDANAL.
             PERFORM WRITE-FIELD-ANALYSIS.
             IF F-EXIT-CH = X"0C"
-                 MOVE WS-TYPE    TO CRTR-TYPE
-                 MOVE WS-TRANSNO TO CRTR-TRANS
-                 PERFORM START-TRANS
+      *           MOVE WS-TYPE    TO CRTR-TYPE
+      *           MOVE WS-TRANSNO TO CRTR-TRANS
+      *           PERFORM START-TRANS
                  PERFORM READ-TRANS-NEXT
                  PERFORM READ-CREDITOR
               IF WS-END NOT = "Y"
@@ -941,6 +941,7 @@
       *
        READ-TRANS-NEXT SECTION.
        RONX-001.
+           MOVE "NUL" TO CRTR-KEY.
            MOVE 0 TO WS-CRTRANS-ST1.
        RONX-005. 
            READ CRTR-FILE NEXT WITH LOCK
@@ -968,7 +969,7 @@
               GO TO RONX-005.
            MOVE CRTR-TRANS     TO WS-TRANSNO.
            MOVE CRTR-TYPE      TO WS-TYPE.
-           MOVE "N" TO NEW-ORDER.
+           MOVE "N"            TO NEW-ORDER.
        RONX-999.
            EXIT.
       *
@@ -1009,10 +1010,24 @@
        OPEN-000.
             OPEN I-O CRTR-FILE
             IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
-               MOVE "CR-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "CR-TRANS FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-CRTRANS-ST1
+      *         GO TO OPEN-002.
+               GO TO OPEN-000.
+            GO TO OPEN-008.
+       OPEN-002.
+            OPEN OUTPUT CRTR-FILE
+            IF WS-CRTRANS-ST1 NOT = 0
+               MOVE "CR-TRANS FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-CRTRANS-ST1
                GO TO OPEN-000.
        OPEN-008.
             OPEN I-O CREDITOR-MASTER.

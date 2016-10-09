@@ -77,7 +77,7 @@ set (creditors_list
   CrFBCTrs  CrInCrMt  CrInCrRp  CrJnAnRp  CrJrnIq   CrJrnMt   CrLablRp  CrLaPuRp  CrMasOld
   CrMaster  CrMastIq  CrMastMt  CrMastRp  CrNameIq  CrNamOld  CrNmFxRp
   CrNoChMt  CrPayDMt  CrPaymnt  CrPaymRp  CrPerEnd  CrReFrAl  CrRemiEM  CrRemiIq
-  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  
+  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  CrTransMv
 )
 
 set (debtors_list 

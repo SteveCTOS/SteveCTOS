@@ -342,10 +342,12 @@
                GO TO PR-999.
            IF CRJRN-INV-DATE > WS-CHECKDATE
                GO TO PR-002.
-      *     IF CRJRN-UNAPPLIED-AMT = 0
-      *         GO TO PR-002.
-           IF CR-ACCOUNT-NUMBER = 0
-               GO TO PR-005.
+           IF CRJRN-UNAPPLIED-AMT = 0
+               GO TO PR-002.
+           IF CRJRN-CRACC-NUMBER NOT > " "
+               GO TO PR-002.
+           IF CRJRN-CRACC-NUMBER NOT > 0
+               GO TO PR-002.
            IF CRJRN-CRACC-NUMBER = CR-ACCOUNT-NUMBER
                GO TO PR-020.
            PERFORM SUBTOTALS.
@@ -469,7 +471,7 @@
            MOVE WS-TOT-120DAY    TO TOT-120DAY
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
            MOVE " " TO TOTAL-LINE PRINT-REC.
-           IF CR-ACCOUNT-NUMBER NOT = 0 AND NOT = " "
+           IF CR-ACCOUNT-NUMBER > 0
             IF WS-TOT-BALANCE NOT = CR-BALANCE
                MOVE "***ACCOUNT IN IM-BALANCE***" TO PRINT-REC
                WRITE PRINT-REC AFTER 1

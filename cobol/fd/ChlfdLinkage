@@ -107,4 +107,7 @@
           03 WS-STTRANSTEMP       PIC X(40).
           03 WS-SLREGTEMP         PIC X(40).
           03 WS-OFISDATA          PIC X(40).
+      *    03 WS-CRTRANSTEMP       PIC X(40).
+      *    03 WS-CRJRNTEMP         PIC X(40).
+      *    03 WS-DRTRANSTEMP       PIC X(40).
       *

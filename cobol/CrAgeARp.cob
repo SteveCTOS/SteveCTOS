@@ -25,6 +25,7 @@
        WORKING-STORAGE SECTION.
        77  WS-RANGE1            PIC X(7) VALUE " ".
        77  WS-RANGE2            PIC X(7) VALUE " ".
+       77  WS-CRKEY-SAVE        PIC X(7) VALUE " ".
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  WS-AMT-OF-INVOICE    PIC S9(8)V99 VALUE 0.
@@ -199,7 +200,7 @@
        CONTROL-003.
            Copy "PrinterAcceptCr".
        CONTROL-010.
-           MOVE " " TO WS-RANGE1.
+           MOVE "       " TO WS-RANGE1.
            MOVE 1010 TO POS.
            DISPLAY "           FROM ACCOUNT NUMBER: [       ]" AT POS.
            MOVE 1043 TO POS.
@@ -285,45 +286,58 @@
       *
        PRINT-ROUTINE SECTION.
        PR-000.
+           PERFORM SUB-015.
+           
            MOVE WS-RANGE1 TO CRTR-ACC-NUMBER.
            MOVE 0         TO CRTR-DATE.
            START CRTR-FILE KEY NOT < CRTR-ACC-DATE
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
-               MOVE 0 TO WS-CRTRANS-ST1
                MOVE "CR-TRANS FILE ERROR IN START, 'ESC' TO EXIT."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CRTRANS-ST1
                PERFORM SUBTOTALS
                GO TO PR-999.
        PR-002.
            READ CRTR-FILE NEXT
                AT END NEXT SENTENCE.
            IF WS-CRTRANS-ST1 = 10 OR = 23
-                 PERFORM SUBTOTALS
+               PERFORM SUBTOTALS
                GO TO PR-999.
            IF WS-CRTRANS-ST1 NOT = 0
-               MOVE 0 TO WS-CRTRANS-ST1
                MOVE "CR-TRANS BUSY ON READ, IN 1 SECOND GOING TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
+               MOVE 0 TO WS-CRTRANS-ST1
                CALL "C$SLEEP" USING 1
                GO TO PR-002.
            IF WS-MESSAGE NOT = " "
                MOVE " " TO WS-MESSAGE
+               PERFORM ERROR1-020
                PERFORM ERROR-020.
            IF CRTR-ACC-NUMBER < WS-RANGE1
                GO TO PR-002.
            IF CRTR-ACC-NUMBER > WS-RANGE2
                PERFORM SUBTOTALS
                GO TO PR-999.
+               
            IF CRTR-UNAPPLIED-AMT = 0
                GO TO PR-002.
-           IF CR-ACCOUNT-NUMBER = 0
-               GO TO PR-005.
+           IF CRTR-UNAPPLIED-AMT < 0
+               GO TO PR-002.
+           IF CRTR-ACC-NUMBER < 0
+               GO TO PR-002.
+           IF CRTR-ACC-NUMBER < " "
+               GO TO PR-002.
            IF CRTR-ACC-NUMBER = CR-ACCOUNT-NUMBER
                GO TO PR-020.
-            IF CR-ACCOUNT-NUMBER > 0
+           IF CR-ACCOUNT-NUMBER > 0
                PERFORM SUBTOTALS.
        PR-005.
            MOVE CRTR-ACC-NUMBER TO CR-ACCOUNT-NUMBER.
@@ -467,14 +481,20 @@
            MOVE WS-TOT-90DAY     TO TOT-90DAY
            MOVE WS-TOT-120DAY    TO TOT-120DAY
            WRITE PRINT-REC FROM TOTAL-LINE AFTER 1.
-           IF CR-ACCOUNT-NUMBER NOT = 0 AND NOT = " "
+           IF CRTR-ACC-NUMBER < " "
+               GO TO SUB-010.
+           IF CRTR-ACC-NUMBER < 0
+               GO TO SUB-010.
+           IF CR-ACCOUNT-NUMBER > 0
             IF WS-TOT-BALANCE NOT = CR-BALANCE
               MOVE "************ ACCOUNT IN IM-BALANCE **" TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               ADD 1 TO WS-LINE.
+       SUB-010.
            MOVE " " TO TOTAL-LINE PRINT-REC
            WRITE PRINT-REC AFTER 1
            ADD 3 TO WS-LINE.
+       SUB-015.
            MOVE 0 TO WS-TOT-BALANCE
                      WS-TOT-CURRENT
                      WS-TOT-30DAY

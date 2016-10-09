@@ -61,6 +61,8 @@
        77  Ws-Sold-By            PIC XX VALUE " ".
        77  WS-GSTNO             PIC X(13) VALUE " ".
        77  WS-INVOICEDATE       PIC 9(8) VALUE 0.
+       77  WS-INVOICE-SAVE      PIC 9(6) VALUE 0.
+       77  WS-DATE-SAVE         PIC 9(8) VALUE 0.
        77  WS-COMMENTLINE       PIC X(30) VALUE " ".
        77  WS-TAX-ONLY          PIC X(3) VALUE SPACES.
        77  WS-ADDONFREIGHT      PIC 9(6)V99 VALUE 0.
@@ -294,6 +296,8 @@
                       SUB-20.
             MOVE 0 TO WS-ADDONFREIGHT WS-POSTADDON
                       WS-HANDADDON WS-MISCADDON.
+            MOVE 0 TO WS-INVOICE-SAVE
+                      WS-DATE-SAVE.
             PERFORM CLEAR-FIELDS.
             MOVE " " TO WS-BINNO.
             MOVE "                   " TO F-NAMEFIELD.
@@ -1626,6 +1630,9 @@
               MOVE INCR-BIN         TO WS-BINNO
               MOVE INCR-COMMENT     TO WS-COMMENTLINE
               MOVE INCR-LINENO      TO SUB-20.
+              
+              MOVE INCR-INVOICE     TO WS-INVOICE-SAVE
+              MOVE INCR-DATE        TO WS-DATE-SAVE.
        RIR-999.
            EXIT.
       *
@@ -1686,6 +1693,9 @@
               MOVE INCR-LY-BIN         TO WS-BINNO
               MOVE INCR-LY-COMMENT     TO WS-COMMENTLINE
               MOVE INCR-LY-LINENO      TO SUB-20.
+              
+              MOVE INCR-LY-INVOICE     TO WS-INVOICE-SAVE
+              MOVE INCR-LY-DATE        TO WS-DATE-SAVE.
        RIRLY-999.
            EXIT.
       *
@@ -2677,7 +2687,16 @@
             MOVE WS-COSTTOTAL      TO INCR-INVCRED-COST
             MOVE Ws-Sold-By        TO INCR-SB-TYPE
             MOVE WS-DRTRANS-NO     TO INCR-DRTRANS-NO
+            MOVE "Y"               TO INCR-PART-ORDERS.
+            MOVE "$$"              TO INCR-PULLBY.
+            MOVE 1                 TO INCR-COPY-NUMBER.
             MOVE "N"               TO INCR-PRINTED
+            MOVE "X"               TO INCR-AREA.
+     
+            ACCEPT WS-TIME FROM TIME.
+            MOVE WS-DATE           TO INCR-PULL-DATE
+            MOVE WS-TIME           TO INCR-PULL-TIME.
+            
             MOVE WS-NAME           TO INCR-NAME
             MOVE WS-ADD1           TO INCR-ADD1
             MOVE WS-ADD2           TO INCR-ADD2
@@ -2691,8 +2710,8 @@
             MOVE WS-DELIVERVIA     TO INCR-DELIVERY
             MOVE WS-BINNO          TO INCR-BIN
             MOVE WS-COMMENTLINE    TO INCR-COMMENT
-            MOVE 0                 TO INCR-BO-INV-NO
-            MOVE 0                 TO INCR-BO-DATE
+            MOVE WS-INVOICE-SAVE   TO INCR-BO-INV-NO
+            MOVE WS-DATE-SAVE      TO INCR-BO-DATE
             MOVE WS-POSTADDON      TO INCR-ADDPOST
             MOVE WS-ADDONFREIGHT   TO INCR-ADDFREIGHT
             MOVE WS-HANDADDON      TO INCR-ADDLABOUR
@@ -3110,7 +3129,7 @@
        SOLD-020.
            WRITE SOLDBY-REC
               INVALID KEY NEXT SENTENCE.
-           IF WS-SOLDBY-ST1 = 0
+           IF WS-SOLDBY-ST1 NOT = 0
                MOVE "SOLDBY NOT WRITTEN, 'ESC' TO EXIT."
                TO WS-MESSAGE
                 PERFORM ERROR1-000
