@@ -57,8 +57,8 @@
        77  WS-GRTOT-120DAY      PIC S9(8)V99 VALUE 0.
        77  WS-LETTER-TOT        PIC 9(6) VALUE 0.
        77  WS-LETTER-TOT-DIS    PIC Z(5)9.
-       77  WS-FAXED-TOT         PIC 9(6) VALUE 0.
-       77  WS-FAXED-TOT-DIS     PIC Z(5)9.
+       77  WS-FAXED-TOT         PIC 9(4) VALUE 0.
+       77  WS-FAXED-TOT-DIS     PIC Z(3)9.
        77  WS-FAX-NUMBER        PIC X(20) VALUE " ".
        77  WS-ACCEPT            PIC X VALUE " ".
        77  WS-PRINT-Y-N         PIC X VALUE " ".
@@ -627,7 +627,7 @@
            MOVE WS-REFNO      TO H-REFNO.
            MOVE WS-LETTER-TOT TO WS-LETTER-TOT-DIS.
            MOVE 2610 TO POS.
-           DISPLAY "LETTERS PRINTED =" AT POS.
+           DISPLAY "LETTERS PRINTED =  " AT POS.
            ADD 18 TO POS.
            DISPLAY WS-LETTER-TOT-DIS AT POS.
       *************************************
@@ -716,7 +716,7 @@
            ADD 1 TO WS-FAXED-TOT.
            MOVE WS-FAXED-TOT TO WS-FAXED-TOT-DIS.
            MOVE 2650 TO POS.
-           DISPLAY "LETTERS FAXED =" AT POS.
+           DISPLAY "LETTERS FAXED =  " AT POS.
            ADD 16 TO POS.
            DISPLAY WS-FAXED-TOT-DIS AT POS.
            
@@ -739,7 +739,7 @@
       *                       W-DELAY.
 
            IF WS-DELAY-FAX = "Y"
-               CALL "C$SLEEP" USING 2.
+               CALL "C$SLEEP" USING 10.
            MOVE " " TO WS-PRINTER.
            MOVE WS-DOTPRINTER TO WS-PRINTER.
            GO TO RDM-010.
