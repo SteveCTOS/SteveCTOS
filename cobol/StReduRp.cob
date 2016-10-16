@@ -330,10 +330,14 @@
            AT POS
            MOVE 2711 TO POS
            DISPLAY 
-           "TAKE ITEMS OFF 'S', OR TO FLAG AS 'D' TO DELETE LATER."
+           "TAKE ITEMS OFF 'S'; OR FLAG AS 'D' TO DELETE LATER,"
+            AT POS
+           MOVE 2811 TO POS
+           DISPLAY 
+        "OR 'X' TO FLAG AS 'D' TO DELETE LATER AND MOVE 1c TO AVE COST."
             AT POS
            MOVE 2510 TO POS.
-           DISPLAY "RE-WRITE ANALYSIS FIELD WITH S, D OR N   : [ ]"
+           DISPLAY "RE-WRITE ANALYSIS FIELD WITH S, D N OR X : [ ]"
              AT POS.
            MOVE 2554 TO POS.
 
@@ -349,6 +353,7 @@
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-040.
            IF WS-ANALYSIS NOT = "D" AND NOT = "N" AND NOT = "S"
+                      AND NOT = "X"
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-045.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5 OR = X"1B"
@@ -547,7 +552,7 @@
            ADD WS-REPCOST TO WS-REPCOSTTOT
                              WS-REPTOTAL.
            
-           IF WS-ANALYSIS = "S" OR = "D"
+           IF WS-ANALYSIS = "S" OR = "D" OR "X"
               MOVE WS-STQTYONHAND TO ST-QTYONHAND
               PERFORM REWRITE-STOCK.
            
@@ -599,12 +604,15 @@
       *
        REWRITE-STOCK SECTION.
        RWS-005.
-           IF ST-ANALYSIS = "D"
-              GO TO RWS-999.
+      *     IF ST-ANALYSIS = "D"
+      *        GO TO RWS-999.
            IF WS-ANALYSIS = "S"
              MOVE "S" TO ST-ANALYSIS.
            IF WS-ANALYSIS = "D"
              MOVE "D" TO ST-ANALYSIS.
+           IF WS-ANALYSIS = "X"
+             MOVE 0.01 TO ST-AVERAGECOST
+             MOVE "D"  TO ST-ANALYSIS.
        RWS-010.
            REWRITE STOCK-RECORD
               INVALID KEY NEXT SENTENCE.

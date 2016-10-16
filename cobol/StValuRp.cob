@@ -49,6 +49,7 @@
        77  WS-MAXMARGINREP      PIC S9(8)V99 VALUE 0.
        77  WS-AVEVALUE          PIC Z(7)9.99-.
        77  WS-REPVALUE          PIC Z(7)9.99-.
+       77  WS-DATE-ACCEPT       PIC X(10) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1     PIC 99.
        01  WS-STTRANS-STATUS.
@@ -56,14 +57,24 @@
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X VALUE " ".
            03  SP-REST          PIC X(14) VALUE " ".
+       01  WS-DATE-ENTER.
+           03  WS-YYE           PIC 9999.
+           03  WS-MME           PIC 99.
+           03  WS-DDE           PIC 99.
+       01  WS-CALC-DATE.
+           03  WS-YYC           PIC 9999.
+           03  WS-MMC           PIC 99.
+           03  WS-DDC           PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
            03  FILLER         PIC X(22) VALUE " ".
            03  FILLER         PIC X(15) VALUE "S T O C K   V A".
            03  FILLER         PIC X(17) VALUE " L U A T I O N   ".
-           03  FILLER         PIC X(14) VALUE "R E P O R T".
-           03  FILLER         PIC X(34) VALUE " ".
+           03  FILLER         PIC X(20) VALUE "R E P O R T".
+           03  H-SINCE        PIC X(11) VALUE "S I N C E: ".
+           03  H-DATE         PIC X(10).
+           03  FILLER         PIC X(7) VALUE " ".
            03  FILLER         PIC X(5) VALUE "PAGE:".
            03  H1-PAGE        PIC ZZ9.
            03  FILLER         PIC X(5) VALUE " ".
@@ -223,10 +234,57 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-020.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
-               GO TO CONTROL-025
+               GO TO CONTROL-022
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-020.
+       CONTROL-022.
+           MOVE 0 TO WS-DATE-ENTER.
+           MOVE 1910 TO POS.
+           DISPLAY "ENTER THE LAST DATE STOCK WAS SOLD : [          ]"
+               AT POS.
+           MOVE 2010 TO POS.
+           DISPLAY "                    Enter the DATE as DD/MM/YYYY"
+             AT POS.
+           MOVE 2111 TO POS.
+           DISPLAY "LEAVE BLANK FOR ALL ITEMS." AT POS.
+           MOVE 1948 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 10        TO CDA-DATALEN.
+           MOVE 16        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DATE-ACCEPT.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO CONTROL-020.
+               
+           IF WS-DATE-ACCEPT = " "
+              MOVE " " TO H-DATE H-SINCE
+              GO TO CONTROL-025.
+               
+           MOVE WS-DATE-ACCEPT TO ALPHA-RATE.
+           PERFORM DATE-CHECKING.
+           IF SIGN-FOUND = 9
+              GO TO CONTROL-022.
+           MOVE WS-NEW-DATE TO WS-CH-DATE CONVERT-DATE.
+           MOVE WS-CONVERT-DATE TO DISPLAY-DATE.
+           MOVE 1948 TO POS.
+           DISPLAY DISPLAY-DATE AT POS.
+           MOVE DISPLAY-DATE TO H-DATE.
+           PERFORM CONVERT-SPLIT-FORMAT.
+           MOVE SPLIT-DATE TO WS-DATE-ENTER.
+           PERFORM CHECK-DATE-VALID.
+           IF SIGN-FOUND = 9
+              GO TO CONTROL-022.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO CONTROL-025
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-022.
        CONTROL-025.
            MOVE 2810 TO POS.
            DISPLAY "The Report Is Being Compiled, Please Be Patient."
@@ -281,6 +339,15 @@
 
            IF WS-CAT = "   "
               MOVE ST-CATEGORY TO WS-CAT.
+              
+           MOVE ST-LASTSALEDATE TO WS-CALC-DATE.
+           IF WS-DATE-ACCEPT = " "
+               GO TO PRR-010.
+           IF WS-DATE-ACCEPT > " "
+            IF WS-CALC-DATE > WS-DATE-ENTER
+               GO TO PRR-010
+            ELSE            
+               GO TO PRR-005.
        PRR-010.
             IF LINE-CNT < 60
               GO TO PRR-020.

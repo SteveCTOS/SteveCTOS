@@ -43,6 +43,7 @@
        77  WS-AVERAGECOST       PIC 9(6)V99 VALUE 0.
        77  WS-WORK-FIELD        PIC 9(5)V99 VALUE 0.
        77  WS-MONTH             PIC 9 VALUE 0.
+       77  WS-DATE-ACCEPT       PIC X(10) VALUE " ".
        01  WS-STOCK-STATUS.
            03  WS-STOCK-ST1        PIC 99.
        01  WS-STNWPR-STATUS.
@@ -55,6 +56,14 @@
            03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-CURRENCY-STATUS.
            03  WS-CURRENCY-ST1     PIC 99.
+       01  WS-DATE-ENTER.
+           03  WS-YYE           PIC 9999.
+           03  WS-MME           PIC 99.
+           03  WS-DDE           PIC 99.
+       01  WS-CALC-DATE.
+           03  WS-YYC           PIC 9999.
+           03  WS-MMC           PIC 99.
+           03  WS-DDC           PIC 99.
        01  WS-CURRENCY-NAMES.
          02  WS-CURRENCY-FILE OCCURS 20.
            03  WS-CURRENCY-TYPE    PIC X(5).
@@ -175,7 +184,7 @@
        GET-026.
            PERFORM ERROR1-020
            PERFORM CLEAR-010.
-           PERFORM GET-032.
+      *     PERFORM GET-032.
            IF WS-SELECTED = 9
               GO TO GET-027.
            IF WS-SELECTED = 10
@@ -226,7 +235,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MIN-MU.
 
-      *     ACCEPT WS-MIN-MU AT POS.
            MOVE WS-MIN-MU TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
            MOVE NUMERIC-RATE TO WS-MINMARGIN.
@@ -242,6 +250,7 @@
                PERFORM GET-031 THRU GET-032.
            PERFORM CLEAR-010.
            IF WS-SELECTED = 6 OR = 11
+              MOVE "U" TO WS-WRITE-PRICELIST
               GO TO GET-030.
            PERFORM ERROR1-020
            PERFORM ERROR-020
@@ -264,7 +273,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-WRITE-PRICELIST.
 
-      *     ACCEPT WS-WRITE-PRICELIST AT POS.
            IF W-ESCAPE-KEY = 4
             IF WS-SELECTED = 1 OR = 3 OR = 6
                 GO TO GET-025
@@ -281,12 +289,12 @@
                GO TO GET-029.
        GET-030.
            IF WS-SELECTED NOT = 10 AND NOT = 11
-              GO TO GET-032.
+              GO TO GET-033.
        GET-031.
            MOVE " " TO WS-MESSAGE
            MOVE 2510 TO POS
            DISPLAY WS-MESSAGE AT POS
-           DISPLAY "UPDATE ONLY WHERE ON HAND = 0; NO OR YES : [ ]"
+           DISPLAY "UPDATE ONLY WHERE ON HAND > 0; NO OR YES : [ ]"
              AT POS
            ADD 44 TO POS.
 
@@ -299,7 +307,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ONHANDZERO.
 
-      *     ACCEPT WS-ONHANDZERO AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-026.
            IF WS-ONHANDZERO NOT = "N" AND NOT = "Y"
@@ -310,12 +317,57 @@
               DISPLAY " " AT 3079 WITH BELL
               GO TO GET-031.
        GET-032.
+           MOVE 0 TO WS-DATE-ENTER.
+           MOVE 2510 TO POS.
+           DISPLAY "ENTER THE DATE STOCK WAS SOLD SINCE: [          ]"
+               AT POS.
+           MOVE 2610 TO POS.
+           DISPLAY "                    Enter the DATE as DD/MM/YYYY"
+             AT POS.
+           MOVE 2710 TO POS.
+           DISPLAY "LEAVE BLANK TO UPDATE ALL ITEMS." AT POS.
+           MOVE 2548 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 10        TO CDA-DATALEN.
+           MOVE 22        TO CDA-ROW.
+           MOVE 47        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DATE-ACCEPT.
+           
+           IF WS-DATE-ACCEPT = " "
+               GO TO GET-033.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO GET-031.
+           MOVE WS-DATE-ACCEPT TO ALPHA-RATE.
+           PERFORM DATE-CHECKING.
+           IF SIGN-FOUND = 9
+              GO TO GET-032.
+           MOVE WS-NEW-DATE TO WS-CH-DATE CONVERT-DATE.
+           MOVE WS-CONVERT-DATE TO DISPLAY-DATE.
+           MOVE 2548 TO POS.
+           DISPLAY DISPLAY-DATE AT POS.
+      *     MOVE DISPLAY-DATE TO H-DATE.
+           PERFORM CONVERT-SPLIT-FORMAT.
+           MOVE SPLIT-DATE TO WS-DATE-ENTER.
+           PERFORM CHECK-DATE-VALID.
+           IF SIGN-FOUND = 9
+              GO TO GET-032.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO GET-033
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO GET-032.
+       GET-033.
             MOVE " " TO WS-MESSAGE
             MOVE 2510 TO POS
             DISPLAY WS-MESSAGE AT POS
             MOVE 2610 TO POS
             DISPLAY WS-MESSAGE AT POS
-            MOVE 2810 TO POS
+            MOVE 2710 TO POS
             DISPLAY WS-MESSAGE AT POS.
        GET-035.
             MOVE 2510 TO POS.
@@ -333,7 +385,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-HARDWARE.
            
-      *      ACCEPT WS-HARDWARE AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-026.
             IF WS-HARDWARE NOT = "A" AND NOT = "H" AND NOT = "N"
@@ -359,7 +410,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER.
 
-      *      ACCEPT WS-ANSWER AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-030.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -480,19 +530,37 @@
                COMPUTE ST-PRICE ROUNDED = ST-LASTCOST * WS-FACTOR
                GO TO UPST-900.
                
+           MOVE ST-LASTSALEDATE TO WS-CALC-DATE.
            IF WS-SELECTED = 11
             IF WS-ONHANDZERO = "Y"
              IF ST-QTYONHAND > 0
+              IF WS-DATE-ACCEPT > " "
+               IF WS-CALC-DATE > WS-DATE-ENTER
                COMPUTE ST-AVERAGECOST ROUNDED =
                 ST-AVERAGECOST * WS-FACTOR
-               GO TO UPST-940
-             ELSE
-               GO TO UPST-010.
+                GO TO UPST-940.
+           IF WS-SELECTED = 11
+            IF WS-ONHANDZERO = "Y"
+             IF ST-QTYONHAND > 0
+              IF WS-DATE-ACCEPT = " "
+               COMPUTE ST-AVERAGECOST ROUNDED =
+                ST-AVERAGECOST * WS-FACTOR
+                GO TO UPST-940.
            IF WS-SELECTED = 11
             IF WS-ONHANDZERO = "N"
+             IF WS-DATE-ACCEPT > " "
+              IF WS-CALC-DATE > WS-DATE-ENTER
                COMPUTE ST-AVERAGECOST ROUNDED =
                 ST-AVERAGECOST * WS-FACTOR
-               GO TO UPST-940.
+                GO TO UPST-940.
+           IF WS-SELECTED = 11
+            IF WS-ONHANDZERO = "N"
+             IF WS-DATE-ACCEPT = " "
+               COMPUTE ST-AVERAGECOST ROUNDED =
+                ST-AVERAGECOST * WS-FACTOR
+                GO TO UPST-940.
+           IF WS-SELECTED = 11
+               GO TO UPST-010.
 
            IF WS-SELECTED = 9
             IF ST-AVERAGECOST = 0
