@@ -328,7 +328,7 @@
            DISPLAY 
            "THIS FUNCTION PLACES REDUNDANT ITEMS ON 'S' ONLY, IT WON'T"
            AT POS
-           MOVE 2910 TO POS
+           MOVE 2711 TO POS
            DISPLAY 
            "TAKE ITEMS OFF 'S', OR TO FLAG AS 'D' TO DELETE LATER."
             AT POS
@@ -339,7 +339,7 @@
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 22         TO CDA-ROW.
+           MOVE 22        TO CDA-ROW.
            MOVE 53        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -358,11 +358,7 @@
                GO TO CONTROL-045.
        CONTROL-050.
            PERFORM ERROR1-020
-           PERFORM ERROR-020
-           MOVE 2701 TO POS
-           DISPLAY WS-MESSAGE AT POS
-           MOVE 2720 TO POS
-           DISPLAY WS-MESSAGE AT POS.
+           PERFORM ERROR-020.
 
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.

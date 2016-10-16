@@ -54,10 +54,10 @@
            03  FILLER         PIC X(7) VALUE " ".
        01  HEAD3.
            03  FILLER         PIC X(20) VALUE "STOCK TESTED IN   :".
-           03  H3-BRANCH      PIC X(30) VALUE " ".
+           03  H3-BRANCH      PIC X(50) VALUE " ".
        01  HEAD4.
            03  FILLER         PIC X(20) VALUE "CHECKED AGAINST   :".
-           03  H4-ORIGINAL    PIC X(30) VALUE " ".
+           03  H4-ORIGINAL    PIC X(50) VALUE " ".
        01  HEAD5.
            03  FILLER         PIC X(27) VALUE "STOCK ITEM       CODE".
            03  FILLER         PIC X(8) VALUE "PRICE".
@@ -94,13 +94,28 @@
        CONTROL-003.
            Copy "PrinterAccept".
        A-010.
-           MOVE 0610 TO POS
+           MOVE 2010 TO POS
+           DISPLAY 
+           "MAKE SURE YOU HAVE RUN A NEW LOCAL PRICELIST TO DISK FIRST"
+               AT POS.
+           MOVE 2111 TO POS
+           DISPLAY 
+           "FOR BOTH HEAD OFFICE AND THE BRANCH UNDER TEST."
+               AT POS.
+       
+           MOVE 0810 TO POS
+           DISPLAY 
+              "Enter the FULL path for the PriceList file:" AT POS
+           MOVE 0931 TO POS
+           DISPLAY "e.g. /ctools/data01/StNewPrices" AT POS.
+                      
+           MOVE 1010 TO POS
            DISPLAY "DATA TO USE AS ORIGINAL :" AT POS
            ADD 26 TO POS
 
            MOVE ' '       TO CDA-DATA.
            MOVE 30        TO CDA-DATALEN.
-           MOVE 3         TO CDA-ROW.
+           MOVE 7         TO CDA-ROW.
            MOVE 35        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -115,13 +130,13 @@
               DISPLAY " " AT 3079 WITH BELL
               GO TO A-010.
        A-020.
-           MOVE 0810 TO POS
+           MOVE 1210 TO POS
            DISPLAY "DATA TO BE CHECKED      :" AT POS
            ADD 26 TO POS
 
            MOVE ' '       TO CDA-DATA.
            MOVE 30        TO CDA-DATALEN.
-           MOVE 5         TO CDA-ROW.
+           MOVE 9         TO CDA-ROW.
            MOVE 35        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -193,7 +208,7 @@
                MOVE WS-PRINT-COMP TO PRINT-REC
                WRITE PRINT-REC
                MOVE " " TO PRINT-REC.
-            MOVE " "      TO PRINT-REC
+            MOVE " "      TO PRINT-REC.
             IF PAGE-CNT = 1
                 WRITE PRINT-REC FROM COMPANY-LINE
             ELSE

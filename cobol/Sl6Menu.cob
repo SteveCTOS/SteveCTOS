@@ -63,8 +63,8 @@
                      AND NOT = "10" AND NOT = "11" AND NOT = "12"
                      AND NOT = "13" AND NOT = "14" AND NOT = "15"
                      AND NOT = "16" AND NOT = "17" AND NOT = "18"
-                     AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 18, Re-Enter."
+                     AND NOT = "19" AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 19, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -129,8 +129,21 @@
                 MOVE "SlRegisterMv" TO WS-PROGRAM.
            IF WS-ANSWER = "18"
                 Move "Auto.sh" TO Ws-Data-Name
-                PERFORM SETUP-MONTH-FILES
+                PERFORM SETUP-AUTO-MONTH-FILES
                 MOVE "The Auto Allocation Has Been Run....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+           IF WS-ANSWER = "19"
+                Move "Branch.sh" TO Ws-Data-Name
+                PERFORM SETUP-BRANCH-MONTH-FILES
+                MOVE "The Branch Update Has Been Run....."
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE " Press 'Esc' To Continue With Other Processes."
@@ -150,7 +163,7 @@
        GET-999.
             EXIT.
       *
-       SETUP-MONTH-FILES SECTION.
+       SETUP-AUTO-MONTH-FILES SECTION.
        SUQFD-002.
            MOVE "./Auto" TO ALPHA-RATE
            MOVE WS-CO-NUMBER TO DATA-RATE
@@ -170,6 +183,28 @@
           CALL "SYSTEM" USING   WS-COMMAND-LINE
                        RETURNING W-STATUS.
        SUQFD-999.
+           EXIT.
+      *
+       SETUP-BRANCH-MONTH-FILES SECTION.
+       SUBMF-002.
+           MOVE "./Branch" TO ALPHA-RATE
+           MOVE WS-CO-NUMBER TO DATA-RATE
+           MOVE DAT-RATE (1) TO AL-RATE (9)
+           MOVE DAT-RATE (2) TO AL-RATE (10)
+           MOVE "."          TO AL-RATE (11)
+           MOVE "s"          TO AL-RATE (12)
+           MOVE "h"          TO AL-RATE (13)
+           MOVE ALPHA-RATE   TO WS-DATA-NAME.
+
+           MOVE CONCATENATE(WS-DATA-NAME) TO WS-COMMAND-LINE.
+      
+      *    MOVE WS-COMMAND-LINE TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    ACCEPT WS-ACCEPT.
+       SUBMF-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUBMF-999.
            EXIT.
       *
        OPEN-FILES SECTION.

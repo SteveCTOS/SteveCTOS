@@ -4,23 +4,23 @@
 *  *   *                                                                      *
 *  *   *  1. Register File Entry / Edit            16. Pullby Entry / Edit    *
 *  *   *  2. Register File - Change Acc Number     17. Register Xport/Import  *
-*  *   *  3. Soldby Initial's Change: Inv / Order                             *
+*  *   *  3. Soldby Initial's Change: Inv/Order                               *
 *  *   *                                            {Special Submit Routines} *
-*  *   *  {Last Year Information Programs}                                    *
-*  *   *                                           18. Auto Allocations Run   *
-*  *   *  4. Invoice / C-Note Print                                           *
+*  *   *  {Last Year Information Programs}         18. Auto Allocations Run   *
+*  *   *  4. Invoice / C-Note Print                19. Branch Update Run      *
 *  *   *  5. Invoice Enquiry By Account                                       *
 *  *   *  6. Invoice Enquiry By Stock                                         *
-*  *   *  7. P/Order Enquiry By P/Slip, Invoice or Repair                     *
+*  *   *  7. P/O Inq By P/Slip/Invoice/Repair                                 *
 *  *   *  8. Invoice/C-Note/P-Slip/Quote Enquiry                              *
 *  *   *  9. Invoice Delivery Confirmation                                    *
 *  *   * 10. Register Account Enquiry                                         *
 *  *   * 11. Register Name/Address Edit                                       *
 *  *   * 12. Register Enquiry By: Name, Postal                                *
 *  *   *      or Delivery Address                                             *
-****   * 13. Register File Entry / Edit                                       *
-   ***** 14. Register File - Change Account Number                            *
-       * 15. Register File Report By Account & Date                           *
+*  *   * 13. Register File Entry / Edit                                       *
+****   * 14. Register File - Change Acc Number                                *
+   ***** 15. Register File Report By Acc & Date                               *
+       *                                                                      *
        ************************ENTER SELECTION : __****************************
                                                                                
                                                                                
