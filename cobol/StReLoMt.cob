@@ -720,6 +720,17 @@
                 GO TO FILL-010
              ELSE
                 GO TO FILL-010.
+      ************************************************
+      *<CODE-PREV-PAGE> TO READ PREVIOUS STOCK ITEM. *
+      ************************************************
+            IF F-EXIT-CH = X"85"
+             IF SUB-1 NOT < SUB-25
+                PERFORM READ-PREV-STOCK-ITEM
+             IF WS-STOCK-ST1 = 0
+                PERFORM DISPLAY-LINE-ITEMS
+                GO TO FILL-010
+             ELSE
+                GO TO FILL-010.
       ******************
       * <TAB> CHARACTER*
       ******************
@@ -1543,6 +1554,24 @@
                MOVE 0 TO WS-STOCK-ST1
                GO TO RNSI-005.
        RNSI-999.
+           EXIT.
+      *
+       READ-PREV-STOCK-ITEM SECTION.
+       RPREV-005.
+           READ STOCK-MASTER PREVIOUS
+               AT END NEXT SENTENCE.
+           IF WS-STOCK-ST1 = 10
+               GO TO RPREV-999.
+           IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK RECORD IN USE READ-PREV, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RPREV-005.
+       RPREV-999.
            EXIT.
       *
        READ-STOCK SECTION.

@@ -393,7 +393,7 @@
       **************************
       *X"8C" = <CODE-NEXT-PAGE>*
       **************************
-           IF F-EXIT-CH = X"8C"
+           IF F-EXIT-CH = X"8C" OR = X"85"
             IF SUB-1 = 1
               PERFORM FILL-021
               PERFORM START-GL-NEXT-ONE.
@@ -408,6 +408,22 @@
                 GO TO FILL-023
                ELSE
                 MOVE "READ-NEXT FAILED, 'ESC' TO RE-ENTER GL-NUMBER."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FILL-020.
+      ************************************************
+      *<CODE-PREV-PAGE> TO READ PREVIOUS STOCK ITEM. *
+      ************************************************
+            IF F-EXIT-CH = X"85"
+              PERFORM READ-PREV-GLNUMBER
+              IF WS-GLMAST-ST1 = 0
+                MOVE GL-NUMBER TO WS-ACCOUNT-NUMBER (SUB-1)
+                                   F-NAMEFIELD
+                MOVE 12        TO  F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA
+                GO TO FILL-023
+              ELSE
+                MOVE "READ-PREV FAILED, 'ESC' TO RE-ENTER GL-NUMBER."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-020.
@@ -974,6 +990,39 @@
                 MOVE 0 TO WS-GLMAST-ST1
                 GO TO RNGL-010.
        RNGL-999.
+           EXIT.
+      *
+       READ-PREV-GLNUMBER SECTION.
+       RDPRV-010.
+           READ GL-MASTER PREVIOUS
+               AT END NEXT SENTENCE.
+           IF WS-GLMAST-ST1 = 10
+               MOVE "END OF PREV-PAGE SEQUENCE, ENTER A NEW NUMBER."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+                GO TO RDPRV-999.
+           IF WS-GLMAST-ST1 = 91
+                MOVE "GLMASTER BUSY 91 ON READ-PREV, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+                PERFORM ERROR1-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GLMAST-ST1
+                PERFORM START-GL-NEXT
+                GO TO RDPRV-010.
+           IF WS-GLMAST-ST1 NOT = 0
+                MOVE "GLMASTER BUSY ON READ-PREV, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+                PERFORM ERROR1-MESSAGE
+                MOVE GL-NUMBER TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-GLMAST-ST1
+                GO TO RDPRV-010.
+       RDPRV-999.
            EXIT.
       *
        READ-GLPARAMETER SECTION.

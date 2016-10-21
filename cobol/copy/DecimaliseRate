@@ -25,7 +25,7 @@
                  MOVE 1 TO SUB-5
                  GO TO DR-002.
              ADD 1 TO SUB-5.
-             IF SUB-5 < 15
+             IF SUB-5 < 16
                  GO TO DR-001.
              MOVE 1 TO SUB-5.
        DR-002.
@@ -34,7 +34,7 @@
                  GO TO DR-003.
              MOVE "0" TO AL-RATE (SUB-5).
              ADD 1 TO SUB-5.
-             IF SUB-5 < 15
+             IF SUB-5 < 16
                  GO TO DR-002.
              MOVE 0 TO NUMERIC-RATE.
              GO TO DR-900.
@@ -59,7 +59,7 @@
                  ADD 1 SUB-5 GIVING SUB-6
                  GO TO DR-020.
              ADD 1 TO SUB-5.
-             IF SUB-5 < 15
+             IF SUB-5 < 16
                  GO TO DR-010.
              MOVE 0 TO NUMERIC-RATE.
              GO TO DR-900.
@@ -68,7 +68,7 @@
        DR-030.
              MOVE AL-RATE (SUB-6) TO N-RATE (SUB-7).
              ADD 1 TO SUB-6 SUB-7.
-             IF SUB-7 < 15
+             IF SUB-7 < 16
                  GO TO DR-030.
              MOVE 10 TO SUB-6.
        DR-040.
