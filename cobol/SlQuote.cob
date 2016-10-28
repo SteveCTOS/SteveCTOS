@@ -3788,9 +3788,9 @@
                 PERFORM SCROLL-NEXT
                 GO TO FILL-010.
 
-      *****************************
+      **************************************
       *X"91"=<ALT-F8>  DISPLAY COST ON/OFF *
-      *****************************
+      **************************************
            IF F-EXIT-CH = X"91"
               MOVE WS-LASTPASSWORD TO WS-PASSWORDSAVED
               PERFORM CHECK-PASSWORD.

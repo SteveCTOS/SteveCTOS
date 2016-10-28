@@ -574,10 +574,30 @@
                PERFORM ERROR-020
                PERFORM CHECK-SUB1-TOTAL
                GO TO FILL-999.
-      * SHIFT TAB CHARACTER
-           IF F-EXIT-CH = X"81"
-      *        move "SHIFT tab pressed" to ws-message
-      *        perform error-message
+
+      *****************************************************************
+      *CREATE A BLANK SPACE INTO WHICH A NEW LINE OF STOCK IS ENTERED *
+      *****************************************************************
+      * <CODE-TAB> (CTOS); <ALT-F8> =X"9D" IN LINUX
+      * CTOS SECTION
+           IF F-EXIT-CH = X"89"
+            IF F-NAMEFIELD = GLJRN-GLNUMBER (SUB-1)
+               MOVE " " TO WS-ABOVE-BODY GL-DESCRIPTION
+               PERFORM FILL-015
+               PERFORM ERROR-020
+               PERFORM CHECK-SUB1-TOTAL
+               GO TO FILL-999
+            ELSE
+               MOVE GLJRN-GLNUMBER (SUB-1) TO F-NAMEFIELD
+               MOVE 12 TO F-CBFIELDLENGTH
+               PERFORM WRITE-FIELD-ALPHA
+               MOVE " " TO WS-ABOVE-BODY GL-DESCRIPTION
+               PERFORM FILL-015
+               PERFORM ERROR-020
+               PERFORM CHECK-SUB1-TOTAL
+               GO TO FILL-999.
+      * LINUX SECTION
+           IF F-EXIT-CH = X"9D"
             IF F-NAMEFIELD = GLJRN-GLNUMBER (SUB-1)
                MOVE " " TO WS-ABOVE-BODY GL-DESCRIPTION
                PERFORM FILL-015
@@ -622,6 +642,16 @@
       *<CODE-NEXT> TO READ-NEXT ACCOUNT
            IF F-EXIT-CH = X"8C"
                PERFORM READ-NEXT-GLMASTER
+            IF WS-GLMAST-ST1 = 0
+               MOVE GL-NUMBER TO F-NAMEFIELD
+               MOVE 12 TO F-CBFIELDLENGTH
+               PERFORM WRITE-FIELD-ALPHA
+               GO TO FILL-012
+            ELSE
+               GO TO FILL-010.
+      *<CODE-PREV> TO READ-PREV ACCOUNT
+           IF F-EXIT-CH = X"85"
+               PERFORM READ-PREV-GLMASTER
             IF WS-GLMAST-ST1 = 0
                MOVE GL-NUMBER TO F-NAMEFIELD
                MOVE 12 TO F-CBFIELDLENGTH
@@ -907,6 +937,35 @@
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
        RDN-999.
+           EXIT.
+      *
+       READ-PREV-GLMASTER SECTION.
+       RPREV-010.
+           READ GL-MASTER PREVIOUS
+               AT END NEXT SENTENCE.
+           IF WS-GLMAST-ST1 = 10
+               MOVE "END OF NEXT-PAGE SEQUENCE, ENTER A NEW NUMBER."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO RPREV-999.
+           IF WS-GLMAST-ST1 = 91
+               PERFORM START-GL-NEXT
+               GO TO RPREV-010.
+           IF WS-GLMAST-ST1 NOT = 0
+              MOVE "GLMASTER BUSY ON READ-PREV, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLMAST-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLMAST-ST1
+              GO TO RPREV-010.
+           MOVE GL-NUMBER TO WS-GLNUMBER.
+           IF WS-RESTOFACCOUNT = " "
+               GO TO RPREV-010.
+           IF WS-MESSAGE NOT = " "
+               PERFORM ERROR-020.
+       RPREV-999.
            EXIT.
       *
        UPDATE-GLMASTER SECTION.
