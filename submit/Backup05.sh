@@ -1,5 +1,33 @@
 echo Your Friday Backup is in Process,  Please be patient... 
 
+echo Removing USB Data Files ...... 
+rm /media/ctools/USB/data01/*
+rm /media/ctools/USB/data02/*
+rm /media/ctools/USB/data03/*
+rm /media/ctools/USB/data04/*
+rm /media/ctools/USB/data05/*
+rm /media/ctools/USB/data06/*
+rm /media/ctools/USB/data07/*
+rm /media/ctools/USB/data08/*
+rm /media/ctools/USB/data09/*
+rm /media/ctools/USB/data10/*
+rm /media/ctools/USB/data11/*
+rm /media/ctools/USB/data12/*
+
+echo Removing BACKUPHDD Data Files ...... 
+rm /media/ctools/BACKUPHDD/ctools/data01/*
+rm /media/ctools/BACKUPHDD/ctools/data02/*
+rm /media/ctools/BACKUPHDD/ctools/data03/*
+rm /media/ctools/BACKUPHDD/ctools/data04/*
+rm /media/ctools/BACKUPHDD/ctools/data05/*
+rm /media/ctools/BACKUPHDD/ctools/data06/*
+rm /media/ctools/BACKUPHDD/ctools/data07/*
+rm /media/ctools/BACKUPHDD/ctools/data08/*
+rm /media/ctools/BACKUPHDD/ctools/data09/*
+rm /media/ctools/BACKUPHDD/ctools/data10/*
+rm /media/ctools/BACKUPHDD/ctools/data11/*
+rm /media/ctools/BACKUPHDD/ctools/data12/*
+
 mkdir /media/ctools/USB/data01
 mkdir /media/ctools/USB/data02
 mkdir /media/ctools/USB/data03

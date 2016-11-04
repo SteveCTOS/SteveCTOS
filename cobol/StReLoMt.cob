@@ -74,10 +74,11 @@
        77  WS-TOTALPRICE        PIC 9(8)V99 VALUE 0.
        77  WS-ABOVE-BODY        PIC X VALUE " ".
        77  WS-AVERAGECOST       PIC 9(8)V99 VALUE 0.
-       77  WS-PORDER-PROGRAM    PIC X(8) VALUE "StOrStIq".
-       77  WS-PORDERINQ-PROGRAM PIC X(8) VALUE "StOrOrIq".
-       77  WS-STOCK-INQUIRY     PIC X(8) VALUE "StMastIq".
-       77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
+       77  WS-PORDER-PROGRAM     PIC X(8) VALUE "StOrStIq".
+       77  WS-PORDER-PRN-PROGRAM PIC X(8) VALUE "StOrPrRp".
+       77  WS-PORDERINQ-PROGRAM  PIC X(8) VALUE "StOrOrIq".
+       77  WS-STOCK-INQUIRY      PIC X(8) VALUE "StMastIq".
+       77  WS-INQUIRY-PROGRAM    PIC X(8) VALUE "StMastIq".
        77  WS-PERCENT           PIC 9(2)V99 VALUE 0.
        77  WS-QTY               PIC 9(5) VALUE 0.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
@@ -211,7 +212,7 @@
            03  WS-MM-DESC      PIC X(3) OCCURS 12.
        01  WS-PRINTER-INFO.
            03  WS-PRN-FIL     PIC X(8) VALUE " ".
-           03  WS-PRN-NAME    PIC X(12) VALUE " ".
+           03  WS-PRN-NAME    PIC X(25) VALUE " ".
        01  JOURNAL-DATA.
            03  WS-JRN.
                05  WS-JRN-1STCHAR   PIC X(2) VALUE "PI".
@@ -364,7 +365,7 @@
        GET-001.
             MOVE "Printer:"   TO WS-PRN-FIL
             MOVE Ws-Printer   To WS-PRN-NAME
-            MOVE 0458 TO POS
+            MOVE 0404 TO POS
             DISPLAY WS-PRINTER-INFO AT POS.
        GET-005.
            MOVE 2510 TO POS
@@ -518,6 +519,22 @@
             IF STRE-TRANSACTION-CODE = 3
              IF WS-YN = "Y"
                PERFORM PRINT-ORDER-SLIP.
+            IF STRE-TRANSACTION-CODE = 3
+             IF WS-YN = "E"
+               CLOSE STOCK-MASTER
+               CLOSE OUTSTANDING-ORDERS
+               PERFORM CLEAR-SCREEN
+               MOVE WS-ORDERNUMBER TO WS-LINK-PORDER
+               MOVE WS-CREDITOR    TO WS-LINK-ACCOUNT
+               CALL WS-PORDER-PRN-PROGRAM USING WS-LINKAGE
+               PERFORM CLEAR-SCREEN
+               CANCEL WS-PORDER-PRN-PROGRAM
+               MOVE " " TO WS-LINK-PORDER
+               MOVE 0   TO WS-LINK-ACCOUNT
+               PERFORM OPEN-000
+               PERFORM OPEN-020
+               PERFORM DISPLAY-FORM
+               GO TO GET-999.
             IF STRE-TRANSACTION-CODE NOT = 1 AND NOT = 2
                GO TO GET-999.
             IF STRE-TRANSACTION-CODE = 1 OR = 2
@@ -2477,7 +2494,8 @@
            DISPLAY "PRINT THE ORDER, Y=YES N=NO : [ ]" AT POS.
            MOVE 3010 TO POS.
            DISPLAY 
-           "FOR FULL SUPPLIER DETAILS PRINT FROM ORDER RE-PRINT PROGRAM"
+      *   "FOR FULL SUPPLIER DETAILS PRINT FROM ORDER RE-PRINT PROGRAM"
+           "OR ENTER 'E' TO CALL THE EMAIL PROGRAM TO SEND NOW."
                 AT POS.
            MOVE 2941 TO POS.
 
@@ -2498,6 +2516,9 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-008.
        UPOO-009.
+           IF WS-YN = "E"
+               PERFORM ERROR-020
+               GO TO UPOO-060.
            IF WS-YN = "Y"
                MOVE 1 TO SUB-1
                GO TO UPOO-010.
@@ -2680,8 +2701,8 @@
                MOVE " " TO WS-ORDERNOTFOUND
                GO TO UPOO-112.
            IF WS-OUTORD-ST1 NOT = 0
-                MOVE "STORDER BUSY ON READ, 'ESC' TO RETRY."
-                 TO WS-MESSAGE
+               MOVE "STORDER BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-OUTORD-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -2797,11 +2818,15 @@
        UPOO-130.
            ADD 1 TO SUB-1.
            IF B-STOCKNUMBER (SUB-1) = "      "
-                GO TO UPOO-999.
+                GO TO UPOO-900.
            IF SUB-1 < 81
                GO TO UPOO-110.
            PERFORM ERROR1-020
            PERFORM ERROR-020.
+       UPOO-900.
+           IF WS-YN NOT = "E"
+               GO TO UPOO-999.
+           PERFORM CLEAR-SCREEN.
        UPOO-999.
            EXIT.
       *

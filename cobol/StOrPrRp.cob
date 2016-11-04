@@ -61,7 +61,7 @@
        77  WS-COMM-MESSAGE      PIC X(60) VALUE " ".
        77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
-       77  WS-PRINTING-TYPE            PIC X VALUE " ".
+       77  WS-PRINTING-TYPE     PIC X VALUE " ".
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 5.
@@ -470,6 +470,8 @@
            MOVE " " TO WS-PRINTER.
            MOVE WS-PRINTERNAME (21) TO WS-PRINTER.
         CONTROL-041.
+           IF WS-LINK-PORDER > " " 
+               PERFORM END-OFF.
            IF WS-FAX-Y-N NOT = "N"
                PERFORM CONTROL-001
                PERFORM CONTROL-006
@@ -506,18 +508,20 @@
            MOVE " " TO WS-ORDER-NUMBER WS-SUPPLIER-ACCEPT
                        WS-COPIES-ACCEPT WS-FAX-Y-N.
            MOVE 0 TO WS-SLIP-COPIES WS-SUPPLIER WS-SLIP-COPIES.
+           IF WS-LINK-PORDER > " "
+               MOVE WS-LINK-PORDER TO WS-ORDER-NUMBER.
            PERFORM CLEAR-010.
            MOVE 1010 TO POS.
            DISPLAY "ENTER THE ORDER NUMBER   : [                    ]"
             AT POS.
            MOVE 1038 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 20        TO CDA-DATALEN.
-           MOVE 7         TO CDA-ROW.
-           MOVE 37        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-ORDER-NUMBER TO CDA-DATA.
+           MOVE 20              TO CDA-DATALEN.
+           MOVE 7               TO CDA-ROW.
+           MOVE 37              TO CDA-COL.
+           MOVE CDA-WHITE       TO CDA-COLOR.
+           MOVE 'F'             TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ORDER-NUMBER.
 
@@ -573,7 +577,11 @@
        UPOO-004.
            PERFORM ERROR1-020
            MOVE 1210 TO POS.
-           DISPLAY WS-MESSAGE AT POS
+           DISPLAY WS-MESSAGE AT POS.
+           IF WS-LINK-ACCOUNT > 0
+              MOVE WS-LINK-ACCOUNT TO WS-SUPPLIER-ACCEPT
+           ELSE
+              MOVE " "             TO WS-SUPPLIER-ACCEPT.
            DISPLAY "ENTER THE SUPPLIER NUMBER: [       ]" AT POS.
            MOVE 1410 TO POS.
            DISPLAY "Enter the ACCOUNT NUMBER and <Return>, OR" AT POS.
@@ -582,12 +590,12 @@
            " through Accounts." AT POS.
            MOVE 1238 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
-           MOVE 7         TO CDA-DATALEN.
-           MOVE 9         TO CDA-ROW.
-           MOVE 37        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE WS-SUPPLIER-ACCEPT TO CDA-DATA.
+           MOVE 7                  TO CDA-DATALEN.
+           MOVE 9                  TO CDA-ROW.
+           MOVE 37                 TO CDA-COL.
+           MOVE CDA-WHITE          TO CDA-COLOR.
+           MOVE 'F'                TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER-ACCEPT.
 
@@ -807,11 +815,11 @@
             DISPLAY WS-EMAIL-ADDR AT POS.
 
            MOVE WS-EMAIL-ADDR TO CDA-DATA.
-           MOVE 40        TO CDA-DATALEN.
-           MOVE 26        TO CDA-ROW.
-           MOVE 10        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE 40            TO CDA-DATALEN.
+           MOVE 26            TO CDA-ROW.
+           MOVE 10            TO CDA-COL.
+           MOVE CDA-WHITE     TO CDA-COLOR.
+           MOVE 'F'           TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-EMAIL-ADDR.
 
