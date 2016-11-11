@@ -1,2 +1,6 @@
-set_verbose DB_VERB_FILEOPS_ALL 0
-set_verbose DB_VERB_WAITSFOR 0
+set_memory_init DB_MEM_LOCK         8196
+set_memory_init DB_MEM_LOCKER       8196
+set_memory_init DB_MEM_LOCKOBJECT   8196
+set_lk_max_lockers                  8196
+set_lk_max_locks                    8196
+set_lk_max_objects                  8196

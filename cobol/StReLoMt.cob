@@ -63,6 +63,7 @@
        77  WS-CANCEL            PIC X VALUE " ".
        77  WS-PRINT-COSTS       PIC X VALUE " ".
        77  WS-YN                PIC X VALUE " ".
+       77  WS-EMAIL-FAX         PIC X VALUE " ".
        77  WS-CRJRN-INPUT-ONLY  PIC X VALUE " ".
        77  WS-NEXT              PIC X VALUE " ".
        77  WS-OLD-ORDER         PIC X VALUE " ".
@@ -515,12 +516,11 @@
                PERFORM PRINT-RETURN-SLIP
                PERFORM WRITE-CRJRN-INV-TRANS
                PERFORM UPDATE-OUT-ORDERS.
-               
             IF STRE-TRANSACTION-CODE = 3
              IF WS-YN = "Y"
                PERFORM PRINT-ORDER-SLIP.
             IF STRE-TRANSACTION-CODE = 3
-             IF WS-YN = "E"
+             IF WS-EMAIL-FAX = "Y"
                CLOSE STOCK-MASTER
                CLOSE OUTSTANDING-ORDERS
                PERFORM CLEAR-SCREEN
@@ -2283,7 +2283,7 @@
            DISPLAY "PRESS <RETURN> TO ACCEPT THIS ORDER" AT POS.
            ADD 50 TO POS.
 
-           MOVE WS-ORDERNUMBER TO CDA-DATA.
+           MOVE ' '            TO CDA-DATA.
            MOVE 1              TO CDA-DATALEN.
            MOVE 27             TO CDA-ROW.
            MOVE 50             TO CDA-COL.
@@ -2483,8 +2483,8 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-005.
        UPOO-008.
-           IF WS-DUEDATE = 0 OR = " "
-               GO TO UPOO-005.
+      *     IF WS-DUEDATE = 0 OR = " "
+      *         GO TO UPOO-005.
       * ABOVE TWO LINES REMOVED TO ALLOW FOR ZERO DUE DATE
       * RE: CHANGE DATED 23/6/2001
       
@@ -2492,11 +2492,6 @@
            MOVE " " TO WS-MESSAGE WS-YN.
            DISPLAY WS-MESSAGE AT POS.
            DISPLAY "PRINT THE ORDER, Y=YES N=NO : [ ]" AT POS.
-           MOVE 3010 TO POS.
-           DISPLAY 
-      *   "FOR FULL SUPPLIER DETAILS PRINT FROM ORDER RE-PRINT PROGRAM"
-           "OR ENTER 'E' TO CALL THE EMAIL/FAX PROGRAM TO SEND NOW."
-                AT POS.
            MOVE 2941 TO POS.
 
            MOVE ' '       TO CDA-DATA.
@@ -2510,15 +2505,14 @@
 
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-005.
+           IF WS-YN NOT = "Y" AND NOT = "N"
+               GO TO UPOO-008.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO UPOO-009
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-008.
        UPOO-009.
-           IF WS-YN = "E"
-               PERFORM ERROR-020
-               GO TO UPOO-060.
            IF WS-YN = "Y"
                MOVE 1 TO SUB-1
                GO TO UPOO-010.
@@ -2668,6 +2662,33 @@
            DISPLAY WS-MESSAGE AT POS.
            MOVE 2910 TO POS.
            DISPLAY WS-MESSAGE AT POS.
+       UPOO-101.
+           MOVE 2910 TO POS.
+           MOVE " " TO WS-MESSAGE.
+           
+           DISPLAY WS-MESSAGE AT POS.
+           DISPLAY "SEND EMAIL OR FAX Y=YES N=NO: [ ]" AT POS.
+           MOVE 2941 TO POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 40        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-EMAIL-FAX.
+           
+           IF W-ESCAPE-KEY = 4
+               GO TO UPOO-060.
+           IF WS-EMAIL-FAX NOT = "Y" AND NOT = "N"
+               GO TO UPOO-101.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO UPOO-102
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO UPOO-101.
+       UPOO-102.
            MOVE 2910 TO POS.
            DISPLAY "THE ORDER IS BEING PROCESSED, PLEASE WAIT." AT POS.
            
@@ -2824,9 +2845,9 @@
            PERFORM ERROR1-020
            PERFORM ERROR-020.
        UPOO-900.
-           IF WS-YN NOT = "E"
-               GO TO UPOO-999.
-           PERFORM CLEAR-SCREEN.
+      *     IF WS-EMAIL-FAX NOT = "Y"
+      *         GO TO UPOO-999.
+      *     PERFORM CLEAR-SCREEN.
        UPOO-999.
            EXIT.
       *
@@ -3424,6 +3445,8 @@
            MOVE 0 TO SLIP-CNT
                      WS-SUPPLIER-AMOUNT.
            MOVE 66 TO SLIP-LINE.
+           MOVE WS-DOTPRINTER TO WS-PRINTER-SAVE.
+           PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
            GO TO POS-005.
            MOVE 2910 TO POS
