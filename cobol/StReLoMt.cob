@@ -2492,6 +2492,11 @@
            MOVE " " TO WS-MESSAGE WS-YN.
            DISPLAY WS-MESSAGE AT POS.
            DISPLAY "PRINT THE ORDER, Y=YES N=NO : [ ]" AT POS.
+           MOVE 3010 TO POS
+           DISPLAY 
+           "IF YOU WANT TO PRINT & EMAIL/FAX THE ORDER ANSWER Y NOW."
+               AT POS
+           
            MOVE 2941 TO POS.
 
            MOVE ' '       TO CDA-DATA.
