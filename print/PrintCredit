@@ -4,29 +4,20 @@ pdftk /ctools/spl/$1.tempcr1.pdf background /ctools/dev/source/print/CNoteOverla
 pdftk /ctools/spl/$1.tempcr2.pdf cat 1-endwest output /ctools/spl/$1CrPrintCo$2.pdf
 
 lp -d $3 /ctools/spl/$1CrPrintCo$2.pdf
-#lp -d $3 $4
 
-#FORMAT FOR PRINTING IS:
+#FORMAT FOR STANDARD FILE PRINTING IS:
 #lp -d W-PRINTERNAME W-PRINTFILE
-
-#--So far the variables which will be specified from inside the COBOL programs are:
-#---$1 = The username                         e.g. steve
-#---$2 = The company number from 01 to 12     e.g. 07
-#---$3 = The Printername to print the file to e.g. MP250
-#---$4 = The Print file name which will replace /ctools/spl/CrPrintCo01.pdf when specified in COBOL
-
-
-
-  #--- add any extra commands here - perhap cups printing
-  #--- or sendfax via hylaFAX
-#fi
-
-#PrintInvoice Routine
-#python fohtotext.py -r invoice -T /ctools/spl/$1.temp0.txt /ctools/spl/$1InPrintCo$2
-#text2pdf /ctools/spl/$1.temp0.txt -fCourier-Bold -t8 -s10 -x842 -y605 -c135 -l48 > /ctools/spl/$1.temp1.pdf
-#pdftk /ctools/spl/$1.temp1.pdf background /ctools/dev/source/print/InvoiceOverlay$2.pdf output /ctools/spl/$1.temp2.pdf
-#pdftk /ctools/spl/$1.temp2.pdf cat 1-endwest output /ctools/spl/$1InPrintCo$2.pdf
 #
-#lp -d $3 /ctools/spl/$1InPrintCo$2.pdf
+#To print off the command line after making changes to the e.g. /ctools/spl/steveCrPrintCo08 file: 
+# command is: PrintCredit   $1  $2 $3        $4                                                   
+#        e.g. PrintCredit steve 08 CTJ-MP171 /ctools/spl/CrPrintCo                                
+#                                                                                                  
+#--So far the variables which will be specified from inside the COBOL programs are:                
+#---$1 = The username                         e.g. steve                                           
+#---$2 = The company number from 01 to 12     e.g. 07                                              
+#---$3 = The Printername to print the file to e.g. MP250
+#---$4 = The Print file name which will replace /ctools/spl/InPrintCo01.pdf when specified in COBOL
 
-
+#this param is 4 from within the Invoice/Credit print program
+#---$4 = Print Y/N : Y=Print, N=No Print (Create PDF ONLY for Docutrieve Purposes)
+#

@@ -26,6 +26,8 @@ set (copy_list
   DB_CONFIG
   Deadlock.sh
   Doculogix.sh
+  FnbRename.sh
+  FaxStatus.sh
   FNBDebtor.sh
   GlGroup.sh
   GlGroupReports.Sub
