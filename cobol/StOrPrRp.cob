@@ -536,7 +536,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-000.
        UPOO-001.
-           MOVE "Y" TO WS-STILL-ON-ORDER.
+      *     MOVE "Y" TO WS-STILL-ON-ORDER.
            MOVE 1210 TO POS.
            DISPLAY
            "Y=ONLY ITEMS STILL ON ORDER, N=ORIG ORDER QTY." AT POS
@@ -545,7 +545,7 @@
             AT POS.
            MOVE 1145 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'Y'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 8         TO CDA-ROW.
            MOVE 44        TO CDA-COL.
@@ -556,6 +556,8 @@
 
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-000.
+           IF WS-STILL-ON-ORDER NOT = "Y" AND NOT = "N"
+               GO TO UPOO-001.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO UPOO-002
            ELSE
