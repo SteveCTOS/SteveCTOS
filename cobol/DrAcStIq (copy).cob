@@ -31,15 +31,10 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  LINE-TOT             PIC 9(5) VALUE 0.
        77  LINE-UNAPPLIED-TOT   PIC 9(5) VALUE 0.
-       77  WS-BODY-LINE         PIC ZZ9.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
        01  WS-DRTRANS-STATUS.
            03  WS-DRTRANS-ST1   PIC 99.
-       01  WS-SCROLL-NUMBERS.
-           03  WS-SCROLL-NUM OCCURS 1000.
-             05  WS-DR-TYPE       PIC 99.
-             05  WS-DR-TRANS      PIC 9(6).
        01  WS-TYPES.
            03  FILLER          PIC X(7) VALUE "INVOICE".
            03  FILLER          PIC X(7) VALUE "PAYMENT".
@@ -132,19 +127,13 @@
        CONTROL-009.
            PERFORM OPEN-FILES
            PERFORM CLEAR-SCREEN.
-       CONTROL-010.
+       CONT-010.
             PERFORM DISPLAY-FORM.
             PERFORM GET-DATA.
-            GO TO CONTROL-010.
-       CONTROL-999.
-            EXIT.
+            GO TO CONT-010.
       *
         GET-DATA SECTION.
         GET-000.
-            PERFORM ERROR1-020.
-            PERFORM ERROR-020.
-
-            PERFORM CLEAR-MEMORY.
             MOVE "N" TO WS-ANSWER.
             MOVE "                         " TO F-NAMEFIELD.
 
@@ -183,11 +172,6 @@
         GET-010.
             PERFORM ERROR1-020.
             PERFORM ERROR-020.
-            MOVE 2701 TO POS 
-            DISPLAY WS-MESSAGE AT POS
-            MOVE 2801 TO POS 
-            DISPLAY WS-MESSAGE AT POS.
-            
 
             MOVE "ACCNO"           TO F-FIELDNAME.
             MOVE 5                 TO F-CBFIELDNAME.
@@ -362,14 +346,7 @@
             MOVE 1                TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            PERFORM READ-ALL-TRANSACTIONS.
-            PERFORM FILL-BODY.
-            IF F-EXIT-CH = X"07" OR = X"09"
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE 1 TO F-INDEX
-                MOVE "Y" TO WS-ANSWER
-                GO TO GET-999.
-      *      PERFORM READ-TRANSACTIONS.
+            PERFORM READ-TRANSACTIONS.
        GET-040.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
@@ -532,139 +509,85 @@
        RDTR-999.
            EXIT.
       *
-       FILL-BODY SECTION.
-       FILL-000.
-           OPEN INPUT DEBTOR-TRANS-FILE.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR-000
-              CALL "C$SLEEP" USING 1
-              PERFORM ERROR1-020
-              PERFORM ERROR-020
-              CLOSE DEBTOR-TRANS-FILE
-              GO TO FILL-000.
-
-           MOVE 1 TO F-INDEX.
-           MOVE 1 TO SUB-1 SUB-2 SUB-3.
-      *     PERFORM SCROLL-NEXT.
-           PERFORM SCROLL-PREVIOUS-PAGE.
-
-           MOVE 2702 TO POS
-           DISPLAY "Press 'PgDn' For More, OR 'PgUp' For Prev,"
-           AT POS
-           ADD 43 TO POS
-           DISPLAY "'F12' OR 'F11' to Scroll Up or Dn," AT POS
-           MOVE 2808 TO POS
-           DISPLAY 
-           "OR 'ESC' To Clear The Screen, Or 'F10' To Print All" &
-           " Transactions !" AT POS.
-       FILL-010.
-           MOVE 3015 TO POS
-           DISPLAY "Current Line#: " AT POS
-           ADD 16 TO POS
-           MOVE SUB-1 TO WS-BODY-LINE
-           DISPLAY WS-BODY-LINE AT POS.
-
-           IF SUB-1 < 1
-              MOVE 1 TO SUB-1 F-INDEX.
-           MOVE "                   "             TO F-NAMEFIELD.
-           MOVE "TYPEOFTRANS"                     TO F-FIELDNAME.
-           MOVE 11                                TO F-CBFIELDNAME.
-           MOVE 7                                 TO F-CBFIELDLENGTH.
-           PERFORM USER-FILL-FIELD.
-           PERFORM READ-FIELD-ALPHA.
-      *UP-ARROW
-           IF F-EXIT-CH = X"01" AND F-INDEX = 1
-            IF SUB-1 = 1
-              MOVE X"07" TO F-EXIT-CH
-              GO TO FILL-900
-            ELSE
-              PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010.
-           IF F-EXIT-CH = X"01" AND F-INDEX > 1
-              SUBTRACT 1 FROM F-INDEX 
-                              SUB-1
-            IF F-INDEX > 0
-              GO TO FILL-010
-            ELSE
-              MOVE 1 TO F-INDEX
-              PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010.
-      *SCROLL-UP
-           IF F-EXIT-CH = X"11"
-            IF SUB-1 NOT > SUB-9
-              PERFORM SCROLL-NEXT
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-      *SCROLL-DOWN
-           IF F-EXIT-CH = X"13"
-            IF SUB-1 NOT > SUB-9
-              PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-      *NEXT-PAGE
-           IF F-EXIT-CH = X"0C"
-            IF SUB-1 NOT > SUB-9
-              PERFORM SCROLL-NEXT-PAGE
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-      *PREV-PAGE
-           IF F-EXIT-CH = X"05"
-              PERFORM SCROLL-PREVIOUS-PAGE
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010.
-      *TAB - <ALT-F8>
-           IF F-EXIT-CH = X"09"
-              GO TO FILL-900.
-      *ESC
-           IF F-EXIT-CH = X"07"
-              GO TO FILL-900.
-      *DOWN-ARROW
-           IF F-EXIT-CH = X"0B" AND F-INDEX < 10
-            IF SUB-1 NOT = SUB-9
-              ADD 1 TO F-INDEX SUB-1
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-           MOVE 7 TO F-CBFIELDLENGTH.
-           PERFORM READ-FIELD-ALPHA.
-      *RETURN
-           IF F-EXIT-CH = X"0A" AND F-INDEX < 10
-             IF SUB-1 NOT = SUB-9
-              ADD 1 TO F-INDEX SUB-1
-              GO TO FILL-010
+       READ-DEBTORS SECTION.
+       RD-000.
+            READ DEBTOR-MASTER
+                INVALID KEY NEXT SENTENCE.
+            IF WS-DEBTOR-ST1 = 35 OR 49 OR 23
+                MOVE " " TO DR-NAME DR-ADDRESS1 DR-ADDRESS2
+                         DR-ADDRESS3 DR-DEL-ADDRESS1 DR-DEL-ADDRESS2
+                         DR-DEL-ADDRESS3
+                MOVE "UNKNOWN" TO DR-NAME
+                MOVE 0 TO DR-POST-CODE
+                GO TO RD-999.
+            IF WS-DEBTOR-ST1 NOT = 0
+               MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                GO TO RD-000.
+       RD-999.
+            EXIT.
+      *
+       START-DEBTOR SECTION.
+       ST-ST-000.
+              MOVE WS-DEBTORNUMBER TO DR-ACCOUNT-NUMBER.
+              MOVE 0               TO DRTR-DATE.
+              START DEBTOR-MASTER KEY NOT < DR-ACCOUNT-NUMBER.
+       ST-ST-999.
+             EXIT.
+      *
+       READ-DEBTOR-NEXT SECTION.
+       R-ST-NX-000.
+             MOVE 0 TO WS-DEBTOR-ST1.
+             MOVE " " TO WS-MESSAGE
+             MOVE 3010 TO POS
+             DISPLAY WS-MESSAGE AT POS.
+       R-ST-NX-005. 
+             READ DEBTOR-MASTER NEXT
+                 AT END NEXT SENTENCE.
+             IF WS-DEBTOR-ST1 = 0
+                 GO TO R-ST-NX-999
              ELSE
-              GO TO FILL-010.
-       FILL-050.
-           ADD 1 TO SUB-1 F-INDEX.
-           IF SUB-1 > 1000
-               MOVE "1000 LINES ARE UP, 'ESC' TO <TAB>."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO FILL-900.
-           IF F-INDEX < 11
-               GO TO FILL-010.
-           SUBTRACT 1 FROM SUB-1.
-           IF SUB-1 < 1
-              MOVE 1 TO SUB-1.
-           PERFORM SCROLL-NEXT.
-           MOVE 1 TO F-INDEX.
-           GO TO FILL-010.
-       FILL-900.
-           CLOSE DEBTOR-TRANS-FILE.
-       FILL-999.
-           EXIT.
+               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               PERFORM START-DEBTOR
+               GO TO R-ST-NX-005.
+       R-ST-NX-999.
+             EXIT.
+      *
+       READ-DEBTOR-PREVIOUS SECTION.
+       RDPR-000.
+             MOVE 0 TO WS-DEBTOR-ST1.
+             MOVE " " TO WS-MESSAGE
+             MOVE 3010 TO POS
+             DISPLAY WS-MESSAGE AT POS.
+       RDPR-005. 
+             READ DEBTOR-MASTER PREVIOUS
+                 AT END NEXT SENTENCE.
+             IF WS-DEBTOR-ST1 = 0
+                 GO TO RDPR-999
+             ELSE
+               MOVE 
+               "DRTRANS BUSY ON START-PREV, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
+               PERFORM START-DEBTOR
+               GO TO RDPR-005.
+       RDPR-999.
+             EXIT.
       *
        PRINT-ROUTINE SECTION.
        PRR-0000.
@@ -780,289 +703,18 @@
        PRR-999.
            EXIT.
       *
-       READ-ALL-TRANSACTIONS SECTION.
-       RDALL-000.
-           OPEN INPUT DEBTOR-TRANS-FILE.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR-000
-              CALL "C$SLEEP" USING 1
-              PERFORM ERROR1-020
-              PERFORM ERROR-020
-              CLOSE DEBTOR-TRANS-FILE
-              GO TO RDALL-000.
-           MOVE 1 TO F-INDEX.
-       RDALL-005.
-           MOVE DR-ACCOUNT-NUMBER TO DRTR-ACCOUNT-NUMBER.
-           MOVE 0                 TO DRTR-DATE.
-           START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
-                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-                GO TO RDALL-999.
-           IF WS-DRTRANS-ST1 NOT = 0
-               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-              GO TO RDALL-005.
-       RDALL-010.
-          READ DEBTOR-TRANS-FILE NEXT
-               AT END NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 10
-               MOVE 1 TO F-INDEX
-               CLOSE DEBTOR-TRANS-FILE
-               GO TO RDALL-900.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 
-              "DRTRANS BUSY ON READ-ALL-NEXT, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-               GO TO RDALL-010.
-           IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
-               GO TO RDALL-900.
-       RDALL-020.
-           MOVE DRTR-TYPE               TO WS-DR-TYPE (SUB-1)
-           MOVE DRTR-TRANSACTION-NUMBER TO WS-DR-TRANS (SUB-1).
-           
-           IF SUB-1 < 1000
-              ADD 1 TO SUB-1 F-INDEX
-              GO TO RDALL-010.
-              
-           MOVE "THERE ARE MORE THAN 1000 TRANSACTIONS ON THIS ACCOUNT"
-             TO WS-MESSAGE
-             PERFORM ERROR1-000
-           MOVE "PRESS 'Esc' TO EXIT THE READ-ALL SECTION."
-             TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             PERFORM ERROR1-020.
-       RDALL-900.
-           SUBTRACT 1 FROM SUB-1
-           MOVE SUB-1 TO SUB-9.
-           IF SUB-9 < 0
-               MOVE 0 TO SUB-9.
-           
-           MOVE 2912 TO POS.
-           DISPLAY "Total # of Lines:" AT POS
-           ADD 19 TO POS.
-           MOVE SUB-9 TO WS-BODY-LINE.
-           DISPLAY WS-BODY-LINE AT POS.
-           ADD 1 TO SUB-9.
-                
-           CLOSE DEBTOR-TRANS-FILE.
-       RDALL-999.
-           EXIT.
-      *
-       READ-DR-TRANS-ONLY SECTION.
-       RD-TR-ONLY-005.
-           IF SUB-1 > SUB-9
-      *         PERFORM CLEAR-020
-               GO TO RD-TR-ONLY-999.
-               
-           MOVE WS-DR-TYPE (SUB-1)  TO DRTR-TYPE.
-           MOVE WS-DR-TRANS (SUB-1) TO DRTR-TRANSACTION-NUMBER.
-           START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
-                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-                GO TO RD-TR-ONLY-999.
-           IF WS-DRTRANS-ST1 NOT = 0
-               MOVE "DRTRANS-ONLY BUSY START, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-              GO TO RD-TR-ONLY-005.
-       RD-TR-ONLY-010.
-          READ DEBTOR-TRANS-FILE
-               INVALID KEY NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 10
-               MOVE 1 TO F-INDEX
-               CLOSE DEBTOR-TRANS-FILE
-               GO TO RD-TR-ONLY-999.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 
-              "DRTRANS BUSY ON READ-ONLY, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-               GO TO RD-TR-ONLY-010.
-       RD-TR-ONLY-999.
-           EXIT.
-      *
-       SCROLL-NEXT SECTION.
-       NEXT-000.
-            ADD 1  TO SUB-1.
-            IF SUB-1 > SUB-9
-               MOVE SUB-9 TO SUB-1.
-            IF SUB-1 < 1
-               MOVE 1 TO SUB-1 F-INDEX.
-            MOVE 1 TO F-INDEX.
-            PERFORM CLEAR-TRANSACTIONS.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 > 989
-                 MOVE 989 TO SUB-1.
-       NEXT-010.
-            PERFORM SCROLLING.
-       NEXT-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 11
-                GO TO NEXT-010.
-            IF SUB-1 > 989  
-                GO TO NEXT-025.
-            MOVE 1 TO F-INDEX.
-       NEXT-025.
-            SUBTRACT 10 FROM SUB-1.
-            IF SUB-1 > 989
-              IF SUB-25 > 989
-               COMPUTE F-INDEX = 10 - (1001 - SUB-9)
-               MOVE SUB-25 TO SUB-1
-            ELSE
-               MOVE 1 TO F-INDEX. 
-            IF F-INDEX > 10
-                MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-
-      *      IF SUB-1 > 999
-      *          GO TO NEXT-999.
-       NEXT-999.
-             EXIT.
-      *
-       SCROLL-NEXT-PAGE SECTION.
-       NEXT-PAGE-000.
-            ADD 10  TO SUB-1.
-            IF SUB-1 > SUB-9
-               MOVE SUB-9 TO SUB-1.
-            IF SUB-1 < 1
-               MOVE 1 TO SUB-1 F-INDEX.
-            MOVE 1 TO F-INDEX.
-            PERFORM CLEAR-TRANSACTIONS.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 > 989
-                 MOVE 989 TO SUB-1.
-       NEXT-PAGE-010.
-            PERFORM SCROLLING.
-       NEXT-PAGE-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 11
-                GO TO NEXT-PAGE-010.
-            IF SUB-1 > 989  
-                GO TO NEXT-PAGE-025.
-            MOVE 1 TO F-INDEX.
-       NEXT-PAGE-025.
-            SUBTRACT 10 FROM SUB-1.
-            IF SUB-1 > 989
-              IF SUB-25 > 989
-               COMPUTE F-INDEX = 10 - (1001 - SUB-9)
-               MOVE SUB-25 TO SUB-1
-            ELSE
-               MOVE 1 TO F-INDEX. 
-            IF F-INDEX > 10
-                MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       NEXT-PAGE-999.
-             EXIT.
-      *
-       SCROLL-PREVIOUS-PAGE SECTION.
-       PREV-PAGE-000.
-            PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 10 FROM SUB-1.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                 MOVE 1 TO SUB-1.
-       PREV-PAGE-010.
-            PERFORM SCROLLING.
-       PREV-PAGE-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 11
-                GO TO PREV-PAGE-010.
-            MOVE 1 TO F-INDEX.
-            SUBTRACT 10 FROM SUB-1.
-       PREV-PAGE-025.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       PREV-PAGE-999.
-            EXIT.
-      *
-       SCROLL-PREVIOUS SECTION.
-       PREV-000.
-            PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 10 FROM SUB-1.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                 MOVE 1 TO SUB-1.
-       PREV-010.
-            PERFORM SCROLLING.
-       PREV-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 11
-                GO TO PREV-010.
-            MOVE 1 TO F-INDEX.
-            SUBTRACT 1 FROM SUB-1.
-       PREV-025.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       PREV-999.
-            EXIT.
-      *
        SCROLLING SECTION.
        SCROLL-000.
-            IF SUB-1 < SUB-9
-               PERFORM READ-DR-TRANS-ONLY
-            ELSE
-               GO TO SCROLL-999.
-       
-            MOVE "TYPEOFTRANS"            TO F-FIELDNAME.
-            MOVE 11                       TO F-CBFIELDNAME.
+            MOVE "TYPEOFTRANS" TO F-FIELDNAME.
+            MOVE 11 TO F-CBFIELDNAME.
             MOVE WS-TYPE-DESC (DRTR-TYPE) TO F-NAMEFIELD.
-            MOVE 7                        TO F-CBFIELDLENGTH.
+            MOVE 7 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "REFNO"         TO F-FIELDNAME.
-            MOVE 5               TO F-CBFIELDNAME.
+            MOVE "REFNO" TO F-FIELDNAME.
+            MOVE 5 TO F-CBFIELDNAME.
             MOVE DRTR-REFERENCE2 TO F-EDNAMEFIELDNUM.
-            MOVE 6               TO F-CBFIELDLENGTH.
+            MOVE 6 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-NUMERIC.
 
             MOVE "DATEOFREF"  TO F-FIELDNAME.
@@ -1073,10 +725,10 @@
             MOVE 10           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "DATE-DEL"       TO F-FIELDNAME.
-            MOVE 8                TO F-CBFIELDNAME.
+            MOVE "DATE-DEL"    TO F-FIELDNAME.
+            MOVE 8             TO F-CBFIELDNAME.
             IF DRTR-DEL-DATE = 0
-               MOVE " "           TO F-NAMEFIELD
+               MOVE " " TO F-NAMEFIELD
             ELSE
                MOVE DRTR-DEL-DATE TO SPLIT-DATE
                PERFORM CONVERT-DATE-FORMAT
@@ -1084,10 +736,10 @@
             MOVE 10               TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "ORDERNUM"      TO F-FIELDNAME.
-            MOVE 8               TO F-CBFIELDNAME.
+            MOVE "ORDERNUM" TO F-FIELDNAME.
+            MOVE 8 TO F-CBFIELDNAME.
             MOVE DRTR-REFERENCE1 TO F-NAMEFIELD.
-            MOVE 18              TO F-CBFIELDLENGTH.
+            MOVE 18 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "BEGINAMT"          TO F-FIELDNAME
@@ -1104,32 +756,12 @@
        SCROLL-999.
              EXIT.
       *
-       CLEAR-MEMORY SECTION.
-       CMS-005.
-            MOVE 1 TO SUB-1.
-            MOVE 0 TO SUB-9.
-       CMS-010.
-            IF WS-DR-TYPE (SUB-1) NOT = 0
-                MOVE 0 TO WS-DR-TYPE (SUB-1)
-                          WS-DR-TRANS (SUB-1)
-            ELSE
-                GO TO CMS-900.
-            IF SUB-1 < 1000
-               ADD 1 TO SUB-1
-               GO TO CMS-010.
-       CMS-900.
-            MOVE 1 TO SUB-1.
-       CMS-999.
-            EXIT.
-      *
        CLEAR-TRANSACTIONS SECTION.
        CLTR-000.
-            MOVE 1 TO F-INDEX.
-      *      MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO SUB-1 F-INDEX.
        CLTR-010.
-            IF F-INDEX > 10
+            IF SUB-1 > 10
                 GO TO CLTR-999.
-       CLTR-020.
             MOVE "TYPEOFTRANS" TO F-FIELDNAME
             MOVE 11            TO F-CBFIELDNAME
             MOVE " "           TO F-NAMEFIELD
@@ -1171,92 +803,11 @@
             MOVE " "            TO F-NAMEFIELD
             MOVE 10             TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
-       CLTR-900.
-      *      ADD 1 TO SUB-1 F-INDEX.
-            ADD 1 TO F-INDEX.
+
+            ADD 1 TO SUB-1 F-INDEX.
             GO TO CLTR-010.
        CLTR-999.
             EXIT.
-      *
-       READ-DEBTORS SECTION.
-       RD-000.
-            READ DEBTOR-MASTER
-                INVALID KEY NEXT SENTENCE.
-            IF WS-DEBTOR-ST1 = 35 OR 49 OR 23
-                MOVE " " TO DR-NAME DR-ADDRESS1 DR-ADDRESS2
-                         DR-ADDRESS3 DR-DEL-ADDRESS1 DR-DEL-ADDRESS2
-                         DR-DEL-ADDRESS3
-                MOVE "UNKNOWN" TO DR-NAME
-                MOVE 0 TO DR-POST-CODE
-                GO TO RD-999.
-            IF WS-DEBTOR-ST1 NOT = 0
-               MOVE "RECORD LOCKED AT ANOTHER STATION, 'ESC' TO RETRY"
-                 TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                GO TO RD-000.
-       RD-999.
-            EXIT.
-      *
-       START-DEBTOR SECTION.
-       ST-ST-000.
-              MOVE WS-DEBTORNUMBER TO DR-ACCOUNT-NUMBER.
-              MOVE 0               TO DRTR-DATE.
-              START DEBTOR-MASTER KEY NOT < DR-ACCOUNT-NUMBER.
-       ST-ST-999.
-             EXIT.
-      *
-       READ-DEBTOR-NEXT SECTION.
-       R-ST-NX-000.
-             MOVE 0 TO WS-DEBTOR-ST1.
-             MOVE " " TO WS-MESSAGE
-             MOVE 3010 TO POS
-             DISPLAY WS-MESSAGE AT POS.
-       R-ST-NX-005. 
-             READ DEBTOR-MASTER NEXT
-                 AT END NEXT SENTENCE.
-             IF WS-DEBTOR-ST1 = 0
-                 GO TO R-ST-NX-999
-             ELSE
-               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-               MOVE 0 TO WS-DEBTOR-ST1
-               PERFORM START-DEBTOR
-               GO TO R-ST-NX-005.
-       R-ST-NX-999.
-             EXIT.
-      *
-       READ-DEBTOR-PREVIOUS SECTION.
-       RDPR-000.
-             MOVE 0 TO WS-DEBTOR-ST1.
-             MOVE " " TO WS-MESSAGE
-             MOVE 3010 TO POS
-             DISPLAY WS-MESSAGE AT POS.
-       RDPR-005. 
-             READ DEBTOR-MASTER PREVIOUS
-                 AT END NEXT SENTENCE.
-             IF WS-DEBTOR-ST1 = 0
-                 GO TO RDPR-999
-             ELSE
-               MOVE 
-               "DRTRANS BUSY ON START-PREV, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-               MOVE 0 TO WS-DEBTOR-ST1
-               PERFORM START-DEBTOR
-               GO TO RDPR-005.
-       RDPR-999.
-             EXIT.
       *
        OPEN-FILES SECTION.
        OPEN-000.

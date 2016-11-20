@@ -146,6 +146,7 @@
                  PERFORM READ-ORDER-NEXT
                  GO TO GET-010.
             IF F-EXIT-CH = X"05"
+                 PERFORM START-ORDER-PREV
                  PERFORM READ-ORDER-PREVIOUS
                  GO TO GET-010.
             MOVE 20 TO F-CBFIELDLENGTH.
@@ -403,6 +404,19 @@
        ST-ST-999.
              EXIT.
       *
+       START-ORDER-PREV SECTION.
+       ST-PREV-000.
+           MOVE WS-ORDER-NUMBER TO OO-ORDER-NUMBER.
+           MOVE " "             TO OO-STOCK-NUMBER.
+           START OUTSTANDING-ORDERS KEY < OO-KEY
+                 INVALID KEY NEXT SENTENCE.
+          IF WS-OUTORD-ST1 NOT = 0
+               MOVE 88 TO WS-OUTORD-ST1.
+             READ OUTSTANDING-ORDERS PREVIOUS
+                 AT END NEXT SENTENCE.
+       ST-PREV-999.
+             EXIT.
+      *
        READ-ORDER-NEXT SECTION.
        R-ST-NX-005. 
              IF WS-OUTORD-ST1 NOT = 0
@@ -420,6 +434,7 @@
                  PERFORM START-ORDER
                  GO TO R-ST-NX-999.
              IF WS-OUTORD-ST1 = 0
+                 MOVE OO-ORDER-NUMBER TO WS-ORDER-NUMBER
                  GO TO R-ST-NX-999.
              PERFORM START-ORDER.
              IF WS-OUTORD-ST1 = 88
@@ -454,7 +469,7 @@
                  GO TO RPREV-999.
              IF WS-OUTORD-ST1 = 0
                  GO TO RPREV-999.
-             PERFORM START-ORDER.
+             PERFORM START-ORDER-PREV
              IF WS-OUTORD-ST1 = 88
                  GO TO RPREV-999.
             MOVE "ST-ORDERS BUSY ON READ-PREV, 'ESC' TO RETRY."

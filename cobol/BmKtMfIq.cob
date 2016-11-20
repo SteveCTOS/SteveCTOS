@@ -477,9 +477,10 @@
                 PERFORM SCROLL-NEXT-PAGE
                 GO TO FILL-010.
             IF F-EXIT-CH = X"05"
-                PERFORM SCROLL-PREVIOUS
+                PERFORM SCROLL-PREVIOUS-PAGE
                 GO TO FILL-010.
             IF F-EXIT-CH = X"13"
+                PERFORM SCROLL-PREVIOUS
                 GO TO FILL-010.
             IF F-EXIT-CH NOT = X"01" AND NOT = X"0B" AND NOT = X"11"
                      AND NOT = X"0C" AND NOT = X"05" AND NOT = X"13"
@@ -986,9 +987,37 @@
        NEXT-PAGE-999.
              EXIT.
       *
+       SCROLL-PREVIOUS-PAGE SECTION.
+       PREV-PAGE-000.
+            SUBTRACT 12 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       PREV-PAGE-010.
+            PERFORM SCROLLING.
+       PREV-PAGE-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF SUB-1 > 125   
+                GO TO PREV-PAGE-030.
+            IF F-INDEX < 13
+                GO TO PREV-PAGE-010.
+       PREV-PAGE-030.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 12 FROM SUB-1.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+             MOVE 3010 TO POS
+             DISPLAY "    BODY LINE: " AT POS
+             ADD 16 TO POS
+             MOVE SUB-1 TO WS-BODY-LINE
+             DISPLAY WS-BODY-LINE AT POS.
+       PREV-PAGE-999.
+             EXIT.
+      *
        SCROLL-PREVIOUS SECTION.
        PREV-000.
-            SUBTRACT 12 FROM SUB-1.
+            SUBTRACT 1 FROM SUB-1.
             MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
                  MOVE 1 TO SUB-1.

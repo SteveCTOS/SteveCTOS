@@ -556,7 +556,7 @@
             MOVE "ST-DESC"  TO F-FIELDNAME
             MOVE 7          TO F-CBFIELDNAME
             MOVE " "        TO F-NAMEFIELD
-            MOVE 20         TO F-CBFIELDLENGTH
+            MOVE 40         TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA
 
             MOVE "QTY-PER-KIT" TO F-FIELDNAME

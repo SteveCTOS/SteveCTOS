@@ -2982,7 +2982,7 @@
                  AT POS.
             ADD 48 TO POS.
 
-           MOVE WS-ORDERNUMBER TO CDA-DATA.
+           MOVE "Y"            TO CDA-DATA.
            MOVE 1              TO CDA-DATALEN.
            MOVE 26             TO CDA-ROW.
            MOVE 57             TO CDA-COL.
@@ -3002,7 +3002,8 @@
                MOVE X"19" TO F-EXIT-CH
                PERFORM CHECK-PASSWORD
              IF WS-PASSWORD-VALID = "Y"
-               GO TO CTCO-999
+               GO TO CTCO-015
+      *         GO TO CTCO-999
              ELSE
                MOVE "PASSWORD INVALID, PLEASE RE-ENTER." TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
