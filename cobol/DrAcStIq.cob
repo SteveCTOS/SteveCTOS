@@ -364,7 +364,7 @@
 
             PERFORM READ-ALL-TRANSACTIONS.
             PERFORM FILL-BODY.
-            IF F-EXIT-CH = X"07" OR = X"09"
+            IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
                 PERFORM CLEAR-TRANSACTIONS
                 MOVE 1 TO F-INDEX
                 MOVE "Y" TO WS-ANSWER
@@ -630,6 +630,15 @@
       *ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.
+      * <f10> to print
+           IF F-EXIT-CH = X"1F"
+                CLOSE DEBTOR-TRANS-FILE
+                PERFORM PRINT-ROUTINE
+                PERFORM CLEAR-TRANSACTIONS
+                CLOSE DEBTOR-TRANS-FILE
+                MOVE " " TO WS-MESSAGE
+                PERFORM ERROR-020
+                GO TO FILL-900.
       *DOWN-ARROW
            IF F-EXIT-CH = X"0B" AND F-INDEX < 10
             IF SUB-1 NOT = SUB-9
@@ -669,7 +678,9 @@
        PRINT-ROUTINE SECTION.
        PRR-0000.
            PERFORM ERROR-020
-           MOVE 2710 TO POS
+           MOVE 2701 TO POS
+           DISPLAY WS-MESSAGE AT POS
+           MOVE 2801 TO POS
            DISPLAY WS-MESSAGE AT POS
            MOVE 2810 TO POS
            DISPLAY "Printing In Progress, Please Be Patient." AT POS
