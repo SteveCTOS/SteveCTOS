@@ -4712,7 +4712,7 @@
            MOVE "N"                         TO STTR-COMPLETE
                                                STTR-ST-COMPLETE
                                                STTR-AC-COMPLETE
-                                               B-NEWLINE (SUB-1)
+                                               B-NEWLINE (SUB-1).
            IF WS-REPAIR > 0
             IF B-REPAIR (SUB-1) = "R"
            MOVE "R"                         TO STTR-COMPLETE

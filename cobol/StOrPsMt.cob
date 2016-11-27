@@ -13,6 +13,7 @@
           Copy "SelectStOrders".
           Copy "SelectSlDaily".
           Copy "SelectStOrderGen".
+          Copy "SelectCrMaster".
       *
         DATA DIVISION.
         FILE SECTION.
@@ -22,28 +23,35 @@
            COPY ChlfdOutOrd.
            COPY ChlfdStkReceipts.
            COPY ChlfdOrderGen.
+           COPY ChlfdCreditor.
       *
        WORKING-STORAGE SECTION.
-       77  WS-TYPE              PIC X VALUE " ".
-       77  WS-YN                PIC X VALUE " ".
-       77  WS-OLD-ORDER         PIC X VALUE " ".
-       77  WS-ABOVE-BODY        PIC X VALUE " ".
-       77  WS-SUPPLIER          PIC X(7) VALUE " ".
-       77  WS-SEA-AIR           PIC X VALUE " ".
-       77  WS-STOCKNUMBER       PIC X(34) VALUE " ".
-       77  WS-ORDER-NUMBER      PIC X(20) VALUE " ".
-       77  WS-CHANGE-ORDER      PIC X VALUE " ".
-       77  WS-DELIVERY          PIC X VALUE " ".
-       77  WS-DELVIA            PIC X(20) VALUE " ".
-       77  WS-ACCEPT-DATE       PIC X(10) VALUE " ".
-       77  WS-DUEDATE           PIC 9(8) VALUE 0.
-       77  WS-ANSWER            PIC X VALUE " ".
-       77  WS-ORDERNOTFOUND     PIC X VALUE " ".
-       77  WS-END               PIC X VALUE " ".
-       77  WS-READS             PIC 99.
-       77  WS-DEL-SUB           PIC 9 VALUE 0.
+       77  WS-TYPE               PIC X VALUE " ".
+       77  WS-YN                 PIC X VALUE " ".
+       77  WS-OLD-ORDER          PIC X VALUE " ".
+       77  WS-ABOVE-BODY         PIC X VALUE " ".
+       77  WS-SUPPLIER           PIC X(7) VALUE " ".
+       77  WS-CREDITOR           PIC 9(7) VALUE 0.
+       77  WS-CREDITOR-ACCEPT    PIC X(7) VALUE " ".
+       77  WS-ACCEPT             PIC X VALUE " ".
+       77  WS-NEXT               PIC X VALUE " ".
+       77  WS-SEA-AIR            PIC X VALUE " ".
+       77  WS-STOCKNUMBER        PIC X(34) VALUE " ".
+       77  WS-ORDERNUMBER        PIC X(20) VALUE " ".
+       77  WS-CHANGE-ORDER       PIC X VALUE " ".
+       77  WS-DELIVERY           PIC X VALUE " ".
+       77  WS-DELVIA             PIC X(20) VALUE " ".
+       77  WS-ACCEPT-DATE        PIC X(10) VALUE " ".
+       77  WS-DUEDATE            PIC 9(8) VALUE 0.
+       77  WS-ANSWER             PIC X VALUE " ".
+       77  WS-ORDERNOTFOUND      PIC X VALUE " ".
+       77  WS-END                PIC X VALUE " ".
+       77  WS-EMAIL-FAX          PIC X VALUE " ".
+       77  WS-PORDER-PRN-PROGRAM PIC X(8) VALUE "StOrPrRp".
+       77  WS-READS              PIC 99.
+       77  WS-DEL-SUB            PIC 9 VALUE 0.
        01  WS-COMMENT-LINE.
-           03  WS-COMMENT       PIC X(60) OCCURS 3.
+           03  WS-COMMENT        PIC X(60) OCCURS 3.
        01  STORE-DEL.
          02  WS-DEL-OCCUR OCCURS 10.
            03  WS-DEL-TYPE       PIC X.
@@ -61,6 +69,8 @@
            03  WS-OUTORD-ST1      PIC 99.
        01  WS-GEN-STATUS.
            03  WS-GEN-ST1         PIC 99.
+       01  WS-CREDITOR-STATUS.
+           03  WS-CREDITOR-ST1     PIC 99.
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST     PIC X(20) VALUE " ".
            03  WS-DAILY-2ND     PIC X(20) VALUE " ".
@@ -110,6 +120,20 @@
            MOVE 3001 TO POS
            DISPLAY WS-MESSAGE AT POS
            PERFORM UPDATE-OUT-ORDERS.
+           IF WS-EMAIL-FAX = "Y"
+               CLOSE STOCK-MASTER
+               CLOSE OUTSTANDING-ORDERS
+               PERFORM CLEAR-SCREEN
+               MOVE WS-ORDERNUMBER TO WS-LINK-PORDER
+               MOVE WS-CREDITOR    TO WS-LINK-ACCOUNT
+               CALL WS-PORDER-PRN-PROGRAM USING WS-LINKAGE
+               PERFORM CLEAR-SCREEN
+               CANCEL WS-PORDER-PRN-PROGRAM
+               MOVE " " TO WS-LINK-PORDER
+               MOVE 0   TO WS-LINK-ACCOUNT
+               PERFORM OPEN-000
+               PERFORM OPEN-020
+               GO TO GET-999.
        GET-999.
             EXIT.
       *
@@ -267,7 +291,7 @@
              (STRE-UNIT-PRICE - ((STRE-UNIT-PRICE * OO-DISC) /100))
                      * OG-QUANTITY. 
             MOVE WS-DATE                 TO STRE-REFERENCE-DATE
-            MOVE WS-ORDER-NUMBER         TO STRE-ORDER-NUMBER.
+            MOVE WS-ORDERNUMBER         TO STRE-ORDER-NUMBER.
        UPST-960.
             WRITE STOCK-RECEIPTS-REC
                  INVALID KEY NEXT SENTENCE.
@@ -300,7 +324,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-OLD-ORDER.
 
-      *     ACCEPT WS-OLD-ORDER AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
            IF W-ESCAPE-KEY = 4
@@ -315,7 +338,7 @@
            IF WS-OLD-ORDER NOT = "Y" AND NOT = "N"
                  GO TO GOOS-000.
            IF WS-OLD-ORDER = "Y"
-                 MOVE " " TO WS-ORDER-NUMBER
+                 MOVE " " TO WS-ORDERNUMBER
                  GO TO GOOS-999.
            PERFORM READ-PARAMETER-LOCK.
            MOVE PA-SUPPLY-ORDER-NUMBER TO WS-ORDERREF.
@@ -327,7 +350,7 @@
             "THE ORDER NUMBER FOR THIS ORDER IS :[                    ]"
               AT POS.
            MOVE 0847 TO POS.
-           DISPLAY WS-ORDER-NUMBER AT POS.
+           DISPLAY WS-ORDERNUMBER AT POS.
        GOOS-010.
            MOVE 0910 TO POS.
            DISPLAY "PRESS <RETURN> TO ACCEPT THIS ORDER." AT POS.
@@ -378,7 +401,7 @@
            IF SUB-1 < 20
               ADD 1 TO SUB-1 SUB-2
               GO TO OC-020.
-           MOVE ALPHA-RATE TO WS-ORDER-NUMBER.
+           MOVE ALPHA-RATE TO WS-ORDERNUMBER.
        OC-999.
            EXIT.
       *
@@ -386,9 +409,9 @@
        UPOO-000.
            PERFORM CLEAR-010.
            PERFORM GET-ORDER-OFF-SYSTEM.
-           IF WS-ORDER-NUMBER NOT = " "
+           IF WS-ORDERNUMBER NOT = " "
                GO TO UPOO-001.
-           MOVE " " TO WS-ORDER-NUMBER.
+           MOVE " " TO WS-ORDERNUMBER.
            MOVE 0810 TO POS.
            DISPLAY "ENTER THE ORDER NUMBER: [                    ]"
             AT POS.
@@ -401,9 +424,8 @@
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-ORDER-NUMBER.
+           MOVE CDA-DATA TO WS-ORDERNUMBER.
 
-      *     ACCEPT WS-ORDER-NUMBER AT POS.
            IF W-ESCAPE-KEY = 3
                PERFORM END-OFF.
            IF W-ESCAPE-KEY = 4
@@ -415,9 +437,9 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-000.
        UPOO-001.
-           IF WS-ORDER-NUMBER = "           "
+           IF WS-ORDERNUMBER = "           "
                GO TO UPOO-000.
-           MOVE WS-ORDER-NUMBER TO OO-ORDER-NUMBER.
+           MOVE WS-ORDERNUMBER TO OO-ORDER-NUMBER.
        UPOO-002.
            MOVE " " TO WS-DELIVERY.
            PERFORM ERROR1-020.
@@ -434,7 +456,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DELIVERY.
 
-      *     ACCEPT WS-DELIVERY AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -471,15 +492,16 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER.
 
-      *     ACCEPT WS-SUPPLIER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-002.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
-               GO TO UPOO-005
+               GO TO UPOO-006
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO UPOO-003.
-       UPOO-005.
+       UPOO-006.
+           PERFORM GET-CREDITOR-INFO.
+       UPOO-007.
            IF WS-SUPPLIER = " "
                GO TO UPOO-003.
            MOVE 0    TO WS-DUEDATE.
@@ -499,7 +521,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT-DATE.
 
-      *     ACCEPT WS-ACCEPT-DATE AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-003.
            IF WS-ACCEPT-DATE = " "
@@ -508,7 +529,7 @@
            MOVE WS-ACCEPT-DATE TO ALPHA-RATE.
            PERFORM DATE-CHECKING.
            IF SIGN-FOUND = 9
-              GO TO UPOO-005.
+              GO TO UPOO-007.
            MOVE WS-NEW-DATE TO WS-CH-DATE CONVERT-DATE.
            MOVE WS-CONVERT-DATE TO DISPLAY-DATE.
            DISPLAY DISPLAY-DATE AT POS.
@@ -516,16 +537,16 @@
             MOVE SPLIT-DATE TO WS-DUEDATE.
            PERFORM CHECK-DATE-VALID.
            IF SIGN-FOUND = 9
-              GO TO UPOO-005.
+              GO TO UPOO-007.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO UPOO-008
            ELSE
                DISPLAY " " AT 3079 WITH BELL
-               GO TO UPOO-005.
+               GO TO UPOO-007.
        UPOO-008.
       ****************************************************************
       *     IF WS-DUEDATE = 0 OR = " "                               *
-      *         GO TO UPOO-005.                                      *
+      *         GO TO UPOO-007.                                      *
       * REMOVED IN THE MAIN PROG CHANGE 23/6/2001 TO ALLOW FOR ZERO  *
       * DUE DATE WHICH = DUE DATE NOT CONFIRMED EVEN IF THE ORDER IS *
       * CONFIRMED AS RECEIVED BY SUPPLIER.  DUE DATE NOW MEANS THIS  *
@@ -552,9 +573,8 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TYPE.
 
-      *     ACCEPT WS-TYPE AT POS.
            IF W-ESCAPE-KEY = 4
-               GO TO UPOO-005.
+               GO TO UPOO-007.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO UPOO-030
            ELSE
@@ -582,7 +602,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SEA-AIR.
 
-      *     ACCEPT WS-SEA-AIR AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO UPOO-008.
            IF WS-SEA-AIR NOT = "S" AND NOT = "A"
@@ -597,13 +616,36 @@
            MOVE " " TO WS-MESSAGE.
            MOVE 2610 TO POS.
            DISPLAY WS-MESSAGE AT POS.
+       UPOO-101.
+           MOVE 2910 TO POS.
+           MOVE " " TO WS-MESSAGE.
+           DISPLAY WS-MESSAGE AT POS.
+
+           DISPLAY "SEND EMAIL OR FAX Y=YES N=NO: [ ]" AT POS.
+           MOVE 2941 TO POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 26        TO CDA-ROW.
+           MOVE 40        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-EMAIL-FAX.
+           
+           IF W-ESCAPE-KEY = 4
+               GO TO UPOO-060.
+           IF WS-EMAIL-FAX NOT = "Y" AND NOT = "N"
+               GO TO UPOO-101.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO UPOO-110
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO UPOO-101.
+       UPOO-110.
            PERFORM ERROR1-020.
            MOVE 2910 TO POS.
            DISPLAY "THE ORDER IS BEING PROCESSED, PLEASE WAIT." AT POS.
-           PERFORM START-GEN-RECORD.
-           IF WS-END = "Y"
-               GO TO UPOO-900.
-       UPOO-110.
            PERFORM READ-NEXT-TEMP-FILE.
            IF WS-END = "Y"
                GO TO UPOO-900.
@@ -657,7 +699,7 @@
            GO TO UPOO-130.
        UPOO-125.
            PERFORM READ-STOCK.
-           MOVE WS-ORDER-NUMBER   TO OO-ORDER-NUMBER
+           MOVE WS-ORDERNUMBER   TO OO-ORDER-NUMBER
            MOVE OG-STOCK-NUMBER   TO OO-STOCK-NUMBER
            MOVE OG-QUANTITY       TO OO-QUANTITY
                                      OO-ORIG-QTY
@@ -700,6 +742,171 @@
            PERFORM OPEN-050.
            MOVE " " TO WS-END.
        UPOO-999.
+           EXIT.
+      *
+       GET-CREDITOR-INFO SECTION.
+       GET-CRED-004.
+           MOVE "N" TO WS-NEXT.
+           PERFORM ERROR1-020
+           MOVE 2810 TO POS.
+           DISPLAY WS-MESSAGE AT POS
+           DISPLAY "ENTER THE SUPPLIER NUMBER: [       ]" AT POS.
+           MOVE 2910 TO POS.
+           DISPLAY "Enter the ACCOUNT NUMBER and <Return>, OR" AT POS.
+           MOVE 3015 TO POS.
+           DISPLAY
+           "Enter a SHORT NAME and <PgDn> to scroll through Acc'S."
+             AT POS.
+           MOVE 2838 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 7         TO CDA-DATALEN.
+           MOVE 25        TO CDA-ROW.
+           MOVE 37        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-CREDITOR-ACCEPT.
+
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO GET-CRED-005.
+           IF W-ESCAPE-KEY = 7
+                GO TO GET-CRED-006
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO GET-CRED-004.
+       GET-CRED-005.
+           IF WS-CREDITOR-ACCEPT = 0 OR = " "
+               GO TO GET-CRED-004.
+           MOVE WS-CREDITOR-ACCEPT TO WS-CREDITOR
+           PERFORM READ-CREDITOR.
+           IF CR-NAME = "** UNKNOWN **"
+             MOVE 
+            "RE-ENTER THE NUMBER OF A VALID SUPPLIER, 'ESC' TO RETRY."
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             GO TO GET-CRED-004.
+           GO TO GET-CRED-020.
+       GET-CRED-006.
+           MOVE WS-CREDITOR-ACCEPT TO F-NAMEFIELD.
+       GET-CRED-007.
+           PERFORM READ-NEXT-CREDITOR.
+           IF CR-NAME = "** UNKNOWN **"
+           MOVE 
+            "RE-ENTER THE NUMBER OF A VALID SUPPLIER, 'ESC' TO RETRY."
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             GO TO GET-CRED-004.
+       GET-CRED-020.
+           PERFORM ERROR-020
+           PERFORM ERROR1-020
+           MOVE 2810 TO POS
+           DISPLAY WS-MESSAGE AT POS
+           MOVE 2810 TO POS
+           DISPLAY "SUPPLIER: [       ]" AT POS.
+           MOVE 2821 TO POS.
+           DISPLAY CR-ACCOUNT-NUMBER AT POS.
+           MOVE 2832 TO POS.
+           DISPLAY CR-NAME AT POS.
+           MOVE 2910 TO POS.
+           DISPLAY "Press <Return> to ACCEPT This Account,    " AT POS.
+           MOVE 3015 TO POS.
+           DISPLAY 
+           "OR Press <PgDn> To Scroll Through More Accounts       "
+            AT POS.
+           MOVE 3075 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 7         TO CDA-DATALEN.
+           MOVE 25        TO CDA-ROW.
+           MOVE 74        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-ACCEPT.
+ 
+           IF W-ESCAPE-KEY = 1 OR = 2 OR = 5
+               GO TO GET-CRED-900.
+           IF W-ESCAPE-KEY = 7
+               MOVE "Y" TO WS-NEXT
+               MOVE " " TO WS-CREDITOR-ACCEPT
+               GO TO GET-CRED-007.
+           IF W-ESCAPE-KEY = 6
+               MOVE " " TO WS-CREDITOR-ACCEPT
+               GO TO GET-CRED-004.
+           GO TO GET-CRED-020.
+       GET-CRED-900.
+            PERFORM ERROR-020
+            PERFORM ERROR1-020
+            MOVE 2810 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+
+           MOVE 2110 TO POS
+           DISPLAY "SUPPLIER: [       ]" AT POS.
+           MOVE 2121 TO POS.
+           DISPLAY CR-ACCOUNT-NUMBER AT POS.
+           MOVE 2132 TO POS.
+           DISPLAY CR-NAME AT POS.
+       GET-CRED-999.
+            EXIT.
+      *
+       READ-CREDITOR SECTION.
+       RCR-000.
+           MOVE "N"         TO WS-NEXT.
+           MOVE WS-CREDITOR TO CR-ACCOUNT-NUMBER.
+           START CREDITOR-MASTER KEY NOT < CR-KEY
+                INVALID KEY NEXT SENTENCE.
+       RCR-010.
+           READ CREDITOR-MASTER
+                INVALID KEY NEXT SENTENCE.
+           IF WS-CREDITOR-ST1 = 23 OR 35 OR 49
+                MOVE "** UNKNOWN **" TO CR-NAME
+                MOVE 88              TO WS-CREDITOR-ST1
+                GO TO RCR-999.
+           IF WS-CREDITOR-ST1 NOT = 0
+               MOVE "CREDITOR BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CREDITOR-ST1
+               GO TO RCR-010.
+       RCR-999.
+             EXIT.
+      *
+       READ-NEXT-CREDITOR SECTION.
+       RNC-000.
+           IF WS-NEXT = "Y"
+               GO TO RNC-010.
+           MOVE F-NAMEFIELD TO CR-NAME
+           START CREDITOR-MASTER KEY NOT < CR-ALT-KEY
+                  INVALID KEY NEXT SENTENCE.
+           IF WS-CREDITOR-ST1 NOT = 0
+                MOVE "** UNKNOWN **" TO CR-NAME
+                MOVE 88              TO WS-CREDITOR-ST1
+                MOVE "N"             TO WS-NEXT
+                GO TO RNC-999.
+       RNC-010.
+           READ CREDITOR-MASTER NEXT
+                AT END NEXT SENTENCE.
+           IF WS-CREDITOR-ST1 = 10
+                MOVE "END OF SEARCH, 'ESC' TO RE-ENTER A SHORT NAME."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                MOVE "N" TO WS-NEXT
+                GO TO RNC-999.
+           IF WS-CREDITOR-ST1 NOT = 0
+                MOVE "CREDITOR BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CREDITOR-ST1
+               GO TO RNC-010.
+           MOVE CR-ACCOUNT-NUMBER TO WS-CREDITOR.
+       RNC-999.
            EXIT.
       *
        DELETE-GEN-RECORD SECTION.
@@ -777,7 +984,7 @@
             DISPLAY "THIS IS THE ORDER-NUMBER:[              ]"
                  AT POS.
             ADD 26 TO POS.
-            DISPLAY WS-ORDER-NUMBER AT POS.
+            DISPLAY WS-ORDERNUMBER AT POS.
             MOVE 2910 TO POS.
             DISPLAY "DO YOU WISH TO CHANGE THE ORDER-NUMBER ENTERED.[ ]"
                  AT POS.
@@ -799,7 +1006,7 @@
                GO TO CTCO-999.
        CTCO-015.
             PERFORM CTCO-005.
-            MOVE " " TO WS-ORDER-NUMBER.
+            MOVE " " TO WS-ORDERNUMBER.
             MOVE 3010 TO POS
             DISPLAY " ENTER NEW ORDER NUMBER :[               ]"
                  AT POS.
@@ -814,8 +1021,8 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SEA-AIR.
 
-            ACCEPT WS-ORDER-NUMBER AT POS.
-            IF WS-ORDER-NUMBER = " "
+            ACCEPT WS-ORDERNUMBER AT POS.
+            IF WS-ORDERNUMBER = " "
                DISPLAY " " AT 3079 WITH BELL
                GO TO CTCO-015.
             PERFORM CTCO-005 THRU CTCO-006.
@@ -893,6 +1100,14 @@
                   TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO OPEN-040.
+       OPEN-045.
+            OPEN I-O CREDITOR-MASTER.
+            IF WS-CREDITOR-ST1 NOT = 0
+               MOVE 0 TO WS-CREDITOR-ST1
+               MOVE "CREDITOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO OPEN-045.
         OPEN-050.
             OPEN I-O ORDER-GEN-FILE.
             IF WS-GEN-ST1 NOT = 0
@@ -915,6 +1130,7 @@
                  PARAMETER-FILE
                  OUTSTANDING-ORDERS
                  STKRECEIPTS-FILE
+                 CREDITOR-MASTER
                  ORDER-GEN-FILE.
        END-900.
            EXIT PROGRAM.

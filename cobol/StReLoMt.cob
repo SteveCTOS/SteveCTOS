@@ -379,7 +379,7 @@
            DISPLAY WS-MESSAGE AT POS.
         GET-010.
            MOVE 2810 TO POS
-           DISPLAY "2 & <CODE-F8> TO FIND AN ORDER AND DISPLAY" AT POS.
+           DISPLAY "2 & <ALT-F8> TO FIND AN ORDER AND DISPLAY" AT POS.
            MOVE 2911 TO POS
            DISPLAY
            "Suppliers-Order Inq By : X=STOCK, P=PORDER," AT POS
@@ -2494,7 +2494,7 @@
            DISPLAY "PRINT THE ORDER, Y=YES N=NO : [ ]" AT POS.
            MOVE 3010 TO POS
            DISPLAY 
-           "IF YOU WANT TO PRINT & EMAIL/FAX THE ORDER ANSWER Y NOW."
+           "IF YOU WANT TO PRINT & EMAIL/FAX THE ORDER ANSWER 'Y' NOW."
                AT POS
            
            MOVE 2941 TO POS.

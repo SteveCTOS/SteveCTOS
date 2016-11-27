@@ -126,7 +126,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT-DATE.
 
-      *     ACCEPT WS-ACCEPT-DATE AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO GET-999.
            MOVE WS-ACCEPT-DATE TO ALPHA-RATE.
@@ -164,7 +163,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ORDER-NUMBER.
 
-      *     ACCEPT WS-ORDER-NUMBER AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO GET-000.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -189,7 +187,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUPPLIER.
 
-      *     ACCEPT WS-SUPPLIER AT POS.
            IF W-ESCAPE-KEY = 4
                 GO TO GET-010.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -212,7 +209,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CONFIRMED.
 
-      *     ACCEPT WS-CONFIRMED AT POS.
            IF WS-CONFIRMED NOT = "A" AND NOT = "C" AND NOT = "U"
                 MOVE "ENTER ONLY A, C OR U, RE-ENTER" TO WS-MESSAGE
                 PERFORM ERROR-000
@@ -239,8 +235,6 @@
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FOR-LOC.
-
-      *     ACCEPT WS-FOR-LOC AT POS.
            IF WS-FOR-LOC NOT = "B" AND NOT = "F" AND NOT = "L"
                 MOVE "ENTER ONLY B, F OR L, RE-ENTER" TO WS-MESSAGE
                 PERFORM ERROR-000

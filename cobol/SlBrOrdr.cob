@@ -303,12 +303,20 @@
            PERFORM ERROR1-020
            PERFORM ERROR-020
            MOVE 2610 TO POS
-           DISPLAY WS-MESSAGE AT POS
+           DISPLAY WS-MESSAGE AT POS.
+           
            MOVE 2610 TO POS
            DISPLAY "OPENING H/OFFICE FILES........" AT POS.
            PERFORM CHECK-DATA-NAMES.
            MOVE WS-VOL-DIR TO LIST-VOL-DIR (SUB-40).
            PERFORM CHECK-BRANCH-DATA-NAMES.
+           MOVE 2610 TO POS
+           DISPLAY "OPENING H/OFFICE FILES......DONE." AT POS.
+
+           MOVE 
+           "THE ORDER HAS BEEN PLACED ON THE SUPPLIER, 'ESC' TO EXIT."
+            TO WS-MESSAGE
+            PERFORM ERROR1-MESSAGE.     
            PERFORM END-OFF.
        CONT-999.
            Exit.
@@ -328,7 +336,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PORDER.
 
-      *     ACCEPT WS-PORDER AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO GET-999.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -350,25 +357,23 @@
        GET-030.
            MOVE "N" TO WS-RANGE3.
            MOVE 1610 TO POS
-           DISPLAY "ENTER N=NEW P/SLIP, A=ADD TO P/SLIP." AT POS
-           MOVE 1510 TO POS
-           DISPLAY "NB! A=ONLY IF THE PROCESS NOT COMPLETE :[ ]" AT POS
+           DISPLAY "ENTER N=NEW P/SLIP, A=ADD TO P/SLIP:    [ ]" AT POS
+           MOVE 1710 TO POS
+           DISPLAY "NB! A=ONLY IF THE PROCESS IS NOT COMPLETE." AT POS
            ADD 41 TO POS
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 12        TO CDA-ROW.
+           MOVE 13        TO CDA-ROW.
            MOVE 50        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE3.
 
-      *     ACCEPT WS-RANGE3 AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO GET-005.
-      *     IF WS-RANGE3 NOT = "N" AND NOT = "A"
-           IF WS-RANGE3 NOT = "N"
+           IF WS-RANGE3 NOT = "N" AND NOT = "A"
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-030.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -401,7 +406,7 @@
            READ OUTSTANDING-ORDERS NEXT WITH LOCK
                  AT END NEXT SENTENCE.
            IF WS-OUTORD-ST1 = 10
-               GO TO RNSC-999.
+               GO TO RNSC-900.
            IF WS-OUTORD-ST1 NOT = 0
                 MOVE "STOCK-ORDER BUSY ON READ, 'ESC' TO RETRY."
                 TO WS-MESSAGE
@@ -415,7 +420,7 @@
            IF OO-ORDER-NUMBER < WS-PORDER
                GO TO RNSC-005.
            IF OO-ORDER-NUMBER > WS-PORDER
-               GO TO RNSC-999.
+               GO TO RNSC-900.
                
            ADD 1 TO WS-NUMBER
            MOVE 2510 TO POS
@@ -432,6 +437,10 @@
            PERFORM ERROR-020
            
            GO TO RNSC-005.
+       RNSC-900. 
+           PERFORM ERROR1-020.
+           MOVE 2610 TO POS.
+           DISPLAY WS-MESSAGE AT POS.
        RNSC-999.
            EXIT.
       *
@@ -612,6 +621,8 @@
             
            MOVE 0                           TO STTR-INV-NO
            MOVE WS-DATE                     TO STTR-DATE
+                                               STTR-AC-DATE
+                                               STTR-ST-DATE.
            MOVE B-ORDERQTY (SUB-1)          TO STTR-ORDERQTY
            MOVE B-SHIPQTY (SUB-1)           TO STTR-SHIPQTY
            MOVE B-SHIPPEDQTY (SUB-1)        TO STTR-SHIPPEDQTY
@@ -625,18 +636,26 @@
            MOVE B-STOCKCOST (SUB-1)         TO STTR-COST-VALUE.
        WNT-TRANS-800.
            WRITE STOCK-TRANS-REC
-               INVALID KEY NEXT SENTENCE.
+              INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
               MOVE "ST-TRANS BUSY ON WRITE <WNT-800>, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              ADD 1 TO WS-NUMBER STTR-TRANSACTION-NUMBER
+              PERFORM ERROR1-020
+              ADD 1 TO WS-STTRANS-NO STTR-TRANSACTION-NUMBER
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO WNT-TRANS-800.
            IF STTR-TRANSACTION-NUMBER = 0
               MOVE "ST-TRANS-NO = 0 AT WNT-TRANS-800, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              ADD 1 TO WS-NUMBER STTR-TRANSACTION-NUMBER
+              PERFORM ERROR1-020
+              ADD 1 TO WS-STTRANS-NO STTR-TRANSACTION-NUMBER
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO WNT-TRANS-800.
        WNT-TRANS-999.
             EXIT.
