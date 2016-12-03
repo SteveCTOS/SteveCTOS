@@ -40,7 +40,6 @@
        77  PAGE-CNT             PIC 9(3) VALUE 0.
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
-       77  WS-BODY-LINE         PIC ZZ9.
        01  WS-STDESC.
            03  WS-DESC1         PIC X(20) VALUE " ".
            03  WS-DESC2         PIC X(20) VALUE " ".
@@ -51,10 +50,6 @@
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
-       01  WS-SCROLL-NUMBERS.
-           03  WS-SCROLL-NUM OCCURS 500.
-             05  WS-TOOLKIT-NUM       PIC X(15).
-             05  WS-COMPONENT-NUM     PIC X(15).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -138,8 +133,7 @@
        GET-000.
             MOVE 0     TO WS-PRICE WS-TOTAL-PRICE WS-TOTAL-COST.
             MOVE "N"   TO WS-ANSWER.
-            PERFORM CLEAR-MEMORY.
-            
+
             MOVE 2905 TO POS
             DISPLAY 
             "Press 'PgDn' For Next Toolkit List, Or Enter a Toolkit."
@@ -217,18 +211,8 @@
             PERFORM WRITE-FIELD-PRICE.
 
             MOVE " " TO F-EXIT-CH.
-       GET-500.
-            PERFORM READ-ALL-TRANSACTIONS.
-            PERFORM FILL-BODY.
-            IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE 1 TO F-INDEX
-                MOVE "Y" TO WS-ANSWER
-                GO TO GET-999.
 
-      *      PERFORM READ-ALL-TRANSACTIONS.
-      *      MOVE WS-TOOLKIT-NUMBER TO ST-STOCKNUMBER.
-      *      PERFORM READ-TRANSACTIONS.
+            PERFORM READ-TRANSACTIONS.
        GET-900.
             IF WS-ANSWER = "Y"
       *         MOVE TO-TOOLKIT-NUMBER TO ST-STOCKNUMBER
@@ -239,10 +223,8 @@
                GO TO GET-999.
             IF F-INDEX < 15
              IF F-EXIT-CH NOT = X"07"
-                MOVE 2905 TO POS
-              DISPLAY 
-               "Press 'PgUp' To Start Again, 'ESC' To Clear The Screen."
-               AT POS
+               MOVE 2910 TO POS
+               DISPLAY "Press 'ESC' To Clear The Screen." AT POS
                MOVE 3010 TO POS
                DISPLAY "Or Press 'F10' To Print The Kit List." AT POS
                MOVE 15 TO F-INDEX
@@ -252,7 +234,6 @@
                PERFORM ERROR-020.
 
             IF F-EXIT-CH NOT = X"07" AND NOT = X"1F" AND NOT = X"04"
-                     AND NOT = X"05"
                 MOVE 1 TO F-INDEX
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
@@ -263,14 +244,6 @@
                 PERFORM CLEAR-TRANSACTIONS
                 CLOSE TOOLKITS
                 GO TO GET-999.
-            IF F-EXIT-CH = X"05"
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE 1 TO F-EXIT-CH
-                MOVE 1 TO F-INDEX
-                MOVE WS-TOOLKIT-NUMBER TO ST-STOCKNUMBER
-                MOVE 0 TO WS-TOTAL-PRICE
-                          WS-TOTAL-COST
-                GO TO GET-500.
             IF F-EXIT-CH = X"1F"
                 MOVE "Printing In Progress, Please Be Patient."
                    TO WS-MESSAGE
@@ -286,135 +259,6 @@
        GET-999.
             EXIT.
       *
-       FILL-BODY SECTION.
-       FILL-000.
-           MOVE 1 TO F-INDEX.
-           MOVE 1 TO SUB-1 SUB-2 SUB-3.
-      *     PERFORM SCROLL-NEXT.
-           PERFORM SCROLL-PREVIOUS-PAGE.
-
-           MOVE 2702 TO POS
-           DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
-           AT POS
-           ADD 40 TO POS
-           DISPLAY "'F12' OR 'F11' to Scroll Up/Down," AT POS
-           MOVE 2803 TO POS
-           DISPLAY 
-        "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
-           " Transactions." AT POS.
-       FILL-010.
-           MOVE 3015 TO POS
-           DISPLAY "Current Line#: " AT POS
-           ADD 16 TO POS
-           MOVE SUB-1 TO WS-BODY-LINE
-           DISPLAY WS-BODY-LINE AT POS.
-
-           IF SUB-1 < 1
-              MOVE 1 TO SUB-1 F-INDEX.
-           MOVE "                   "             TO F-NAMEFIELD.
-           MOVE "STOCKNUMBER"  TO F-FIELDNAME
-           MOVE 11             TO F-CBFIELDNAME
-           MOVE ST-STOCKNUMBER TO F-NAMEFIELD
-           MOVE 15             TO F-CBFIELDLENGTH
-           PERFORM USER-FILL-FIELD.
-           PERFORM READ-FIELD-ALPHA.
-      *UP-ARROW
-           IF F-EXIT-CH = X"01" AND F-INDEX = 1
-            IF SUB-1 = 1
-              GO TO FILL-010
-            ELSE
-              PERFORM SCROLL-PREVIOUS
-              MOVE 15 TO F-INDEX
-              GO TO FILL-010.
-           IF F-EXIT-CH = X"01" AND F-INDEX > 1
-              SUBTRACT 1 FROM F-INDEX 
-                              SUB-1
-            IF F-INDEX > 0
-              GO TO FILL-010
-            ELSE
-              MOVE 1 TO F-INDEX
-              PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010.
-      *SCROLL-UP
-           IF F-EXIT-CH = X"11"
-            IF SUB-1 NOT > SUB-9
-              PERFORM SCROLL-NEXT
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-      *SCROLL-DOWN
-           IF F-EXIT-CH = X"13"
-            IF SUB-1 NOT > SUB-9
-              PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-      *NEXT-PAGE
-           IF F-EXIT-CH = X"0C"
-            IF SUB-1 NOT > SUB-9
-              PERFORM SCROLL-NEXT-PAGE
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-      *PREV-PAGE
-           IF F-EXIT-CH = X"05"
-              PERFORM SCROLL-PREVIOUS-PAGE
-              MOVE 1 TO F-INDEX
-              GO TO FILL-010.
-      *TAB - <ALT-F8>
-           IF F-EXIT-CH = X"09"
-              GO TO FILL-900.
-      *ESC
-           IF F-EXIT-CH = X"07"
-              GO TO FILL-900.
-      * <f10> to print
-           IF F-EXIT-CH = X"1F"
-                PERFORM PRINT-ROUTINE
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE " " TO WS-MESSAGE
-                PERFORM ERROR-020
-                GO TO FILL-900.
-      *DOWN-ARROW
-           IF F-EXIT-CH = X"0B" AND F-INDEX < 15
-            IF SUB-1 NOT = SUB-9
-              ADD 1 TO F-INDEX SUB-1
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
-           MOVE 7 TO F-CBFIELDLENGTH.
-           PERFORM READ-FIELD-ALPHA.
-      *RETURN
-           IF F-EXIT-CH = X"0A" AND F-INDEX < 15
-             IF SUB-1 NOT = SUB-9
-              ADD 1 TO F-INDEX SUB-1
-              GO TO FILL-010
-             ELSE
-              GO TO FILL-010.
-       FILL-050.
-           ADD 1 TO SUB-1 F-INDEX.
-           IF SUB-1 > 500
-               MOVE "500 LINES ARE UP, 'ESC' TO <TAB>."
-                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO FILL-900.
-           IF F-INDEX < 11
-               GO TO FILL-010.
-           SUBTRACT 1 FROM SUB-1.
-           IF SUB-1 < 1
-              MOVE 1 TO SUB-1.
-           PERFORM SCROLL-NEXT.
-           MOVE 1 TO F-INDEX.
-           GO TO FILL-010.
-       FILL-900.
-           IF F-EXIT-CH = X"1F"
-               CLOSE TOOLKITS.
-       FILL-999.
-           EXIT.
-      *
        READ-TRANSACTIONS SECTION.
        RDTR-000.
            OPEN I-O TOOLKITS.
@@ -428,7 +272,7 @@
               CALL "C$SLEEP" USING 1
               PERFORM ERROR-020
               GO TO RDTR-000.
-           MOVE 1   TO F-INDEX.
+           MOVE 1 TO F-INDEX.
            MOVE "Y" TO WS-NEWINPUT.
        RDTR-005.
            MOVE ST-STOCKNUMBER TO TO-TOOLKIT-NUMBER.
@@ -447,25 +291,13 @@
               PERFORM ERROR-020
               CALL "C$SLEEP" USING 1
               GO TO RDTR-000.
-           MOVE " " TO F-EXIT-CH.
        RDTR-010.
-           IF F-EXIT-CH = " "
-            READ TOOLKITS NEXT
+           READ TOOLKITS NEXT
                AT END NEXT SENTENCE.
-            IF F-EXIT-CH = 1
-            READ TOOLKITS PREVIOUS
-               AT END NEXT SENTENCE.
-           IF F-EXIT-CH = " "
-            IF WS-TOOLKIT-ST1 = 10
+           IF WS-TOOLKIT-ST1 = 10
                MOVE 1 TO F-INDEX
                CLOSE TOOLKITS
                GO TO RDTR-999.
-           IF F-EXIT-CH = 1
-            IF WS-TOOLKIT-ST1 = 10
-               MOVE 1 TO F-INDEX
-               CLOSE TOOLKITS
-               MOVE WS-TOOLKIT-NUMBER TO ST-STOCKNUMBER
-               GO TO RDTR-000.
            IF WS-TOOLKIT-ST1 NOT = 0
                MOVE "TOOLKIT BUSY ON READ-NEXT, 'ESC' TO RETRY."
                TO WS-MESSAGE
@@ -476,31 +308,20 @@
                GO TO RDTR-010.
            IF TO-COMPONENT-NUMBER = " "
                GO TO RDTR-010.
-           IF F-EXIT-CH = " "
-            IF TO-TOOLKIT-NUMBER NOT = WS-TOOLKIT-NUMBER
+           IF TO-TOOLKIT-NUMBER NOT = WS-TOOLKIT-NUMBER
                MOVE 1 TO F-INDEX
                CLOSE TOOLKITS
                GO TO RDTR-999.
-           IF F-EXIT-CH = 1
-            IF TO-TOOLKIT-NUMBER NOT = WS-TOOLKIT-NUMBER
-               MOVE 1 TO F-INDEX
-               CLOSE TOOLKITS
-               MOVE WS-TOOLKIT-NUMBER TO ST-STOCKNUMBER
-               GO TO RDTR-000.
            MOVE 2910 TO POS.
            DISPLAY "                                           " AT POS.
        RDTR-020. 
            IF F-INDEX > 15
-                MOVE 2905 TO POS
-              DISPLAY "Press 'Pgdn' For More, 'PgUp' for Previous,"
-                 AT POS
-                ADD 44 TO POS
-                DISPLAY "OR 'ESC' To Clear The Screen !" AT POS
+                MOVE 2910 TO POS
+                DISPLAY "Press 'PgDn' For More," AT POS
+                ADD 24 TO POS
+                DISPLAY "'ESC' To Clear The Screen !  " AT POS
                 MOVE 3010 TO POS
-                DISPLAY "Or Press 'F10' To Print All Back Orders"
-                 AT POS
-                ADD 40 TO POS
-                DISPLAY "For This Stock Number." AT POS
+                DISPLAY "Or Press 'F10' To Print Kit List." AT POS
                 MOVE 15 TO F-INDEX
                 PERFORM USER-FILL-FIELD.
             PERFORM ERROR1-020
@@ -510,10 +331,6 @@
             IF F-EXIT-CH = X"0C"
                 PERFORM CLEAR-TRANSACTIONS
                 MOVE " " TO F-EXIT-CH
-                MOVE 1 TO F-INDEX.
-            IF F-EXIT-CH = X"05"
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE 1 TO F-EXIT-CH
                 MOVE 1 TO F-INDEX.
             IF F-EXIT-CH = X"07"
                 PERFORM CLEAR-TRANSACTIONS
@@ -531,7 +348,6 @@
                 GO TO RDTR-999.
            IF F-EXIT-CH NOT = X"04" AND NOT = X"0C"
                     AND NOT = X"07" AND NOT = " " AND NOT = X"1F"
-                    AND NOT = 1
                 MOVE 16 TO F-INDEX
                 GO TO RDTR-020.
            MOVE TO-COMPONENT-NUMBER TO ST-STOCKNUMBER.
@@ -540,99 +356,6 @@
            ADD 1 TO F-INDEX.
            GO TO RDTR-010.
        RDTR-999.
-           EXIT.
-      *
-       READ-ALL-TRANSACTIONS SECTION.
-       RDALL-000.
-           OPEN I-O TOOLKITS.
-           IF WS-TOOLKIT-ST1 NOT = 0
-              CLOSE TOOLKITS
-              MOVE "TOOLKITS BUSY ON OPEN, GOING TO RETRY IN 1 SECOND"
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              CALL "C$SLEEP" USING 1
-              PERFORM ERROR-020
-              GO TO RDALL-000.
-       RDALL-005.
-           MOVE ST-STOCKNUMBER TO TO-TOOLKIT-NUMBER.
-           MOVE " "            TO TO-COMPONENT-NUMBER.
-           START TOOLKITS KEY NOT < TO-KEY
-                INVALID KEY NEXT SENTENCE.
-           IF WS-TOOLKIT-ST1 = 23 OR 35 OR 49
-              GO TO RDALL-900.
-           IF WS-TOOLKIT-ST1 NOT = 0
-              CLOSE TOOLKITS
-              MOVE "TOOLKITS BUSY ON START, GOING TO RETRY IN 1 SECOND"
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              PERFORM ERROR-020
-              CALL "C$SLEEP" USING 1
-              GO TO RDALL-000.
-       RDALL-010.
-           READ TOOLKITS NEXT
-               AT END NEXT SENTENCE.
-           IF WS-TOOLKIT-ST1 = 10
-               MOVE 1 TO F-INDEX
-               CLOSE TOOLKITS
-               GO TO RDALL-900.
-           IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE "TOOLKIT BUSY ON READ-NEXT, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-               GO TO RDALL-010.
-           IF TO-COMPONENT-NUMBER = " "
-               GO TO RDALL-010.
-           IF TO-TOOLKIT-NUMBER NOT = WS-TOOLKIT-NUMBER
-               MOVE 1 TO F-INDEX
-               CLOSE TOOLKITS
-               GO TO RDALL-900.
-       RDALL-020.
-           MOVE TO-TOOLKIT-NUMBER   TO WS-TOOLKIT-NUM (SUB-1)
-           MOVE TO-COMPONENT-NUMBER TO WS-COMPONENT-NUM (SUB-1).
-
-           IF SUB-1 < 500
-              ADD 1 TO SUB-1 F-INDEX
-              MOVE TO-COMPONENT-NUMBER TO ST-STOCKNUMBER
-              PERFORM READ-STOCK
-              PERFORM ADD-VALUE
-              GO TO RDALL-010.
-              
-           MOVE "THERE ARE MORE THAN 500 COMPONENTS ON THIS TOOLKT,"
-             TO WS-MESSAGE
-             PERFORM ERROR1-000
-           MOVE "PRESS 'Esc' TO EXIT THE READ-ALL SECTION."
-             TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
-             PERFORM ERROR1-020.
-       RDALL-900.
-           SUBTRACT 1 FROM SUB-1
-           MOVE SUB-1 TO SUB-9.
-           IF SUB-9 < 0
-               MOVE 0 TO SUB-9.
-           
-           MOVE 2912 TO POS.
-           DISPLAY "Total # of Lines:" AT POS
-           ADD 19 TO POS.
-           MOVE SUB-9 TO WS-BODY-LINE.
-           DISPLAY WS-BODY-LINE AT POS.
-           ADD 1 TO SUB-9.
-                
-           CLOSE TOOLKITS.
-
-      *     MOVE TO-COMPONENT-NUMBER TO ST-STOCKNUMBER.
-      *     PERFORM READ-STOCK.
-      *     PERFORM ADD-VALUE.
-      *     GO TO RDALL-010.
-       RDALL-905.
-           PERFORM SCROLL-010.
-       RDALL-999.
            EXIT.
       *
        READ-STOCK SECTION.
@@ -715,41 +438,29 @@
       *
        PRINT-ROUTINE SECTION.
        PRR-000.
-           OPEN I-O TOOLKITS.
-           IF WS-TOOLKIT-ST1 NOT = 0
-              CLOSE TOOLKITS
-              MOVE "TOOLKITS BUSY ON OPEN, GOING TO RETRY IN 1 SECOND"
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              CALL "C$SLEEP" USING 1
-              PERFORM ERROR-020
-              GO TO PRR-000.
-
-           PERFORM ERROR-020.
-           PERFORM ERROR1-020.
-           MOVE 0 TO PAGE-CNT WS-PRICE WS-TOTAL-PRICE
-                              WS-COST  WS-TOTAL-COST
-           MOVE 66 TO LINE-CNT.
-           PERFORM CLEAR-010.
-           MOVE "N" TO WS-PRINT-COSTS.
-           MOVE 2910 TO POS.
-           DISPLAY "PRINT COSTS, Y/N =[ ]" AT POS.
-           ADD 19 TO POS.
-           ACCEPT WS-PRINT-COSTS AT POS.
-           IF WS-PRINT-COSTS NOT = "N" AND NOT = "Y"
+            PERFORM ERROR-020.
+            PERFORM ERROR1-020.
+            MOVE 0 TO PAGE-CNT WS-PRICE WS-TOTAL-PRICE
+                               WS-COST  WS-TOTAL-COST
+            MOVE 66 TO LINE-CNT.
+            PERFORM CLEAR-010.
+            MOVE "N" TO WS-PRINT-COSTS.
+            MOVE 2910 TO POS.
+            DISPLAY "PRINT COSTS, Y/N =[ ]" AT POS.
+            ADD 19 TO POS.
+            ACCEPT WS-PRINT-COSTS AT POS.
+            IF WS-PRINT-COSTS NOT = "N" AND NOT = "Y"
                  GO TO PRR-000.
            PERFORM ERROR1-020.
            
            MOVE "Printing In Progress, Please Be Patient." TO WS-MESSAGE
            PERFORM ERROR-000.
        PRR-001.
-           PERFORM GET-USER-PRINT-NAME.
-           OPEN OUTPUT PRINT-FILE.
-           MOVE WS-TOOLKIT-NUMBER TO TO-TOOLKIT-NUMBER.
-           MOVE " "               TO TO-COMPONENT-NUMBER.
-           START TOOLKITS KEY NOT < TO-KEY.
+            PERFORM GET-USER-PRINT-NAME.
+            OPEN OUTPUT PRINT-FILE.
+            MOVE WS-TOOLKIT-NUMBER TO TO-TOOLKIT-NUMBER.
+            MOVE " "               TO TO-COMPONENT-NUMBER.
+            START TOOLKITS KEY NOT < TO-KEY.
        PRR-002.
             READ TOOLKITS NEXT
                AT END NEXT SENTENCE.
@@ -847,151 +558,8 @@
        PRR-999.
            EXIT.
       *
-       SCROLL-NEXT SECTION.
-       NEXT-000.
-            ADD 1  TO SUB-1.
-            IF SUB-1 > SUB-9
-               MOVE SUB-9 TO SUB-1.
-            IF SUB-1 < 1
-               MOVE 1 TO SUB-1 F-INDEX.
-            MOVE 1 TO F-INDEX.
-            PERFORM CLEAR-TRANSACTIONS.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 > 489
-                 MOVE 489 TO SUB-1.
-       NEXT-010.
-            PERFORM SCROLLING.
-       NEXT-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 16
-                GO TO NEXT-010.
-            IF SUB-1 > 489  
-                GO TO NEXT-025.
-            MOVE 1 TO F-INDEX.
-       NEXT-025.
-            SUBTRACT 15 FROM SUB-1.
-            IF SUB-1 > 489
-              IF SUB-25 > 489
-               COMPUTE F-INDEX = 15 - (501 - SUB-9)
-               MOVE SUB-25 TO SUB-1
-            ELSE
-               MOVE 1 TO F-INDEX. 
-            IF F-INDEX > 15
-                MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       NEXT-999.
-             EXIT.
-      *
-       SCROLL-NEXT-PAGE SECTION.
-       NEXT-PAGE-000.
-            ADD 15  TO SUB-1.
-            IF SUB-1 > SUB-9
-               MOVE SUB-9 TO SUB-1.
-            IF SUB-1 < 1
-               MOVE 1 TO SUB-1 F-INDEX.
-            MOVE 1 TO F-INDEX.
-            PERFORM CLEAR-TRANSACTIONS.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 > 489
-                 MOVE 489 TO SUB-1.
-       NEXT-PAGE-010.
-            PERFORM SCROLLING.
-       NEXT-PAGE-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 16
-                GO TO NEXT-PAGE-010.
-            IF SUB-1 > 989  
-                GO TO NEXT-PAGE-025.
-            MOVE 1 TO F-INDEX.
-       NEXT-PAGE-025.
-            SUBTRACT 15 FROM SUB-1.
-            IF SUB-1 > 489
-              IF SUB-25 > 489
-               COMPUTE F-INDEX = 15 - (501 - SUB-9)
-               MOVE SUB-25 TO SUB-1
-            ELSE
-               MOVE 1 TO F-INDEX. 
-            IF F-INDEX > 15
-                MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       NEXT-PAGE-999.
-             EXIT.
-      *
-       SCROLL-PREVIOUS-PAGE SECTION.
-       PREV-PAGE-000.
-            PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 15 FROM SUB-1.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                 MOVE 1 TO SUB-1.
-       PREV-PAGE-010.
-            PERFORM SCROLLING.
-       PREV-PAGE-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 16
-                GO TO PREV-PAGE-010.
-            MOVE 1 TO F-INDEX.
-            SUBTRACT 15 FROM SUB-1.
-       PREV-PAGE-025.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       PREV-PAGE-999.
-            EXIT.
-      *
-       SCROLL-PREVIOUS SECTION.
-       PREV-000.
-            PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 15 FROM SUB-1.
-            MOVE 1 TO F-INDEX.
-            IF SUB-1 < 1
-                 MOVE 1 TO SUB-1.
-       PREV-010.
-            PERFORM SCROLLING.
-       PREV-020.
-            ADD 1 TO F-INDEX SUB-1.
-            IF F-INDEX < 16
-                GO TO PREV-010.
-            MOVE 1 TO F-INDEX.
-            SUBTRACT 1 FROM SUB-1.
-       PREV-025.
-            IF SUB-1 < 1
-                MOVE 1 TO SUB-1.
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
-            MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
-       PREV-999.
-            EXIT.
-      *
        SCROLLING SECTION.
        SCROLL-000.
-            IF SUB-1 < SUB-9
-               MOVE WS-COMPONENT-NUM (SUB-1) TO ST-STOCKNUMBER
-               PERFORM READ-STOCK
-            ELSE
-               GO TO SCROLL-999.
-       
-
             MOVE "STOCKNUMBER"  TO F-FIELDNAME
             MOVE 11             TO F-CBFIELDNAME
             MOVE ST-STOCKNUMBER TO F-NAMEFIELD
@@ -1024,56 +592,31 @@
             MOVE 5        TO F-CBFIELDNAME
             MOVE ST-PRICE TO F-EDNAMEFIELDPRICE
             MOVE 9        TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-PRICE.
-       SCROLL-010.
+            PERFORM WRITE-FIELD-PRICE
+
+            COMPUTE WS-PRICE = ST-PRICE * TO-QUANTITY
+            ADD WS-PRICE        TO WS-TOTAL-PRICE
             MOVE "TOT-PRICE"    TO F-FIELDNAME
             MOVE 9              TO F-CBFIELDNAME
             MOVE WS-TOTAL-PRICE TO F-EDNAMEFIELDPRICE
             MOVE 9              TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-PRICE.
 
+            COMPUTE WS-COST = ST-AVERAGECOST * TO-QUANTITY
+            ADD WS-COST        TO WS-TOTAL-COST
             MOVE "TOT-COST"    TO F-FIELDNAME
             MOVE 8             TO F-CBFIELDNAME
             MOVE WS-TOTAL-COST TO F-EDNAMEFIELDPRICE
             MOVE 9             TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-PRICE.
        SCROLL-999.
-            EXIT.
-      *
-       ADD-VALUE SECTION.
-       AV-010.
-           COMPUTE WS-PRICE = ST-PRICE * TO-QUANTITY
-           ADD WS-PRICE       TO WS-TOTAL-PRICE.
-           
-           COMPUTE WS-COST = ST-AVERAGECOST * TO-QUANTITY
-           ADD WS-COST        TO WS-TOTAL-COST.
-       AD-999.
-            EXIT.
-      *
-       CLEAR-MEMORY SECTION.
-       CMS-005.
-            MOVE 1 TO SUB-1.
-            MOVE 0 TO SUB-9.
-       CMS-010.
-            IF WS-TOOLKIT-NUM (SUB-1) NOT = " "
-                MOVE " " TO WS-TOOLKIT-NUM (SUB-1)
-                            WS-COMPONENT-NUM (SUB-1)
-            ELSE
-                GO TO CMS-900.
-            IF SUB-1 < 500
-               ADD 1 TO SUB-1
-               GO TO CMS-010.
-       CMS-900.
-            MOVE 1 TO SUB-1.
-       CMS-999.
-            EXIT.
+             EXIT.
       *
        CLEAR-TRANSACTIONS SECTION.
        CLTR-000.
-            MOVE 1 TO F-INDEX.
-      *      MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO SUB-1 F-INDEX.
        CLTR-010.
-            IF F-INDEX > 15
+            IF SUB-1 > 15
                 GO TO CLTR-900.
             MOVE "STOCKNUMBER" TO F-FIELDNAME
             MOVE 11            TO F-CBFIELDNAME
@@ -1105,8 +648,7 @@
             MOVE 9       TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA
 
-            ADD 1 TO F-INDEX.
-      *      ADD 1 TO SUB-1 F-INDEX.
+            ADD 1 TO SUB-1 F-INDEX.
             GO TO CLTR-010.
        CLTR-900.
             MOVE "TOT-PRICE" TO F-FIELDNAME

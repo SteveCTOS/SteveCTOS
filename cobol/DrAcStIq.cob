@@ -553,14 +553,14 @@
            PERFORM SCROLL-PREVIOUS-PAGE.
 
            MOVE 2702 TO POS
-           DISPLAY "Press 'PgDn' For More, OR 'PgUp' For Prev,"
+           DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
            AT POS
-           ADD 43 TO POS
-           DISPLAY "'F12' OR 'F11' to Scroll Up or Dn," AT POS
-           MOVE 2808 TO POS
+           ADD 40 TO POS
+           DISPLAY "'F12' OR 'F11' to Scroll Up/Down," AT POS
+           MOVE 2803 TO POS
            DISPLAY 
-           "OR 'ESC' To Clear The Screen, Or 'F10' To Print All" &
-           " Transactions !" AT POS.
+        "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
+           " Transactions." AT POS.
        FILL-010.
            MOVE 3015 TO POS
            DISPLAY "Current Line#: " AT POS
@@ -579,11 +579,10 @@
       *UP-ARROW
            IF F-EXIT-CH = X"01" AND F-INDEX = 1
             IF SUB-1 = 1
-              MOVE X"07" TO F-EXIT-CH
-              GO TO FILL-900
+              GO TO FILL-010
             ELSE
               PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
+              MOVE 10 TO F-INDEX
               GO TO FILL-010.
            IF F-EXIT-CH = X"01" AND F-INDEX > 1
               SUBTRACT 1 FROM F-INDEX 
