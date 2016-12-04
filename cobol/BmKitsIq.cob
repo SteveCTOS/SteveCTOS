@@ -348,7 +348,8 @@
            IF F-EXIT-CH = X"13"
             IF SUB-1 NOT > SUB-9
               PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
+             IF SUB-1 < 16
+              MOVE F-INDEX TO SUB-1
               GO TO FILL-010
             ELSE
               GO TO FILL-010.

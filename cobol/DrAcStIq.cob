@@ -573,6 +573,7 @@
            MOVE "                   "             TO F-NAMEFIELD.
            MOVE "TYPEOFTRANS"                     TO F-FIELDNAME.
            MOVE 11                                TO F-CBFIELDNAME.
+           MOVE WS-TYPE-DESC (DRTR-TYPE)          TO F-NAMEFIELD.
            MOVE 7                                 TO F-CBFIELDLENGTH.
            PERFORM USER-FILL-FIELD.
            PERFORM READ-FIELD-ALPHA.
@@ -606,7 +607,8 @@
            IF F-EXIT-CH = X"13"
             IF SUB-1 NOT > SUB-9
               PERFORM SCROLL-PREVIOUS
-              MOVE 1 TO F-INDEX
+             IF SUB-1 < 11
+              MOVE F-INDEX TO SUB-1
               GO TO FILL-010
             ELSE
               GO TO FILL-010.
