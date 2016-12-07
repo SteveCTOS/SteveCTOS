@@ -24,8 +24,8 @@
        COPY ChlfdParam.
       *
        WORKING-STORAGE SECTION.
-       77  WS-RANGE1            PIC X(7) VALUE " ".
-       77  WS-RANGE2            PIC X(7) VALUE " ".
+       77  WS-RANGE1            PIC 9(7) VALUE 0.
+       77  WS-RANGE2            PIC 9(7) VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-DETAIL            PIC X VALUE " ".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
@@ -224,6 +224,9 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
+           MOVE 1043 TO POS.
+           DISPLAY WS-RANGE1 AT POS.
+
           IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
           IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -245,6 +248,9 @@
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
+
+           MOVE 1243 TO POS.
+           DISPLAY WS-RANGE2 AT POS.
 
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
@@ -367,6 +373,9 @@
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
                MOVE 88 TO WS-DRTRANS-ST1
+               MOVE 0  TO WS-DRTRANS-ST1
+                          DR-BALANCE
+                        DRTR-AMT-OUTSTANDING
                PERFORM SUBTOTALS
                GO TO PR-999.
        PR-002.
@@ -389,6 +398,7 @@
                PERFORM ERROR-020
                MOVE 0 TO WS-DRTRANS-ST1
                GO TO PR-002.
+               
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
            IF DRTR-ACC-KEY < WS-RANGE1
@@ -399,8 +409,14 @@
                GO TO PR-999
             ELSE
                GO TO PR-999.
+               
+           IF DRTR-ACCOUNT-NUMBER = " "
+               GO TO PR-002.
+           IF DRTR-ACCOUNT-NUMBER = 0
+               GO TO PR-002.
            IF DRTR-AMT-OUTSTANDING = 0
                GO TO PR-002.
+
            IF DR-ACCOUNT-NUMBER = 0
                GO TO PR-005.
            IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER

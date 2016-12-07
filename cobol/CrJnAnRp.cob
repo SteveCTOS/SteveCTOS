@@ -23,8 +23,8 @@
        01  PRINT-REC                PIC X(132).
       *
        WORKING-STORAGE SECTION.
-       77  WS-RANGE1            PIC X(7) VALUE " ".
-       77  WS-RANGE2            PIC X(7) VALUE " ".
+       77  WS-RANGE1            PIC 9(7) VALUE 0.
+       77  WS-RANGE2            PIC 9(7) VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-DATEANSWER        PIC X(10) VALUE " ".
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
@@ -204,6 +204,9 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
+           MOVE 1043 TO POS.
+           DISPLAY WS-RANGE1 AT POS.
+
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -225,6 +228,9 @@
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
+
+           MOVE 1243 TO POS.
+           DISPLAY WS-RANGE2 AT POS.
 
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
@@ -344,10 +350,12 @@
                GO TO PR-002.
            IF CRJRN-UNAPPLIED-AMT = 0
                GO TO PR-002.
+               
            IF CRJRN-CRACC-NUMBER NOT > " "
                GO TO PR-002.
            IF CRJRN-CRACC-NUMBER NOT > 0
                GO TO PR-002.
+               
            IF CRJRN-CRACC-NUMBER = CR-ACCOUNT-NUMBER
                GO TO PR-020.
            PERFORM SUBTOTALS.
