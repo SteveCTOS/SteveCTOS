@@ -218,7 +218,7 @@
        01  SLIP-TOTAL.
            03  FILLER          PIC X(42) VALUE " ".
            03  SLIP-TOT-COM    PIC X(17) VALUE " ".
-           03  TOT-GRV         PIC Z(6)9.99 BLANK WHEN ZERO.
+           03  TOT-GRV         PIC Z(6)9.99.
            03  FILLER          PIC X(1) VALUE " ".
        01  SLIP-COMMENT.
            03  SLIP-COMM-LINE.
@@ -332,7 +332,7 @@
            03  H10-1           PIC XX.
            03  FILLER          PIC X(46) VALUE " ".
            03  SLIPE-TOT-COM   PIC X(17) VALUE " ".
-           03  TOTE-GRV        PIC Z(6)9.99 BLANK WHEN ZERO.
+           03  TOTE-GRV        PIC Z(6)9.99.
            03  FILLER          PIC X(13) VALUE " ".
            03  H10-2           PIC X.
        01  SLIPE-COMMENT.
@@ -633,6 +633,7 @@
            DISPLAY CR-FAX AT POS.
            MOVE 1620 TO POS.
            DISPLAY CR-NAME AT POS.
+           MOVE CR-FAX TO WS-FAX-NUMBER.
            MOVE 1 TO SUB-1.
            GO TO UPOO-010.
        UPOO-006.
@@ -739,24 +740,25 @@
                GO TO UPOO-030.
        UPOO-034.
             IF WS-FAX-Y-N = "N"
-                MOVE "N" TO WS-PRINTING-TYPE
+                MOVE "N"      TO WS-PRINTING-TYPE
                 GO TO UPOO-040.
             IF WS-FAX-Y-N = "F"
-                MOVE "N" TO WS-PRINTING-TYPE
-                MOVE CR-FAX TO WS-FAX-NUMBER
+                MOVE "N"      TO WS-PRINTING-TYPE
+                MOVE CR-FAX   TO WS-FAX-NUMBER
                 GO TO UPOO-035.
             IF WS-FAX-Y-N = "P"
-                MOVE "P" TO WS-PRINTING-TYPE
-                MOVE "N" TO WS-FAX-Y-N
+                MOVE "P"      TO WS-PRINTING-TYPE
+                MOVE "N"      TO WS-FAX-Y-N
                 PERFORM ENTER-XQS-DETAILS
                 GO TO UPOO-040.
             IF WS-FAX-Y-N = "B"
-                MOVE "P" TO WS-PRINTING-TYPE
-                MOVE "F" TO WS-FAX-Y-N
-                MOVE CR-FAX TO WS-FAX-NUMBER
+                MOVE "P"      TO WS-PRINTING-TYPE
+                MOVE "F"      TO WS-FAX-Y-N
+                MOVE CR-FAX   TO WS-FAX-NUMBER
                 GO TO UPOO-035.
             IF WS-FAX-Y-N = "E"
                 MOVE CR-EMAIL TO WS-EMAIL-ADDR
+                MOVE CR-FAX   TO WS-FAX-NUMBER
                 GO TO UPOO-038.
                 
       *      MOVE CR-FAX TO WS-FAX-NUMBER.
@@ -1347,21 +1349,22 @@
            ADD 1 TO LINE-CNT
            GO TO POS-005.
        POS-900.
-           MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
-           IF CR-FOREIGN-LOCAL = "F"
-              MOVE "TOTAL ORDER VALUE :"  TO SLIP-TOT-COM
-           ELSE
-              MOVE "      ORDER VALUE :"  TO SLIP-TOT-COM.
+           MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL.
+           MOVE "      ORDER VALUE :"     TO SLIP-TOT-COM.
            MOVE WS-SUPPLIER-AMOUNT        TO TOT-GRV
            WRITE PRINT-REC              FROM SLIP-TOTAL AFTER 1
            MOVE " "                       TO PRINT-REC.
            
-           IF CR-FOREIGN-LOCAL = "F"
-               GO TO POS-901.
+      * CHANGED 8/12/2016 SO THAT THE EMAILING OF ORDERS WORKS IN POS
+      *     IF CR-FOREIGN-LOCAL = "F"
+      *         GO TO POS-901.
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
-           MOVE "       VAT AMOUNT :"  TO SLIP-TOT-COM
-           COMPUTE WS-VAT-AMT =
-                WS-SUPPLIER-AMOUNT * PA-GST-PERCENT / 100
+           MOVE "       VAT AMOUNT :"  TO SLIP-TOT-COM.
+           IF CR-FOREIGN-LOCAL = "L"
+              COMPUTE WS-VAT-AMT =
+                  WS-SUPPLIER-AMOUNT * PA-GST-PERCENT / 100
+           ELSE
+              MOVE 0                   TO WS-VAT-AMT.
            MOVE WS-VAT-AMT             TO TOT-GRV
            WRITE PRINT-REC              FROM SLIP-TOTAL AFTER 1
            MOVE " "                    TO PRINT-REC.
@@ -1650,24 +1653,24 @@
            GO TO POSXQS-005.
        POSXQS-900.
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
-           IF CR-FOREIGN-LOCAL = "F"
-              MOVE "TOTAL ORDER VALUE :"  TO SLIP-TOT-COM
-           ELSE
-              MOVE "      ORDER VALUE :"  TO SLIP-TOT-COM.
+           MOVE "      ORDER VALUE :"     TO SLIP-TOT-COM
            MOVE WS-SUPPLIER-AMOUNT        TO TOT-GRV
            WRITE PRINT-REC              FROM SLIP-TOTAL AFTER 1
-           MOVE " "                       TO PRINT-REC
+           MOVE " "                       TO PRINT-REC.
            
-           IF CR-FOREIGN-LOCAL = "F"
-               GO TO POSXQS-901.
+      * CHANGED 8/12/2016 SO THAT THE EMAILING OF ORDERS WORKS IN POS
+      *     IF CR-FOREIGN-LOCAL = "F"
+      *         GO TO POSXQS-901.
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
-           MOVE "       VAT AMOUNT :"  TO SLIP-TOT-COM
-           COMPUTE WS-VAT-AMT =
-                WS-SUPPLIER-AMOUNT * PA-GST-PERCENT / 100
+           MOVE "       VAT AMOUNT :"  TO SLIP-TOT-COM.
+           IF CR-FOREIGN-LOCAL = "L"
+              COMPUTE WS-VAT-AMT =
+                  WS-SUPPLIER-AMOUNT * PA-GST-PERCENT / 100
+           ELSE
+              MOVE 0                   TO WS-VAT-AMT.
            MOVE WS-VAT-AMT             TO TOT-GRV
            WRITE PRINT-REC              FROM SLIP-TOTAL AFTER 1
            MOVE " "                    TO PRINT-REC.
-           
            
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
            MOVE "TOTAL ORDER VALUE :"  TO SLIP-TOT-COM
@@ -1988,10 +1991,7 @@
            MOVE " " TO PRINT-REC SLIPE-DETAIL SLIPE-TOTAL
            MOVE "¶"                       TO H10-1
            MOVE "³"                       TO H10-2
-           IF CR-FOREIGN-LOCAL = "F"
-              MOVE "TOTAL ORDER VALUE :"  TO SLIPE-TOT-COM
-           ELSE
-              MOVE "      ORDER VALUE :"  TO SLIPE-TOT-COM.
+           MOVE "      ORDER VALUE :"     TO SLIPE-TOT-COM
            MOVE WS-SUPPLIER-AMOUNT        TO TOTE-GRV
            WRITE PRINT-REC              FROM SLIPE-TOTAL AFTER 1
            MOVE " "                       TO PRINT-REC.
@@ -2003,14 +2003,18 @@
       *     WRITE PRINT-REC FROM SLIPE-COMMENT AFTER 1.
            ADD 1 TO LINE-CNT.
            
-           IF CR-FOREIGN-LOCAL = "F"
-               GO TO PRE-901.
+      * CHANGED 8/12/2016 SO THAT THE EMAILING OF ORDERS WORKS IN POS
+      *     IF CR-FOREIGN-LOCAL = "F"
+      *         GO TO POS-901.
            MOVE " " TO PRINT-REC SLIPE-DETAIL SLIPE-TOTAL
            MOVE "¶"                    TO H10-1
            MOVE "³"                    TO H10-2
-           MOVE "       VAT AMOUNT :"  TO SLIPE-TOT-COM
-           COMPUTE WS-VAT-AMT =
-                WS-SUPPLIER-AMOUNT * PA-GST-PERCENT / 100
+           MOVE "       VAT AMOUNT :"  TO SLIPE-TOT-COM.
+           IF CR-FOREIGN-LOCAL = "L"
+              COMPUTE WS-VAT-AMT =
+                  WS-SUPPLIER-AMOUNT * PA-GST-PERCENT / 100
+           ELSE
+              MOVE 0                   TO WS-VAT-AMT.
            MOVE WS-VAT-AMT             TO TOTE-GRV
            WRITE PRINT-REC          FROM SLIPE-TOTAL AFTER 1
            MOVE " "                    TO PRINT-REC.
@@ -2304,6 +2308,7 @@
            DISPLAY "FAX NUMBER : [                    ]" AT POS
            ADD 14 TO POS
            DISPLAY CR-FAX AT POS.
+           MOVE CR-FAX TO WS-FAX-NUMBER.
            
       *     PERFORM ERROR-MESSAGE.
        RCR-999.
@@ -2384,6 +2389,7 @@
             AT POS
            ADD 14 TO POS
            DISPLAY CR-FAX AT POS.
+           MOVE CR-FAX TO WS-FAX-NUMBER.
            
       *     PERFORM ERROR-MESSAGE.
        RCSN-999.
