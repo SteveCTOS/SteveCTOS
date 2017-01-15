@@ -26,6 +26,9 @@ set (copy_list
   DB_CONFIG
   Deadlock.sh
   Doculogix.sh
+  DoculogixPDF.sh
+  DoculogixPDF1.sh
+  DoculogixPDF2.sh
   FnbRename.sh
   FaxStatus.sh
   FNBDebtor.sh

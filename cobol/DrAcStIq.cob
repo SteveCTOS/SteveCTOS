@@ -562,7 +562,7 @@
         "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
            " Transactions." AT POS.
        FILL-010.
-           MOVE 3015 TO POS
+           MOVE 3015 TO POS 
            DISPLAY "Current Line#: " AT POS
            ADD 16 TO POS
            MOVE SUB-1 TO WS-BODY-LINE
