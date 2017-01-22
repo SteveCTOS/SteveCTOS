@@ -28,6 +28,7 @@
        77  WS-CALC-QTY          PIC S9(6).
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  WS-PRINTED           PIC X VALUE " ".
+       77  WS-FORM-FEED         PIC X VALUE " ".
        77  WS-STORE             PIC X(3) VALUE " ".
        77  WS-ANSWER1           PIC X(15) VALUE " ".
        77  WS-ANSWER2           PIC X(15) VALUE " ".
@@ -135,10 +136,37 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-012.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
-               GO TO CONTROL-015
+               GO TO CONTROL-013
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-012.
+       CONTROL-013.
+           MOVE 1510 TO POS.
+           DISPLAY "FORM FEED THE PAGE: [ ]" AT POS.
+           MOVE 1531 TO POS.
+
+           MOVE 'Y'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 12        TO CDA-ROW.
+           MOVE 30        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-FORM-FEED.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO CONTROL-012.
+           IF WS-FORM-FEED NOT = "Y" AND NOT = "N"
+               MOVE "ANSWER MUST BE Y OR N, 'ESC' TO RE-TRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-013.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO CONTROL-015
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-013.
        CONTROL-015.
            MOVE 2510 TO POS
            DISPLAY "The Report Is Being Compiled, Please Be Patient."
@@ -285,8 +313,11 @@
            WRITE PRINT-REC.
        END-450.
            PERFORM GET-USER-MAIL-NAME
-           PERFORM GET-REPORT-Y2K-DATE
-           PERFORM PRINT-REPORT-INFO.
+           PERFORM GET-REPORT-Y2K-DATE.
+           IF WS-FORM-FEED = "Y"
+               PERFORM PRINT-REPORT-INFO
+           ELSE
+               PERFORM PRINT-REPORT-INFO-NFF.
        END-500.
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
@@ -301,6 +332,7 @@
        Copy "GetReportY2KDate".
        Copy "GetUserMailName".
        Copy "PrintReportInfo".
+       Copy "PrintReportInfoNoFormFeed".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
       ******************

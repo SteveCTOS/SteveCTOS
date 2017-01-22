@@ -115,24 +115,24 @@
                05  WS-XQS-ERROR  PIC X(8) VALUE "\NError=".
                05  WS-XQS-ENAME  PIC X(25) VALUE " ".
        01  WS-HYLA-TO-LINE.
-           03  FILLER             PIC X(15) VALUE " ".
+           03  FILLER             PIC X(16) VALUE " ".
            03  WS-HYLA-TO-NAME    PIC X(25) VALUE " ".
        01 WS-HYLA-FROM-LINE.
-           03  FILLER             PIC X(15) VALUE " ".
+           03  FILLER             PIC X(16) VALUE " ".
            03  WS-HYLA-FROM-NAME  PIC X(25) VALUE " ".
            03  FILLER             PIC X(28) VALUE " ".
            03  WS-HYLA-PAGE       PIC Z9 VALUE " ".
        01  WS-HYLA-TYPE-LINE.
-           03  FILLER             PIC X(15) VALUE " ".
+           03  FILLER             PIC X(16) VALUE " ".
            03  WS-HYLA-TYPE       PIC X(30) VALUE "*OVERDUE A/C*".
            03  WS-HYLA-DATE       PIC X(30) VALUE " ".
        01  WS-HYLA-COMMENT-LINE.
-           03  FILLER             PIC X(15) VALUE " ".
+           03  FILLER             PIC X(16) VALUE " ".
            03 WS-HYLA-COMM-DESC   PIC X(23) VALUE
               "OUR OVERDUE FAX REF #: ".
            03 WS-HYLA-COMMENT     PIC X(17) VALUE " ".
        01  WS-HYLA-TYPE-LINE2.
-           03  FILLER             PIC X(15) VALUE " ".
+           03  FILLER             PIC X(16) VALUE " ".
            03  WS-HYLA-TYPE2      PIC X(30) VALUE "*OVERDUE A/C*".
        01 WS-HYLA-FROM-LINE2.
            03  FILLER             PIC X(7) VALUE " ".
@@ -288,8 +288,9 @@
            PERFORM DISPLAY-FORM.
            PERFORM GET-DATA.
        CONT-030.
-           MOVE 2720 TO POS.
-           DISPLAY "The Report Is Being compiled.........." AT POS.
+           MOVE 2715 TO POS.
+           DISPLAY "The Report Is Being compiled On Account:       ...." 
+           AT POS.
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
            PERFORM READ-DEBTOR-MASTER.
@@ -576,6 +577,9 @@
            IF DR-KEY > WS-RANGE2
                GO TO RDM-999.
                
+           MOVE 2756 TO POS 
+           DISPLAY DR-ACCOUNT-NUMBER AT POS.
+               
            IF WS-CASH-ACC = "N"
             IF DR-ACCOUNT-NUMBER = 0300087 OR = 0300090 OR = 0300100
                  OR = 0300150 OR = 0300200 OR = 9999999
@@ -641,7 +645,8 @@
                MOVE "P" TO WS-AUTO-FAX.
            IF WS-AUTO-FAX = "N"
                MOVE "O" TO WS-AUTO-FAX.
-           PERFORM PRINT-ROUTINE.
+           IF WS-PRINT-Y-N = "Y"
+              PERFORM PRINT-ROUTINE.
       ******************************************************************
       * THIS NEW SECTION WAS ADDED DUE TO THE DRTR-DEL-DATE BEING USED *
       * SO THAT IF IT IS FOUND THAT THE HEADING IS PRINTED AND THE TAIL*
@@ -755,7 +760,7 @@
       *     PERFORM ERROR1-000 
       *     MOVE WS-PRINTER TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
-           
+           MOVE WS-DOTPRINTER TO WS-PRINTER.
            OPEN OUTPUT PRINT-FILE.
            IF WS-SPL-ST1 NOT = 0
                CLOSE PRINT-FILE

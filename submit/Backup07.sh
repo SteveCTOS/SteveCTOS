@@ -18,19 +18,33 @@ rm /media/ctools/USB/data10/*
 rm /media/ctools/USB/data11/*
 rm /media/ctools/USB/data12/*
 
+#echo Removing BACKUPHDD Data Files ...... 
+#rm /media/ctools/BACKUPHDD/ctools/data01/*
+#rm /media/ctools/BACKUPHDD/ctools/data02/*
+#rm /media/ctools/BACKUPHDD/ctools/data03/*
+#rm /media/ctools/BACKUPHDD/ctools/data04/*
+#rm /media/ctools/BACKUPHDD/ctools/data05/*
+#rm /media/ctools/BACKUPHDD/ctools/data06/*
+#rm /media/ctools/BACKUPHDD/ctools/data07/*
+#rm /media/ctools/BACKUPHDD/ctools/data08/*
+#rm /media/ctools/BACKUPHDD/ctools/data09/*
+#rm /media/ctools/BACKUPHDD/ctools/data10/*
+#rm /media/ctools/BACKUPHDD/ctools/data11/*
+#rm /media/ctools/BACKUPHDD/ctools/data12/*
+
 echo Removing BACKUPHDD Data Files ...... 
-rm /media/ctools/BACKUPHDD/ctools/data01/*
-rm /media/ctools/BACKUPHDD/ctools/data02/*
-rm /media/ctools/BACKUPHDD/ctools/data03/*
-rm /media/ctools/BACKUPHDD/ctools/data04/*
-rm /media/ctools/BACKUPHDD/ctools/data05/*
-rm /media/ctools/BACKUPHDD/ctools/data06/*
-rm /media/ctools/BACKUPHDD/ctools/data07/*
-rm /media/ctools/BACKUPHDD/ctools/data08/*
-rm /media/ctools/BACKUPHDD/ctools/data09/*
-rm /media/ctools/BACKUPHDD/ctools/data10/*
-rm /media/ctools/BACKUPHDD/ctools/data11/*
-rm /media/ctools/BACKUPHDD/ctools/data12/*
+rm /BACKUPHDD/ctools/data01/*
+rm /BACKUPHDD/ctools/data02/*
+rm /BACKUPHDD/ctools/data03/*
+rm /BACKUPHDD/ctools/data04/*
+rm /BACKUPHDD/ctools/data05/*
+rm /BACKUPHDD/ctools/data06/*
+rm /BACKUPHDD/ctools/data07/*
+rm /BACKUPHDD/ctools/data08/*
+rm /BACKUPHDD/ctools/data09/*
+rm /BACKUPHDD/ctools/data10/*
+rm /BACKUPHDD/ctools/data11/*
+rm /BACKUPHDD/ctools/data12/*
 
 mkdir /media/ctools/USB/data01
 mkdir /media/ctools/USB/data02
@@ -73,10 +87,10 @@ cp -a /ctools/data12/* /media/ctools/USB/data12
 rm /ctools/lock/_db.*
 
 echo COPYING DATA TO BACKUP DISK ON SERVER
-cp -a /ctools/data* /media/ctools/BACKUPHDD/ctools/
+cp -a /ctools/data* /BACKUPHDD/ctools/
 
 echo COPYING ALL FOLDERS TO BACKUP DISK ON SERVER
-cp -a /ctools/* /media/ctools/BACKUPHDD/ctools
+cp -a /ctools/* /BACKUPHDD/ctools
 
 Submit MainCont TapeBackupMonth.Sub01
 
