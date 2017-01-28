@@ -55,6 +55,7 @@
            03  WS-SCROLL-NUM OCCURS 500.
              05  WS-TOOLKIT-NUM       PIC X(15).
              05  WS-COMPONENT-NUM     PIC X(15).
+             05  WS-COMPONENT-QTY     PIC 9(3).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -596,7 +597,8 @@
                GO TO RDALL-900.
        RDALL-020.
            MOVE TO-TOOLKIT-NUMBER   TO WS-TOOLKIT-NUM (SUB-1)
-           MOVE TO-COMPONENT-NUMBER TO WS-COMPONENT-NUM (SUB-1).
+           MOVE TO-COMPONENT-NUMBER TO WS-COMPONENT-NUM (SUB-1)
+           MOVE TO-QUANTITY         TO WS-COMPONENT-QTY (SUB-1).
 
            IF SUB-1 < 500
               ADD 1 TO SUB-1 F-INDEX
@@ -1009,10 +1011,10 @@
             MOVE 40          TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "QTY-PER-KIT" TO F-FIELDNAME
-            MOVE 11            TO F-CBFIELDNAME
-            MOVE TO-QUANTITY   TO F-EDNAMEFIELDKITQTY
-            MOVE 3             TO F-CBFIELDLENGTH
+            MOVE "QTY-PER-KIT"            TO F-FIELDNAME
+            MOVE 11                       TO F-CBFIELDNAME
+            MOVE WS-COMPONENT-QTY (SUB-1) TO F-EDNAMEFIELDKITQTY
+            MOVE 3                        TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-KITQTY
 
             MOVE "QTY-ON-HAND" TO F-FIELDNAME

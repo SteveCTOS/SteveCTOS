@@ -253,7 +253,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO CONTROL-005.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -276,7 +275,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
 
-      *      ACCEPT WS-RANGE2 AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-000.
             IF WS-RANGE2 = " "
@@ -300,7 +298,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-ZERO-QTY.
 
-      *  ACCEPT WS-PRINT-ZERO-QTY AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-010.
             IF WS-PRINT-ZERO-QTY = " "
@@ -330,7 +327,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CATEGORY.
 
-      *      ACCEPT WS-CATEGORY AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-020.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -354,7 +350,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMPRESS-PRINT.
 
-      *      ACCEPT WS-COMPRESS-PRINT AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-030.
             IF WS-COMPRESS-PRINT = " "
@@ -400,7 +395,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-COMM-MESSAGE.
 
-      *      ACCEPT WS-MESSAGE AT POS.
             MOVE WS-COMM-MESSAGE TO WS-COMM-LINE (SUB-1).
             MOVE " " TO WS-COMM-MESSAGE.
             DISPLAY WS-COMM-MESSAGE AT POS.
@@ -435,7 +429,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SUMMARY.
 
-      *      ACCEPT WS-SUMMARY AT POS.
             IF W-ESCAPE-KEY = 4
              IF WS-SUMMARY = "N"
                 GO TO GET-050
@@ -464,7 +457,8 @@
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-COMM-MESSAGE.
+           MOVE CDA-DATA TO WS-FOR-LOCAL.
+      *     MOVE CDA-DATA TO WS-COMM-MESSAGE.
 
       *      ACCEPT WS-FOR-LOCAL AT POS.
             IF W-ESCAPE-KEY = 4
@@ -493,7 +487,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-WRITE-FBC.
 
-      *      ACCEPT WS-WRITE-FBC AT POS.
             IF W-ESCAPE-KEY = 4
                 GO TO GET-130.
             IF WS-WRITE-FBC NOT = "N" AND NOT = "Y"

@@ -543,7 +543,17 @@
            DISPLAY "DO YOU WISH TO CONTINUE WITH THIS ORDER: [ ]"
               AT POS
            ADD 42 TO POS
-           ACCEPT WS-ACCEPT AT POS.
+
+              MOVE 'N'       TO CDA-DATA
+              MOVE 1         TO CDA-DATALEN
+              MOVE 26        TO CDA-ROW
+              MOVE 51        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-ACCEPT
+           
+      *     ACCEPT WS-ACCEPT AT POS.
            IF WS-ACCEPT NOT = "Y" AND NOT = "N"
               DISPLAY " " AT 3079 WITH BELL
               GO TO CTEO-000.
@@ -564,7 +574,17 @@
              "Do you wish to ADD this REPAIR to a PREVIOUS P/SLIP?[ ]"
                AT POS.
            ADD 53 TO POS
-           ACCEPT WS-ADD-TO-OLD-ORDER AT POS.
+
+              MOVE 'N'       TO CDA-DATA
+              MOVE 1         TO CDA-DATALEN
+              MOVE 27        TO CDA-ROW
+              MOVE 62        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-ADD-TO-OLD-ORDER
+           
+      *     ACCEPT WS-ADD-TO-OLD-ORDER AT POS.
            IF WS-ADD-TO-OLD-ORDER = "N"
               GO TO CTEO-300.
            IF WS-ADD-TO-OLD-ORDER NOT = "Y"
@@ -6843,7 +6863,6 @@
                TO WS-MESSAGE
                PERFORM ERROR1-MESSAGE.
        FIND-020.
-
             MOVE "COPYDESC"             TO F-FIELDNAME
             MOVE 8                      TO F-CBFIELDNAME
             MOVE "P/SLIP COPY NUMBER :" TO F-NAMEFIELD

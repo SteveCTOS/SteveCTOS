@@ -187,7 +187,6 @@
             DISPLAY WS-MESSAGE AT POS
             MOVE 2801 TO POS 
             DISPLAY WS-MESSAGE AT POS.
-            
 
             MOVE "ACCNO"           TO F-FIELDNAME.
             MOVE 5                 TO F-CBFIELDNAME.
@@ -366,7 +365,7 @@
             PERFORM FILL-BODY.
             IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
                 PERFORM CLEAR-TRANSACTIONS
-                MOVE 1 TO F-INDEX
+                MOVE 1   TO F-INDEX
                 MOVE "Y" TO WS-ANSWER
                 GO TO GET-999.
       *      PERFORM READ-TRANSACTIONS.
@@ -410,127 +409,6 @@
             GO TO GET-040.
        GET-999.
             EXIT.
-      *
-       READ-TRANSACTIONS SECTION.
-       RDTR-000.
-           OPEN INPUT DEBTOR-TRANS-FILE.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR-000
-              CALL "C$SLEEP" USING 1
-              PERFORM ERROR1-020
-              PERFORM ERROR-020
-              CLOSE DEBTOR-TRANS-FILE
-              GO TO RDTR-000.
-           MOVE 1 TO F-INDEX.
-       RDTR-005.
-           MOVE DR-ACCOUNT-NUMBER TO DRTR-ACCOUNT-NUMBER.
-           MOVE 0                 TO DRTR-DATE.
-           START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
-                INVALID KEY NEXT SENTENCE.
-           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-                GO TO RDTR-999.
-           IF WS-DRTRANS-ST1 NOT = 0
-               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-              GO TO RDTR-005.
-       RDTR-010.
-           IF F-EXIT-CH NOT = 1
-           READ DEBTOR-TRANS-FILE NEXT
-               AT END NEXT SENTENCE.
-           IF F-EXIT-CH = 1
-             READ DEBTOR-TRANS-FILE PREVIOUS
-                AT END NEXT SENTENCE.
-           IF F-EXIT-CH = 1
-            IF WS-DRTRANS-ST1 = 10
-               MOVE 1 TO F-INDEX
-               MOVE " " TO F-EXIT-CH
-               CLOSE DEBTOR-TRANS-FILE
-               GO TO RDTR-000.
-           IF F-EXIT-CH NOT = 1
-            IF WS-DRTRANS-ST1 = 10
-               MOVE 1 TO F-INDEX
-               CLOSE DEBTOR-TRANS-FILE
-               GO TO RDTR-999.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DRTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-               GO TO RDTR-010.
-           IF F-EXIT-CH = 1
-            IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
-               MOVE 1 TO F-INDEX
-               CLOSE DEBTOR-TRANS-FILE
-               MOVE " " TO F-EXIT-CH
-               GO TO RDTR-000.
-           IF F-EXIT-CH NOT = 1
-            IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
-               MOVE 1 TO F-INDEX
-               CLOSE DEBTOR-TRANS-FILE
-               GO TO RDTR-999.
-       RDTR-020.
-           IF F-INDEX > 10
-                MOVE 2905 TO POS
-                DISPLAY "Press 'PgDn' For More, OR 'PgUp' For Previous"
-                  AT POS
-                ADD 46 TO POS
-                DISPLAY "'ESC' To Clear The Screen,  " AT POS
-                MOVE 3010 TO POS
-                DISPLAY 
-                 "Or Press 'F10' To Print All Transactions !" AT POS
-                MOVE 10 TO F-INDEX
-                PERFORM USER-FILL-FIELD.
-            PERFORM ERROR1-020
-            PERFORM ERROR-020
-            IF F-EXIT-CH = X"04"
-                PERFORM END-OFF.
-            IF F-EXIT-CH = X"0C"
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE " " TO F-EXIT-CH
-                MOVE 1 TO F-INDEX.
-            IF F-EXIT-CH = X"05"
-                PERFORM CLEAR-TRANSACTIONS
-                MOVE 1 TO F-EXIT-CH
-                MOVE 1 TO F-INDEX.
-            IF F-EXIT-CH = X"07"
-                PERFORM CLEAR-TRANSACTIONS
-                CLOSE DEBTOR-TRANS-FILE
-                MOVE 15 TO F-INDEX
-                GO TO RDTR-999.
-            IF F-EXIT-CH = X"1F"
-                CLOSE DEBTOR-TRANS-FILE
-                PERFORM PRINT-ROUTINE
-                PERFORM CLEAR-TRANSACTIONS
-                CLOSE DEBTOR-TRANS-FILE
-                MOVE "Y" TO WS-ANSWER
-                MOVE " " TO WS-MESSAGE
-                PERFORM ERROR-020
-                PERFORM ERROR1-020
-                GO TO RDTR-999.
-           IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
-                    AND NOT = X"07" AND NOT = " "   AND NOT = X"1F"
-                    AND NOT = 1
-                MOVE 11 TO F-INDEX
-                GO TO RDTR-020.
-           PERFORM SCROLLING.
-           ADD 1 TO F-INDEX.
-           GO TO RDTR-010.
-       RDTR-999.
-           EXIT.
       *
        FILL-BODY SECTION.
        FILL-000.
@@ -792,6 +670,127 @@
        PRR-999.
            EXIT.
       *
+       READ-TRANSACTIONS SECTION.
+       RDTR-000.
+           OPEN INPUT DEBTOR-TRANS-FILE.
+           IF WS-DRTRANS-ST1 NOT = 0
+              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              CLOSE DEBTOR-TRANS-FILE
+              GO TO RDTR-000.
+           MOVE 1 TO F-INDEX.
+       RDTR-005.
+           MOVE DR-ACCOUNT-NUMBER TO DRTR-ACCOUNT-NUMBER.
+           MOVE 0                 TO DRTR-DATE.
+           START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
+                INVALID KEY NEXT SENTENCE.
+           IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
+                GO TO RDTR-999.
+           IF WS-DRTRANS-ST1 NOT = 0
+               MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+              GO TO RDTR-005.
+       RDTR-010.
+           IF F-EXIT-CH NOT = 1
+           READ DEBTOR-TRANS-FILE NEXT
+               AT END NEXT SENTENCE.
+           IF F-EXIT-CH = 1
+             READ DEBTOR-TRANS-FILE PREVIOUS
+                AT END NEXT SENTENCE.
+           IF F-EXIT-CH = 1
+            IF WS-DRTRANS-ST1 = 10
+               MOVE 1 TO F-INDEX
+               MOVE " " TO F-EXIT-CH
+               CLOSE DEBTOR-TRANS-FILE
+               GO TO RDTR-000.
+           IF F-EXIT-CH NOT = 1
+            IF WS-DRTRANS-ST1 = 10
+               MOVE 1 TO F-INDEX
+               CLOSE DEBTOR-TRANS-FILE
+               GO TO RDTR-999.
+           IF WS-DRTRANS-ST1 NOT = 0
+              MOVE "DRTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               GO TO RDTR-010.
+           IF F-EXIT-CH = 1
+            IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
+               MOVE 1 TO F-INDEX
+               CLOSE DEBTOR-TRANS-FILE
+               MOVE " " TO F-EXIT-CH
+               GO TO RDTR-000.
+           IF F-EXIT-CH NOT = 1
+            IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
+               MOVE 1 TO F-INDEX
+               CLOSE DEBTOR-TRANS-FILE
+               GO TO RDTR-999.
+       RDTR-020.
+           IF F-INDEX > 10
+                MOVE 2905 TO POS
+                DISPLAY "Press 'PgDn' For More, OR 'PgUp' For Previous"
+                  AT POS
+                ADD 46 TO POS
+                DISPLAY "'ESC' To Clear The Screen,  " AT POS
+                MOVE 3010 TO POS
+                DISPLAY 
+                 "Or Press 'F10' To Print All Transactions !" AT POS
+                MOVE 10 TO F-INDEX
+                PERFORM USER-FILL-FIELD.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020
+            IF F-EXIT-CH = X"04"
+                PERFORM END-OFF.
+            IF F-EXIT-CH = X"0C"
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE " " TO F-EXIT-CH
+                MOVE 1 TO F-INDEX.
+            IF F-EXIT-CH = X"05"
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE 1 TO F-EXIT-CH
+                MOVE 1 TO F-INDEX.
+            IF F-EXIT-CH = X"07"
+                PERFORM CLEAR-TRANSACTIONS
+                CLOSE DEBTOR-TRANS-FILE
+                MOVE 15 TO F-INDEX
+                GO TO RDTR-999.
+            IF F-EXIT-CH = X"1F"
+                CLOSE DEBTOR-TRANS-FILE
+                PERFORM PRINT-ROUTINE
+                PERFORM CLEAR-TRANSACTIONS
+                CLOSE DEBTOR-TRANS-FILE
+                MOVE "Y" TO WS-ANSWER
+                MOVE " " TO WS-MESSAGE
+                PERFORM ERROR-020
+                PERFORM ERROR1-020
+                GO TO RDTR-999.
+           IF F-EXIT-CH NOT = X"04" AND NOT = X"0C" AND NOT = X"05"
+                    AND NOT = X"07" AND NOT = " "   AND NOT = X"1F"
+                    AND NOT = 1
+                MOVE 11 TO F-INDEX
+                GO TO RDTR-020.
+           PERFORM SCROLLING.
+           ADD 1 TO F-INDEX.
+           GO TO RDTR-010.
+       RDTR-999.
+           EXIT.
+      *
        READ-ALL-TRANSACTIONS SECTION.
        RDALL-000.
            OPEN INPUT DEBTOR-TRANS-FILE.
@@ -813,7 +812,7 @@
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-                GO TO RDALL-999.
+                GO TO RDALL-950.
            IF WS-DRTRANS-ST1 NOT = 0
                MOVE "DRTRANS BUSY ON START, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
@@ -829,7 +828,7 @@
                AT END NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 10
                MOVE 1 TO F-INDEX
-               CLOSE DEBTOR-TRANS-FILE
+      *         CLOSE DEBTOR-TRANS-FILE
                GO TO RDALL-900.
            IF WS-DRTRANS-ST1 NOT = 0
               MOVE 
@@ -871,7 +870,7 @@
            MOVE SUB-9 TO WS-BODY-LINE.
            DISPLAY WS-BODY-LINE AT POS.
            ADD 1 TO SUB-9.
-                
+       RDALL-950.
            CLOSE DEBTOR-TRANS-FILE.
        RDALL-999.
            EXIT.
@@ -958,9 +957,6 @@
             ADD 16 TO POS.
             MOVE SUB-1 TO WS-BODY-LINE.
             DISPLAY WS-BODY-LINE AT POS.
-
-      *      IF SUB-1 > 999
-      *          GO TO NEXT-999.
        NEXT-999.
              EXIT.
       *
