@@ -21,6 +21,7 @@ set (copy_list
   Branch07.sh
   Branch08.Sub
   Branch08.sh
+  CreateImageDD.sh
   CrMaint.sh
   DataTestAll.sh
   DB_CONFIG
