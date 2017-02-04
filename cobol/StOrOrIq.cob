@@ -126,13 +126,8 @@
        GET-DATA SECTION.
        GET-000.
             MOVE "N" TO WS-ANSWER.
-      *     MOVE "AT GET-000, GOING TO OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
             PERFORM OPEN-020.
-
             PERFORM CLEAR-MEMORY.
-      *     MOVE "AT GET-000, FILE OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
             MOVE 2905 TO POS
             DISPLAY 
             "Press 'PgDn' For Next P/O#, 'PgUp' For Previous P/O#,"

@@ -382,6 +382,9 @@
        CONT-035.
            IF WS-PRINTER-TYPE = 6
               PERFORM PRINT-PDF-ONLY
+              CLOSE DEBTOR-MASTER
+                    DEBTOR-TRANS-FILE
+              CLOSE PDF-FILE
               GO TO CONT-950.
            IF WS-PRINTER-TYPE = 1
       *        MOVE WTELL-PAUSE TO PRINT-REC
@@ -1116,6 +1119,7 @@
        PT-010.
            IF WS-FOUND = " "
                MOVE "Y" TO WS-FOUND.
+
            MOVE 2922 TO POS
            DISPLAY "No Of Statements Processed =" AT POS
            ADD 1 TO WS-ACCPRINTED-COUNT
@@ -1448,13 +1452,14 @@
       *
        PRINT-PDF-ONLY SECTION.
        PR-PDF-000.
-      * THIS SECTIO USED FOR PRINTING .PDF FILES FOR EXPORT TO 
+      * THIS SECTION USED FOR PRINTING .PDF FILES FOR EXPORT TO 
       * DOCUMENT WAREHOUSE TO REPLACE THE OLD STYLE COLD DOC'S
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
               MOVE 10 TO WS-DRTRANS-ST1
+              PERFORM PR-PDF-050
               GO TO PR-PDF-999.
        PR-PDF-001.
            MOVE 0 TO WS-BF-BAL.
@@ -1464,11 +1469,13 @@
            IF WS-DRTRANS-ST1 = 10 OR = 23 OR = 46
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC AFTER 1
+              PERFORM PRINT-LASER-TRAILING
               PERFORM PR-PDF-050
               GO TO PR-PDF-999.
            IF WS-DRTRANS-ST1 = 91
               MOVE 10 TO WS-DRTRANS-ST1
               MOVE " " TO DEBTOR-TRANS-REC
+              PERFORM PRINT-LASER-TRAILING
               PERFORM PR-PDF-050
               GO TO PR-PDF-999.
            IF WS-DRTRANS-ST1 NOT = 0
@@ -1552,6 +1559,7 @@
               PERFORM READ-DEBTOR-TRANS.
            IF WS-DRTRANS-ST1 = 10
                GO TO PR-PDF-009.
+
            IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
               IF WS-BF-DATE < WS-LAST-PERIOD-DATE
               OR WS-BF-DATE = WS-LAST-PERIOD-DATE
@@ -1710,7 +1718,7 @@
             IF L-CNT = 24
                 MOVE " "     TO PRINT-REC
                 MOVE "¶"     TO PL8-CHAR
-                ADD 1         TO WS-PAGE
+                ADD 1        TO  WS-PAGE
                                  WS-TOTAL-PAGES
                 MOVE WS-PAGE TO PL8-PAGE
                 WRITE PRINT-REC FROM LASER-PLINE8 AFTER 1
@@ -1725,7 +1733,10 @@
             
             PERFORM PR-PDF-050.
             
-            GO TO PR-PDF-005.
+            IF WS-DRTRANS-ST1 NOT = 10
+                GO TO PR-PDF-005
+            ELSE
+                GO TO PR-PDF-999.
        PR-PDF-045.
             PERFORM WORK-OUT-PDF-FILE-NAME.
             OPEN OUTPUT PRINT-FILE.
@@ -1736,54 +1747,6 @@
             PERFORM SETUP-STATEMENT-FOR-PDF-ONLY. 
        PR-PDF-999.
             EXIT.
-      *
-       ENTER-EMAIL-ADDRESS SECTION.
-       EEA-005.
-           PERFORM CLEAR-010.
-           
-           MOVE 2910 TO POS
-           DISPLAY 
-           "ACC:         DOES NOT HAVE AN EMAIL ADDRESS, PLEASE ENTER."
-              AT POS
-           MOVE 2915 TO POS
-           DISPLAY DR-ACCOUNT-NUMBER AT POS
-           MOVE 3010 TO POS
-           DISPLAY 
-           "EMail :[                                                  ]"
-              AT POS.
-              MOVE 3018 TO POS
-              MOVE WS-EMAIL-NUMBER TO CDA-DATA
-              MOVE 50        TO CDA-DATALEN
-              MOVE 27        TO CDA-ROW
-              MOVE 17        TO CDA-COL
-              MOVE CDA-WHITE TO CDA-COLOR
-              MOVE 'F'       TO CDA-ATTR
-              PERFORM CTOS-ACCEPT
-              MOVE CDA-DATA TO WS-EMAIL-NUMBER.
-              
-           IF WS-EMAIL-NUMBER NOT > " "
-              PERFORM ERROR1-020
-              PERFORM ERROR-020
-              MOVE 
-           "EMAIL ADDRESS CANNOT BE BLANK AND MUST BE IN lower case."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO EEA-005.
-       EEA-999.
-           EXIT.
-      *
-       WRITE-BLANK-FOOTER SECTION.
-       WBF-005.
-           IF WS-PRINTER-TYPE = "3" OR = "5"
-              MOVE "³" TO PLBF-END-CHAR.
-           MOVE "¶"    TO PLBF-CHAR.
-       WBF-010.
-           IF L-CNT < 32
-              WRITE PRINT-REC FROM LASER-BLANK-FOOTER AFTER 1
-              ADD 1 TO L-CNT
-              GO TO WBF-010.
-       WBF-999.
-           EXIT.
       *
        PRINT-LASER-TRAILING SECTION.
        PTL-000.
@@ -1883,15 +1846,69 @@
        PTL-010.
            IF WS-FOUND = " "
                MOVE "Y" TO WS-FOUND.
+               
+           MOVE 2818 TO POS
+           DISPLAY "Account Number Being Processed =" AT POS 
+           ADD 33 TO POS
+           DISPLAY DR-ACCOUNT-NUMBER AT POS.
+               
            MOVE 2922 TO POS
            DISPLAY "No Of Statements Processed =" AT POS
            ADD 1 TO WS-ACCPRINTED-COUNT
                     WS-TOTAL-PAGES
            MOVE WS-ACCPRINTED-COUNT TO WS-TRANS-COUNT
            MOVE WS-TRANS-COUNT      TO WS-MESSAGE1
-           MOVE 2951                TO POS
+           MOVE 2954                TO POS
            DISPLAY WS-MESSAGE1 AT POS.
        PTL-999.
+           EXIT.
+      *
+       ENTER-EMAIL-ADDRESS SECTION.
+       EEA-005.
+           PERFORM CLEAR-010.
+           
+           MOVE 2910 TO POS
+           DISPLAY 
+           "ACC:         DOES NOT HAVE AN EMAIL ADDRESS, PLEASE ENTER."
+              AT POS
+           MOVE 2915 TO POS
+           DISPLAY DR-ACCOUNT-NUMBER AT POS
+           MOVE 3010 TO POS
+           DISPLAY 
+           "EMail :[                                                  ]"
+              AT POS.
+              MOVE 3018 TO POS
+              MOVE WS-EMAIL-NUMBER TO CDA-DATA
+              MOVE 50        TO CDA-DATALEN
+              MOVE 27        TO CDA-ROW
+              MOVE 17        TO CDA-COL
+              MOVE CDA-WHITE TO CDA-COLOR
+              MOVE 'F'       TO CDA-ATTR
+              PERFORM CTOS-ACCEPT
+              MOVE CDA-DATA TO WS-EMAIL-NUMBER.
+              
+           IF WS-EMAIL-NUMBER NOT > " "
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              MOVE 
+           "EMAIL ADDRESS CANNOT BE BLANK AND MUST BE IN lower case."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO EEA-005.
+       EEA-999.
+           EXIT.
+      *
+       WRITE-BLANK-FOOTER SECTION.
+       WBF-005.
+           IF WS-PRINTER-TYPE = "3" OR = "5"
+              MOVE "³" TO PLBF-END-CHAR.
+           MOVE "¶"    TO PLBF-CHAR.
+       WBF-010.
+           IF L-CNT < 32
+              WRITE PRINT-REC FROM LASER-BLANK-FOOTER AFTER 1
+              ADD 1 TO L-CNT
+              GO TO WBF-010.
+       WBF-999.
            EXIT.
       *
        READ-DEBTOR-TRANS SECTION.
