@@ -1654,8 +1654,9 @@
                 ADD 1 TO L-CNT.
        PR-PDF-020.
             IF WS-BFORWARD-OPEN = "O"
-              GO TO PR-PDF-022.
+                GO TO PR-PDF-022.
             IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
+                MOVE 10 TO WS-DRTRANS-ST1
                 GO TO PR-PDF-040.
                 
             MOVE DRTR-DATE       TO SPLIT-DATE
@@ -1681,6 +1682,7 @@
             IF WS-BFORWARD-OPEN = "B"
               GO TO PR-PDF-025.
             IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
+                MOVE 10 TO WS-DRTRANS-ST1
                 GO TO PR-PDF-040.
                 
             MOVE DRTR-DATE       TO SPLIT-DATE
@@ -1710,6 +1712,7 @@
             IF DRTR-ACCOUNT-NUMBER = DR-ACCOUNT-NUMBER
                 GO TO PR-PDF-030.
             IF DRTR-ACCOUNT-NUMBER > WS-ACCNOEND
+               MOVE 10 TO WS-DRTRANS-ST1
                PERFORM PRINT-LASER-TRAILING
                PERFORM PR-PDF-050
                GO TO PR-PDF-999.
