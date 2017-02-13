@@ -507,7 +507,7 @@
                 GO TO GET-140.
        GET-150.
             PERFORM ERROR-020
-            MOVE 2810 TO POS
+            MOVE 2910 TO POS
             DISPLAY "The Report Is Being Compiled." AT POS.
        GET-999.
             EXIT.
@@ -1080,12 +1080,14 @@
            MOVE ALL "X" TO STORE-DEL.
            PERFORM READ-DELIVERY-FILE.
            CLOSE PARAMETER-FILE.
+           
            IF WS-COMPRESS-PRINT = "N"
               PERFORM GET-USER-PRINT-NAME
               OPEN OUTPUT PRINT-FILE
            ELSE
               PERFORM GET-USER-PRINT-NAME
               OPEN OUTPUT PRINT-FAX-FILE.
+           
            IF WS-PRINT-ST1 NOT = 0
              MOVE "ERROR IN OPENING PRINT-FILE, 'ESC' TO SEE STATUS"
              TO WS-MESSAGE

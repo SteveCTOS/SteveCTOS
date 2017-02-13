@@ -158,9 +158,11 @@
                  PERFORM START-ORDER-PREV
                  PERFORM READ-ORDER-PREVIOUS
                  GO TO GET-010.
-            MOVE 20 TO F-CBFIELDLENGTH.
+                 
+            MOVE 20          TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-ORDER-NUMBER.
+            
             IF WS-ORDER-NUMBER = 0 OR = "   "
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
@@ -173,9 +175,16 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO GET-001.
-      *     PERFORM READ-ORDER-NEXT.
-           PERFORM READ-ORDER.
+           PERFORM READ-ORDER-NEXT.
+      *     PERFORM READ-ORDER.
            IF OO-ORDER-NUMBER NOT = WS-ORDER-NUMBER
+      *     
+      *          MOVE OO-ORDER-NUMBER TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-ORDER-NUMBER TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *     
                 MOVE OO-ORDER-NUMBER TO WS-NEXT-ORDER
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
@@ -192,10 +201,10 @@
             PERFORM ERROR1-020.
             PERFORM ERROR-020.
 
-            MOVE "ORDER" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "ORDER"         TO F-FIELDNAME.
+            MOVE 5               TO F-CBFIELDNAME.
             MOVE OO-ORDER-NUMBER TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 20              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "DATE"       TO F-FIELDNAME.
@@ -206,29 +215,29 @@
             MOVE 10           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "DEL" TO F-FIELDNAME.
-            MOVE 3 TO F-CBFIELDNAME.
+            MOVE "DEL"              TO F-FIELDNAME.
+            MOVE 3                  TO F-CBFIELDNAME.
             MOVE OO-DELIVERY-METHOD TO WS-DEL-SUB.
             IF WS-DEL-SUB = 0
-                MOVE 1 TO WS-DEL-SUB.
+                MOVE 1              TO WS-DEL-SUB.
             MOVE WS-DEL-TERM (WS-DEL-SUB) TO WS-DELIVERVIA.
-            MOVE WS-DELIVERVIA TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE WS-DELIVERVIA      TO F-NAMEFIELD.
+            MOVE 20                 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "SUPPLIER" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
+            MOVE "SUPPLIER"         TO F-FIELDNAME.
+            MOVE 8                  TO F-CBFIELDNAME.
             MOVE OO-SUPPLIER-NUMBER TO F-NAMEFIELD.
-            MOVE 7 TO F-CBFIELDLENGTH.
+            MOVE 7                  TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "CONFIRMED" TO F-FIELDNAME.
-            MOVE 9 TO F-CBFIELDNAME.
+            MOVE 9           TO F-CBFIELDNAME.
             IF OO-UPDATED = "Y"
-                MOVE "YES" TO F-NAMEFIELD
+                MOVE "YES"   TO F-NAMEFIELD
             ELSE
-                MOVE "NO " TO F-NAMEFIELD.
-            MOVE 3 TO F-CBFIELDLENGTH.
+                MOVE "NO "   TO F-NAMEFIELD.
+            MOVE 3           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
             MOVE " " TO F-EXIT-CH.
@@ -285,15 +294,10 @@
       *
        FILL-BODY SECTION.
        FILL-000.
-      *     MOVE "AT FILL-000, GOING TO OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
            PERFORM OPEN-020.
-      *     MOVE "AT FILL-000, FILE OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
 
            MOVE 1 TO F-INDEX.
            MOVE 1 TO SUB-1 SUB-2 SUB-3.
-      *     PERFORM SCROLL-NEXT.
            PERFORM SCROLL-PREVIOUS-PAGE.
 
            MOVE 2702 TO POS
@@ -576,8 +580,6 @@
                MOVE 0 TO WS-OUTORD-ST1
               GO TO RDALL-010.
            IF OO-QUANTITY NOT > 0
-      *         MOVE 2910 TO POS
-      *         DISPLAY "Reading Next Valid Transaction.." AT POS
                GO TO RDALL-010.
            IF OO-STOCK-NUMBER = " "
                GO TO RDALL-010.
@@ -589,9 +591,6 @@
        RDALL-020.
            MOVE OO-ORDER-NUMBER         TO WS-OO-ORDER (SUB-1)
            MOVE OO-STOCK-NUMBER         TO WS-OO-STOCK (SUB-1).
-           
-      *     MOVE OO-KEY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
            
            IF SUB-1 < 200
               ADD 1 TO SUB-1 F-INDEX
@@ -691,7 +690,7 @@
        ST-ST-000.
            MOVE WS-ORDER-NUMBER TO OO-ORDER-NUMBER.
            MOVE " "             TO OO-STOCK-NUMBER.
-           START OUTSTANDING-ORDERS KEY NOT < OO-KEY
+           START OUTSTANDING-ORDERS KEY > OO-KEY
                  INVALID KEY NEXT SENTENCE.
           IF WS-OUTORD-ST1 NOT = 0
                MOVE 88 TO WS-OUTORD-ST1.
@@ -716,14 +715,17 @@
              READ OUTSTANDING-ORDERS
                  INVALID KEY NEXT SENTENCE.
              IF WS-OUTORD-ST1 = 23 OR = 59
-               MOVE " " TO WS-ORDER-NUMBER
-      *        MOVE "INVALID ORDER ENTERED, 'PgDn' TO SEE NEXT ORDER."
+      *           MOVE " " TO WS-ORDER-NUMBER
+      *        MOVE "INVALID ORDER ENTERED22, 'PgDn' TO SEE NEXT ORDER."
       *           TO WS-MESSAGE
       *           PERFORM ERROR-MESSAGE
-      *           PERFORM START-ORDER
+                 PERFORM START-ORDER
+                 PERFORM READ-ORDER-NEXT
                  GO TO R-ORDER-999.
              IF WS-OUTORD-ST1 = 0
                  MOVE OO-ORDER-NUMBER TO WS-ORDER-NUMBER
+      *           MOVE "STATUS = 0, MOVING ORDER NUMBER" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE
                  GO TO R-ORDER-999.
              PERFORM START-ORDER.
              IF WS-OUTORD-ST1 = 88
@@ -1118,27 +1120,27 @@
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "QTY" TO F-FIELDNAME.
-            MOVE 3 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 5 TO F-CBFIELDLENGTH.
+            MOVE 3     TO F-CBFIELDNAME.
+            MOVE " "   TO F-NAMEFIELD.
+            MOVE 5     TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "STOCKNO" TO F-FIELDNAME.
-            MOVE 7 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 15 TO F-CBFIELDLENGTH.
+            MOVE 7         TO F-CBFIELDNAME.
+            MOVE " "       TO F-NAMEFIELD.
+            MOVE 15        TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "DESC1" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 5       TO F-CBFIELDNAME.
+            MOVE " "     TO F-NAMEFIELD.
+            MOVE 20      TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "DESC2" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 5       TO F-CBFIELDNAME.
+            MOVE " "     TO F-NAMEFIELD.
+            MOVE 20      TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             ADD 1 TO F-INDEX.
