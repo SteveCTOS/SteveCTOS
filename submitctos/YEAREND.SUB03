@@ -6,32 +6,11 @@ Delete
 <CTN>*
 
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
 3
 MONTHLY
-2
-3
-17
-
-
-
-
-
-3
-2
-21
-X
-<CTN>SL21
-
-
-
-
-
-
-
-
 3
 4
 
@@ -68,13 +47,6 @@ X
 <CTN>Sl6
 
 Y
-
-6
-X
-<CTN>Sl6A
-
-N
-
 
 
 
@@ -407,7 +379,7 @@ Win
 Program
 
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
 
@@ -603,26 +575,6 @@ Y
 Y
 
 
-28
-X
-<CTN>ST28A
-A
-ZZZZZ
-200
-RTN
-
-
-
-28
-X
-<CTN>ST28B
-A
-ZZZZZ
-200
-UTN
-
-
-
 
 
 1
@@ -646,37 +598,14 @@ XX
 
 
 
-1
-2
-
-14
-X
-<CTN>DR14A
-500
-TP
-
-
-14
-X
-<CTN>DR14B
-500
-TS
-
-
 3
 2
 17
 X
 <CTN>SL17B
 
-N
-
-
-17
-X
-<CTN>SL17C
-
 Y
+
 
 19
 X
@@ -1122,8 +1051,8 @@ Y
 
 Is renam
 <Data>StReceiptLy
-<Data>StReceiptLY14
-[Win]<DataInd>StReceiptLY14.Ind
+<Data>StReceiptLY03
+[Win]<DataInd>StReceiptLY03.Ind
 Y
 
 Is renam
@@ -1193,7 +1122,7 @@ Win
 Program
 
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
 
@@ -1204,18 +1133,7 @@ MONTHLY
 
 3
 X
-<CTN>Sl31
-1N
-
-3
-X
-<CTN>Sl32
-2N
-
-3
-X
 <CTN>Sl3
-
 Y
 
 
@@ -1226,6 +1144,14 @@ Y
 A
 ZZZZZ
 N
+
+3
+2
+17
+X
+<SPL>SL
+
+Y
 E
 
 
@@ -1298,16 +1224,6 @@ y
 [Win]<Spl>Backup.Lst
 
 
-**** Year-END BACKUP COMPLETE *****
 
-
-
-a n uMain
-[Win]<CTN>MonthEnd3.Zip
-
-[Win]<CTN>MonthEnd3.Zip
-
-
-
 *** CTN YEAR-END COMPLETE *****
 

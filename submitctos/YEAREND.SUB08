@@ -3,37 +3,30 @@ Win
 Program
 
 Delete
-<CSC>*
+<SFC>*
 
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
 8
-CSC-MONTH
-2
-3
-17
-
-
-
-
-
+MENU65SP
 3
 2
-21
-X
-<CSC>SL21
+18
+3
+I
 
 
 
 
-
-4
+
+
+4
 
 1
 X
-<CSC>SL1
+<SFC>SL1
 01
 
 
@@ -45,36 +38,29 @@ X
 
 2
 X
-<CSC>Sl2
+<SFC>Sl2
 
 
 4
 X
-<CSC>Sl4
+<SFC>Sl4
 
 
 5
 X
-<CSC>Sl5
+<SFC>Sl5
 
 
 6
 X
-<CSC>Sl6
+<SFC>Sl6
 
 Y
 
 
-6
-X
-<CSC>Sl6A
-
-N
-
-
 7
 X
-<CSC>Sl7
+<SFC>Sl7
 Y
 
 
@@ -84,7 +70,7 @@ Y
 3
 22
 X
-<CSC>SLP22
+<SFC>SLP22
 
 
 3
@@ -399,27 +385,34 @@ Path
 Win
 Program
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
+
 8
-CSC-MONTH
+MENU65SP
 1
 2
-
 14
 X
-<CSC>DR14A
+<SFC>DR14A
 5000
 T
 S1
 
 14
 X
-<CSC>DR14B
+<SFC>DR14B
 5000
 T
 S2
+
+14
+X
+<SFC>DR14C
+5000
+T
+S3
 
 
 
@@ -428,78 +421,78 @@ S2
 
 8
 X
-<CSC>SL8A
+<SFC>SL8A
 50
 
 8
 X
-<CSC>SL8B
+<SFC>SL8B
 51
 
 8
 X
-<CSC>SL8C
+<SFC>SL8C
 52
 
 8
 X
-<CSC>SL8D
+<SFC>SL8D
 53
 
 8
 X
-<CSC>SL8E
+<SFC>SL8E
 55
-
 
 
 9
 X
-<CSC>SL9A
+<SFC>SL9A
 1
 NN
 
 9
 X
-<CSC>SL9B
+<SFC>SL9B
 2
 NN
 
 9
 X
-<CSC>SL9C
+<SFC>SL9C
 3
 NN
 
+
 10
 X
-<CSC>SL10
+<SFC>SL10
 
 
 
 11
 X
-<CSC>Sl11
+<SFC>Sl11
 01000019999999AD
 
 
 12
 X
-<CSC>SL12A
+<SFC>SL12A
 A
 ZZZZZ
 Y
 
 12
 X
-<CSC>SL12B
+<SFC>SL12B
 A
 ZZZZZ
 N
 
 13
 X
-<CSC>SL13A
+<SFC>SL13A
 
 ZZZZZ
 Y
@@ -507,14 +500,14 @@ Y
 
 13
 X
-<CSC>SL13B
+<SFC>SL13B
 
 ZZZZZ
 N
 
 14
 X
-<CSC>SL14
+<SFC>SL14
 A
 ZZZZZ
 Y
@@ -571,14 +564,14 @@ Y
 
 16
 X
-<CSC>SL16
+<SFC>SL16
 A
 Z
 PY
 
 17
 X
-<CSC>SL17A
+<SFC>SL17A
 A
 ZZZZZ
 NY
@@ -588,7 +581,7 @@ NY
 2
 15
 X
-<CSC>SL15
+<SFC>SL15
 
 Y
 Y
@@ -596,21 +589,14 @@ Y
 
 17
 X
-<CSC>SL17B
-
-N
-
-
-17
-X
-<CSC>SL17C
+<SFC>SL17B
 
 Y
 
 
 19
 X
-<CSC>SL19
+<SFC>SL19
 21
 
 
@@ -618,52 +604,27 @@ X
 
 2
 2
-
 2
 X
-<CSC>ST2
+<SFC>ST2
 A
 ZZZZZZ
 OY
 
 16
 X
-<CSC>ST16
+<SFC>ST16
 
 Z
 N
 
 26
 X
-<CSC>ST26
+<SFC>ST26
 A
 Z
 Y
 Y
-
-
-
-
-28
-X
-<CSC>ST28A
-A
-ZZZZZ
-200
-RTN
-
-
-
-28
-X
-<CSC>ST28B
-A
-ZZZZZ
-200
-UTN
-
-
-
 
 
 
@@ -671,7 +632,7 @@ UTN
 2
 8
 X
-<CSC>DR8
+<SFC>DR8
 
 9999999
 A
@@ -683,84 +644,63 @@ A
 1
 16
 X
-<CSC>DR16
+<SFC>DR16
 XX
 
 
 
 
-1
-2
-
-
-14
-X
-<CSC>DR14A
-500
-TP
-
-
-14
-X
-<CSC>DR14B
-500
-TS
-
-
-
-
 3
 4
 
-
 18
 X
-<CSC>SL18A
+<SFC>SL18A
 0
 
 18
 X
-<CSC>SL18B
+<SFC>SL18B
 1
 
 18
 X
-<CSC>SL18C
+<SFC>SL18C
 2
 
 18
 X
-<CSC>SL18D
+<SFC>SL18D
 3
 
 18
 X
-<CSC>SL18E
+<SFC>SL18E
 4
 
 18
 X
-<CSC>SL18F
+<SFC>SL18F
 5
 
 18
 X
-<CSC>SL18G
+<SFC>SL18G
 6
 
 18
 X
-<CSC>SL18H
+<SFC>SL18H
 7
 
 18
 X
-<CSC>SL18I
+<SFC>SL18I
 8
 
 18
 X
-<CSC>SL18J
+<SFC>SL18J
 9
 
 
@@ -1138,8 +1078,8 @@ Y
 
 Is renam
 <Data>StReceiptLy
-<Data>StReceiptLY14
-[Win]<DataInd>StReceiptLY14.Ind
+<Data>StReceiptLY04
+[Win]<DataInd>StReceiptLY04.Ind
 Y
 
 Is renam
@@ -1170,7 +1110,7 @@ PS08
 
 Append
 <PS08>*/*
-<CSC>SlP22
+<SFC>SlP22
 N
 
 
@@ -1183,35 +1123,35 @@ Program
 
 COPY
 <spl>DrStateCo08
-<CSC>DrStateCo08
+<SFC>DrStateCo08
 Y
 
 COPY
 <spl>DrLaserCo08
-<CSC>DrLaserCo08
+<SFC>DrLaserCo08
 Y
 
 
 COPY
 <spl>DrNOMALCo08
-<CSC>DrNOMALCo08
+<SFC>DrNOMALCo08
 Y
 
 
 COPY
 <spl>DrEMAILCo08
-<CSC>DrEMAILCo08
+<SFC>DrEMAILCo08
 Y
 
 COPY
-<CSC>Sl11
-<Spl>CSCDrAge
+<SFC>Sl11
+<Spl>SFCDrAge
 Y
 
 
 Rename
 <Spl>DB*08
-<CSC>DB*08
+<SFC>DB*08
 Y
 Path
 Win
@@ -1219,29 +1159,18 @@ Program
 
 
 C/2 Run
-MainCont
+MainCont.Int
 
 -N +P
 
 8
-CSC-MONTH
+MENU65SP
 3
 4
 
 3
 X
-<CSC>Sl31
-1N
-
-3
-X
-<CSC>Sl32
-2N
-
-3
-X
-<CSC>Sl3
-
+<SFC>Sl3
 Y
 
 
@@ -1257,7 +1186,7 @@ N
 2
 17
 X
-<SPL>SL17D
+<SPL>SL
 
 Y
 
@@ -1285,7 +1214,7 @@ Y
 
 Path
 Win
-CSC
+SFC
 
 Screen Setup
 
@@ -1320,7 +1249,7 @@ Y
 
 
 File
-<Data*>* <CDat*>*
+<Data*>*
 
 <Temp>TapeBackup.key
 
@@ -1344,17 +1273,5 @@ Rest Archi
 y
 [Win]<Spl>Backup.Lst
 
-
-**** YEAR-END BACKUP COMPLETE *****
-
-
-a n uMain
-[Win]<CSC>MonthEnd8.Zip
-
-[Win]<CSC>MonthEnd8.Zip
-
-
-
-
-***** CSC YEAR-END COMPLETE *****
+***** SAFTEC (CAPE) YEAR-END DONE *****
 
