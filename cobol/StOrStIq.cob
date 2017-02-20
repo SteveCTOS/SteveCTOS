@@ -259,7 +259,6 @@
            IF SUB-1 < 1
               MOVE 1 TO SUB-1 F-INDEX.
 
-
             MOVE "ORDERNO"       TO F-FIELDNAME.
             MOVE 7               TO F-CBFIELDNAME.
             MOVE OO-ORDER-NUMBER TO F-NAMEFIELD.
@@ -486,15 +485,8 @@
       *
        READ-ALL-TRANSACTIONS SECTION.
        RDALL-005.
-      *     MOVE "AT RDALL-005, GOING TO OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
            PERFORM OPEN-020.
-      *     MOVE "AT RDALL-005, FILE OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
        RDALL-006.
-      *     MOVE "AT RDALL-006, AT START NOW ...." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-      *
            MOVE "Y" TO WS-NEWINPUT.
            MOVE ST-STOCKNUMBER TO OO-STOCK-NUMBER.
            START OUTSTANDING-ORDERS KEY NOT < OO-STOCK-NUMBER
@@ -601,7 +593,7 @@
                MOVE 1 TO F-INDEX
                GO TO RD-TR-ONLY-999.
            IF WS-OUTORD-ST1 NOT = 0
-               MOVE "ST-ORDER FILE BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "ST-ORDER FILE BUSY ON READ-ONLY, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-OUTORD-ST1 TO WS-MESSAGE

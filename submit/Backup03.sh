@@ -72,6 +72,7 @@ Submit MainCont TapeBackup.Sub01
 
 lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa1
 lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa2
+lp -d ctj-splXtra -o cpi=17 /ctools/spl/ctj-aa3
 
 echo Moving Faxes to FaxSent folder......
 cp /ctools/fax/*.pdf /ctools/faxsent/

@@ -584,11 +584,17 @@
            IF WS-SUSPEND (SUB-1) = "A"
                  GO TO PRR-550.
            IF INCR-PRINTED = "C"
-                MOVE "C" TO STTR-COMPLETE.
+                MOVE "C" TO STTR-COMPLETE
+                            STTR-AC-COMPLETE
+                            STTR-ST-COMPLETE.
            IF INCR-PRINTED = "D"
-                MOVE "D" TO STTR-COMPLETE.
+                MOVE "D" TO STTR-COMPLETE
+                            STTR-AC-COMPLETE
+                            STTR-ST-COMPLETE.
            IF STTR-TYPE = 7
-                MOVE "B" TO STTR-COMPLETE.
+                MOVE "B" TO STTR-COMPLETE
+                            STTR-AC-COMPLETE
+                            STTR-ST-COMPLETE.
        PRR-550.
            IF B-SPECIAL (SUB-1) = "Y"
                MOVE 0 TO STTR-ITEMDISC.
@@ -654,8 +660,8 @@
                
            IF INCR-PRINTED = "N" OR = "C"
             IF INCR-TRANS NOT = 7
-              MOVE "C" TO INCR-PRINTED
-               ADD 1 TO WS-READY
+              MOVE "C"       TO INCR-PRINTED
+               ADD 1         TO WS-READY
                MOVE WS-READY TO WS-READY-DISPLAY
                MOVE 2310 TO POS
                DISPLAY "Total No Of Orders Made Ready To Print:" AT POS
@@ -664,8 +670,8 @@
            IF INCR-PRINTED = "S"
             IF WS-ALLOC-TO-SUSP = "P"
              IF INCR-TRANS NOT = 7
-               MOVE "C" TO INCR-PRINTED
-               ADD 1 TO WS-READY
+               MOVE "C"      TO INCR-PRINTED
+               ADD 1         TO WS-READY
                MOVE WS-READY TO WS-READY-DISPLAY
                MOVE 2310 TO POS
                DISPLAY "Total No Of Orders Made Ready To Print:" AT POS
@@ -673,8 +679,8 @@
                DISPLAY WS-READY-DISPLAY AT POS.
            IF INCR-PRINTED = "P" OR = "D"
             IF INCR-TRANS NOT = 7
-               MOVE "D" TO INCR-PRINTED 
-               ADD 1 TO WS-PENDING
+               MOVE "D"        TO INCR-PRINTED 
+               ADD 1           TO WS-PENDING
                MOVE WS-PENDING TO WS-PENDING-DISPLAY
                MOVE 2410 TO POS
                DISPLAY "Total No Of Orders Already in Store   :" AT POS
@@ -682,8 +688,8 @@
                DISPLAY WS-PENDING-DISPLAY AT POS.
                
            IF INCR-TRANS = 7
-               MOVE "B" TO INCR-PRINTED 
-               ADD 1 TO WS-BM-PENDING
+               MOVE "B"           TO INCR-PRINTED 
+               ADD 1              TO WS-BM-PENDING
                MOVE WS-BM-PENDING TO WS-PENDING-DISPLAY
                MOVE 2510 TO POS
                DISPLAY "Total No Of B/Material slips changed  :" AT POS
