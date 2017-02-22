@@ -451,12 +451,90 @@
        CONTROL-999.
            EXIT.
       *
+       GET-DATA SECTION.
+       GET-005.
+           MOVE WS-TYPE TO INCR-PRINTED.
+           START INCR-REGISTER KEY NOT < INCR-PRINTED
+               INVALID KEY NEXT SENTENCE.
+           IF WS-INCR-ST1 NOT = 0
+               MOVE
+            "REGISTER BUSY ON START GET-005, IN 2 SEC GOING TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-INCR-ST1
+               MOVE 0 TO INCR-INVOICE
+               GO TO GET-020.
+       GET-010.
+           PERFORM READ-REGISTER.
+       GET-020.
+           IF INCR-INVOICE = 0
+               GO TO GET-999
+           ELSE
+               PERFORM READ-STOCK-TRANSACTIONS.
+           PERFORM CALCULATE-TOTALS.
+           PERFORM CALCULATE-ORDER-TOTAL.
+           PERFORM PRINT-INVOICE.
+           PERFORM WRITE-DOCUBASE-RECORD
+           ADD 1 TO WS-ORDER-NO.
+           MOVE WS-ORDER-NO TO WS-ORDER-NO-DIS.
+           MOVE 2510 TO POS.
+           DISPLAY "Number of Orders processed so far :" AT POS.
+           MOVE 2548 TO POS.
+           DISPLAY WS-ORDER-NO-DIS AT POS.
+           PERFORM CLEAR-FIELDS.
+           GO TO GET-010.
+       GET-999.
+           EXIT.
+      *
+       GET-BM-DATA SECTION.
+       GET-BM-005.
+           MOVE WS-TYPE TO INCR-PRINTED.
+           START INCR-REGISTER KEY NOT < INCR-PRINTED
+               INVALID KEY NEXT SENTENCE.
+           IF WS-INCR-ST1 NOT = 0
+               MOVE
+            "REGISTER BUSY ON START GET-BM005, IN 2 SEC GOING TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO INCR-INVOICE
+               GO TO GET-BM-020.
+       GET-BM-010.
+           PERFORM READ-BM-REGISTER.
+       GET-BM-020.
+           IF INCR-INVOICE = 0
+               GO TO GET-BM-999
+           ELSE
+               PERFORM READ-STOCK-TRANSACTIONS.
+           PERFORM PRINT-TOOLKIT.
+           ADD 1 TO WS-ORDER-NO.
+           MOVE WS-ORDER-NO TO WS-ORDER-NO-DIS.
+           MOVE 2510 TO POS.
+           DISPLAY "Number of B/M'S processed so far :" AT POS.
+           MOVE 2548 TO POS.
+           DISPLAY WS-ORDER-NO-DIS AT POS.
+           PERFORM CLEAR-FIELDS.
+           GO TO GET-BM-010.
+       GET-BM-999.
+           EXIT.
+      *
        PRINT-INVOICE SECTION.
        PR-000.
            MOVE WS-INVOICE TO P-SLIP.
        PR-005.
            MOVE " " TO WS-ITEMS-BELOW-MIN-PERC
-           MOVE 1 TO WS-PAGE SUB-1 SUB-2.
+           MOVE 1   TO WS-PAGE SUB-1 SUB-2.
            MOVE " " TO PRINT-REC.
        PR-010.
            MOVE WS-PRINT-COMP TO PRINT-REC
@@ -788,7 +866,7 @@
        BMPR-004.
            MOVE "N" TO WS-PRINT-AMTS.
        BMPR-005.
-           MOVE 1 TO WS-PAGE SUB-1 SUB-2.
+           MOVE 1   TO WS-PAGE SUB-1 SUB-2.
            MOVE " " TO PRINT-REC.
       *     OPEN OUTPUT PRINT-FILE.
        BMPR-010.
@@ -901,63 +979,6 @@
            MOVE 2758 TO POS
            DISPLAY WS-MESSAGE AT POS.
        BMPR-999.
-           EXIT.
-      *
-       GET-DATA SECTION.
-       GET-005.
-           MOVE WS-TYPE TO INCR-PRINTED.
-           START INCR-REGISTER KEY NOT < INCR-PRINTED
-               INVALID KEY NEXT SENTENCE.
-           IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO INCR-INVOICE
-               GO TO GET-020.
-       GET-010.
-           PERFORM READ-REGISTER.
-       GET-020.
-           IF INCR-INVOICE = 0
-               GO TO GET-999
-           ELSE
-               PERFORM READ-STOCK-TRANSACTIONS.
-           PERFORM CALCULATE-TOTALS.
-           PERFORM CALCULATE-ORDER-TOTAL.
-           PERFORM PRINT-INVOICE.
-           PERFORM WRITE-DOCUBASE-RECORD
-           ADD 1 TO WS-ORDER-NO.
-           MOVE WS-ORDER-NO TO WS-ORDER-NO-DIS.
-           MOVE 2510 TO POS.
-           DISPLAY "Number of Orders processed so far :" AT POS.
-           MOVE 2548 TO POS.
-           DISPLAY WS-ORDER-NO-DIS AT POS.
-           PERFORM CLEAR-FIELDS.
-           GO TO GET-010.
-       GET-999.
-           EXIT.
-      *
-       GET-BM-DATA SECTION.
-       GET-BM-005.
-           MOVE WS-TYPE TO INCR-PRINTED.
-           START INCR-REGISTER KEY NOT < INCR-PRINTED
-               INVALID KEY NEXT SENTENCE.
-           IF WS-INCR-ST1 NOT = 0
-               MOVE 0 TO INCR-INVOICE
-               GO TO GET-BM-020.
-       GET-BM-010.
-           PERFORM READ-BM-REGISTER.
-       GET-BM-020.
-           IF INCR-INVOICE = 0
-               GO TO GET-BM-999
-           ELSE
-               PERFORM READ-STOCK-TRANSACTIONS.
-           PERFORM PRINT-TOOLKIT.
-           ADD 1 TO WS-ORDER-NO.
-           MOVE WS-ORDER-NO TO WS-ORDER-NO-DIS.
-           MOVE 2510 TO POS.
-           DISPLAY "Number of B/M'S processed so far :" AT POS.
-           MOVE 2548 TO POS.
-           DISPLAY WS-ORDER-NO-DIS AT POS.
-           PERFORM CLEAR-FIELDS.
-           GO TO GET-BM-010.
-       GET-BM-999.
            EXIT.
       *
        WRITE-DOCUBASE-RECORD SECTION.
@@ -1407,11 +1428,23 @@
                CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-INCR-ST1
                GO TO RBM-005.
-           IF INCR-TRANS NOT = 7
-               GO TO RBM-005.
+
            IF INCR-PRINTED NOT = WS-TYPE
                MOVE 0 TO INCR-INVOICE
                GO TO RBM-999.
+
+           IF INCR-TRANS NOT = 7
+               MOVE 
+          "NEXT BM-REG BUSY INCR-TRANS NOT=7, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               GO TO RBM-005.
 
            PERFORM ERROR-020.
            MOVE INCR-INVOICE     TO WS-INVOICE.
@@ -1520,6 +1553,17 @@
            IF STTR-REFERENCE1 NOT = WS-INVOICE
               GO TO RSTT-999.
            IF STTR-TYPE NOT = INCR-TRANS
+              MOVE
+             "STTR-TYPE NOT=INCR-TRANS, IN 2 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               MOVE WS-STTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020 
+               PERFORM ERROR-020
+               CALL "C$SLEEP" USING 1
+               MOVE 0 TO WS-STTRANS-ST1
               GO TO RSTT-010.
            MOVE STTR-STOCK-NUMBER TO B-STOCKNUMBER (SUB-1)
                                      SPLIT-STOCK.
