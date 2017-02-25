@@ -58,6 +58,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - wm
      - change all the entries in [ ] brackets so that the system does not interfere with the CTOS key strokes
 
-
+  6. Setup putty.
+     - in /ctools/dev/source/putty there are a number of file and folders that can be copied into /home/.putty to get the current config 
 
 
