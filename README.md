@@ -24,7 +24,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
      left of the screen.
  
   2. From a terminal install the following using apt-get
-    - sudo apt-get install git g++ cmake open-cobol
+    - sudo apt-get install git git-gui g++ cmake open-cobol
 
   3. Using Software Manager install
     
@@ -44,3 +44,18 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - cd build
      - cmake ../source
      - make install
+
+  5. Change the key bindings using dconf-editor - you must first install
+ 
+     - sudo apt-get install dconf-tools
+     - then run the dconf-editor in a terminal session
+     - org
+     - Cinamon
+     - desktop
+     - keybindings
+     - wm
+     - change all the entries in [ ] brackets so that the system does not interfere with the CTOS key strokes
+
+
+
+

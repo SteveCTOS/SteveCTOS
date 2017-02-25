@@ -92,6 +92,11 @@ D
 Y
 
 
+3
+X
+Y
+
+
 #04
 #04
 1
@@ -317,6 +322,19 @@ Y
 
 
 
+15
+0100001
+5555555
+B
+31
+A
+PLEASE PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+Y
+N
+N
+6
+
+
 16
 XX
 /ctools/ctn/SL16
@@ -334,6 +352,58 @@ A
 ZZZZZZ
 Y
 Y
+
+
+
+18
+XX
+/ctools/ctn/SL18A
+0
+
+18
+XX
+/ctools/ctn/SL18B
+1
+
+18
+XX
+/ctools/ctn/SL18C
+2
+
+18
+XX
+/ctools/ctn/SL18D
+3
+
+18
+XX
+/ctools/ctn/SL18E
+4
+
+18
+XX
+/ctools/ctn/SL18F
+5
+
+18
+XX
+/ctools/ctn/SL18G
+6
+
+18
+XX
+/ctools/ctn/SL18H
+7
+
+18
+XX
+/ctools/ctn/SL18I
+8
+
+18
+XX
+/ctools/ctn/SL18J
+9
 
 
 #04

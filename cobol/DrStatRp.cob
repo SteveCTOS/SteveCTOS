@@ -396,8 +396,12 @@
               PERFORM Z1-HEADINGS
               PERFORM PRINT-LASER-STATEMENT.
            IF WS-FOUND = " "
-               MOVE "NOTHING TO PRINT IN THAT RANGE!!!" TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
+               MOVE 
+             "NOTHING TO PRINT IN THAT RANGE, IN 2SEC'S GOING TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR-020.
            IF WS-PRINTER-TYPE = 1
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC BEFORE PAGE
@@ -826,6 +830,7 @@
       * THIS SECTION USED TO PRINT STATEMENTS ON DOT MATRIX PRINTER
        PR-000.
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
+           MOVE 0             TO DRTR-DATE.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
@@ -1134,6 +1139,7 @@
        PRINT-LASER-STATEMENT SECTION.
        PRL-000.
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
+           MOVE 0             TO DRTR-DATE.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
@@ -1454,7 +1460,8 @@
        PR-PDF-000.
       * THIS SECTION USED FOR PRINTING .PDF FILES FOR EXPORT TO 
       * DOCUMENT WAREHOUSE TO REPLACE THE OLD STYLE COLD DOC'S
-           MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
+           MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER
+           MOVE 0             TO DRTR-DATE.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 NOT = 0
@@ -1466,25 +1473,25 @@
            READ DEBTOR-TRANS-FILE NEXT
               AT END NEXT SENTENCE.
       * 10=END OF FILE, 23=KEY NOT FOUND, 46=READ ERC
-           IF WS-DRTRANS-ST1 = 10 OR = 23 OR = 46
+           IF WS-DRTRANS-ST1 = 10
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC AFTER 1
               PERFORM PRINT-LASER-TRAILING
               PERFORM PR-PDF-050
               GO TO PR-PDF-999.
            IF WS-DRTRANS-ST1 = 91
-              MOVE 10 TO WS-DRTRANS-ST1
+              MOVE 10  TO WS-DRTRANS-ST1
               MOVE " " TO DEBTOR-TRANS-REC
               PERFORM PRINT-LASER-TRAILING
               PERFORM PR-PDF-050
               GO TO PR-PDF-999.
            IF WS-DRTRANS-ST1 NOT = 0
-             MOVE "DRTRANS1 BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+             MOVE "DRTRANS1 BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
+               CALL "C$SLEEP" USING 2
                PERFORM ERROR1-020
                PERFORM ERROR-020
                MOVE 0 TO WS-DRTRANS-ST1
@@ -1506,9 +1513,19 @@
             READ DEBTOR-MASTER
                INVALID KEY NEXT SENTENCE.
             IF WS-DEBTOR-ST1 = 23 OR 35 OR 49
+              MOVE "DEBTOR ST=23 READ, IN 1 SEC GOING TO PR-PDF-001."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-DEBTOR-ST1
                GO TO PR-PDF-001.
+
             IF WS-DEBTOR-ST1 NOT = 0
-              MOVE "DEBTOR BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+              MOVE "DEBTOR BUSY ON READ, IN 1 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
@@ -1656,7 +1673,7 @@
             IF WS-BFORWARD-OPEN = "O"
                 GO TO PR-PDF-022.
             IF DRTR-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
-                MOVE 10 TO WS-DRTRANS-ST1
+                MOVE 66 TO WS-DEBTOR-ST1
                 GO TO PR-PDF-040.
                 
             MOVE DRTR-DATE       TO SPLIT-DATE
@@ -1763,14 +1780,6 @@
               WRITE PRINT-REC FROM LASER-BLANK-FOOTER AFTER 1
               ADD 1 TO L-CNT
               GO TO PTL-005.
-              
-      *     IF WS-PAGE > 1 OR WS-PAGE = 1 OR WS-BFORWARD-OPEN = "O"
-      *      IF WS-PRINTER-TYPE = "3" OR = "5"
-      *            MOVE "³" TO PLBF-END-CHAR.
-      *     IF WS-PAGE > 1 OR WS-PAGE = 1 OR WS-BFORWARD-OPEN = "O"
-      *        MOVE "¶" TO PLBF-CHAR
-      *        WRITE PRINT-REC FROM LASER-BLANK-FOOTER AFTER 1
-      *        ADD 1 TO L-CNT.
               
            MOVE " "                      TO PRINT-REC
            MOVE DR-TERMS-CODE            TO WS-TERM-SUB
