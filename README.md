@@ -39,6 +39,8 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - sudo chown ctools:ctools /ctools
      - mkdir /ctools/dev
      - cd /ctools/dev
+     - git config --global user.email "Steve@Christensen.co.za"
+     - git config --global user.name "Steve Christensen"
      - git clone https://<user>:<password>@bitbucket.org/VincentRisi/ctos4ctools source
      - mkdir build
      - cd build
