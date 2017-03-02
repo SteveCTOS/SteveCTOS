@@ -159,6 +159,9 @@
             MOVE WS-RANGE1 TO ST-STOCKNUMBER
             START STOCK-MASTER KEY NOT < ST-KEY
                  INVALID KEY NEXT SENTENCE.
+            IF WS-ST-ST1 NOT = 0
+               MOVE 0 TO WS-ST-ST1
+               GO TO RSN-999.
        RSN-010.
             READ STOCK-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE. 
@@ -249,8 +252,7 @@
             START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                  INVALID KEY NEXT SENTENCE.
             IF WS-BO-ST1 NOT = 0
-               MOVE 0 TO WS-BO-ST1
-               GO TO PRR-000.
+               GO TO PRR-999.
        PRR-002.
             READ STOCK-TRANS-FILE NEXT
                AT END NEXT SENTENCE.
