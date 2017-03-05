@@ -68,6 +68,7 @@ type
     ordernumber: string;
     imgpath: string;
     is_active: string;
+    nu1, nu2, nu3: string;
   end;
 
 implementation
@@ -85,7 +86,7 @@ begin
     Width   := Ini.ReadInteger('Form', 'Width', 600);
     Height  := Ini.ReadInteger('Form', 'Height', 800);
     PortEdit.Text := Ini.ReadString('Server', 'Port', '32145');
-    HostEdit.Text := Ini.ReadString('Server', 'Host', 'localhost');
+    HostEdit.Text := Ini.ReadString('Server', 'Host', '127.0.0.1');
     CSVEdit.Text  := Ini.ReadString('Pictures', 'CSVFile', 'C:\ctools\dev\source\pascal\data\products.csv');
   finally
     Ini.Free;
@@ -134,6 +135,7 @@ begin
     StockCombo.Items.Clear;
     while not eof(tfIn) do begin
       readln(tfIn, s);
+      s := s + ';';
       inc(items);
       if items = 1 then continue;
       field := id;
@@ -149,6 +151,9 @@ begin
           ordernumber: rec.ordernumber := word;
           imgpath: rec.imgpath := word;
           is_active: rec.is_active := word;
+          nu1: rec.nu1 := word;
+          nu2: rec.nu2 := word;
+          nu3: rec.nu3 := word;
           else break;
         end;
         inc(field);
@@ -195,6 +200,12 @@ begin
     PicMemo.Lines.Add(format('brand       : %s', [rec.brand]));
     PicMemo.Lines.Add(format('ordernumber : %s', [rec.ordernumber]));
     PicMemo.Lines.Add(format('active      : %s', [rec.is_Active]));
+    if length(rec.nu1) > 0 then
+      PicMemo.Lines.Add(format(' %s', [rec.nu1]));
+    if length(rec.nu2) > 0 then
+      PicMemo.Lines.Add(format(' %s', [rec.nu2]));
+    if length(rec.nu3) > 0 then
+      PicMemo.Lines.Add(format(' %s', [rec.nu3]));
     PicWebBrowser.Navigate(UrlEdit.Text);
   end;
 end;
@@ -257,7 +268,6 @@ end;
 procedure TFormMain.PicTcpServerDestroyHandle(Sender: TObject);
 begin
   Log := 'destroy handle';
-
 end;
 
 procedure TFormMain.PicTcpServerListening(Sender: TObject);
@@ -270,6 +280,7 @@ begin
   ShowTimer.Enabled := false;
   DisplayItem(toshow);
   PageControlMain.ActivePageIndex := 0;
+  StockCombo.ItemIndex := -1;
 end;
 
 end.

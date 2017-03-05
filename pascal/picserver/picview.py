@@ -2,7 +2,7 @@ import socket
 import sys
 
 HOST, PORT = "localhost", 32145
-data = '1696\0x00' # sys.argv[1]
+data = '1005\0x00' # sys.argv[1]
 
 # Create a socket (SOCK_STREAM means a TCP socket)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
