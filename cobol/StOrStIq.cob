@@ -153,29 +153,30 @@
             PERFORM READ-STOCK.
             GO TO GET-020.
        GET-010.
-            MOVE "STOCK" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "STOCK"        TO F-FIELDNAME.
+            MOVE 5              TO F-CBFIELDNAME.
             MOVE ST-STOCKNUMBER TO F-NAMEFIELD.
-            MOVE 15 TO F-CBFIELDLENGTH.
+            MOVE 15             TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
 
-            MOVE "DESC" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
+            MOVE "DESC"          TO F-FIELDNAME.
+            MOVE 4               TO F-CBFIELDNAME.
             MOVE ST-DESCRIPTION1 TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 20              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "DESC2" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "DESC2"         TO F-FIELDNAME.
+            MOVE 5               TO F-CBFIELDNAME.
             MOVE ST-DESCRIPTION2 TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 20              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             IF ST-DESCRIPTION1 = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
+                CLOSE OUTSTANDING-ORDERS
                 GO TO GET-000.
             MOVE " " TO F-EXIT-CH.
        GET-030.
