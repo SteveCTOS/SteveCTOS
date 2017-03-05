@@ -18,13 +18,13 @@ This repository is in bitbucket being used for free and as such it has a maximum
 
 * Installing the Server
   
-  1. Install Linux Mint Cinnamon (17.1 - current latest) making the main user ctools.
+  1. Install Linux Mint Cinnamon (17.2 - our current version) making the main user ctools.
      From Update Manager install all the outstanding updates. This is shown by the 
      installing updates having an exclamation ! in the shield next to clock in the bottom
-     left of the screen.
+     right of the screen.
  
-  2. From a terminal install the following using apt-get
-    - sudo apt-get install git g++ cmake open-cobol
+  2. From a terminal install the following using apt-get install
+    - sudo apt-get install git git-gui g++ cmake open-cobol
 
   3. Using Software Manager install
     
@@ -32,6 +32,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - openssh  
      - sublime text
      - doublecmd gtk 
+     - Geany
 
   4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
 
@@ -39,8 +40,29 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - sudo chown ctools:ctools /ctools
      - mkdir /ctools/dev
      - cd /ctools/dev
-     - git clone https://<user>:<password>@bitbucket.org/VincentRisi/ctos4ctools source
+     - git config --global user.email "Steve@Christensen.co.za"
+     - git config --global user.name "Steve Christensen"
+                         <username>   <pswd>
+     - git clone https://VincentRisi:Atl45514n@bitbucket.org/VincentRisi/ctos4ctools source
      - mkdir build
      - cd build
      - cmake ../source
      - make install
+
+  5. Change the key bindings using dconf-editor - you must first install:
+ 
+     - sudo apt-get install dconf-tools
+     - then run the dconf-editor in a terminal session and go to:
+     - org
+     - Cinamon
+     - desktop
+     - keybindings
+     - wm
+     - change all the entries in [ ] brackets so that the system does not interfere with the CTOS key strokes
+
+  6. Setup putty.
+
+     - in /ctools/dev/source/putty there are a number of files and folders that can be copied into /home/.putty to get the current config 
+     
+
+

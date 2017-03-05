@@ -1,4 +1,5 @@
 rm /ctools/csc/*
+rm /ctools/pdf08/*
 
 Submit MainCont YearEnd.Sub08
 

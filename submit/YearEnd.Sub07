@@ -91,6 +91,11 @@ Y
 
 
 
+3
+X
+Y
+
+
 #04
 #04
 1
@@ -338,6 +343,19 @@ Y
 4
 
 
+15
+0100001
+5555555
+B
+31
+A
+PLEASE PHONE 011-618-3325,6,7,8 FOR ALL ACCOUNT QUERIES.
+Y
+N
+N
+6
+
+
 16
 XX
 /ctools/sfj/SL16
@@ -355,6 +373,57 @@ A
 ZZZZZZ
 Y
 Y
+
+
+18
+XX
+/ctools/sfj/SL18A
+0
+
+18
+XX
+/ctools/sfj/SL18B
+1
+
+18
+XX
+/ctools/sfj/SL18C
+2
+
+18
+XX
+/ctools/sfj/SL18D
+3
+
+18
+XX
+/ctools/sfj/SL18E
+4
+
+18
+XX
+/ctools/sfj/SL18F
+5
+
+18
+XX
+/ctools/sfj/SL18G
+6
+
+18
+XX
+/ctools/sfj/SL18H
+7
+
+18
+XX
+/ctools/sfj/SL18I
+8
+
+18
+XX
+/ctools/sfj/SL18J
+9
 
 
 
@@ -424,62 +493,7 @@ Y
 
 #04
 #04
-3
-4
 
-18
-XX
-/ctools/sfj/SL18A
-0
-
-18
-XX
-/ctools/sfj/SL18B
-1
-
-18
-XX
-/ctools/sfj/SL18C
-2
-
-18
-XX
-/ctools/sfj/SL18D
-3
-
-18
-XX
-/ctools/sfj/SL18E
-4
-
-18
-XX
-/ctools/sfj/SL18F
-5
-
-18
-XX
-/ctools/sfj/SL18G
-6
-
-18
-XX
-/ctools/sfj/SL18H
-7
-
-18
-XX
-/ctools/sfj/SL18I
-8
-
-18
-XX
-/ctools/sfj/SL18J
-9
-
-
-#04
-#04
 1
 2
 

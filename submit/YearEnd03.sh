@@ -1,4 +1,5 @@
 rm /ctools/ctn/*
+rm /ctools/pdf03/*
 
 Submit MainCont YearEnd.Sub03
 

@@ -1,7 +1,6 @@
 rm /ctools/csc/*
 rm /ctools/pdf08/*
 
-
 Submit MainCont MonthEnd.Sub08
 
 Submit MainCont MonthEnd2.Sub08

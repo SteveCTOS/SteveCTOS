@@ -1,4 +1,5 @@
 rm /ctools/ctj/*
+rm /ctools/pdf01/*
 
 Submit MainCont YearEnd.Sub01
 

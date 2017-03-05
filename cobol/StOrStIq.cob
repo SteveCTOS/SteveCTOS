@@ -153,29 +153,30 @@
             PERFORM READ-STOCK.
             GO TO GET-020.
        GET-010.
-            MOVE "STOCK" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "STOCK"        TO F-FIELDNAME.
+            MOVE 5              TO F-CBFIELDNAME.
             MOVE ST-STOCKNUMBER TO F-NAMEFIELD.
-            MOVE 15 TO F-CBFIELDLENGTH.
+            MOVE 15             TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
 
-            MOVE "DESC" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
+            MOVE "DESC"          TO F-FIELDNAME.
+            MOVE 4               TO F-CBFIELDNAME.
             MOVE ST-DESCRIPTION1 TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 20              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "DESC2" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "DESC2"         TO F-FIELDNAME.
+            MOVE 5               TO F-CBFIELDNAME.
             MOVE ST-DESCRIPTION2 TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 20              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             IF ST-DESCRIPTION1 = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
+                CLOSE OUTSTANDING-ORDERS
                 GO TO GET-000.
             MOVE " " TO F-EXIT-CH.
        GET-030.
@@ -258,7 +259,6 @@
 
            IF SUB-1 < 1
               MOVE 1 TO SUB-1 F-INDEX.
-
 
             MOVE "ORDERNO"       TO F-FIELDNAME.
             MOVE 7               TO F-CBFIELDNAME.
@@ -486,15 +486,8 @@
       *
        READ-ALL-TRANSACTIONS SECTION.
        RDALL-005.
-      *     MOVE "AT RDALL-005, GOING TO OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
            PERFORM OPEN-020.
-      *     MOVE "AT RDALL-005, FILE OPEN." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
        RDALL-006.
-      *     MOVE "AT RDALL-006, AT START NOW ...." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-      *
            MOVE "Y" TO WS-NEWINPUT.
            MOVE ST-STOCKNUMBER TO OO-STOCK-NUMBER.
            START OUTSTANDING-ORDERS KEY NOT < OO-STOCK-NUMBER
@@ -601,7 +594,7 @@
                MOVE 1 TO F-INDEX
                GO TO RD-TR-ONLY-999.
            IF WS-OUTORD-ST1 NOT = 0
-               MOVE "ST-ORDER FILE BUSY ON READ, 'ESC' TO RETRY."
+               MOVE "ST-ORDER FILE BUSY ON READ-ONLY, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-OUTORD-ST1 TO WS-MESSAGE

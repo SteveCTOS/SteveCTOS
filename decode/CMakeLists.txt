@@ -211,6 +211,18 @@ target_link_libraries (text2pdf)
 install (TARGETS text2pdf RUNTIME DESTINATION bin)
 
 set (source
+  ${CMAKE_CURRENT_SOURCE_DIR}/sox.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/sox.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/showpic.cpp
+)
+add_executable (showpic ${source})
+target_link_libraries (showpic)
+if (WIN32)
+  target_link_libraries (showpic ws2_32 winmm)
+endif ()  
+install (TARGETS showpic RUNTIME DESTINATION bin)
+
+set (source
   ${CMAKE_CURRENT_SOURCE_DIR}/header.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/header.h
   ${CMAKE_CURRENT_SOURCE_DIR}/getargs.cpp

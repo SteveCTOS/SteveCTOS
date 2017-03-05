@@ -75,7 +75,7 @@
       *
        A-ACCEPT SECTION.
        A-AC001.
-           MOVE 0810 TO POS.
+           MOVE 0820 TO POS.
            DISPLAY "** ST-TRANS EXPORT / IMPORT OF DATA **" AT POS
            MOVE 1010 TO POS
            DISPLAY 
@@ -100,7 +100,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO A-AC001.
         A-AC010.
-           DISPLAY WS-ACCEPT AT 1075.
+      *     DISPLAY WS-ACCEPT AT 1075.
            IF WS-ACCEPT = "X"
               EXIT PROGRAM.
            IF WS-ACCEPT NOT = "E" AND NOT = "I"
@@ -160,6 +160,9 @@
            DISPLAY WS-COUNT AT 2510.
 
            MOVE STOCK-TRANS-REC    TO STOCK1-TRANS-REC.
+           MOVE STTR-COMPLETE      TO STTR1-COMPLETE
+                                      STTR1-AC-COMPLETE
+                                      STTR1-ST-COMPLETE.
         BE-010.
            WRITE STOCK1-TRANS-REC
                  INVALID KEY
