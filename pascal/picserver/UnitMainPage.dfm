@@ -3,7 +3,7 @@ object FormMain: TFormMain
   Top = 175
   Width = 619
   Height = 699
-  Caption = 'CHRISTENSEN'
+  Caption = 'CHRISTENSEN Stock Item Picture Server'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -70,15 +70,15 @@ object FormMain: TFormMain
       Caption = 'Browser'
       object BrowserPanel: TPanel
         Left = 0
-        Top = 448
+        Top = 432
         Width = 603
-        Height = 174
+        Height = 190
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 0
         DesignSize = (
           603
-          174)
+          190)
         object ItemsLabel: TLabel
           Left = 8
           Top = 16
@@ -102,7 +102,7 @@ object FormMain: TFormMain
           Left = 0
           Top = 56
           Width = 601
-          Height = 121
+          Height = 137
           Anchors = [akLeft, akTop, akRight, akBottom]
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -127,11 +127,11 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Width = 603
-        Height = 448
+        Height = 432
         Align = alClient
         TabOrder = 1
         ControlData = {
-          4C000000523E00004D2E00000000000000000000000000000000000000000000
+          4C000000523E0000A62C00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E126208000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -193,7 +193,6 @@ object FormMain: TFormMain
         Top = 80
         Width = 121
         Height = 21
-        ReadOnly = True
         TabOrder = 3
         Text = 'localhost'
         OnChange = HostEditChange
@@ -245,14 +244,14 @@ object FormMain: TFormMain
     OnListening = PicTcpServerListening
     OnCreateHandle = PicTcpServerCreateHandle
     OnDestroyHandle = PicTcpServerDestroyHandle
-    Left = 172
-    Top = 40
+    Left = 188
+    Top = 72
   end
   object ShowTimer: TTimer
     Enabled = False
     Interval = 100
     OnTimer = ShowTimerTimer
-    Left = 204
-    Top = 43
+    Left = 236
+    Top = 75
   end
 end

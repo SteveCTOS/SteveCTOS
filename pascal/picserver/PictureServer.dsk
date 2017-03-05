@@ -1,6 +1,6 @@
 [Closed Files]
-File_0=SourceModule,'C:\ctools\dev\source\pascal\.gitignore',0,1,1,1,17,0,0
-File_1=SourceModule,'c:\delphi7se\source\Internet\Sockets.pas',0,1,871,15,901,0,0
+File_0=SourceModule,'c:\delphi7se\source\Internet\Sockets.pas',0,1,1329,64,1363,0,0
+File_1=SourceModule,'C:\ctools\dev\source\pascal\.gitignore',0,1,1,1,17,0,0
 File_2=SourceModule,'C:\Delphi7SE\Source\Rtl\Common\IniFiles.pas',0,1,1,1,1,0,0
 File_3=SourceModule,'C:\ctools\dev\source\pascal\tester\unitmain.pas',0,1,81,1,98,0,0
 
@@ -61,9 +61,9 @@ LeftCol=1
 
 [View1]
 Module=C:\ctools\dev\source\pascal\picserver\UnitMainPage.pas
-CursorX=46
-CursorY=111
-TopLine=70
+CursorX=20
+CursorY=138
+TopLine=130
 LeftCol=1
 
 [Watches]
@@ -151,7 +151,7 @@ LRDockWidth=262
 Dockable=1
 SplitPos=111
 ArrangeBy=Name
-SelectedItem=Left
+SelectedItem=Caption
 ExpandedItems=Anchors
 HiddenCategories=
 
