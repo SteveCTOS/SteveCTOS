@@ -31,6 +31,7 @@ set (copy_list
   DoculogixPDF1.sh
   DoculogixPDF2.sh
   FnbRename.sh
+  FaxSend.Sub01
   FaxStatus.sh
   FNBDebtor.sh
   GlGroup.sh
