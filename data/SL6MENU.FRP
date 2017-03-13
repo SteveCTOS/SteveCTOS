@@ -1,18 +1,18 @@
 **************************{**  MAIN CONTROL MENU  **}**************            
-*  *************************{**  SALES CONTROL MENU  **}***************        
-*  *   ***********************{** SPECIAL PROGRAM MENU **}*********************
+*  **************************{**  SALES CONTROL MENU  **}**************        
+*  *   ***********************{**  SPECIAL PROGRAM MENU  **}*******************
 *  *   *                                                                      *
 *  *   *  1. Register File Entry / Edit            16. Pullby Entry / Edit    *
 *  *   *  2. Register File - Change Acc Number     17. Register Xport/Import  *
 *  *   *  3. Soldby Initial's Change: Inv/Order                               *
-*  *   *                                            {Special Submit Routines} *
-*  *   *  {Last Year Information Programs}         18. Auto Allocations Run   *
-*  *   *  4. Invoice / C-Note Print                19. Branch Update Run      *
-*  *   *  5. Invoice Enquiry By Account                                       *
-*  *   *  6. Invoice Enquiry By Stock                                         *
-*  *   *  7. P/O Inq By P/Slip/Invoice/Repair                                 *
-*  *   *  8. Invoice/C-Note/P-Slip/Quote Enquiry                              *
-*  *   *  9. Invoice Delivery Confirmation                                    *
+*  *   *                                       {Special Submit Routines}      *
+*  *   *  {Last Year Information Programs}     18. Auto Allocations Run       *
+*  *   *  4. Invoice / C-Note Print            19. Branch Update Run          *
+*  *   *  5. Invoice Enquiry By Account        20. Debtor Overdue Faxes       *
+*  *   *  6. Invoice Enquiry By Stock          21. Doculogix Month-End        *
+*  *   *  7. P/O Inq By P/Slip/Invoice/Repair  22. DD Duplictae Disk Image    *
+*  *   *  8. Inv/C-Note/P-Slip/Quote Enquiry   23. Stock MinMax YTD Batch Run *
+*  *   *  9. Invoice Delivery Confirmation     24. Stock MinMax L/Yr Batch Run*
 *  *   * 10. Register Account Enquiry                                         *
 *  *   * 11. Register Name/Address Edit                                       *
 *  *   * 12. Register Enquiry By: Name, Postal                                *

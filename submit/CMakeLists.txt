@@ -21,7 +21,7 @@ set (copy_list
   Branch07.sh
   Branch08.Sub
   Branch08.sh
-  CreateImageDD.sh
+  DDCreateImage.sh
   CrMaint.sh
   DataTestAll.sh
   DB_CONFIG
@@ -30,8 +30,15 @@ set (copy_list
   DoculogixPDF.sh
   DoculogixPDF1.sh
   DoculogixPDF2.sh
+  DrFaxSend01.sh
+  DrFaxSend03.sh
+  DrFaxSend07.sh
+  DrFaxSend08.sh
   FnbRename.sh
   FaxSend.Sub01
+  FaxSend.Sub03
+  FaxSend.Sub07
+  FaxSend.Sub08
   FaxStatus.sh
   FNBDebtor.sh
   GlGroup.sh
@@ -96,6 +103,30 @@ set (copy_list
   renamepay.py
   renamepen.py
   renametax.py
+  StMinMax.Sub01
+  StMinMax.Sub02
+  StMinMax.Sub03
+  StMinMax.Sub05
+  StMinMax.Sub07
+  StMinMax.Sub08
+  StMinMaxLy.Sub01
+  StMinMaxLy.Sub02
+  StMinMaxLy.Sub03
+  StMinMaxLy.Sub05
+  StMinMaxLy.Sub07
+  StMinMaxLy.Sub08
+  StMinMax01.sh
+  StMinMax02.sh
+  StMinMax03.sh
+  StMinMax05.sh
+  StMinMax07.sh
+  StMinMax08.sh
+  StMinMaxLy01.sh
+  StMinMaxLy02.sh
+  StMinMaxLy03.sh
+  StMinMaxLy05.sh
+  StMinMaxLy07.sh
+  StMinMaxLy08.sh
   StockCheck.Sub01
   StockCheck.sh
   TapeBackup.Sub01
