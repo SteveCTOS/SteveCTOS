@@ -320,6 +320,8 @@
                  
            MOVE 2510 TO POS
            DISPLAY "STOCK PRICES BEING IMPORTED...." AT POS.
+           
+           MOVE " " TO PRICE-IMP-KEY.
        ID-005.
            READ PRICE-IMP-MASTER
               AT END
@@ -332,6 +334,8 @@
            DISPLAY "STOCK ITEM BEING IMPORTED:      " AT POS
            ADD 27 TO POS
            DISPLAY PRICE-ST-NUM AT POS.
+           ADD 18 TO POS
+           DISPLAY PRICE-IMP-ST-NUM AT POS.
            
            MOVE PRICE-IMP-DESCRIPTION      TO PRICE-DESCRIPTION
            PERFORM ENTER-UNIT-OF-SALE.
@@ -385,22 +389,26 @@
 
        ID-020.
            WRITE PRICE-RECORD.
-           IF WS-PRICE-ST1 = 22 OR 23 OR 35 OR 49
-                 MOVE "INVALID WRITE OF PRICE UPDATE, ITEM EXISTS"
+           IF WS-PRICE-ST1 = 23 OR 35 OR 49
+                 MOVE "INVALID WRITE OF PRICE IMPORT, ITEM EXISTS"
                   TO WS-MESSAGE
                  PERFORM ERROR1-000
                  MOVE WS-PRICE-ST1 TO WS-MESSAGE
-                 PERFORM ERROR1-MESSAGE
+                 PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ID-005.
+           IF WS-PRICE-ST1 = 22
+                 GO TO ID-005.
            IF WS-PRICE-ST1 NOT = 0
-                 MOVE "INVALID WRITE OF PRICE UPDATE, 'ESC' TO RETRY."
+                 MOVE "INVALID WRITE OF PRICE IMPORT, 'ESC' TO RETRY."
                  TO WS-MESSAGE
                  PERFORM ERROR1-000
                  MOVE WS-PRICE-ST1 TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ID-020.
+      
+      *     PERFORM ERROR-MESSAGE.
            GO TO ID-005.
        ID-999.
            EXIT.

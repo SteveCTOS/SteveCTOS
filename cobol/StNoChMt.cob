@@ -608,7 +608,17 @@
             DISPLAY "DO YOU WISH TO MERGE THE TWO STOCK-NUMBERS:[ ]"
               AT POS
             ADD 44 TO POS
-            ACCEPT WS-CREATE-ONE-STOCK AT POS.
+            
+            MOVE WS-CREATE-ONE-STOCK TO CDA-DATA.
+            MOVE 1                   TO CDA-DATALEN.
+            MOVE 26                  TO CDA-ROW.
+            MOVE 53                  TO CDA-COL.
+            MOVE CDA-WHITE           TO CDA-COLOR.
+            MOVE 'F'                 TO CDA-ATTR.
+            PERFORM CTOS-ACCEPT.
+            MOVE CDA-DATA TO WS-CREATE-ONE-STOCK.
+            
+      *      ACCEPT WS-CREATE-ONE-STOCK AT POS.
             IF WS-CREATE-ONE-STOCK NOT = "N" AND NOT = "Y"
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-550.
@@ -1642,6 +1652,7 @@
        Copy "WriteFieldValue".
        Copy "DisplayForm".
        Copy "UserFillField".
+       Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*
       ******************
