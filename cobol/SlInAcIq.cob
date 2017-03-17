@@ -220,6 +220,7 @@
 
             IF DR-NAME = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
+                CLOSE STOCK-TRANS-FILE
                 GO TO GET-000.
        GET-035.
            MOVE "                        " TO F-NAMEFIELD
@@ -229,6 +230,7 @@
            IF F-EXIT-CH = X"01"
                GO TO GET-000.
            IF F-EXIT-CH = X"07"
+               CLOSE STOCK-TRANS-FILE
                PERFORM DISPLAY-FORM
                GO TO GET-000.
            MOVE 10        TO F-CBFIELDLENGTH.
@@ -262,17 +264,17 @@
             MOVE " " TO F-EXIT-CH.
             CLOSE STOCK-TRANS-FILE.
 
-      *      PERFORM READ-ALL-TRANSACTIONS.
-      *      PERFORM FILL-BODY.
-      *      IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
-      *          PERFORM CLEAR-TRANSACTIONS
-      *          MOVE 1   TO F-INDEX SUB-1
-      *          MOVE "Y" TO WS-ANSWER
-      *          GO TO GET-999.
+            PERFORM READ-ALL-TRANSACTIONS.
+            PERFORM FILL-BODY.
+            IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE 1   TO F-INDEX SUB-1
+                MOVE "Y" TO WS-ANSWER
+                GO TO GET-999.
 
-      *      GO TO GET-999.
-            MOVE " " TO F-EXIT-CH.
-            PERFORM READ-TRANSACTIONS.
+            GO TO GET-999.
+      *      MOVE " " TO F-EXIT-CH.
+      *      PERFORM READ-TRANSACTIONS.
        GET-900.
             PERFORM ERROR1-020.
             PERFORM ERROR-020.
@@ -625,8 +627,9 @@
       *     MOVE STTR-KEY TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
            
-           IF SUB-1 < 5000
+           IF SUB-1 < 1000
               ADD 1 TO SUB-1 F-INDEX
+              PERFORM RDALL-910
               GO TO RDALL-010.
               
            MOVE "THERE ARE MORE THAN 5000 ITEMS ON THIS ORDER."
@@ -641,7 +644,7 @@
            MOVE SUB-1 TO SUB-9.
            IF SUB-9 < 0
                MOVE 0 TO SUB-9.
-
+       RDALL-910.
             MOVE "TOT-SHP"   TO F-FIELDNAME
             MOVE 7           TO F-CBFIELDNAME
             IF STTR-TYPE = 1
@@ -651,7 +654,7 @@
             MOVE 6           TO F-CBFIELDLENGTH
             MOVE WS-SHIPQTY  TO F-EDNAMEFIELDNUMNEG
             PERFORM WRITE-FIELD-NUMNEG.
-           
+       RDALL-920.
            MOVE 2912 TO POS.
            DISPLAY "Total # of Lines:" AT POS
            ADD 19 TO POS.
