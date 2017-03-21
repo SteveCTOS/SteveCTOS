@@ -1670,6 +1670,8 @@
            MOVE STTR-ACCOUNT-NUMBER     TO STTR-LY-ACCOUNT-NUMBER
            MOVE STTR-INV-NO             TO STTR-LY-INV-NO
            MOVE STTR-DATE               TO STTR-LY-DATE
+                                           STTR-LY-ST-DATE
+                                           STTR-LY-AC-DATE
            MOVE STTR-COMPLETE           TO STTR-LY-COMPLETE.
 
            MOVE STTR-STOCK-NUMBER TO SPLIT-STOCK.

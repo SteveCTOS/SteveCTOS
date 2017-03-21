@@ -8,9 +8,9 @@
        77  SUB-6                PIC S9(5) VALUE 0.
        77  SUB-7                PIC S9(5) VALUE 0.
        77  SUB-8                PIC S9(6) VALUE 0.
-       77  SUB-9                PIC S9(3) VALUE 0.
-       77  SUB-10               PIC S9(3) VALUE 0.
-       77  SUB-15               PIC S9(3) VALUE 0.
+       77  SUB-9                PIC S9(5) VALUE 0.
+       77  SUB-10               PIC S9(5) VALUE 0.
+       77  SUB-15               PIC S9(5) VALUE 0.
        77  SUB-20               PIC S9(5) VALUE 0.
        77  SUB-21               PIC S9(5) VALUE 0.
        77  SUB-25               PIC S9(3) VALUE 0.
