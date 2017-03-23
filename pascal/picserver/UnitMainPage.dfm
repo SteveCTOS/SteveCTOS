@@ -1,10 +1,12 @@
 object FormMain: TFormMain
-  Left = 325
-  Top = 175
-  Width = 619
+  Left = 1026
+  Top = 189
+  Width = 640
   Height = 699
   Caption = 'CHRISTENSEN Stock Item Picture Server'
   Color = clBtnFace
+  Constraints.MinHeight = 480
+  Constraints.MinWidth = 640
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -53,14 +55,14 @@ object FormMain: TFormMain
   object StatusBarMain: TStatusBar
     Left = 0
     Top = 653
-    Width = 611
+    Width = 632
     Height = 19
     Panels = <>
   end
   object PageControlMain: TPageControl
     Left = 0
     Top = 0
-    Width = 611
+    Width = 632
     Height = 653
     ActivePage = BrowserTab
     Align = alClient
@@ -71,13 +73,13 @@ object FormMain: TFormMain
       object BrowserPanel: TPanel
         Left = 0
         Top = 432
-        Width = 603
+        Width = 624
         Height = 190
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 0
         DesignSize = (
-          603
+          624
           190)
         object ItemsLabel: TLabel
           Left = 8
@@ -89,7 +91,7 @@ object FormMain: TFormMain
         object UrlEdit: TEdit
           Left = 56
           Top = 32
-          Width = 537
+          Width = 558
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           ReadOnly = True
@@ -101,7 +103,7 @@ object FormMain: TFormMain
         object PicMemo: TMemo
           Left = 0
           Top = 56
-          Width = 601
+          Width = 622
           Height = 137
           Anchors = [akLeft, akTop, akRight, akBottom]
           Font.Charset = ANSI_CHARSET
@@ -115,8 +117,10 @@ object FormMain: TFormMain
         object StockCombo: TComboBox
           Left = 56
           Top = 8
-          Width = 537
+          Width = 558
           Height = 21
+          Style = csDropDownList
+          Anchors = [akLeft, akTop, akRight]
           ItemHeight = 13
           Sorted = True
           TabOrder = 2
@@ -126,12 +130,12 @@ object FormMain: TFormMain
       object PicWebBrowser: TWebBrowser
         Left = 0
         Top = 0
-        Width = 603
+        Width = 624
         Height = 432
         Align = alClient
         TabOrder = 1
         ControlData = {
-          4C000000523E0000A62C00000000000000000000000000000000000000000000
+          4C0000007E400000A62C00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E126208000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
