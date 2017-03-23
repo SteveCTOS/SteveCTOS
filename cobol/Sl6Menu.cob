@@ -16,6 +16,8 @@
        FILE SECTION.
 
        WORKING-STORAGE SECTION.
+       77  WS-COMPYYMM              PIC X(4) VALUE " ".
+       77  WS-DRYYMM                PIC X(4) VALUE " ".
        01  W-CRTSTATUS              PIC 9(4) value 0.
        01  WS-COMMAND-LINE          PIC X(256).                                    
        01  W-STATUS                 PIC 9(4) BINARY COMP.
@@ -63,8 +65,10 @@
                      AND NOT = "10" AND NOT = "11" AND NOT = "12"
                      AND NOT = "13" AND NOT = "14" AND NOT = "15"
                      AND NOT = "16" AND NOT = "17" AND NOT = "18"
-                     AND NOT = "19" AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 19, Re-Enter."
+                     AND NOT = "19" AND NOT = "20" AND NOT = "21"
+                     AND NOT = "22" AND NOT = "23" AND NOT = "24"
+                     AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 24, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -153,6 +157,73 @@
                 PERFORM DISPLAY-FORM
                 MOVE " " TO F-NAMEFIELD WS-ANSWER
                 Go To GET-010.
+           IF WS-ANSWER = "20"
+                Move "DrFaxSend.sh" TO Ws-Data-Name
+                PERFORM SETUP-FAX-MONTH-FILES
+                MOVE "The Debtor Overdue Faxes Have Been Sent ....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+           IF WS-ANSWER = "21"
+                Move "Doculogix.sh" TO Ws-Data-Name
+                PERFORM SETUP-DOCU-MONTH-FILES
+                MOVE "DocuTrieve Files Converted for Month-End....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+           IF WS-ANSWER = "22"
+                Move "DDCreateImage.sh" TO Ws-Data-Name
+                MOVE WS-DATA-NAME       TO WS-COMMAND-LINE
+                CALL "SYSTEM" USING        WS-COMMAND-LINE
+                             RETURNING      W-STATUS
+                MOVE "DD Has Been Run to Create a Mirror Disk....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+           IF WS-ANSWER = "23"
+                Move "StMinMax.sh" TO Ws-Data-Name
+                PERFORM SETUP-MINMAX-FILES
+                MOVE "The Stock Min/Max YTD Update has Run....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
+           IF WS-ANSWER = "24"
+                Move "StMinMaxLy.sh" TO Ws-Data-Name
+                PERFORM SETUP-MINMAX-LY-FILES
+                MOVE "The Stock Min/Max L/Yr Update has Run....."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE " Press 'Esc' To Continue With Other Processes."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020 
+                PERFORM DISPLAY-FORM
+                MOVE " " TO F-NAMEFIELD WS-ANSWER
+                Go To GET-010.
 
            Call Ws-Program Using Ws-Linkage.
            PERFORM CLEAR-SCREEN
@@ -205,6 +276,119 @@
           CALL "SYSTEM" USING   WS-COMMAND-LINE
                        RETURNING W-STATUS.
        SUBMF-999.
+           EXIT.
+      *
+       SETUP-FAX-MONTH-FILES SECTION.
+       SUFMF-002.
+           MOVE "./DrFaxSend" TO ALPHA-RATE
+           MOVE WS-CO-NUMBER TO DATA-RATE
+           MOVE DAT-RATE (1) TO AL-RATE (12)
+           MOVE DAT-RATE (2) TO AL-RATE (13)
+           MOVE "."          TO AL-RATE (14)
+           MOVE "s"          TO AL-RATE (15)
+           MOVE "h"          TO AL-RATE (16)
+           MOVE ALPHA-RATE   TO WS-DATA-NAME.
+
+           MOVE CONCATENATE(WS-DATA-NAME) TO WS-COMMAND-LINE.
+      
+      *    MOVE WS-COMMAND-LINE TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    ACCEPT WS-ACCEPT.
+       SUFMF-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUFMF-999.
+           EXIT.
+      *
+       SETUP-DOCU-MONTH-FILES SECTION.
+       SUDFD-002.
+          MOVE 
+          "Enter the Year & Month numbers To Rename Statements to Email"
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+          MOVE
+          "files, for e.g. 1506 for 2015 June." TO WS-MESSAGE
+             PERFORM ERROR-000.
+       SUDFD-003.
+          MOVE 2710 TO POS
+          DISPLAY "ENTER YEAR MONTH AS YYMM. : [    ]" AT POS
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 4         TO CDA-DATALEN.
+           MOVE 24        TO CDA-ROW.
+           MOVE 38        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-COMPYYMM.
+
+            IF WS-COMPYYMM = " "
+               GO TO SUDFD-003.
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO SUDFD-010
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO SUDFD-003.
+       SUDFD-010.
+          PERFORM ERROR-020
+          PERFORM ERROR1-020
+          MOVE 2710 TO POS
+          DISPLAY WS-MESSAGE AT POS.
+          MOVE 
+          CONCATENATE('./Doculogix.sh ', TRIM(WS-COMPYYMM), ' '
+              TRIM(WS-DRYYMM))  TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.  
+      *    ACCEPT W-ENTER.
+      *The variables which will be specified are:
+      *$1 = The Year / Month numbers             e.g. 1702
+       SUDFD-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUDFD-999.
+           EXIT.
+      *
+       SETUP-MINMAX-FILES SECTION.
+       SUMXFD-002.
+           MOVE "./StMinMax" TO ALPHA-RATE
+           MOVE WS-CO-NUMBER TO DATA-RATE
+           MOVE DAT-RATE (1) TO AL-RATE (11)
+           MOVE DAT-RATE (2) TO AL-RATE (12)
+           MOVE "."          TO AL-RATE (13)
+           MOVE "s"          TO AL-RATE (14)
+           MOVE "h"          TO AL-RATE (15)
+           MOVE ALPHA-RATE   TO WS-DATA-NAME.
+
+           MOVE CONCATENATE(WS-DATA-NAME) TO WS-COMMAND-LINE.
+      
+      *    MOVE WS-COMMAND-LINE TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    ACCEPT WS-ACCEPT.
+       SUMXFD-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUMXFD-999.
+           EXIT.
+      *
+       SETUP-MINMAX-LY-FILES SECTION.
+       SUMXLYR-002.
+           MOVE "./StMinMaxLy" TO ALPHA-RATE
+           MOVE WS-CO-NUMBER   TO DATA-RATE
+           MOVE DAT-RATE (1)   TO AL-RATE (13)
+           MOVE DAT-RATE (2)   TO AL-RATE (14)
+           MOVE "."            TO AL-RATE (15)
+           MOVE "s"            TO AL-RATE (16)
+           MOVE "h"            TO AL-RATE (17)
+           MOVE ALPHA-RATE     TO WS-DATA-NAME.
+
+           MOVE CONCATENATE(WS-DATA-NAME) TO WS-COMMAND-LINE.
+      
+      *    MOVE WS-COMMAND-LINE TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    ACCEPT WS-ACCEPT.
+       SUMXLYR-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUMXLYR-999.
            EXIT.
       *
        OPEN-FILES SECTION.

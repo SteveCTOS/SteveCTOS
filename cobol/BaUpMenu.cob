@@ -332,8 +332,8 @@
       *    DISPLAY WS-COMMAND-LINE.  
       *    ACCEPT W-ENTER.
       *The variables which will be specified are:
-      *$1 = The username                         e.g. steve
-      *$2 = The company number from 01 to 12     e.g. 07
+      *$1 = The Date Of Last Month               e.g. 1612 
+      *$2 = The Date Of This Month               e.g. 1701
        SUQFD-020.
           IF WS-ANSWER = " 3"
               PERFORM CHECK-FOR-BACKUP-PAUSE.

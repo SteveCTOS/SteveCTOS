@@ -124,7 +124,7 @@ set (stock_list
   StQyChRp  StReDtRp  StReduRp  StReImMt  StReImRp  StReLoIq  StReLoMt
   StReLoRp  StRepair  StRpAcIq  StRpRgRp  StRpStIq  StSGmRp   StSplit   StStQyMt
   StTariRp  StTranLy  StTrans   StTrChMt  StTrDuMt  StTrDuRp  StValuRp
-  StTransMv
+  StTranMv StTrLyMv
 )
 foreach (name ${company_list})
  cobol_module(${name})

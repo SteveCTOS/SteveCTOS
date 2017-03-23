@@ -15,8 +15,8 @@
 *  *  *  7. StTrans Checking with SlReg   19. Stock New Price Import / Change *
 *  *  *                                   20. Stock Supplier Part # Lookup    *
 *  *  *  8. Stock Imports Entry/Edit                                          *
-*  *  *                                   21. StockTrans Xport / Import Fix   *
-*  *  *  9. StockNumber Checking Between                                      *
+*  *  *                                   21. StTrans Export / Import Fix     *
+*  *  *  9. StockNumber Checking Between  22. StTransLy Exort / Import Fix    *
 *  *  *     DataBases (CTJ, CTN, CSC etc.)                                    *
 ****  *     Based on "Stock NewPriceList".                                    *
    ****                                                                       *
