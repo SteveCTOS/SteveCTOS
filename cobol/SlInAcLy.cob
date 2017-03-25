@@ -35,9 +35,9 @@
        77  PAGE-CNT             PIC 9(3) VALUE 0.
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
-       77  WS-BODY-LINE         PIC ZZZZ9.
+       77  WS-BODY-LINE         PIC Z(5)9.
        01  WS-SCROLL-NUMBERS.
-           03  WS-SCROLL-NUM OCCURS 10000.
+           03  WS-SCROLL-NUM OCCURS 50000.
              05  WS-STTR-TYPE   PIC 99.
              05  WS-STTR-REF    PIC 9(6).
              05  WS-STTR-TRANS  PIC 9(6).
@@ -619,17 +619,6 @@
            IF STTR-LY-ACCOUNT-NUMBER NOT = DR-ACCOUNT-NUMBER
                MOVE 1 TO F-INDEX
                GO TO RDALL-900.
-      *          MOVE "ACC NOT = " TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-      *          MOVE STTR-LY-ACCOUNT-NUMBER TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-      *          MOVE DR-ACCOUNT-NUMBER TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-      *          MOVE SUB-1 TO WS-MESSAGE
-      *          PERFORM ERROR-MESSAGE
-           
-      *     MOVE STTR-LY-KEY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
                         
            PERFORM ERROR-020.
        RDALL-020.
@@ -637,12 +626,12 @@
            MOVE STTR-LY-REFERENCE1         TO WS-STTR-REF (SUB-1).
            MOVE STTR-LY-TRANSACTION-NUMBER TO WS-STTR-TRANS (SUB-1).
 
-           IF SUB-1 < 10000
+           IF SUB-1 < 50000
               ADD 1 TO SUB-1
               PERFORM RDALL-910
               GO TO RDALL-010.
               
-           MOVE "THERE ARE MORE THAN 10,000 ITEMS ON THIS ORDER."
+           MOVE "THERE ARE MORE THAN 50,000 ITEMS ON THIS ORDER."
              TO WS-MESSAGE
              PERFORM ERROR1-000
            MOVE "PRESS 'Esc' TO EXIT THE READ-ALL SECTION."
@@ -952,22 +941,22 @@
             MOVE 1 TO F-INDEX.
             PERFORM CLEAR-TRANSACTIONS.
             MOVE 1 TO F-INDEX.
-            IF SUB-1 > 9985
-                MOVE 9985 TO SUB-1.
+            IF SUB-1 > 49985
+                MOVE 49985 TO SUB-1.
        NEXT-010.
             PERFORM SCROLLING.
        NEXT-020.
             ADD 1 TO F-INDEX SUB-1.
             IF F-INDEX < 16
                 GO TO NEXT-010.
-            IF SUB-1 > 9985  
+            IF SUB-1 > 49985  
                 GO TO NEXT-025.
             MOVE 1 TO F-INDEX.
        NEXT-025.
             SUBTRACT 15 FROM SUB-1.
-            IF SUB-1 > 9985
-              IF SUB-25 > 9985
-               COMPUTE F-INDEX = 15 - (10001 - SUB-9)
+            IF SUB-1 > 49985
+              IF SUB-25 > 49985
+               COMPUTE F-INDEX = 15 - (50001 - SUB-9)
                MOVE SUB-25 TO SUB-1
             ELSE
                MOVE 1 TO F-INDEX. 
@@ -994,22 +983,22 @@
             MOVE 1 TO F-INDEX.
             PERFORM CLEAR-TRANSACTIONS.
             MOVE 1 TO F-INDEX.
-            IF SUB-1 > 9985
-                 MOVE 9985 TO SUB-1.
+            IF SUB-1 > 49985
+                 MOVE 49985 TO SUB-1.
        NEXT-PAGE-010.
             PERFORM SCROLLING.
        NEXT-PAGE-020.
             ADD 1 TO F-INDEX SUB-1.
             IF F-INDEX < 16
                 GO TO NEXT-PAGE-010.
-            IF SUB-1 > 9985 
+            IF SUB-1 > 49985 
                 GO TO NEXT-PAGE-025.
             MOVE 1 TO F-INDEX.
        NEXT-PAGE-025.
             SUBTRACT 15 FROM SUB-1.
-            IF SUB-1 > 9985
-              IF SUB-25 > 9985
-               COMPUTE F-INDEX = 15 - (10001 - SUB-9)
+            IF SUB-1 > 49985
+              IF SUB-25 > 49985
+               COMPUTE F-INDEX = 15 - (50001 - SUB-9)
                MOVE SUB-25 TO SUB-1
             ELSE
                MOVE 1 TO F-INDEX. 

@@ -515,10 +515,29 @@
        CHECK-REGISTER SECTION.
        CRS-000.
             OPEN I-O INCR-REGISTER.
+            IF WS-INCR-ST1 NOT = 0
+               MOVE "REGISTER BUSY ON OPEN, 'ESC' TO RE-TRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO CRS-000.
             MOVE "N" TO WS-STOP-UPDATE.
             MOVE 0 TO INCR-KEY WS-ORDERS WS-INTERNAL-ORDERS.
+        CRS-002.
             START INCR-REGISTER KEY NOT < INCR-KEY
                INVALID KEY NEXT SENTENCE.
+            IF WS-INCR-ST1 NOT = 0
+               MOVE "REGISTER BUSY ON START, 'ESC' TO RE-TRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO CRS-002.
        CRS-010.
             READ INCR-REGISTER NEXT
                AT END
@@ -526,6 +545,18 @@
                DISPLAY "Checking Credit Notes are Printed ... Done"
                AT POS
                GO TO CRS-900.
+            IF WS-INCR-ST1 NOT = 0
+               MOVE
+             "REGISTER BUSY ON READ-NEXT, IN 2 SEC'S GOING TO RE-TRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INCR-ST1 TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020
+               PERFORM ERROR-020
+               MOVE 0 TO WS-INCR-ST1
+               GO TO CRS-010.
             IF INCR-TRANS = 1
                MOVE 1410 TO POS
                DISPLAY "Checking Invoices are Printed ....." AT POS.
@@ -546,6 +577,7 @@
                DISPLAY "Checking Credit Notes are Printed ... Done"
                AT POS
                GO TO CRS-900.
+
             IF INCR-TRANS = 1
              IF INCR-PRINTED NOT = "Y" AND NOT = "P"
                MOVE "YOU MUST GO AND PRINT THE INVOICES !!"
@@ -562,6 +594,7 @@
                MOVE 2020 TO POS
                DISPLAY WS-MESSAGE AT POS
                GO TO CRS-010.
+
             MOVE INCR-NAME TO WS-NAME-CHECK.
             IF INCR-TRANS = 4
              IF INCR-PRINTED NOT = "Y" AND NOT = "L"

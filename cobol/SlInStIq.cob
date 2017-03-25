@@ -658,6 +658,7 @@
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 = 23 OR 35 OR 49
+                CLOSE STOCK-TRANS-FILE
                 GO TO RDALL-999.
            IF WS-STTRANS-ST1 NOT = 0
                MOVE "ST-TRANS FILE BUSY ON START, 'ESC' TO RETRY."
@@ -732,7 +733,7 @@
               PERFORM RDALL-910
               GO TO RDALL-010.
               
-           MOVE "THERE ARE MORE THAN 10000 ITEMS ON THIS ORDER."
+           MOVE "THERE ARE MORE THAN 10,000 ITEMS ON THIS ORDER."
              TO WS-MESSAGE
              PERFORM ERROR1-000
            MOVE "PRESS 'Esc' TO EXIT THE READ-ALL SECTION."
@@ -745,6 +746,14 @@
            IF SUB-9 < 0
                MOVE 0 TO SUB-9.
        RDALL-910.
+            MOVE "TOT-ORD"       TO F-FIELDNAME
+            MOVE 7               TO F-CBFIELDNAME
+            IF STTR-TYPE = 1
+               ADD STTR-ORDERQTY TO WS-ORDERQTY.
+            MOVE WS-ORDERQTY     TO F-EDNAMEFIELDQTY
+            MOVE 5               TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-QTY.
+
             MOVE "TOT-SHP"   TO F-FIELDNAME
             MOVE 7           TO F-CBFIELDNAME
             IF STTR-TYPE = 1
@@ -754,14 +763,6 @@
             MOVE 6           TO F-CBFIELDLENGTH
             MOVE WS-SHIPQTY  TO F-EDNAMEFIELDNUMNEG
             PERFORM WRITE-FIELD-NUMNEG.
-
-            MOVE "TOT-ORD"       TO F-FIELDNAME
-            MOVE 7               TO F-CBFIELDNAME
-            IF STTR-TYPE = 1
-               ADD STTR-ORDERQTY TO WS-ORDERQTY.
-            MOVE WS-ORDERQTY     TO F-EDNAMEFIELDQTY
-            MOVE 5               TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-QTY.
        RDALL-920.
            MOVE 2912 TO POS.
            DISPLAY "Total # of Lines:" AT POS
@@ -1291,14 +1292,6 @@
             MOVE 6            TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-NUMERIC.
 
-      *      MOVE "TOT-ORD"    TO F-FIELDNAME
-      *      MOVE 7            TO F-CBFIELDNAME
-      *      IF STTR-TYPE = 1
-      *         ADD STTR-ORDERQTY TO WS-ORDERQTY.
-      *      MOVE WS-ORDERQTY  TO F-EDNAMEFIELDQTY
-      *      MOVE 5            TO F-CBFIELDLENGTH
-      *      PERFORM WRITE-FIELD-QTY
-
             MOVE "INVDATE"       TO F-FIELDNAME.
             MOVE 7               TO F-CBFIELDNAME.
             MOVE INCR-DATE       TO SPLIT-DATE.
@@ -1306,16 +1299,6 @@
             MOVE WS-CONVERT-DATE TO F-NAMEFIELD.
             MOVE 8               TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
-
-      *      MOVE "TOT-SHP"   TO F-FIELDNAME
-      *      MOVE 7           TO F-CBFIELDNAME.
-      *      IF STTR-TYPE = 1
-      *         ADD STTR-SHIPQTY        TO WS-SHIPQTY
-      *      ELSE
-      *         SUBTRACT STTR-SHIPQTY FROM WS-SHIPQTY.
-      *      MOVE 6           TO F-CBFIELDLENGTH
-      *      MOVE WS-SHIPQTY  TO F-EDNAMEFIELDNUMNEG
-      *      PERFORM WRITE-FIELD-NUMNEG.
 
             IF SP-1STCHAR = "/"
              IF F-INDEX < 15
