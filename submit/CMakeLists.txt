@@ -84,11 +84,13 @@ set (copy_list
   Pay1Rename.sh
   Pay2Rename.sh
   Pay3Rename.sh
+  Pay4Rename.sh
   FnbRename.sh
   PrintCams.sh
   PrintPayBank.sh
   PrintPaySlyps.sh
   PrintPayTax.sh
+  PrintWMans.sh
   rename.py
   renamegl.py
   renamegp.py
@@ -103,6 +105,7 @@ set (copy_list
   renamepay.py
   renamepen.py
   renametax.py
+  renamewmans.py
   StMinMax.Sub01
   StMinMax.Sub02
   StMinMax.Sub03
