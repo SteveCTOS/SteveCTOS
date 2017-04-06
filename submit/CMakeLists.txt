@@ -80,7 +80,7 @@ set (copy_list
   MonthEnd09.sh
   MonthEnd10.sh
   MonthEnd11.sh
-  MonthEnd12.sh 
+  MonthEnd12.sh
   Pay1Rename.sh
   Pay2Rename.sh
   Pay3Rename.sh

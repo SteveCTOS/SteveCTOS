@@ -130,7 +130,7 @@
             MOVE "N" TO WS-ANSWER.
             PERFORM OPEN-005.
             PERFORM CLEAR-MEMORY.
-
+       GET-001.
             MOVE 2905 TO POS
             DISPLAY 
            "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
@@ -158,7 +158,7 @@
                 PERFORM OPEN-000
                 PERFORM CLEAR-SCREEN
                 PERFORM DISPLAY-FORM
-                GO TO GET-000.
+                GO TO GET-001.
             PERFORM READ-DEBTORS.
             GO TO GET-020.
        GET-010.
@@ -205,7 +205,7 @@
            MOVE 4      TO F-CBFIELDNAME
            PERFORM USER-FILL-FIELD.
            IF F-EXIT-CH = X"01"
-               GO TO GET-000.
+               GO TO GET-001.
            IF F-EXIT-CH = X"07"
                PERFORM DISPLAY-FORM
                CLOSE STOCK-TRANS-FILE

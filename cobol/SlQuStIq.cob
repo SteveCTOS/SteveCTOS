@@ -124,11 +124,11 @@
        GET-DATA SECTION.
        GET-000.
             MOVE "N" TO WS-ANSWER.
-            PERFORM ERROR-020
-            PERFORM ERROR1-020.
-
             PERFORM OPEN-006.
             PERFORM CLEAR-MEMORY.
+       GET-001.
+            PERFORM ERROR-020
+            PERFORM ERROR1-020.
 
             MOVE 2905 TO POS
             DISPLAY 
@@ -153,9 +153,8 @@
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
                 PERFORM OPEN-005
-                CLOSE STOCK-TRANS-FILE
                 PERFORM DISPLAY-FORM
-                GO TO GET-000.
+                GO TO GET-001.
             PERFORM READ-STOCK.
             GO TO GET-020.
        GET-010.
@@ -182,9 +181,7 @@
 
             IF ST-DESCRIPTION1 = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
-                CLOSE STOCK-TRANS-FILE
-                GO TO GET-000.
-            MOVE " " TO F-EXIT-CH.
+                GO TO GET-001.
        GET-040.
             MOVE " " TO F-EXIT-CH.
             CLOSE STOCK-TRANS-FILE.

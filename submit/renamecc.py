@@ -2,7 +2,7 @@
 # The renaming of Payslyp 'CC' Files to 'CC' & add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
-months = ['Mar16', 'Apr16', 'May16', 'Jun16', 'Jul16', 'Aug16', 'Sep16', 'Oct16', 'Nov16', 'Dec16', 'Jan17', 'Feb17']
+months = ['Mar17', 'Apr17', 'May17', 'Jun17', 'Jul17', 'Aug17', 'Sep17', 'Oct17', 'Nov17', 'Dec17', 'Jan18', 'Feb18']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):
