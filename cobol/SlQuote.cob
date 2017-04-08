@@ -7,6 +7,14 @@
            FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
           CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
        SOURCE-COMPUTER. B20.
        OBJECT-COMPUTER. B20.
        INPUT-OUTPUT SECTION.
@@ -157,6 +165,10 @@
        77  WS-PRINTER-DOT       PIC X(100) VALUE " ".
        77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
        77  WS-PRINTER-FAX       PIC X(100) VALUE " ".
+       77  WS-ACC-ERROR         PIC X VALUE " ".      
+       77  WS-QUOTE-NAME        PIC X(25) VALUE " ".
+       01  WS-EMAIL             PIC X(50).
+       01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  W-READ-KEY           PIC X(11).
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  F-RC                 BINARY-SHORT VALUE 0.
@@ -477,8 +489,8 @@
            03  FILLER                 PIC X(12) VALUE " ".
            03  FILLER                 PIC X(22) VALUE
             "OUR QUOTE REFERENCE#:".
-           03  WS-QUOTEREF            PIC X(13).
-           03  FILLER                 PIC X(4) VALUE " ".
+           03  WS-QUOTEREF            PIC X(15).
+           03  FILLER                 PIC X(2) VALUE " ".
            03  FILLER                 PIC X(5) VALUE "PAGE:".
            03  WSD-PAGE               PIC Z9.
            03  FILLER                 PIC X(2) VALUE " *".
@@ -492,8 +504,8 @@
            03  FILLER                 PIC X(12) VALUE " ".
            03  FILLER                 PIC X(22) VALUE
             "OUR QUOTE REFERENCE#:".
-           03  WSF-QUOTEREF           PIC X(13).
-           03  FILLER                 PIC X(4) VALUE " ".
+           03  WSF-QUOTEREF           PIC X(15).
+           03  FILLER                 PIC X(2) VALUE " ".
            03  FILLER                 PIC X(5) VALUE "PAGE:".
            03  WSF-PAGE               PIC Z9.
            03  FILLER                 PIC X(2) VALUE " *".
@@ -608,7 +620,7 @@
            DISPLAY "WRITING STOCK TRANSACTIONS...........      " AT POS
            PERFORM WRITE-STOCK-TRANSACTIONS.
        CONT-020.
-           MOVE " " TO WS-QUOTATION
+           MOVE " " TO WS-QUOTATION WS-QUOTE-NAME
            PERFORM OPEN-050
            GO TO CONT-010.
        CONT-999.
@@ -3147,7 +3159,7 @@
            MOVE 6            TO F-CBFIELDLENGTH.
            PERFORM WRITE-FIELD-NUMERIC.
 
-           MOVE WS-QUOTATION     TO WS-QUOTEREF WSF-QUOTEREF.
+           MOVE WS-QUOTE-NAME    TO WS-QUOTEREF WSF-QUOTEREF.
            MOVE INCR-COPY-NUMBER TO WSF-PRINTNUMBER
            ADD 1                 TO WSF-PRINTNUMBER.
            MOVE "Y" TO WS-BELOWF-BODY.
@@ -3406,6 +3418,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO FINAL-ENTRY-090.
        FINAL-ENTRY-095.
+            MOVE 0 TO WS-SPACE-CNT.
             MOVE SPACES TO WSF-MAIL-NUMBER
             MOVE DR-SALES-EMAIL TO WSF-MAIL-NUMBER.
             PERFORM ERROR1-020
@@ -3437,6 +3450,35 @@
                MOVE "THIS FIELD CANNOT BE BLANK, RE-ENTER" TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO FINAL-ENTRY-095.
+
+            MOVE FUNCTION LOWER-CASE(WSF-MAIL-NUMBER) TO WSF-MAIL-NUMBER 
+                                                          WS-EMAIL
+                                                           F-NAMEFIELD.
+            INSPECT WS-EMAIL TALLYING WS-SPACE-CNT FOR CHARACTERS
+                BEFORE INITIAL SPACE.
+            IF WS-EMAIL(1:(WS-SPACE-CNT)) IS NOT WS-VALID-EMAIL
+                MOVE "EMAIL ADDRESS HAS AN INVALID CHARACTER."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FINAL-ENTRY-095.
+ 
+            MOVE 2910 TO POS.
+            DISPLAY
+            "EMail:[                                                  ]"
+                AT POS.
+            ADD 7 TO POS.
+            DISPLAY WSF-MAIL-NUMBER AT POS.
+ 
+            PERFORM CHECK-EMAIL-FOR-VALIDITY.
+            IF WS-ACC-ERROR = "Y"
+                GO TO FINAL-ENTRY-095.
+            IF WS-SPACE-CNT < 10
+                MOVE 
+            "EMAIL ADDRESS INVALID AS IT'S TOO SHORT, 'ESC' TO RETRY." 
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FINAL-ENTRY-095.
+
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO FINAL-ENTRY-100
             ELSE
@@ -3575,6 +3617,71 @@
            PERFORM WRITE-EMAIL-ROUTINE.
        GET-999.
             EXIT.
+      *
+       CHECK-EMAIL-FOR-VALIDITY SECTION.
+       CEFV-005.
+             MOVE 0 TO SUB-1.
+             MOVE SPACES TO ALPHA-RATE
+             MOVE F-NAMEFIELD TO ALPHA-RATE.
+             MOVE "N" TO WS-ACC-ERROR.
+       CEFV-010.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 40
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "@"
+                MOVE 0 TO SUB-1
+                GO TO CEFV-020.
+             GO TO CEFV-010.
+       CEFV-020.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 40
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-025.
+             GO TO CEFV-020.
+       CEFV-025.
+      *ADDED THIS NEXT LINE SO THAT WE DON'T CHECK FOR AN EXTRA . OR COM
+             GO TO CEFV-999.
+       
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "c"
+                GO TO CEFV-026
+             ELSE
+                SUBTRACT 1 FROM SUB-1
+                GO TO CEFV-030.
+             MOVE "Y" TO WS-ACC-ERROR.
+       CEFV-026.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "o"
+                GO TO CEFV-027.
+             SUBTRACT 2 FROM SUB-1
+             GO TO CEFV-030.
+       CEFV-027.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "m"
+                GO TO CEFV-040.
+             SUBTRACT 3 FROM SUB-1.
+       CEFV-030.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 40
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-040.
+             GO TO CEFV-030.
+        CEFV-040.
+             MOVE "N" TO WS-ACC-ERROR
+             GO TO CEFV-999.
+       CEFV-900.
+           MOVE
+          "THERE IS AN ERROR IN THE EMAIL ADDRESS ENTERED, PLEASE" &
+          " FIX, 'ESC' TO RETRY."
+            TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
+       CEFV-999.
+           EXIT.
       *
        CALC-POS-OF-CURSOR SECTION.
        CPOC-005.
@@ -4838,12 +4945,17 @@
        REMOVE-LEADING-ZEROS SECTION.
        RLZ-000.
            MOVE " " TO ALPHA-RATE
-                       WS-QUOTE-CHECK.
+                       WS-QUOTE-CHECK
+                       WS-QUOTE-NAME.
        RLZ-002.
            MOVE WS-QUOTATION TO WS-QUOTE-CHECK.
+
            MOVE 1 TO SUB-1.
            MOVE "Q" TO AL-RATE (SUB-1).
            MOVE 2 TO SUB-2.
+      * NEW LINE BELOW TO NOT REMOVE LEADING ZEROS AS THIS LEADS TO 
+      * QUOTE NUMBERS BELOW 100000 LOOKING LIKE Q67890 -03
+           GO TO RLZ-005.
        RLZ-003.
            IF SUB-1 < 7
             IF WS-O-C (SUB-1) = 0
@@ -4851,11 +4963,11 @@
                GO TO RLZ-003.
        RLZ-005.
            MOVE WS-O-C (SUB-1) TO AL-RATE (SUB-2).
-           IF SUB-2 NOT > 19
+           IF SUB-2 NOT > 25
               ADD 1 TO SUB-1 SUB-2
               GO TO RLZ-005.
-           MOVE " " TO WS-QUOTATION.
-           MOVE ALPHA-RATE TO WS-QUOTATION.
+      *     MOVE " " TO WS-QUOTATION.
+           MOVE ALPHA-RATE TO WS-QUOTE-NAME.
            MOVE 1 TO SUB-1 SUB-2.
        RLZ-999.
            EXIT.
@@ -4865,19 +4977,19 @@
            MOVE " " TO ALPHA-RATE
                        WS-QUOTE-CHECK.
        GEQN-002.
-           MOVE WS-QUOTATION TO WS-QUOTE-CHECK.
+           MOVE WS-QUOTE-NAME TO WS-QUOTE-CHECK.
 
            MOVE 1 TO SUB-1
                      SUB-2.
        GEQN-005.
            MOVE WS-O-C (SUB-1) TO AL-RATE (SUB-2).
-           IF SUB-2 NOT > 19
+           IF SUB-2 NOT > 20
               ADD 1 TO SUB-1 SUB-2.
               
            IF WS-O-C (SUB-1) NOT = "."
               GO TO GEQN-005.
 
-           MOVE " " TO WSF-QUOTE.
+           MOVE " "        TO WSF-QUOTE.
            MOVE ALPHA-RATE TO WSF-QUOTE.
            MOVE 1 TO SUB-1 SUB-2.
        GEQN-999.

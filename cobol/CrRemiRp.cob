@@ -57,19 +57,19 @@
        77  WS-FOR-LOC           PIC X VALUE " ".
        77  WS-CHEQUE-ACCEPT     PIC X(6) VALUE " ".
        77  WS-BATCH-TOTAL       PIC 9(7)V99 VALUE 0.
-       77  WS-PAYAMT            PIC S9(6)V99 VALUE 0.
-       77  WS-SETT-DISC         PIC S9(6)V99 VALUE 0.
-       77  WS-CRJRN-DISC        PIC S9(6)V99 VALUE 0.
-       77  WS-CRJRN-CALC-DISC   PIC S9(6)V99 VALUE 0.
-       77  WS-CRJRN-ALLOC-DISC  PIC S9(6)V99 VALUE 0.
+       77  WS-PAYAMT            PIC S9(7)V99 VALUE 0.
+       77  WS-SETT-DISC         PIC S9(7)V99 VALUE 0.
+       77  WS-CRJRN-DISC        PIC S9(7)V99 VALUE 0.
+       77  WS-CRJRN-CALC-DISC   PIC S9(7)V99 VALUE 0.
+       77  WS-CRJRN-ALLOC-DISC  PIC S9(7)V99 VALUE 0.
        77  WS-NETT-AMOUNT       PIC S9(7)V99 VALUE 0.
        77  WS-TRANSTYPE         PIC X VALUE " ".
        77  WS-CHEQUENO          PIC 9(6) VALUE 0.
        77  WS-WORK-FIELD        PIC S9(7)V99 VALUE 0.
        77  RUN-TOTAL            PIC S9(8)V99 VALUE 0.
        77  WS-WORKTOTAL         PIC S9(7)V99 VALUE 0.
-       77  WS-WORKTOTAL-DR      PIC S9(6)V99 VALUE 0.
-       77  WS-WORKTOTAL-CR      PIC S9(6)V99 VALUE 0.
+       77  WS-WORKTOTAL-DR      PIC S9(7)V99 VALUE 0.
+       77  WS-WORKTOTAL-CR      PIC S9(7)V99 VALUE 0.
        77  WS-TYPEOFPROCESS     PIC X VALUE " ".
        77  WS-CURRENTGLPER      PIC 99 VALUE 0.
        77  WS-CURRENTPER        PIC 99 VALUE 0.
@@ -140,9 +140,9 @@
                    07  WS-BOD-YY     PIC 9999.
                05  WS-BODDATE-RED REDEFINES WS-BODDATE.
                    07  WS-BODDATENUM PIC 9(8).
-               05  WS-AMTOFTYPE      PIC S9(6)V99.
-               05  WS-PAYMENT        PIC S9(6)V99.
-               05  WS-DISCOUNT       PIC S9(6)V99.
+               05  WS-AMTOFTYPE      PIC S9(7)V99.
+               05  WS-PAYMENT        PIC S9(7)V99.
+               05  WS-DISCOUNT       PIC S9(7)V99.
                05  WS-CRTYPE         PIC 99.
                05  WS-CR-TRANSNO     PIC 9(6).
        01  ACC-SUMMARY-LINES.
@@ -316,14 +316,14 @@
            03  A-D-REFERENCE1    PIC X(25).
            03  A-D-REFERENCE2    PIC X(11).
            03  A-D-DATE          PIC X(10).
-           03  A-FILLER          PIC X(2) VALUE " ".
-           03  A-D-BEGIN         PIC Z(5)9.99-.
-           03  A-FILLER          PIC X(2) VALUE " ".
-           03  A-D-OUTST         PIC Z(5)9.99-.
            03  A-FILLER          PIC X(1) VALUE " ".
-           03  A-D-DISCOUNT      PIC Z(5)9.99-.
+           03  A-D-BEGIN         PIC Z(6)9.99-.
            03  A-FILLER          PIC X(1) VALUE " ".
-           03  A-D-APPLIED       PIC Z(5)9.99-.
+           03  A-D-OUTST         PIC Z(6)9.99-.
+      *    03  A-FILLER          PIC X(1) VALUE " ".
+           03  A-D-DISCOUNT      PIC Z(6)9.99-.
+      *    03  A-FILLER          PIC X(1) VALUE " ".
+           03  A-D-APPLIED       PIC Z(6)9.99-.
            03  A-FILLER          PIC X(2) VALUE " ".
        01  A-TOTAL-LINE.
            03  A-FILLER          PIC X(20) VALUE " ".
