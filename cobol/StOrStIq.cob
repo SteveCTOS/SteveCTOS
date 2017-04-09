@@ -148,6 +148,7 @@
             IF ST-STOCKNUMBER = 0 OR = "   "
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
+                CLOSE OUTSTANDING-ORDERS
                 PERFORM DISPLAY-FORM
                 GO TO GET-000.
             PERFORM READ-STOCK.
