@@ -295,7 +295,7 @@
            PERFORM SUB-015.
            
            MOVE WS-RANGE1 TO CRTR-ACC-NUMBER.
-           MOVE 0         TO CRTR-DATE.
+           MOVE 0         TO CRTR-DATE CR-ACCOUNT-NUMBER.
            START CRTR-FILE KEY NOT < CRTR-ACC-DATE
                INVALID KEY NEXT SENTENCE.
            IF WS-CRTRANS-ST1 NOT = 0 AND NOT = 23
@@ -488,6 +488,10 @@
        SUB-000.
            IF WS-LINE > 60
                PERFORM PRINT-HEADINGS.
+
+           IF CR-ACCOUNT-NUMBER NOT > 0
+               GO TO SUB-015.
+
            WRITE PRINT-REC FROM P-UNDERLINE AFTER 1
            MOVE "ACCOUNT TOTAL:" TO TOT-DESC
            MOVE WS-TOT-BALANCE   TO TOT-BALANCE
