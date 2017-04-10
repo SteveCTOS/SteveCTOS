@@ -312,6 +312,7 @@
       *
        PRINT-ROUTINE SECTION.
        PR-000.
+           MOVE 0         TO CR-ACCOUNT-NUMBER.
            MOVE WS-RANGE1 TO CRJRN-CRACC-NUMBER.
            START CRJRN-FILE KEY NOT < CRJRN-CRACC-NUMBER
                INVALID KEY NEXT SENTENCE.
@@ -469,6 +470,10 @@
        SUB-000.
            IF WS-LINE > 65
                PERFORM PRINT-HEADINGS.
+
+           IF CR-ACCOUNT-NUMBER NOT > 0
+               GO TO SUB-005.
+
            WRITE PRINT-REC FROM P-UNDERLINE AFTER 1
            MOVE "ACCOUNT TOTAL:" TO TOT-DESC
            MOVE WS-TOT-BALANCE   TO TOT-BALANCE
@@ -487,6 +492,7 @@
                ADD 1 TO WS-LINE.
            WRITE PRINT-REC AFTER 1.
            ADD 3 TO WS-LINE.
+       SUB-005.
            MOVE 0 TO WS-TOT-BALANCE
                      WS-TOT-CURRENT
                      WS-TOT-30DAY
