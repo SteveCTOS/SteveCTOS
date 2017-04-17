@@ -405,7 +405,16 @@
             DISPLAY "DO YOU WISH TO CREATE ONE A/C FROM TWO : [ ]"
               AT POS
             ADD 42 TO POS
-            ACCEPT WS-CREATE-ONE-ACC AT POS.
+
+           MOVE WS-CREATE-ONE-ACC TO CDA-DATA.
+           MOVE 1                 TO CDA-DATALEN.
+           MOVE 26                TO CDA-ROW.
+           MOVE 51                TO CDA-COL.
+           MOVE CDA-WHITE         TO CDA-COLOR.
+           MOVE 'F'               TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-CREATE-ONE-ACC.
+
             IF WS-CREATE-ONE-ACC NOT = "N" AND NOT = "Y"
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-550.
@@ -506,7 +515,7 @@
                GO TO RBO-999.
             ADD 1          TO WS-NUMBER
             MOVE WS-NUMBER TO WS-NUMBER-DIS
-            MOVE 2759 TO POS
+            MOVE 2959 TO POS
             DISPLAY WS-NUMBER-DIS AT POS.
        RBO-005.
             MOVE WS-NEWDEBTORNUMBER TO STTR-ACCOUNT-NUMBER.
@@ -552,7 +561,7 @@
                GO TO RST-LY-999.
             ADD 1          TO WS-NUMBER
             MOVE WS-NUMBER TO WS-NUMBER-DIS
-            MOVE 2758 TO POS
+            MOVE 2958 TO POS
             DISPLAY WS-NUMBER-DIS AT POS.
        RST-LY-005.
             MOVE WS-NEWDEBTORNUMBER TO STTR-LY-ACCOUNT-NUMBER.
@@ -563,7 +572,7 @@
                MOVE STTR-LY-ACCOUNT-NUMBER  TO WS-DAILY-2ND
                MOVE "NO CHNG TO STTRANSLY" TO WS-DAILY-3RD
                MOVE WS-NEWDEBTORNUMBER     TO WS-DAILY-4TH
-               PERFORM WRITE-DAILY
+               PERFORM WRITE-DAILY.
             GO TO RST-LY-002.
        RST-LY-999.
            EXIT.
@@ -575,8 +584,9 @@
             DISPLAY 
             "Changing Debtor-Trans To New Account, Record No:          "
             AT POS.
-            MOVE WS-OLDDEBTORNUMBER TO DRTR-ACCOUNT-NUMBER.
-            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACCOUNT-NUMBER
+            MOVE WS-OLDDEBTORNUMBER TO DRTR-ACCOUNT-NUMBER
+            MOVE 0                  TO DRTR-DATE.
+            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
                  INVALID KEY NEXT SENTENCE.
             IF WS-DRTR-ST1 NOT = 0
                GO TO RDTR-999.
@@ -601,7 +611,7 @@
                GO TO RDTR-999.
             ADD 1 TO WS-NUMBER
             MOVE WS-NUMBER TO WS-NUMBER-DIS
-            MOVE 2759 TO POS
+            MOVE 2959 TO POS
             DISPLAY WS-NUMBER-DIS AT POS.
        RDTR-005.
             MOVE WS-NEWDEBTORNUMBER TO DRTR-ACCOUNT-NUMBER.
@@ -612,7 +622,7 @@
                MOVE DRTR-ACCOUNT-NUMBER    TO WS-DAILY-2ND
                MOVE "NO CHNG TO DRTRANS  " TO WS-DAILY-3RD
                MOVE WS-NEWDEBTORNUMBER     TO WS-DAILY-4TH
-               PERFORM WRITE-DAILY
+               PERFORM WRITE-DAILY.
             GO TO RDTR-002.
        RDTR-999.
            EXIT.
@@ -627,8 +637,8 @@
                AT POS.
        RRR-001.
             MOVE WS-OLDDEBTORNUMBER TO INCR-ACCOUNT.
-      *      MOVE " "                TO INCR-PORDER.
-            START INCR-REGISTER KEY NOT < INCR-ACCOUNT
+            MOVE " "                TO INCR-PORDER.
+            START INCR-REGISTER KEY NOT < INCR-ALT-KEY
                  INVALID KEY NEXT SENTENCE.
             IF WS-INCR-LY-ST1 NOT = 0
                GO TO RRR-999.
@@ -648,7 +658,7 @@
             IF INCR-ACCOUNT NOT = WS-OLDDEBTORNUMBER
                ADD 1 TO WS-REWRITE-ATTEMPT
              IF WS-REWRITE-ATTEMPT < 5
-               MOVE 2865 TO POS
+               MOVE 2965 TO POS
                DISPLAY WS-REWRITE-ATTEMPT AT POS
                CLOSE INCR-REGISTER
                PERFORM OPEN-008
@@ -657,7 +667,7 @@
                GO TO RRR-999.
             ADD 1          TO WS-NUMBER
             MOVE WS-NUMBER TO WS-NUMBER-DIS
-            MOVE 2763 TO POS
+            MOVE 2963 TO POS
             DISPLAY WS-NUMBER-DIS AT POS.
        RRR-010.
             MOVE WS-NEWDEBTORNUMBER TO INCR-ACCOUNT.
@@ -668,7 +678,7 @@
                MOVE INCR-ALT-KEY           TO WS-DAILY-2ND
                MOVE "NO CHNGE TO REGISTER" TO WS-DAILY-3RD
                MOVE WS-NEWDEBTORNUMBER     TO WS-DAILY-4TH
-               PERFORM WRITE-DAILY
+               PERFORM WRITE-DAILY.
             GO TO RRR-002.
        RRR-999.
            EXIT.
@@ -681,8 +691,8 @@
             "Changing Reg-LY Records To New Account, Record No:        "
                AT POS.
             MOVE WS-OLDDEBTORNUMBER TO INCR-LY-ACCOUNT.
-      *      MOVE " "                TO INCR-LY-PORDER.
-            START INCR-LY-REGISTER KEY NOT < INCR-LY-ACCOUNT
+            MOVE " "                TO INCR-LY-PORDER.
+            START INCR-LY-REGISTER KEY NOT < INCR-LY-ALT-KEY
                  INVALID KEY NEXT SENTENCE.
             IF WS-INCR-ST1 NOT = 0
                GO TO RRLY-999.
@@ -704,7 +714,7 @@
                GO TO RRLY-999.
             ADD 1          TO WS-NUMBER
             MOVE WS-NUMBER TO WS-NUMBER-DIS
-            MOVE 2765 TO POS
+            MOVE 2965 TO POS
             DISPLAY WS-NUMBER-DIS AT POS.
        RRLY-010.
             MOVE WS-NEWDEBTORNUMBER TO INCR-LY-ACCOUNT.
@@ -715,7 +725,7 @@
                MOVE INCR-LY-ALT-KEY        TO WS-DAILY-2ND
                MOVE "NO CHNGE TO REG-LY  " TO WS-DAILY-3RD
                MOVE WS-NEWDEBTORNUMBER     TO WS-DAILY-4TH
-               PERFORM WRITE-DAILY
+               PERFORM WRITE-DAILY.
             GO TO RRLY-002.
        RRLY-999.
            EXIT.
@@ -1007,6 +1017,7 @@
        Copy "WriteFieldPost".
        Copy "WriteFieldCode".
        Copy "WriteFieldGroup".
+       Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*
       ******************

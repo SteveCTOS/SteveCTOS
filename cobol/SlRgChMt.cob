@@ -54,11 +54,11 @@
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1        PIC 99.
        01  WS-DRTRANS-STATUS.
-           03  WS-DRTRANS-ST1        PIC 99.
+           03  WS-DRTRANS-ST1     PIC 99.
        01  WS-SLPARAMETER-STATUS.
            03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STTRANS-STATUS.
-           03  WS-STTRANS-ST1        PIC 99.
+           03  WS-STTRANS-ST1     PIC 99.
        01  WS-DAILY-STATUS.
            03  WS-DAILY-ST1       PIC 99.
        01  WS-DAILY-MESSAGE.

@@ -1989,7 +1989,7 @@
                 MOVE "EMAIL ADDRESS HAS AN INVALID CHARACTER."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                GO TO FILL-213.
+                GO TO FILL-210.
  
             MOVE "EMAIL"    TO F-FIELDNAME.
             MOVE 5          TO F-CBFIELDNAME.
@@ -2613,7 +2613,7 @@
              MOVE "N" TO WS-ACC-ERROR.
        CEFV-010.
              ADD 1 TO SUB-1.
-             IF SUB-1 > 40
+             IF SUB-1 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
              IF AL-RATE (SUB-1) = "@"
@@ -2622,7 +2622,7 @@
              GO TO CEFV-010.
        CEFV-020.
              ADD 1 TO SUB-1.
-             IF SUB-1 > 40
+             IF SUB-1 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
              IF AL-RATE (SUB-1) = "."
@@ -2652,7 +2652,7 @@
              SUBTRACT 3 FROM SUB-1.
        CEFV-030.
              ADD 1 TO SUB-1.
-             IF SUB-1 > 40
+             IF SUB-1 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
              IF AL-RATE (SUB-1) = "."

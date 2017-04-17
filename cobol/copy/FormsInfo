@@ -11,7 +11,7 @@
            03  F-ERROR5            BINARY-SHORT.
            03  F-FH                BINARY-SHORT.
            03  F-FILENO OCCURS 10  BINARY-SHORT.
-           03  F-FILENAME          PIC X(40) VALUE SPACES.
+           03  F-FILENAME          PIC X(50) VALUE SPACES.
            03  F-CBFILENAME        BINARY-SHORT VALUE 0.
            03  F-INTEGERZERO       BINARY-SHORT VALUE 0.
            03  F-OPENMODE          PIC X(2) VALUE "mr".
@@ -30,7 +30,7 @@
            03  F-CBFIELDLENGTH     BINARY-SHORT.
            03  F-TYPE              PIC X(10) VALUE "CHARACTER.".
            03  F-NUMBERFIELD       PIC X(3).
-           03  F-NAMEFIELD         PIC X(40).
+           03  F-NAMEFIELD         PIC X(50).
            03  F-NAMEFIELD60       PIC X(60).
            03  F-NAMEFIELD79       PIC X(78).
            03  F-NAMEFIELDJOB      PIC Z(3)9.

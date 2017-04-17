@@ -3626,7 +3626,7 @@
              MOVE "N" TO WS-ACC-ERROR.
        CEFV-010.
              ADD 1 TO SUB-1.
-             IF SUB-1 > 40
+             IF SUB-1 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
              IF AL-RATE (SUB-1) = "@"
@@ -3635,7 +3635,7 @@
              GO TO CEFV-010.
        CEFV-020.
              ADD 1 TO SUB-1.
-             IF SUB-1 > 40
+             IF SUB-1 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
              IF AL-RATE (SUB-1) = "."
@@ -3665,7 +3665,7 @@
              SUBTRACT 3 FROM SUB-1.
        CEFV-030.
              ADD 1 TO SUB-1.
-             IF SUB-1 > 40
+             IF SUB-1 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
              IF AL-RATE (SUB-1) = "."
