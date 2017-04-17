@@ -870,6 +870,9 @@
            MOVE " " TO PRINT-REC.
       *     OPEN OUTPUT PRINT-FILE.
        BMPR-010.
+           MOVE WS-PRINT-COMP TO PRINT-REC
+           WRITE PRINT-REC AFTER 1
+           MOVE " " TO PRINT-REC.
            IF WS-PAGE > 1
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC

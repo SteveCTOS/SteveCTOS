@@ -391,6 +391,9 @@
        RNK-000.
            READ TOOLKITS NEXT WITH LOCK
                AT END NEXT SENTENCE.
+           IF WS-TOOLKIT-ST1 = 51
+               MOVE "1" TO WS-TOOL-INVALID
+               GO TO RT-999.
            IF WS-TOOLKIT-ST1 = 10
                GO TO RNK-999.
            IF WS-TOOLKIT-ST1 NOT = 0
@@ -404,8 +407,10 @@
                MOVE 0 TO WS-TOOLKIT-ST1
                PERFORM START-KIT
                GO TO RNK-000.
+       RNK-010.
            MOVE TO-TOOLKIT-NUMBER   TO WS-TOOL-NUMBER
-           MOVE TO-COMPONENT-NUMBER TO WS-STOCKNUMBER
+           MOVE TO-COMPONENT-NUMBER TO WS-STOCKNUMBER.
+       RNK-020.
            MOVE " "                 TO WS-TOOL-INVALID.
        RNK-999.
            EXIT.
