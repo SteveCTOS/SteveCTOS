@@ -1,8 +1,8 @@
 object FormMain: TFormMain
-  Left = 1026
-  Top = 189
+  Left = 535
+  Top = 113
   Width = 640
-  Height = 699
+  Height = 612
   Caption = 'CHRISTENSEN Stock Item Picture Server'
   Color = clBtnFace
   Constraints.MinHeight = 480
@@ -54,7 +54,7 @@ object FormMain: TFormMain
   TextHeight = 13
   object StatusBarMain: TStatusBar
     Left = 0
-    Top = 653
+    Top = 566
     Width = 632
     Height = 19
     Panels = <>
@@ -63,7 +63,7 @@ object FormMain: TFormMain
     Left = 0
     Top = 0
     Width = 632
-    Height = 653
+    Height = 566
     ActivePage = BrowserTab
     Align = alClient
     Style = tsFlatButtons
@@ -72,7 +72,7 @@ object FormMain: TFormMain
       Caption = 'Browser'
       object BrowserPanel: TPanel
         Left = 0
-        Top = 432
+        Top = 345
         Width = 624
         Height = 190
         Align = alBottom
@@ -131,11 +131,11 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Width = 624
-        Height = 432
+        Height = 345
         Align = alClient
         TabOrder = 1
         ControlData = {
-          4C0000007E400000A62C00000000000000000000000000000000000000000000
+          4C0000007E400000A82300000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E126208000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
