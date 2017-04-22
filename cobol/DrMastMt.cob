@@ -5,6 +5,15 @@
         CONFIGURATION SECTION.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
+    
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
          Copy "SelectDrMaster".
@@ -18,7 +27,10 @@
        77  WS-ACCOUNTNUMBER   PIC 9(7) VALUE 0.
        77  WS-INQUIRY-PROGRAM PIC X(8) VALUE "DrNameIq".
        77  WS-ACC-SAVE        PIC 9(7) VALUE 0.
+       77  WS-ACC-ERROR       PIC X VALUE " ".      
        77  WS-ALL-ENTERED     PIC X VALUE " ".
+       01  WS-EMAIL                PIC X(50).
+       01  WS-SPACE-CNT            PIC 9(2) VALUE ZEROES.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1  PIC 99.
        Copy "WsDateInfo".
@@ -2508,22 +2520,57 @@
 
             PERFORM ERROR-020.
        FILL-195.
+            MOVE 0 TO WS-SPACE-CNT.
             MOVE "THIS FIELD MUST BE ENTERED IN lower case ONLY"
               TO WS-MESSAGE
               PERFORM ERROR1-000.
        
             MOVE "                    " TO F-NAMEFIELD.
-            MOVE "S-EMAIL" TO F-FIELDNAME.
-            MOVE 7         TO F-CBFIELDNAME.
+            MOVE "S-EMAIL"   TO F-FIELDNAME.
+            MOVE 7           TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
-            MOVE 40        TO F-CBFIELDLENGTH.
+            MOVE 40          TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO DR-SALES-EMAIL.
+
+            IF F-NAMEFIELD = " "
+                GO TO FILL-196.
+
+            PERFORM ERROR1-020.
+
             IF F-EXIT-CH = X"07"
+               PERFORM ERROR1-020
                PERFORM RELEASE-DEBTOR-RECORD
                PERFORM CLEAR-FORM
                GO TO FILL-999.
-               
+
+            MOVE FUNCTION LOWER-CASE(F-NAMEFIELD) TO DR-SALES-EMAIL 
+                                                     WS-EMAIL.
+            INSPECT WS-EMAIL TALLYING WS-SPACE-CNT FOR CHARACTERS
+                BEFORE INITIAL SPACE.
+ 
+            IF WS-EMAIL(1:(WS-SPACE-CNT)) IS NOT WS-VALID-EMAIL
+                MOVE "EMAIL ADDRESS HAS AN INVALID CHARACTER."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FILL-195.
+ 
+            MOVE "S-EMAIL"  TO F-FIELDNAME.
+            MOVE 7          TO F-CBFIELDNAME.
+            MOVE WS-EMAIL   TO F-NAMEFIELD
+            MOVE 40         TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+ 
+            PERFORM CHECK-EMAIL-FOR-VALIDITY.
+            IF WS-ACC-ERROR = "Y"
+                GO TO FILL-195.
+            IF WS-SPACE-CNT < 10
+                MOVE 
+            "EMAIL ADDRESS INVALID AS IT'S TOO SHORT, 'ESC' TO RETRY." 
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FILL-195.
+
             IF F-EXIT-CH = X"01"
                GO TO FILL-190.
       *      IF DR-SALES-EMAIL = " "
@@ -2566,6 +2613,7 @@
 
             PERFORM ERROR-020.
        FILL-196.
+            MOVE 0 TO WS-SPACE-CNT.
             MOVE "THIS FIELD MUST BE ENTERED IN lower case ONLY"
               TO WS-MESSAGE
               PERFORM ERROR1-000.
@@ -2577,10 +2625,44 @@
             MOVE 40          TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO DR-ACC-EMAIL.
+
+            IF F-NAMEFIELD = " "
+                GO TO FILL-001.
+
+            PERFORM ERROR1-020.
+
             IF F-EXIT-CH = X"07"
+               PERFORM ERROR1-020
                PERFORM RELEASE-DEBTOR-RECORD
                PERFORM CLEAR-FORM
                GO TO FILL-999.
+
+            MOVE FUNCTION LOWER-CASE(F-NAMEFIELD) TO DR-ACC-EMAIL 
+                                                     WS-EMAIL.
+            INSPECT WS-EMAIL TALLYING WS-SPACE-CNT FOR CHARACTERS
+                BEFORE INITIAL SPACE.
+ 
+            IF WS-EMAIL(1:(WS-SPACE-CNT)) IS NOT WS-VALID-EMAIL
+                MOVE "EMAIL ADDRESS HAS AN INVALID CHARACTER."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FILL-196.
+ 
+            MOVE "A-EMAIL"  TO F-FIELDNAME.
+            MOVE 7          TO F-CBFIELDNAME.
+            MOVE WS-EMAIL   TO F-NAMEFIELD
+            MOVE 40         TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-ALPHA.
+ 
+            PERFORM CHECK-EMAIL-FOR-VALIDITY.
+            IF WS-ACC-ERROR = "Y"
+                GO TO FILL-196.
+            IF WS-SPACE-CNT < 10
+                MOVE 
+            "EMAIL ADDRESS INVALID AS IT'S TOO SHORT, 'ESC' TO RETRY." 
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO FILL-196.
                
             IF F-EXIT-CH = X"01"
                GO TO FILL-195.
@@ -2802,6 +2884,71 @@
                                      WS-ACC-SAVE.
            MOVE "N" TO NEW-DEBTORNO.
        RDPR-999.
+           EXIT.
+      *
+       CHECK-EMAIL-FOR-VALIDITY SECTION.
+       CEFV-005.
+             MOVE 0 TO SUB-1.
+             MOVE SPACES TO ALPHA-RATE
+             MOVE F-NAMEFIELD TO ALPHA-RATE.
+             MOVE "N" TO WS-ACC-ERROR.
+       CEFV-010.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "@"
+                MOVE 0 TO SUB-1
+                GO TO CEFV-020.
+             GO TO CEFV-010.
+       CEFV-020.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-025.
+             GO TO CEFV-020.
+       CEFV-025.
+      *ADDED THIS NEXT LINE SO THAT WE DON'T CHECK FOR AN EXTRA . OR COM
+             GO TO CEFV-999.
+       
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "c"
+                GO TO CEFV-026
+             ELSE
+                SUBTRACT 1 FROM SUB-1
+                GO TO CEFV-030.
+             MOVE "Y" TO WS-ACC-ERROR.
+       CEFV-026.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "o"
+                GO TO CEFV-027.
+             SUBTRACT 2 FROM SUB-1
+             GO TO CEFV-030.
+       CEFV-027.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "m"
+                GO TO CEFV-040.
+             SUBTRACT 3 FROM SUB-1.
+       CEFV-030.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-040.
+             GO TO CEFV-030.
+        CEFV-040.
+             MOVE "N" TO WS-ACC-ERROR
+             GO TO CEFV-999.
+       CEFV-900.
+           MOVE
+          "THERE IS AN ERROR IN THE EMAIL ADDRESS ENTERED, PLEASE" &
+          " FIX, 'ESC' TO RETRY."
+            TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
+       CEFV-999.
            EXIT.
       *
        CLEAR-FORM SECTION.

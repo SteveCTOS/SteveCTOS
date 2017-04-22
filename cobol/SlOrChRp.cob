@@ -864,7 +864,7 @@
       *
        PRINT-TOOLKIT SECTION.
        BMPR-004.
-           MOVE "N" TO WS-PRINT-AMTS.
+           MOVE "Y" TO WS-PRINT-AMTS.
        BMPR-005.
            MOVE 1   TO WS-PAGE SUB-1 SUB-2.
            MOVE " " TO PRINT-REC.
@@ -937,7 +937,7 @@
                MOVE B-STOCKCOST (SUB-1)     TO D-COST.
            MOVE B-PULL (SUB-1)              TO D-PULL
            MOVE B-ORDERQTY (SUB-1)          TO D-ORDER
-           MOVE B-SHIPPEDQTY (SUB-1)        TO D-MFG
+           MOVE B-SHIPQTY (SUB-1)           TO D-MFG
            MOVE B-SHIPPEDQTY (SUB-1)        TO D-SHPD
            COMPUTE WS-BO-QTY = B-ORDERQTY (SUB-1) -
                (B-SHIPQTY (SUB-1) + B-SHIPPEDQTY (SUB-1))

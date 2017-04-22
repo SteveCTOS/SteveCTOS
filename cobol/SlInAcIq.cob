@@ -626,7 +626,7 @@
            MOVE STTR-REFERENCE1         TO WS-STTR-REF (SUB-1).
            MOVE STTR-TRANSACTION-NUMBER TO WS-STTR-TRANS (SUB-1).
            
-           IF SUB-1 < 10000
+           IF SUB-1 < 50000
               ADD 1 TO SUB-1
               PERFORM RDALL-910
               GO TO RDALL-010.

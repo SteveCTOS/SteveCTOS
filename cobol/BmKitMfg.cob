@@ -133,6 +133,7 @@
                    07  B-STOCKDESCRIPTION2 PIC X(20).
                    07  B-STOCKPRICE        PIC 9(6)V99.
                    07  B-STOCKCOST         PIC 9(6)V99.
+                   07  B-UNIT              PIC X(4).
        01  WS-RECEIPT-LINE.
            03  WS-BM-DESC           PIC X(4).
            03  WS-BM-NUMBER         PIC Z(5)9.
@@ -1118,13 +1119,6 @@
             MOVE WS-RESQTY   TO F-EDNAMEFIELDKITQTY.
             MOVE 3           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-KITQTY.
-            
-      *      MOVE WS-RESQTY TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE WS-KITQTY TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      MOVE WS-SHPDQTY TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
             
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
@@ -2184,6 +2178,7 @@
            MOVE ST-DESCRIPTION2     TO B-STOCKDESCRIPTION2 (SUB-1)
            MOVE ST-PRICE            TO B-STOCKPRICE (SUB-1)
            MOVE ST-AVERAGECOST      TO B-STOCKCOST (SUB-1)
+           MOVE ST-UNITOFMEASURE    TO B-UNIT (SUB-1).
            MOVE " "                 TO B-NEWLINE (SUB-1).
            COMPUTE WS-ORDERQTY =    TO-QUANTITY * WS-KITQTY
            COMPUTE WS-TOTALRESQTY = TO-QUANTITY * WS-RESQTY
@@ -2251,6 +2246,8 @@
                                                STTR-AC-COMPLETE
                                                B-NEWLINE (SUB-1)
            MOVE 0                           TO STTR-INV-NO
+                                               STTR-SALES-VALUE
+                                               STTR-ITEMDISC
            MOVE WS-INVOICEDATE              TO STTR-DATE
                                                STTR-AC-DATE
                                                STTR-ST-DATE.
@@ -2260,7 +2257,9 @@
            MOVE B-STOCKPRICE (SUB-1)        TO STTR-PRICE
            MOVE B-STOCKDESCRIPTION (SUB-1)  TO STTR-DESC1
            MOVE B-STOCKDESCRIPTION2 (SUB-1) TO STTR-DESC2
-           MOVE B-STOCKCOST (SUB-1)         TO STTR-COST-VALUE.
+           MOVE B-STOCKCOST (SUB-1)         TO STTR-COST-VALUE
+           MOVE "Y"                         TO STTR-TAX
+           MOVE B-UNIT (SUB-1)              TO STTR-UNIT.
        WNT-TRANS-800.
            WRITE STOCK-TRANS-REC
                INVALID KEY NEXT SENTENCE.
@@ -2430,9 +2429,9 @@
            ADD 7 TO POS
            DISPLAY WS-BODY-LINE AT POS.
 
-           If B-OrderQty (Sub-1) =
-               B-ShipQty (Sub-1) + B-ShippedQty (Sub-1)
-               Go to Res-St-900.
+           IF B-ORDERQTY (SUB-1) =
+               B-SHIPQTY (SUB-1) + B-SHIPPEDQTY (SUB-1)
+               GO TO RES-ST-900.
            MOVE B-STOCKNUMBER (SUB-1) TO WS-STOCKNUMBER.
            PERFORM READ-STOCK-LOCK.
            IF WS-ERR = "ERR"
@@ -2443,8 +2442,10 @@
               MOVE SUB-1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO RES-ST-060.
-           MOVE ST-PRICE        TO B-STOCKPRICE (SUB-1).
-           MOVE ST-AVERAGECOST  TO B-STOCKCOST (SUB-1).
+           MOVE ST-PRICE         TO B-STOCKPRICE (SUB-1).
+           MOVE ST-AVERAGECOST   TO B-STOCKCOST (SUB-1).
+           MOVE ST-UNITOFMEASURE TO B-UNIT (SUB-1).
+
            COMPUTE WS-TOTALRESQTY =
               (B-ORDERQTY (SUB-1) / WS-KITQTY) * WS-RESQTY.
            COMPUTE WS-BO-QTY =
@@ -2639,17 +2640,6 @@
             MOVE 0                  TO INCR-KITSHPDQTY.
             IF WS-TYPE-OF-FINISH = "1"
                ADD WS-MFGQTY        TO INCR-KITSHPDQTY.
-               
-      *      MOVE "WS-MFGQTY = " TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE WS-MFGQTY TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020
-      *      MOVE "INCR-KITSHPDQTY = " TO WS-MESSAGE
-      *      PERFORM ERROR1-000
-      *      MOVE INCR-KITSHPDQTY TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020.
                
             IF WS-TYPE-OF-FINISH = "2"
              IF INCR-KITSHPDQTY NOT > 0
