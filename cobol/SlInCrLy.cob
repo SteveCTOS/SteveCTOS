@@ -7,8 +7,17 @@
            FUNCTION ALL INTRINSIC.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
-        INPUT-OUTPUT SECTION.
-        FILE-CONTROL.
+      
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
          Copy "SelectDrMaster".
          Copy "SelectSlRegLy".
          Copy "SelectStTransLy".
@@ -63,6 +72,9 @@
        77  WS-BO-QTY            PIC S9(5) VALUE 0.
        77  WS-TRANS-DISPLAY     PIC Z(5)9.
        77  WS-EMAIL-NUMBER      PIC X(50) VALUE " ".
+       77  WS-ACC-ERROR         PIC X VALUE " ".      
+       01  WS-EMAIL               PIC X(50).
+       01  WS-SPACE-CNT           PIC 9(2) VALUE ZEROES.
        01  WS-STTRANSLY-STATUS.
            03  WS-STTRANSLY-ST1   PIC 99.
        01  WS-INCR-LY-STATUS.
@@ -594,6 +606,16 @@
            PERFORM ZE1-EMAIL-HEADINGS.
                
            PERFORM READ-DATA.
+
+           IF WS-FOUND = " "
+            IF WS-PRINT-NUM = 5
+               MOVE "NOTHING TO PRINT IN THAT RANGE, 'ESC' TO RE-ENTER."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+             IF WS-INVCRED = "I"
+               PERFORM DELETE-BLANK-EMAIL-INV-RECORD
+             ELSE
+               PERFORM DELETE-BLANK-EMAIL-CRN-RECORD.
            PERFORM END-OFF.
        CONT-999.
            EXIT.
@@ -2334,16 +2356,28 @@
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-EMAIL-NUMBER.
+           MOVE CDA-DATA TO WS-EMAIL-NUMBER F-NAMEFIELD.
+
+           MOVE FUNCTION LOWER-CASE(F-NAMEFIELD) TO WS-EMAIL-NUMBER
+                                                    WS-EMAIL.
+           INSPECT WS-EMAIL TALLYING WS-SPACE-CNT FOR CHARACTERS
+               BEFORE INITIAL SPACE.
+            
+           IF WS-EMAIL(1:(WS-SPACE-CNT)) IS NOT WS-VALID-EMAIL
+                MOVE "EMAIL ADDRESS HAS AN INVALID CHARACTER."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO EEA-005.
  
-           IF WS-EMAIL-NUMBER NOT > " "
-              PERFORM ERROR1-020
-              PERFORM ERROR-020
-              MOVE 
-           "EMAIL ADDRESS CANNOT BE BLANK AND MUST BE IN lower case."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              GO TO EEA-005.
+            PERFORM CHECK-EMAIL-FOR-VALIDITY.
+            IF WS-ACC-ERROR = "Y"
+                GO TO EEA-005.
+            IF WS-SPACE-CNT < 10
+                MOVE 
+            "EMAIL ADDRESS INVALID AS IT'S TOO SHORT, 'ESC' TO RETRY." 
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO EEA-005.
        EEA-999.
            EXIT.
       *
@@ -2410,6 +2444,71 @@
               MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO RP-000.
        RP-999.
+           EXIT.
+      *
+       CHECK-EMAIL-FOR-VALIDITY SECTION.
+       CEFV-005.
+             MOVE 0 TO SUB-1.
+             MOVE SPACES      TO ALPHA-RATE
+             MOVE F-NAMEFIELD TO ALPHA-RATE.
+             MOVE "N"         TO WS-ACC-ERROR.
+       CEFV-010.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "@"
+                MOVE 0 TO SUB-1
+                GO TO CEFV-020.
+             GO TO CEFV-010.
+       CEFV-020.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-025.
+             GO TO CEFV-020.
+       CEFV-025.
+      *ADDED THIS NEXT LINE SO THAT WE DON'T CHECK FOR AN EXTRA . OR COM
+             GO TO CEFV-999.
+       
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "c"
+                GO TO CEFV-026
+             ELSE
+                SUBTRACT 1 FROM SUB-1
+                GO TO CEFV-030.
+             MOVE "Y" TO WS-ACC-ERROR.
+       CEFV-026.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "o"
+                GO TO CEFV-027.
+             SUBTRACT 2 FROM SUB-1
+             GO TO CEFV-030.
+       CEFV-027.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "m"
+                GO TO CEFV-040.
+             SUBTRACT 3 FROM SUB-1.
+       CEFV-030.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-040.
+             GO TO CEFV-030.
+        CEFV-040.
+             MOVE "N" TO WS-ACC-ERROR
+             GO TO CEFV-999.
+       CEFV-900.
+           MOVE
+          "THERE IS AN ERROR IN THE EMAIL ADDRESS ENTERED, PLEASE" &
+          " FIX, 'ESC' TO RETRY."
+            TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
+       CEFV-999.
            EXIT.
       *
        OPEN-DATA-FILES SECTION.
@@ -2517,6 +2616,8 @@
        Copy "CTOSCobolAccept".
        Copy "SetupInvoiceForPDF".
        Copy "SetupCreditForPDF".
+       Copy "DeleteBlankEmailInvRecord".
+       Copy "DeleteBlankEmailCrnRecord".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
       ******************
