@@ -5,6 +5,15 @@
         CONFIGURATION SECTION.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
+    
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
           Copy "SelectCrMaster".
@@ -78,6 +87,9 @@
        77  WS-TOTAL-SMAN-LAST   PIC S9(9)V99 VALUE 0.
        77  WS-TOTAL-SALES       PIC S9(9)V99 VALUE 0.
        77  WS-TOTAL-PERC        PIC S9(4)V9999 VALUE 0.
+       77  WS-ACC-ERROR         PIC X VALUE " ".      
+       01  WS-EMAIL             PIC X(50).
+       01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1  PIC 99.
        01  WS-RANDOM-STATUS.
@@ -101,14 +113,15 @@
            03  FILLER         PIC X(10) VALUE "ACCOUNT".
            03  FILLER         PIC X(41) VALUE "NAME".
            03  FILLER         PIC X(21) VALUE "PHONE NUMBER".
-           03  FILLER         PIC X(21) VALUE "FAX NUMBER".
+           03  FILLER         PIC X(25) VALUE "FAX NUMBER           ER".
            03  FILLER         PIC X(41) VALUE "ACCOUNT E-MAIL ADDRESS".
        01  DETAIL-LINE1.
            03  D-ACCOUNT      PIC 9(7).
            03  FILLER         PIC X(3) VALUE " ".
            03  D-NAME         PIC X(41).
            03  D-PHONE        PIC X(21).
-           03  D-FAX          PIC X(21).
+           03  D-FAX          PIC X(22).
+           03  D-ERROR        PIC X(3).
            03  D-EMAIL        PIC X(40).
        Copy "WsDateInfo".
        Copy "FormsInfo".
@@ -148,7 +161,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SORT.
 
-      *      ACCEPT WS-SORT AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF WS-SORT NOT = "Y" AND NOT = "N"
@@ -179,7 +191,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE1.
 
-      *      ACCEPT WS-RANGE1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -201,7 +212,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-RANGE2.
            
-      *      ACCEPT WS-RANGE2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-011.
            IF WS-RANGE2 = " "
@@ -228,7 +238,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-TOP.
 
-      *      ACCEPT WS-TOP AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
             IF WS-TOP = "    "
@@ -270,7 +279,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PERIOD.
 
-      *      ACCEPT WS-PERIOD AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-014.
             IF WS-PERIOD NOT = "T" AND NOT = "L" AND NOT = "B"
@@ -296,7 +304,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-MARGIN-SALES.
 
-      *      ACCEPT WS-MARGIN-SALES AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-025.
             IF WS-MARGIN-SALES NOT = "P" AND NOT = "S"
@@ -325,7 +332,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-SALESMAN.
 
-      *      ACCEPT WS-SALESMAN AT POS.
             IF W-ESCAPE-KEY = 4
                GO TO CONTROL-025.
             IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -363,7 +369,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-XFAX-MAN3000.
 
-      *     ACCEPT WS-XFAX-MAN3000 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-012.
            IF WS-XFAX-MAN3000 NOT = "X" AND NOT = "M" AND NOT = "R"
@@ -395,7 +400,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ONLY-VALID.
 
-      *     ACCEPT WS-ONLY-VALID AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-040.
            IF WS-ONLY-VALID NOT = "E" AND NOT = "F" AND NOT = "P"
@@ -425,7 +429,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ONLY-BAL.
 
-      *     ACCEPT WS-ONLY-BAL AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-041.
            IF WS-ONLY-BAL NOT = "N" AND NOT = "Y" AND NOT = "P"
@@ -451,7 +454,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FOR-LOC.
 
-      *     ACCEPT WS-FOR-LOC AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-043.
            IF WS-FOR-LOC NOT = "L" AND NOT = "F" AND NOT = " "
@@ -947,6 +949,25 @@
             WRITE PRINT-REC AFTER 1
             MOVE 5 TO LINE-CNT.
        PPFE-020.
+           MOVE 0 TO WS-SPACE-CNT.
+           MOVE "  " TO D-ERROR.
+           MOVE CR-ACC-EMAIL TO F-NAMEFIELD.
+           MOVE FUNCTION LOWER-CASE(F-NAMEFIELD) TO CR-ACC-EMAIL
+                                                    WS-EMAIL.
+           INSPECT WS-EMAIL TALLYING WS-SPACE-CNT FOR CHARACTERS
+               BEFORE INITIAL SPACE.
+            
+           IF WS-EMAIL(1:(WS-SPACE-CNT)) IS NOT WS-VALID-EMAIL
+                MOVE "*1" TO D-ERROR
+                GO TO PPFE-025. 
+            PERFORM CHECK-EMAIL-FOR-VALIDITY.
+            IF WS-ACC-ERROR = "Y"
+                MOVE "*2" TO D-ERROR
+                GO TO PPFE-025. 
+            IF WS-SPACE-CNT < 10
+             IF WS-ACC-ERROR = "Y"
+                MOVE "*3" TO D-ERROR.
+       PPFE-025.
            MOVE CR-ACCOUNT-NUMBER   TO D-ACCOUNT
            MOVE CR-NAME             TO D-NAME
            MOVE CR-TELEPHONE        TO D-PHONE
@@ -957,6 +978,67 @@
            ADD 1 TO LINE-CNT
            GO TO PPFE-002.
        PPFE-999.
+           EXIT.
+      *
+       CHECK-EMAIL-FOR-VALIDITY SECTION.
+       CEFV-005.
+             MOVE 0 TO SUB-1.
+             MOVE SPACES      TO ALPHA-RATE
+             MOVE F-NAMEFIELD TO ALPHA-RATE.
+             MOVE "N"         TO WS-ACC-ERROR.
+       CEFV-010.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "@"
+                MOVE 0 TO SUB-1
+                GO TO CEFV-020.
+             GO TO CEFV-010.
+       CEFV-020.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-025.
+             GO TO CEFV-020.
+       CEFV-025.
+      *ADDED THIS NEXT LINE SO THAT WE DON'T CHECK FOR AN EXTRA . OR COM
+             GO TO CEFV-999.
+       
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "c"
+                GO TO CEFV-026
+             ELSE
+                SUBTRACT 1 FROM SUB-1
+                GO TO CEFV-030.
+             MOVE "Y" TO WS-ACC-ERROR.
+       CEFV-026.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "o"
+                GO TO CEFV-027.
+             SUBTRACT 2 FROM SUB-1
+             GO TO CEFV-030.
+       CEFV-027.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "m"
+                GO TO CEFV-040.
+             SUBTRACT 3 FROM SUB-1.
+       CEFV-030.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-040.
+             GO TO CEFV-030.
+        CEFV-040.
+             MOVE "N" TO WS-ACC-ERROR
+             GO TO CEFV-999.
+       CEFV-900.
+           MOVE "*4" TO D-ERROR.
+       CEFV-999.
            EXIT.
       *
        REMOVE-DASH-FROM-PHONE SECTION.
@@ -1240,6 +1322,16 @@
            
             IF LINE-CNT > 60
                PERFORM PPFE-010.
+
+           MOVE 
+           "** ERROR *1-4 NEXT TO EMAIL ADDRESS SHOWS ERROR IN EMAIL **"
+                TO PRINT-REC
+                WRITE PRINT-REC AFTER 2.
+           MOVE 
+           "** ERROR *1=ILLEGAL CHAR, *2=MISSING @ OR . IN ADDRESS," & 
+           " *3=LESS THAN 10 CHAR, *4=OTHER ERROR **"
+                TO PRINT-REC
+                WRITE PRINT-REC AFTER 1.
 
            IF WS-ACC-SALES = "S"
             IF WS-ONLY-VALID = " "

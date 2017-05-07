@@ -3,6 +3,8 @@
         AUTHOR. CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
            CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
@@ -92,7 +94,8 @@
             MOVE 25            TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD   TO ST-STOCKNUMBER WS-STOCKNUMBER.
-            
+
+      * DISLAY-COSTS Y / N
       *   IF F-EXIT-CH = X"91" = <CODE-SCROLL-UP> CTOS
       *   IF F-EXIT-CH = X"91" = <Alt-F12> linux
            IF F-EXIT-CH = X"91"
@@ -114,6 +117,10 @@
             IF F-EXIT-CH = X"0C"
                  PERFORM READ-STOCK-NEXT
                  GO TO GET-003.
+      * DISPLAY-STOCK-PHOTO
+            IF F-EXIT-CH = X"D6"
+                 PERFORM DISPLAY-STOCK-PHOTO
+                 GO TO GET-001.
       * READ-PREVIOUS
             IF F-EXIT-CH = X"05"
                  PERFORM READ-STOCK-PREVIOUS
@@ -939,6 +946,7 @@
        Copy "UserFillField".
       * Copy "ReadKBD".
        Copy "StockSpecPassword".
+       Copy "DisplayStockPhoto".
        Copy "CTOSCobolAccept".
       ******************
       *Mandatory Copies*

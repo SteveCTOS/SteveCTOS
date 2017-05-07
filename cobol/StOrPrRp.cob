@@ -9,6 +9,15 @@
            CRT STATUS IS W-CRTSTATUS.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
+    
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
          Copy "SelectStMaster".
@@ -62,6 +71,9 @@
        77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
        77  WS-PRINTING-TYPE     PIC X VALUE " ".
+       77  WS-ACC-ERROR         PIC X VALUE " ".      
+       01  WS-EMAIL             PIC X(50).
+       01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 5.
@@ -810,6 +822,7 @@
               PERFORM ENTER-XQS-DETAILS.
            GO TO UPOO-040.
        UPOO-038.
+            MOVE 0 TO WS-SPACE-CNT.
             PERFORM ERROR1-020.
             MOVE 3010 TO POS
             DISPLAY "ENTER EMAIL ADDRESS IN lower case ONLY." AT POS.
@@ -825,15 +838,31 @@
            MOVE CDA-WHITE     TO CDA-COLOR.
            MOVE 'F'           TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
-           MOVE CDA-DATA TO WS-EMAIL-ADDR.
+           MOVE CDA-DATA TO WS-EMAIL-ADDR F-NAMEFIELD.
 
             IF W-ESCAPE-KEY = 4
                GO TO UPOO-030.
-            IF WS-EMAIL-ADDR = " "
-               MOVE "THIS FIELD CANNOT BE BLANK, 'ESC' TO RE-ENTER."
+               
+           MOVE FUNCTION LOWER-CASE(F-NAMEFIELD) TO WS-EMAIL-ADDR
+                                                    WS-EMAIL.
+           INSPECT WS-EMAIL TALLYING WS-SPACE-CNT FOR CHARACTERS
+               BEFORE INITIAL SPACE.
+            
+           IF WS-EMAIL(1:(WS-SPACE-CNT)) IS NOT WS-VALID-EMAIL
+                MOVE "EMAIL ADDRESS HAS AN INVALID CHARACTER."
                 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO UPOO-038.
+                PERFORM ERROR-MESSAGE
+                GO TO UPOO-038.
+ 
+            PERFORM CHECK-EMAIL-FOR-VALIDITY.
+            IF WS-ACC-ERROR = "Y"
+                GO TO UPOO-038.
+            IF WS-SPACE-CNT < 10
+                MOVE 
+            "EMAIL ADDRESS INVALID AS IT'S TOO SHORT, 'ESC' TO RETRY." 
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO UPOO-038.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
                GO TO UPOO-040
             ELSE
@@ -885,6 +914,71 @@
            MOVE 2810 TO POS
            DISPLAY WS-MESSAGE AT POS.
        UPOO-999.
+           EXIT.
+      *
+       CHECK-EMAIL-FOR-VALIDITY SECTION.
+       CEFV-005.
+             MOVE 0 TO SUB-1.
+             MOVE SPACES      TO ALPHA-RATE
+             MOVE F-NAMEFIELD TO ALPHA-RATE.
+             MOVE "N"         TO WS-ACC-ERROR.
+       CEFV-010.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "@"
+                MOVE 0 TO SUB-1
+                GO TO CEFV-020.
+             GO TO CEFV-010.
+       CEFV-020.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-025.
+             GO TO CEFV-020.
+       CEFV-025.
+      *ADDED THIS NEXT LINE SO THAT WE DON'T CHECK FOR AN EXTRA . OR COM
+             GO TO CEFV-999.
+       
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "c"
+                GO TO CEFV-026
+             ELSE
+                SUBTRACT 1 FROM SUB-1
+                GO TO CEFV-030.
+             MOVE "Y" TO WS-ACC-ERROR.
+       CEFV-026.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "o"
+                GO TO CEFV-027.
+             SUBTRACT 2 FROM SUB-1
+             GO TO CEFV-030.
+       CEFV-027.
+             ADD 1 TO SUB-1.
+             IF AL-RATE (SUB-1) = "m"
+                GO TO CEFV-040.
+             SUBTRACT 3 FROM SUB-1.
+       CEFV-030.
+             ADD 1 TO SUB-1.
+             IF SUB-1 > 42
+                MOVE "Y" TO WS-ACC-ERROR
+                GO TO CEFV-900.
+             IF AL-RATE (SUB-1) = "."
+                GO TO CEFV-040.
+             GO TO CEFV-030.
+        CEFV-040.
+             MOVE "N" TO WS-ACC-ERROR
+             GO TO CEFV-999.
+       CEFV-900.
+           MOVE
+          "THERE IS AN ERROR IN THE EMAIL ADDRESS ENTERED, PLEASE" &
+          " FIX, 'ESC' TO RETRY."
+            TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.
+       CEFV-999.
            EXIT.
       *
        ENTER-XQS-DETAILS SECTION.
