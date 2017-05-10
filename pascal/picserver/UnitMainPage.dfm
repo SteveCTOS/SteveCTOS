@@ -1,5 +1,5 @@
 object FormMain: TFormMain
-  Left = 535
+  Left = 536
   Top = 113
   Width = 640
   Height = 612
@@ -119,7 +119,6 @@ object FormMain: TFormMain
           Top = 8
           Width = 558
           Height = 21
-          Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           ItemHeight = 13
           Sorted = True
