@@ -36,25 +36,25 @@ Left=304
 Top=0
 Width=968
 Height=725
-MaxLeft=0
-MaxTop=97
-MaxWidth=1272
+MaxLeft=-4
+MaxTop=101
+MaxWidth=1439
 MaxHeight=628
-ClientWidth=1264
+ClientWidth=1431
 ClientHeight=601
 LeftPanelSize=283
 LeftPanelClients=ProjectManager,PropertyInspector
-LeftPanelData=00000400000000005902000000000000011B010000000000000100000000B00000001200000050726F6A6563744D616E61676572466F726D0100000000590200001100000050726F7065727479496E73706563746F72FFFFFFFF
+LeftPanelData=00000400000000000102000000000000011B010000000000000100000000B00000001200000050726F6A6563744D616E61676572466F726D0100000000010200001100000050726F7065727479496E73706563746F72FFFFFFFF
 RightPanelSize=0
-BottomPanelSize=0
+BottomPanelSize=85
 BottomPanelClients=MessageView@EditWindow0
-BottomPanelData=00000400010000000B0000004D657373616765566965770000000000000000000000000000000000FFFFFFFF
+BottomPanelData=000004000000000000000000000000000000000000000000000100000000000000000B0000004D65737361676556696577FFFFFFFF
 
 [View0]
 Module=E:\source\pascal\picserver\UnitMainPage.pas
-CursorX=68
-CursorY=15
-TopLine=1
+CursorX=7
+CursorY=216
+TopLine=196
 LeftCol=1
 
 [Watches]
@@ -132,17 +132,17 @@ State=0
 Left=0
 Top=188
 Width=283
-Height=413
+Height=325
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=283
-ClientHeight=413
+ClientHeight=325
 TBDockHeight=916
 LRDockWidth=283
 Dockable=1
 SplitPos=111
 ArrangeBy=Name
-SelectedItem=Style
+SelectedItem=AutoSelect
 ExpandedItems=Anchors
 HiddenCategories=
 
@@ -180,15 +180,15 @@ Dockable=1
 
 [MessageView@EditWindow0]
 Create=1
-Visible=0
+Visible=1
 State=0
-Left=-110
-Top=-761
-Width=443
+Left=12
+Top=0
+Width=1419
 Height=85
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=443
+ClientWidth=1419
 ClientHeight=85
 TBDockHeight=85
 LRDockWidth=443

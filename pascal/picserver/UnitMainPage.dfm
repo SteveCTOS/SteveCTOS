@@ -95,7 +95,7 @@ object FormMain: TFormMain
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           ReadOnly = True
-          TabOrder = 0
+          TabOrder = 1
           Text = 
             'http://www.christensen.co.za/uploads/product-images/ck-3789h-120' +
             '8434014.jpg'
@@ -105,6 +105,7 @@ object FormMain: TFormMain
           Top = 56
           Width = 622
           Height = 137
+          TabStop = False
           Anchors = [akLeft, akTop, akRight, akBottom]
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -112,7 +113,7 @@ object FormMain: TFormMain
           Font.Name = 'Courier New'
           Font.Style = []
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 2
         end
         object StockCombo: TComboBox
           Left = 56
@@ -122,7 +123,7 @@ object FormMain: TFormMain
           Anchors = [akLeft, akTop, akRight]
           ItemHeight = 13
           Sorted = True
-          TabOrder = 2
+          TabOrder = 0
           OnChange = StockComboChange
         end
       end

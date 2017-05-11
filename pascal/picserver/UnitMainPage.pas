@@ -213,6 +213,9 @@ begin
     if length(rec.nu3) > 0 then
       PicMemo.Lines.Add(format(' %s', [rec.nu3]));
     PicWebBrowser.Navigate(UrlEdit.Text);
+    //PicMemo.Lines.Add(UrlEdit.Text);
+    UrlEdit.SelectAll;
+    UrlEdit.CopyToClipboard;
   end;
 end;
 
