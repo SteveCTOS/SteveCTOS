@@ -1707,6 +1707,7 @@
            MOVE 1 TO SUB-1.
            IF DR-ACC-FAX = " "
                MOVE 1 TO SIGN-FOUND
+               MOVE " " TO FAX-PHONENUMBER WS-FAX-NUMBER
                GO TO FNC-999.
        FNC-015.
            IF WS-F-C (SUB-1) = "." OR = "-"

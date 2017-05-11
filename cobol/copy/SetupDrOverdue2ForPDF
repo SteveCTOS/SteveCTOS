@@ -3,6 +3,9 @@
        SUQ2FD-005.
           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
           
+          IF WS-FAX-NUMBER NOT > " "
+              GO TO SUQ2FD-999.
+          
       *    MOVE WS-USERNAME TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
           

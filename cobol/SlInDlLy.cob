@@ -87,8 +87,17 @@
            MOVE 3010 TO POS
            DISPLAY
            "IS THIS A CASH TRANSACTION, ENTER Y,N OR D:[ ]" AT POS
-           ADD 44 TO POS
-           ACCEPT WS-DIS AT POS.
+           ADD 44 TO POS.
+           
+           MOVE WS-DIS    TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 53        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DIS.
+           
            IF WS-DIS NOT = "N" AND NOT = "Y" AND NOT = "D"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-505.
@@ -115,8 +124,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CASH-ACCEPT.
 
-      *     ACCEPT WS-CASH-ACCEPT AT POS.
-           
            MOVE 3010 TO POS
            DISPLAY INCR-LY-INVCRED-AMT AT POS
            MOVE 3025 To POS
@@ -147,7 +154,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DIS.
 
-      *     ACCEPT WS-DIS AT POS.
            IF WS-DIS NOT = "Y" AND NOT = "N"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-517.
@@ -161,16 +167,37 @@
            WRITE CASHSALE-REC
               INVALID KEY NEXT SENTENCE.
            IF WS-CASHSALE-ST1 = 23 OR 35 OR 49
-               MOVE
-                "CASHSALE RECORD ALREADY EXISTS, 'ESC' TO EXIT."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO QPC-900.
+      *         MOVE
+      *          "CASHSALE RECORD ALREADY EXISTS, 'ESC' TO EXIT."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               GO TO QPC-530.
            IF WS-CASHSALE-ST1 NOT = 0
                MOVE
                 "CASHSALE RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE.
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
+            GO TO QPC-900.
+       QPC-530.
+           REWRITE CashSale-Rec
+              INVALID KEY NEXT SENTENCE.
+           IF Ws-CashSale-ST1 = 22 OR = 23 OR = 35 OR = 49
+      *          MOVE
+      *          "CashSale RECORD ALREADY EXISTS, 'ESC' TO EXIT."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               GO TO QPC-900.
+           IF Ws-CashSale-ST1 NOT = 0
+               MOVE
+                "CashSale RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020.
             GO TO QPC-900.
        QPC-600.
            MOVE INCR-LY-INVOICE TO CS-INVOICE.
@@ -181,7 +208,7 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-CASHSALE-ST1 = 23 OR 35 OR 49
                MOVE
-                "THIS CASHSALE RECORD DOESN'T EXIST, 'ESC' TO EXIT."
+          "THIS CashSale RECORD DOESN'T EXIST TO DELETE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO QPC-900.
@@ -192,9 +219,8 @@
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
-               MOVE 0 TO WS-CASHSALE-ST1
                GO TO QPC-605.
-           MOVE 2850 TO POS
+           MOVE 2650 TO POS
            DISPLAY "** FOUND **" AT POS.
        QPC-610.
            DELETE CASH-SALE
@@ -206,7 +232,6 @@
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
-               MOVE 0 TO WS-CASHSALE-ST1
                GO TO QPC-610.
        QPC-900.
            PERFORM ERROR-020.
@@ -253,13 +278,15 @@
                 OPEN I-O INCR-LY-REGISTER
                 PERFORM DISPLAY-FORM
                 GO TO GET-000.
-           IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C" AND NOT = X"9B"
+      * X"9B" = <alt-g>  X"c7" = <alt-G>
+           IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C"
+                    AND NOT = X"9B" AND NOT = X"C7"
                MOVE
            "YOU MAY ONLY PRESS <RETURN>, <PgDn> OR <ALT-G>"
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-000.
-            IF F-EXIT-CH = X"0A" OR = X"9B"
+            IF F-EXIT-CH = X"0A" OR = X"9B" OR = X"C7"
                MOVE "1" TO WS-NEWINPUT
                PERFORM READ-ONE-TRANSACTION
                GO TO GET-920.

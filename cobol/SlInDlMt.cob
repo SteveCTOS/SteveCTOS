@@ -124,7 +124,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CASH-ACCEPT.
 
-      *     ACCEPT WS-CASH-ACCEPT AT POS.
            IF W-ESCAPE-KEY = 4
               GO TO QPC-505.
            MOVE WS-CASH-ACCEPT TO ALPHA-RATE
