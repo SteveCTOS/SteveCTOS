@@ -11,8 +11,8 @@
 *   *   *                                    15. CAMS Payment Download to Disk*
 *   *   *  5. Invoice/Credit note Entry/Edit                                  *
 *   *   *  6. Invoice Date/Discount Edit     16. EMail Remittance Entry / Edit*
-*   *   *  7. Unposted JRN Trans Enquiry     17. EMail Remittance Enquiry     *
-*   *   *  8. Ytd Transaction Enquiry        18. EMail Foreign Trans For Remit*
+*   *   *  7. Cr-Jrn Enquiry By Account      17. EMail Remittance Enquiry     *
+*   *   *  8. Cr-Trans Enquiry By Account    18. EMail Foreign Trans For Remit*
 *   *   *                                                                     *
 *   *   *  9. Cash Allocations (Manual)      19. Creditor Trans Inquiry       *
 *   *   *                                                                     *

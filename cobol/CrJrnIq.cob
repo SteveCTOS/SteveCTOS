@@ -26,7 +26,7 @@
        WORKING-STORAGE SECTION.
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "CrMastIq".
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
-       77  WS-NO-OF-TRANS       PIC 9(4) VALUE 0.
+       77  WS-NO-OF-TRANS       PIC 9(5) VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-NEWINPUT          PIC X VALUE " ".
        77  WS-CREDITORNUMBER    PIC X(7) VALUE " ".
@@ -35,6 +35,12 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  LINES-DISPLAYED      PIC 9(5) VALUE 0.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
+       77  WS-BODY-LINE         PIC Z(4)9.
+       01  WS-SCROLL-NUMBERS.
+           03  WS-SCROLL-NUM OCCURS 10000.
+             05  WS-CRJRN-REF   PIC X(10).
+             05  WS-CRJRN-TRANS PIC 9(6).
+             05  WS-CRJRN-TYPE  PIC 9.
        01  WS-CREDITOR-STATUS.
            03  WS-CREDITOR-ST1    PIC 99.
        01  WS-CRJRN-STATUS.
@@ -164,6 +170,9 @@
             MOVE "                               " TO F-NAMEFIELD.
             MOVE "N" TO WS-ANSWER.
 
+            PERFORM OPEN-006. 
+            PERFORM CLEAR-MEMORY.
+
             MOVE 2905 TO POS
             DISPLAY 
            "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
@@ -177,6 +186,7 @@
             IF F-EXIT-CH = X"04"
                  PERFORM END-OFF.
             IF F-EXIT-CH = X"07"
+                 CLOSE CRJRN-FILE
                  GO TO GET-999.
             IF F-EXIT-CH = X"0C"
                  PERFORM READ-CREDITOR-NEXT
@@ -196,34 +206,36 @@
                 OPEN I-O CREDITOR-MASTER
                 PERFORM DISPLAY-FORM
                 PERFORM DISPLAY-FORM-CR-TOP-INFO
+                CLOSE CRJRN-FILE
                 GO TO GET-000.
             PERFORM READ-CREDITOR.
             GO TO GET-020.
        GET-010.
-            MOVE "ACCNO" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "ACCNO"           TO F-FIELDNAME.
+            MOVE 5                 TO F-CBFIELDNAME.
             MOVE CR-ACCOUNT-NUMBER TO F-NAMEFIELD.
-            MOVE 15 TO F-CBFIELDLENGTH.
+            MOVE 15                TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        GET-020.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
         
-            MOVE "NAME" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
+            MOVE "NAME"  TO F-FIELDNAME.
+            MOVE 4       TO F-CBFIELDNAME.
             MOVE CR-NAME TO F-NAMEFIELD.
-            MOVE 25 TO F-CBFIELDLENGTH.
+            MOVE 40      TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             IF CR-NAME = "UNKNOWN"
                 MOVE 2801 TO POS
                 DISPLAY " " AT 3079 WITH BELL
+                CLOSE CRJRN-FILE
                 GO TO GET-000.
 
-            MOVE "BALANCE" TO F-FIELDNAME.
-            MOVE 7 TO F-CBFIELDNAME.
+            MOVE "BALANCE"  TO F-FIELDNAME.
+            MOVE 7          TO F-CBFIELDNAME.
             MOVE CR-BALANCE TO F-EDNAMEFIELDSALE.
-            MOVE 11 TO F-CBFIELDLENGTH.
+            MOVE 11         TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-SALE.
         GET-030.
             MOVE "                               " TO F-NAMEFIELD.
@@ -231,9 +243,11 @@
             MOVE 10 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
+                 CLOSE CRJRN-FILE
                  GO TO GET-000.
             MOVE 2 TO F-CBFIELDLENGTH.
             IF F-EXIT-CH = X"07"
+                 CLOSE CRJRN-FILE
                  GO TO GET-999.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C"
                   DISPLAY " " AT 3079 WITH BELL
@@ -251,24 +265,22 @@
             MOVE " " TO WS-1ST-CHAR.
        GET-040.
             MOVE " " TO F-EXIT-CH.
+            CLOSE CRJRN-FILE.
 
             PERFORM READ-ALL-TRANSACTIONS.
-            MOVE "TOTTRANS" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
-            MOVE WS-NO-OF-TRANS TO F-EDNAMEFIELDCRED.
-            MOVE 5 TO F-CBFIELDLENGTH.
-            PERFORM WRITE-FIELD-CREDIT.
+            PERFORM FILL-BODY.
+            IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE 1   TO F-INDEX SUB-1
+                MOVE "Y" TO WS-ANSWER
+                GO TO GET-999.
 
-            MOVE "TRANSAMT"   TO F-FIELDNAME.
-            MOVE 8            TO F-CBFIELDNAME.
-            MOVE WS-TRANS-AMT TO F-EDNAMEFIELDSALE.
-            MOVE 11           TO F-CBFIELDLENGTH.
-            PERFORM WRITE-FIELD-SALE.
+            GO TO GET-999.
 
-            MOVE 0 TO LINES-DISPLAYED.
-            IF WS-NO-OF-TRANS = 0
-                  GO TO GET-900.
-            PERFORM READ-TRANSACTIONS.
+      *      MOVE 0 TO LINES-DISPLAYED.
+      *      IF WS-NO-OF-TRANS = 0
+      *            GO TO GET-900.
+      *      PERFORM READ-TRANSACTIONS.
        GET-900.
             PERFORM ERROR1-020
             PERFORM ERROR-020.
@@ -305,6 +317,146 @@
                 PERFORM ERROR-020.
        GET-999.
             EXIT.
+      *
+       FILL-BODY SECTION.
+       FILL-000.
+           PERFORM OPEN-006.
+
+           MOVE 1 TO F-INDEX.
+           MOVE 1 TO SUB-1 SUB-2 SUB-3.
+           PERFORM SCROLL-PREVIOUS-PAGE.
+
+           MOVE 2702 TO POS
+           DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
+           AT POS
+           ADD 40 TO POS
+           DISPLAY "'F12' OR 'F11' to Scroll Up/Down," AT POS
+           MOVE 2803 TO POS
+           DISPLAY 
+        "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
+           " Transactions." AT POS.
+       FILL-010.
+      *     MOVE 3015 TO POS 
+      *     DISPLAY "Current Line#: " AT POS
+      *     ADD 16 TO POS
+           MOVE SUB-1 TO WS-BODY-LINE
+      *     DISPLAY WS-BODY-LINE AT POS.
+
+           MOVE WS-BODY-LINE    TO LINES-DISPLAYED.
+           MOVE "LINES"         TO F-FIELDNAME.
+           MOVE 5               TO F-CBFIELDNAME.
+           MOVE LINES-DISPLAYED TO F-EDNAMEFIELDCRED.
+           MOVE 5               TO F-CBFIELDLENGTH.
+           PERFORM WRITE-FIELD-CRED.
+            
+           IF SUB-1 < 1
+              MOVE 1 TO SUB-1 F-INDEX.
+
+
+            MOVE "PERIOD" TO F-FIELDNAME.
+            MOVE 6        TO F-CBFIELDNAME.
+            MOVE 2        TO F-CBFIELDLENGTH.
+            PERFORM USER-FILL-FIELD.
+            PERFORM READ-FIELD-ALPHA.
+
+      *UP-ARROW
+           IF F-EXIT-CH = X"01" AND F-INDEX = 1
+            IF SUB-1 = 1
+              GO TO FILL-010
+            ELSE
+              PERFORM SCROLL-PREVIOUS
+              MOVE 15 TO F-INDEX
+              GO TO FILL-010.
+           IF F-EXIT-CH = X"01" AND F-INDEX > 1
+              SUBTRACT 1 FROM F-INDEX 
+                              SUB-1
+            IF F-INDEX > 0
+              GO TO FILL-010
+            ELSE
+              MOVE 1 TO F-INDEX
+              PERFORM SCROLL-PREVIOUS
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010.
+      *DOWN-ARROW
+           IF F-EXIT-CH = X"0B" AND F-INDEX < 15
+            IF SUB-1 NOT = SUB-9
+              ADD 1 TO F-INDEX SUB-1
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *SCROLL-UP
+           IF F-EXIT-CH = X"11"
+            IF SUB-1 NOT > SUB-9
+              PERFORM SCROLL-NEXT
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *SCROLL-DOWN
+           IF F-EXIT-CH = X"13"
+            IF SUB-1 NOT > SUB-9
+              PERFORM SCROLL-PREVIOUS
+             IF SUB-1 < 16
+              MOVE F-INDEX TO SUB-1
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *NEXT-PAGE
+           IF F-EXIT-CH = X"0C"
+            IF SUB-1 NOT > SUB-9
+              PERFORM SCROLL-NEXT-PAGE
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *PREV-PAGE
+           IF F-EXIT-CH = X"05"
+              PERFORM SCROLL-PREVIOUS-PAGE
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010.
+      *TAB - <ALT-F8>
+           IF F-EXIT-CH = X"09"
+              GO TO FILL-900.
+      *ESC
+           IF F-EXIT-CH = X"07"
+              GO TO FILL-900.
+      * <f10> to print
+           IF F-EXIT-CH = X"1F"
+                CLOSE CRJRN-FILE
+                PERFORM PRINT-ROUTINE
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE " " TO WS-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM ERROR-020
+                GO TO FILL-900.
+           MOVE 7 TO F-CBFIELDLENGTH.
+           PERFORM READ-FIELD-ALPHA.
+      *RETURN
+           IF F-EXIT-CH = X"0A" AND F-INDEX < 15
+             IF SUB-1 NOT = SUB-9
+              ADD 1 TO F-INDEX SUB-1
+              GO TO FILL-010
+             ELSE
+              GO TO FILL-010.
+       FILL-050.
+           ADD 1 TO SUB-1 F-INDEX.
+           IF SUB-1 > 10000
+               MOVE "10,000 LINES ARE UP, 'ESC' TO <TAB>."
+                TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-900.
+           IF F-INDEX < 16
+               GO TO FILL-010.
+           SUBTRACT 1 FROM SUB-1.
+           IF SUB-1 < 1
+              MOVE 1 TO SUB-1.
+           PERFORM SCROLL-NEXT.
+           MOVE 1 TO F-INDEX.
+           GO TO FILL-010.
+       FILL-900.
+           CLOSE CRJRN-FILE.
+       FILL-999.
+           EXIT.
       *
        READ-TRANSACTIONS SECTION.
        RDTR-000.
@@ -427,28 +579,20 @@
            EXIT.
       *
        READ-ALL-TRANSACTIONS SECTION.
-       RALT-000.
-           OPEN I-O CRJRN-FILE.
-           IF WS-CRJRN-ST1 NOT = 0
-              MOVE "CRJRN-ST1 ERROR IN OPEN RALT-000, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              CLOSE CRJRN-FILE
-              GO TO RALT-000.
-           MOVE 2910 TO POS.
-           DISPLAY "Reading All transactions......" AT POS.
-       RALT-005.
+       RDALL-000.
+           PERFORM OPEN-006.
+       RDALL-005.
            MOVE 0 TO WS-NO-OF-TRANS WS-TRANS-AMT.
            MOVE CR-ACCOUNT-NUMBER TO CRJRN-CRACC-NUMBER.
            START CRJRN-FILE KEY NOT < CRJRN-CRACC-NUMBER
                INVALID KEY NEXT SENTENCE.
            IF WS-CRJRN-ST1 = 23 OR 35 OR 49
-               GO TO RALT-900.
-       RALT-010.
+               GO TO RDALL-900.
+       RDALL-010.
            READ CRJRN-FILE NEXT
                AT END NEXT SENTENCE.
            IF WS-CRJRN-ST1 = 10
-               GO TO RALT-900.
+               GO TO RDALL-900.
            IF WS-CRJRN-ST1 NOT = 0
                MOVE "CRJRN-ST1 ERROR IN READ-NEXT 'ESC' TO RETRY."
                TO WS-MESSAGE
@@ -456,23 +600,93 @@
                MOVE WS-CRJRN-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
-               GO TO RALT-010.
+               GO TO RDALL-010.
            IF CRJRN-CRACC-NUMBER NOT = CR-ACCOUNT-NUMBER
-               GO TO RALT-900.
+               GO TO RDALL-900.
            IF WS-PER NOT = 0
             IF CRJRN-NO NOT = WS-PER
-               GO TO RALT-010.
+               GO TO RDALL-010.
       *     IF CRJRN-COMPLETE = "P" OR = "Y"
-      *        GO TO RALT-010.
-           ADD 1 TO WS-NO-OF-TRANS.
+      *        GO TO RDALL-010.
+
+           MOVE CRJRN-REFERENCE         TO WS-CRJRN-REF (SUB-1).
+           MOVE CRJRN-TRANS             TO WS-CRJRN-TRANS (SUB-1).
+           MOVE CRJRN-TYPE              TO WS-CRJRN-TYPE (SUB-1).
+           
+           ADD 1             TO WS-NO-OF-TRANS.
            ADD CRJRN-LOC-AMT TO WS-TRANS-AMT.
-           GO TO RALT-010.
-       RALT-900.
-           PERFORM ERROR1-020
+
+           IF SUB-1 < 10000
+              ADD 1 TO SUB-1
+              PERFORM RDALL-910
+              GO TO RDALL-010.
+              
+           MOVE "THERE ARE MORE THAN 10,000 ITEMS ON THIS ORDER."
+             TO WS-MESSAGE
+             PERFORM ERROR1-000
+           MOVE "PRESS 'Esc' TO EXIT THE READ-ALL SECTION."
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+       RDALL-900.
+           SUBTRACT 1 FROM SUB-1
+           MOVE SUB-1 TO SUB-9.
+           IF SUB-9 < 0
+               MOVE 0 TO SUB-9.
+       RDALL-910.
+            MOVE "TOTTRANS"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            MOVE WS-NO-OF-TRANS TO F-EDNAMEFIELDCRED.
+            MOVE 5              TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-CRED.
+
+            MOVE "TRANSAMT"   TO F-FIELDNAME.
+            MOVE 8            TO F-CBFIELDNAME.
+            MOVE WS-TRANS-AMT TO F-EDNAMEFIELDSALE.
+            MOVE 11           TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-SALE.
+       RDALL-920.
+      *     MOVE 2912 TO POS.
+      *     DISPLAY "Total # of Lines:" AT POS
+      *     ADD 19 TO POS.
+      *     MOVE SUB-9 TO WS-BODY-LINE.
+      *     DISPLAY WS-BODY-LINE AT POS.
+           ADD 1 TO SUB-9.
+       RDALL-950.
            CLOSE CRJRN-FILE.
-       RALT-999.
+       RDALL-999.
            EXIT.
-     *
+      *
+       READ-ORDER-ONLY SECTION.
+       RDONLY-000.
+           IF SUB-1 > SUB-9
+               GO TO RDONLY-999.
+       RDONLY-005.
+           MOVE WS-CRJRN-REF (SUB-1)    TO CRJRN-REFERENCE.
+           MOVE WS-CRJRN-TRANS (SUB-1)  TO CRJRN-TRANS.
+           MOVE WS-CRJRN-TYPE (SUB-1)   TO CRJRN-TYPE.
+           START CRJRN-FILE KEY NOT < CRJRN-KEY
+               INVALID KEY NEXT SENTENCE.
+           IF WS-CRJRN-ST1 NOT = 0
+               CLOSE CRJRN-FILE
+               GO TO RDONLY-999.
+       RDONLY-010.
+           READ CRJRN-FILE NEXT
+               AT END NEXT SENTENCE.
+           IF WS-CRJRN-ST1 = 10
+               MOVE 1 TO F-INDEX
+               CLOSE CRJRN-FILE
+               GO TO RDONLY-999.
+           IF WS-CRJRN-ST1 NOT = 0
+               MOVE "CRJRN BUSY ON READ-ONLY, IN 1 SEC GOING TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               CALL "C$SLEEP" USING 1
+               PERFORM ERROR1-020
+               GO TO RDONLY-010.
+       RDONLY-999.
+           EXIT.
+      *
        READ-CREDITOR SECTION.
        RD-010.
            START CREDITOR-MASTER KEY NOT < CR-KEY.
@@ -654,13 +868,148 @@
        PRR-999.
            EXIT.
       *
+       SCROLL-NEXT SECTION.
+       NEXT-000.
+            ADD 1  TO SUB-1.
+            IF SUB-1 > SUB-9
+               MOVE SUB-9 TO SUB-1.
+            IF SUB-1 < 1
+               MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO F-INDEX.
+            PERFORM CLEAR-TRANSACTIONS.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 > 9985
+                MOVE 9985 TO SUB-1.
+       NEXT-010.
+            PERFORM SCROLLING.
+       NEXT-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO NEXT-010.
+            IF SUB-1 > 9985  
+                GO TO NEXT-025.
+            MOVE 1 TO F-INDEX.
+       NEXT-025.
+            SUBTRACT 15 FROM SUB-1.
+            IF SUB-1 > 9985
+              IF SUB-25 > 9985
+               COMPUTE F-INDEX = 15 - (10001 - SUB-9)
+               MOVE SUB-25 TO SUB-1
+            ELSE
+               MOVE 1 TO F-INDEX. 
+            IF F-INDEX > 15
+                MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+      *      MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
+            MOVE SUB-1 TO WS-BODY-LINE.
+      *      DISPLAY WS-BODY-LINE AT POS.
+       NEXT-999.
+             EXIT.
+      *
+       SCROLL-NEXT-PAGE SECTION.
+       NEXT-PAGE-000.
+            ADD 15  TO SUB-1.
+            IF SUB-1 > SUB-9
+               MOVE SUB-9 TO SUB-1.
+            IF SUB-1 < 1
+               MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO F-INDEX.
+            PERFORM CLEAR-TRANSACTIONS.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 > 9985
+                 MOVE 9985 TO SUB-1.
+       NEXT-PAGE-010.
+            PERFORM SCROLLING.
+       NEXT-PAGE-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO NEXT-PAGE-010.
+            IF SUB-1 > 9985 
+                GO TO NEXT-PAGE-025.
+            MOVE 1 TO F-INDEX.
+       NEXT-PAGE-025.
+            SUBTRACT 15 FROM SUB-1.
+            IF SUB-1 > 9985
+              IF SUB-25 > 9985
+               COMPUTE F-INDEX = 15 - (10001 - SUB-9)
+               MOVE SUB-25 TO SUB-1
+            ELSE
+               MOVE 1 TO F-INDEX. 
+            IF F-INDEX > 15
+               MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+      *      MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
+            MOVE SUB-1 TO WS-BODY-LINE.
+      *      DISPLAY WS-BODY-LINE AT POS.
+       NEXT-PAGE-999.
+             EXIT.
+      *
+       SCROLL-PREVIOUS-PAGE SECTION.
+       PREV-PAGE-000.
+            PERFORM CLEAR-TRANSACTIONS.
+            SUBTRACT 15 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       PREV-PAGE-010.
+            PERFORM SCROLLING.
+       PREV-PAGE-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO PREV-PAGE-010.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 15 FROM SUB-1.
+       PREV-PAGE-025.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+      *       MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
+            MOVE SUB-1 TO WS-BODY-LINE.
+      *      DISPLAY WS-BODY-LINE AT POS.
+       PREV-PAGE-999.
+            EXIT.
+      *
+       SCROLL-PREVIOUS SECTION.
+       PREV-000.
+            PERFORM CLEAR-TRANSACTIONS.
+            SUBTRACT 15 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       PREV-010.
+            PERFORM SCROLLING.
+       PREV-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO PREV-010.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 1 FROM SUB-1.
+       PREV-025.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+      *        MOVE 3015 TO POS.
+      *        DISPLAY "Current Line#: " AT POS
+      *        ADD 16 TO POS.
+              MOVE SUB-1 TO WS-BODY-LINE.
+      *        DISPLAY WS-BODY-LINE AT POS.
+       PREV-999.
+            EXIT.
+      *
        SCROLLING SECTION.
        SCROLL-000.
-            MOVE "LINES" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
-            MOVE LINES-DISPLAYED TO F-EDNAMEFIELDCRED.
-            MOVE 5 TO F-CBFIELDLENGTH.
-            PERFORM WRITE-FIELD-CREDIT.
+            IF SUB-1 < SUB-9
+               PERFORM READ-ORDER-ONLY
+            ELSE
+               GO TO SCROLL-999.
 
             MOVE "PERIOD" TO F-FIELDNAME.
             MOVE 6 TO F-CBFIELDNAME.
@@ -724,7 +1073,7 @@
       *
        CLEAR-TRANSACTIONS SECTION.
        CLTR-000.
-            MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO F-INDEX.
 
             MOVE "LINES" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
@@ -732,7 +1081,7 @@
             MOVE 5 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        CLTR-010.
-            IF SUB-1 > 15
+            IF F-INDEX > 15
                 GO TO CLTR-999.
             MOVE "PERIOD" TO F-FIELDNAME.
             MOVE 6 TO F-CBFIELDNAME.
@@ -788,9 +1137,28 @@
             MOVE 11 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            ADD 1 TO SUB-1 F-INDEX.
+            ADD 1 TO F-INDEX.
             GO TO CLTR-010.
        CLTR-999.
+            EXIT.
+      *
+       CLEAR-MEMORY SECTION.
+       CMS-005.
+            MOVE 1 TO SUB-1.
+            MOVE 0 TO SUB-9.
+       CMS-010.
+            IF WS-CRJRN-TYPE (SUB-1) NOT = 0
+                MOVE 0   TO WS-CRJRN-TYPE (SUB-1)
+                            WS-CRJRN-TRANS (SUB-1)
+                MOVE " " TO WS-CRJRN-REF (SUB-1)
+            ELSE
+                GO TO CMS-900.
+            IF SUB-1 < 10000
+               ADD 1 TO SUB-1
+               GO TO CMS-010.
+       CMS-900.
+            MOVE 1 TO SUB-1.
+       CMS-999.
             EXIT.
       *
        READ-PARAMETER SECTION.
@@ -817,25 +1185,42 @@
             IF WS-CREDITOR-ST1 NOT = 0
                MOVE " CREDITOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CREDITOR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
                MOVE 0 TO WS-CREDITOR-ST1
                GO TO OPEN-000.
        OPEN-005.
             OPEN I-O GLPARAMETER-FILE.
             IF WS-GLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-GLPARAMETER-ST1
               MOVE "GLPARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-005.
+            GO TO OPEN-007.
+       OPEN-006.
+           OPEN I-O CRJRN-FILE.
+           IF WS-CRJRN-ST1 NOT = 0
+              MOVE "CRJRN-ST1 ERROR IN OPEN-006, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CRJRN-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              GO TO OPEN-006.
+       OPEN-007.
            PERFORM READ-PARAMETER.
            MOVE GLPA-NAME TO CO-NAME.
            PERFORM ENTER-PERIOD-DATES.
-           PERFORM OPEN-006.
+      *     PERFORM OPEN-006.
            CLOSE GLPARAMETER-FILE.
-       OPEN-006.
+       OPEN-008.
            PERFORM GET-SYSTEM-Y2K-DATE.
-      *     ACCEPT WS-DATE FROM DATE
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H1-DATE.
@@ -860,7 +1245,7 @@
        Copy "ReadFieldNumeric".
        Copy "WriteFieldAlpha".
        Copy "WriteFieldChange".
-       Copy "WriteFieldCredit".
+       Copy "WriteFieldCred".
        Copy "WriteFieldSale".
        Copy "WriteFieldAddOn".
        
