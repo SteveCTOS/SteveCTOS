@@ -755,6 +755,7 @@
       *
        PRINT-ROUTINE SECTION.
        PRR-000.
+            PERFORM OPEN-006.
             MOVE 0  TO PAGE-CNT WS-TRANS-AMT.
             MOVE 66 TO LINE-CNT.
             PERFORM GET-USER-PRINT-NAME.
