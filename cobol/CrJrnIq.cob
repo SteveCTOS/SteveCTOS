@@ -352,7 +352,6 @@
            IF SUB-1 < 1
               MOVE 1 TO SUB-1 F-INDEX.
 
-
             MOVE "PERIOD" TO F-FIELDNAME.
             MOVE 6        TO F-CBFIELDNAME.
             MOVE 2        TO F-CBFIELDLENGTH.
@@ -396,11 +395,21 @@
            IF F-EXIT-CH = X"13"
             IF SUB-1 NOT > SUB-9
               PERFORM SCROLL-PREVIOUS
-             IF SUB-1 < 16
-              MOVE F-INDEX TO SUB-1
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
+              MOVE 1 TO F-INDEX
+              COMPUTE SUB-1 = SUB-1 - 14
+             IF SUB-1 NOT > 1
+                 MOVE 1 TO SUB-1
+                 GO TO FILL-010
+             ELSE 
+                 GO TO FILL-010.
+      *     IF F-EXIT-CH = X"13"
+      *      IF SUB-1 NOT > SUB-9
+      *        PERFORM SCROLL-PREVIOUS
+      *       IF SUB-1 < 16
+      *        MOVE F-INDEX TO SUB-1
+      *        GO TO FILL-010
+      *      ELSE
+      *        GO TO FILL-010.
       *NEXT-PAGE
            IF F-EXIT-CH = X"0C"
             IF SUB-1 NOT > SUB-9
@@ -982,7 +991,10 @@
        SCROLL-PREVIOUS SECTION.
        PREV-000.
             PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 15 FROM SUB-1.
+            IF F-EXIT-CH = X"01"
+               SUBTRACT 15 FROM SUB-1
+            ELSE
+               SUBTRACT 1 FROM SUB-1.
             MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
                  MOVE 1 TO SUB-1.
@@ -1013,27 +1025,27 @@
                GO TO SCROLL-999.
 
             MOVE "PERIOD" TO F-FIELDNAME.
-            MOVE 6 TO F-CBFIELDNAME.
+            MOVE 6        TO F-CBFIELDNAME.
             MOVE CRJRN-NO TO F-NAMEFIELD.
-            MOVE 2 TO F-CBFIELDLENGTH.
+            MOVE 2        TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "JRN" TO F-FIELDNAME.
-            MOVE 3 TO F-CBFIELDNAME.
+            MOVE "JRN"           TO F-FIELDNAME.
+            MOVE 3               TO F-CBFIELDNAME.
             MOVE CRJRN-REFERENCE TO F-NAMEFIELD.
-            MOVE 10 TO F-CBFIELDLENGTH.
+            MOVE 10              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "TYPE" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
+            MOVE "TYPE"                     TO F-FIELDNAME.
+            MOVE 4                          TO F-CBFIELDNAME.
             MOVE WS-TRANS-DESC (CRJRN-TYPE) TO F-NAMEFIELD.
-            MOVE 3 TO F-CBFIELDLENGTH.
+            MOVE 3                          TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "INVOICE" TO F-FIELDNAME.
-            MOVE 7 TO F-CBFIELDNAME.
+            MOVE "INVOICE"    TO F-FIELDNAME.
+            MOVE 7            TO F-CBFIELDNAME.
             MOVE CRJRN-INV-NO TO F-NAMEFIELD.
-            MOVE 10 TO F-CBFIELDLENGTH.
+            MOVE 10           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "INVDATE"       TO F-FIELDNAME.
@@ -1052,16 +1064,16 @@
             MOVE 8               TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "RAND" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
+            MOVE "RAND"        TO F-FIELDNAME.
+            MOVE 4             TO F-CBFIELDNAME.
             MOVE CRJRN-LOC-AMT TO F-EDNAMEFIELDSALE.
-            MOVE 11 TO F-CBFIELDLENGTH.
+            MOVE 11            TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-SALE.
 
-            MOVE "UNAPPLIED" TO F-FIELDNAME.
-            MOVE 9 TO F-CBFIELDNAME.
+            MOVE "UNAPPLIED"         TO F-FIELDNAME.
+            MOVE 9                   TO F-CBFIELDNAME.
             MOVE CRJRN-UNAPPLIED-AMT TO F-EDNAMEFIELDSALE.
-            MOVE 11 TO F-CBFIELDLENGTH.
+            MOVE 11                  TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-SALE.
 
             MOVE "SETTDISC"      TO F-FIELDNAME.
@@ -1077,35 +1089,35 @@
             MOVE 1 TO F-INDEX.
 
             MOVE "LINES" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 5 TO F-CBFIELDLENGTH.
+            MOVE 5       TO F-CBFIELDNAME.
+            MOVE " "     TO F-NAMEFIELD.
+            MOVE 5       TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        CLTR-010.
             IF F-INDEX > 15
                 GO TO CLTR-999.
             MOVE "PERIOD" TO F-FIELDNAME.
-            MOVE 6 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 2 TO F-CBFIELDLENGTH.
+            MOVE 6        TO F-CBFIELDNAME.
+            MOVE " "      TO F-NAMEFIELD.
+            MOVE 2        TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "JRN" TO F-FIELDNAME.
-            MOVE 3 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 10 TO F-CBFIELDLENGTH.
+            MOVE 3     TO F-CBFIELDNAME.
+            MOVE " "   TO F-NAMEFIELD.
+            MOVE 10    TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "TYPE" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 3 TO F-CBFIELDLENGTH.
+            MOVE 4      TO F-CBFIELDNAME.
+            MOVE " "    TO F-NAMEFIELD.
+            MOVE 3      TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "INVOICE" TO F-FIELDNAME.
-            MOVE 7 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 10 TO F-CBFIELDLENGTH.
+            MOVE 7         TO F-CBFIELDNAME.
+            MOVE " "       TO F-NAMEFIELD.
+            MOVE 10        TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "INVDATE" TO F-FIELDNAME.
@@ -1121,21 +1133,21 @@
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "RAND" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 11 TO F-CBFIELDLENGTH.
+            MOVE 4      TO F-CBFIELDNAME.
+            MOVE " "    TO F-NAMEFIELD.
+            MOVE 11     TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "UNAPPLIED" TO F-FIELDNAME.
-            MOVE 9 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 11 TO F-CBFIELDLENGTH.
+            MOVE 9           TO F-CBFIELDNAME.
+            MOVE " "         TO F-NAMEFIELD.
+            MOVE 11          TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "SETTDISC" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
-            MOVE " " TO F-NAMEFIELD.
-            MOVE 11 TO F-CBFIELDLENGTH.
+            MOVE 8          TO F-CBFIELDNAME.
+            MOVE " "        TO F-NAMEFIELD.
+            MOVE 11         TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
             ADD 1 TO F-INDEX.

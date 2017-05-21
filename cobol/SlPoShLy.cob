@@ -354,11 +354,13 @@
            IF F-EXIT-CH = X"13"
             IF SUB-1 NOT > SUB-9
               PERFORM SCROLL-PREVIOUS
-             IF SUB-1 < 16
-              MOVE F-INDEX TO SUB-1
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
+              MOVE 1 TO F-INDEX
+              COMPUTE SUB-1 = SUB-1 - 14
+             IF SUB-1 NOT > 1
+                 MOVE 1 TO SUB-1
+                 GO TO FILL-010
+             ELSE 
+                 GO TO FILL-010.
       *NEXT-PAGE
            IF F-EXIT-CH = X"0C"
             IF SUB-1 NOT > SUB-9
@@ -995,7 +997,10 @@
        SCROLL-PREVIOUS SECTION.
        PREV-000.
             PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 15 FROM SUB-1.
+            IF F-EXIT-CH = X"01"
+               SUBTRACT 15 FROM SUB-1
+            ELSE
+               SUBTRACT 1 FROM SUB-1.
             MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
                  MOVE 1 TO SUB-1.

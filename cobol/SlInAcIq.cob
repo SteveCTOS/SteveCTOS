@@ -385,11 +385,13 @@
            IF F-EXIT-CH = X"13"
             IF SUB-1 NOT > SUB-9
               PERFORM SCROLL-PREVIOUS
-             IF SUB-1 < 16
-              MOVE F-INDEX TO SUB-1
-              GO TO FILL-010
-            ELSE
-              GO TO FILL-010.
+              MOVE 1 TO F-INDEX
+              COMPUTE SUB-1 = SUB-1 - 14
+             IF SUB-1 NOT > 1
+                 MOVE 1 TO SUB-1
+                 GO TO FILL-010
+             ELSE 
+                 GO TO FILL-010.
       *NEXT-PAGE
            IF F-EXIT-CH = X"0C"
             IF SUB-1 NOT > SUB-9
@@ -429,8 +431,8 @@
               GO TO FILL-010.
        FILL-050.
            ADD 1 TO SUB-1 F-INDEX.
-           IF SUB-1 > 10000
-               MOVE "10,000 LINES ARE UP, 'ESC' TO <TAB>."
+           IF SUB-1 > 50000
+               MOVE "50,000 LINES ARE UP, 'ESC' TO <TAB>."
                 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO FILL-900.
@@ -1056,7 +1058,10 @@
        SCROLL-PREVIOUS SECTION.
        PREV-000.
             PERFORM CLEAR-TRANSACTIONS.
-            SUBTRACT 15 FROM SUB-1.
+            IF F-EXIT-CH = X"01"
+               SUBTRACT 15 FROM SUB-1
+            ELSE
+               SUBTRACT 1 FROM SUB-1.
             MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
                  MOVE 1 TO SUB-1.
@@ -1071,11 +1076,11 @@
        PREV-025.
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
-            MOVE 3015 TO POS.
-            DISPLAY "Current Line#: " AT POS
-            ADD 16 TO POS.
+      *      MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
             MOVE SUB-1 TO WS-BODY-LINE.
-            DISPLAY WS-BODY-LINE AT POS.
+      *      DISPLAY WS-BODY-LINE AT POS.
        PREV-999.
             EXIT.
       *
@@ -1086,6 +1091,11 @@
             ELSE
                GO TO SCROLL-999.
 
+      *      IF F-INDEX NOT < 15
+      *         MOVE 1 TO F-INDEXSAVE
+      *      ELSE
+      *         MOVE F-INDEX TO F-INDEXSAVE.
+            
             MOVE "STOCKNO"         TO F-FIELDNAME
             MOVE 7                 TO F-CBFIELDNAME
             MOVE STTR-STOCK-NUMBER TO F-NAMEFIELD
@@ -1171,7 +1181,7 @@
             MOVE 1 TO SUB-1.
        CMS-999.
             EXIT.
-      *
+      * 
        CLEAR-TRANSACTIONS SECTION.
        CLTR-000.
             MOVE 1 TO F-INDEX.
