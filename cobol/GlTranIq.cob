@@ -189,6 +189,7 @@
             IF F-EXIT-CH = X"0C"
                  PERFORM READ-GLMASTER-NEXT
              IF WS-END = "Y"
+                 CLOSE GLTRANS-FILE
                  GO TO GET-000
              ELSE
                  GO TO GET-010.
@@ -214,12 +215,12 @@
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
-                GO TO GET-000.
+                GO TO GET-001.
            IF WS-RESTOFACCOUNT = "      "
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
-                GO TO GET-000.
+                GO TO GET-001.
             MOVE "ACCNO"     TO F-FIELDNAME.
             MOVE 5           TO F-CBFIELDNAME.
             MOVE WS-GLNUMBER TO F-NAMEFIELD.
@@ -244,7 +245,7 @@
             IF GL-DESCRIPTION = "UNKNOWN"
                 MOVE 2801 TO POS
                 DISPLAY " " AT 3079 WITH BELL
-                GO TO GET-000.
+                GO TO GET-001.
 
             MOVE "BALANCE" TO F-FIELDNAME.
             MOVE 7 TO F-CBFIELDNAME.
