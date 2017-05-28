@@ -29,6 +29,7 @@
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-NO-OF-TRANS       PIC 9(4) VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
+       77  WS-END               PIC X VALUE " ".
        77  WS-NEWINPUT          PIC X VALUE " ".
        77  WS-GLMASTERNUMBER    PIC X(15) VALUE " ".
        77  WS-DESC-SORT         PIC X(11) VALUE " ".
@@ -37,6 +38,12 @@
        77  LINE-CNT             PIC 9(2) VALUE 66.
        77  LINES-DISPLAYED      PIC 9(5) VALUE 0.
        77  WS-WORK-FIELD        PIC 9(5) VALUE 0.
+       77  WS-BODY-LINE         PIC Z(4)9.
+       01  WS-SCROLL-NUMBERS.
+           03  WS-SCROLL-NUM OCCURS 10000.
+             05  WS-GLTR-REF   PIC X(10).
+             05  WS-GLTR-TRANS PIC 9(6).
+             05  WS-GLTR-TYPE  PIC 9(2).
        01  WS-GL-LY-STATUS.
            03  WS-GL-LY-ST1       PIC 99.
        01  WS-GLTRANS-LY-STATUS.
@@ -157,15 +164,33 @@
        GET-000.
             MOVE "                               " TO F-NAMEFIELD.
             MOVE "N" TO WS-ANSWER.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
+            PERFORM OPEN-006. 
+            PERFORM CLEAR-MEMORY.
+       GET-001.
+            MOVE 2905 TO POS
+            DISPLAY 
+           "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
+            AT POS
+            MOVE 3005 TO POS
+            DISPLAY " Or Enter Account Number." AT POS
+
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"04"
                  PERFORM END-OFF.
             IF F-EXIT-CH = X"07"
+                 CLOSE GLTRANS-LY-FILE
                  GO TO GET-999.
             IF F-EXIT-CH = X"0C"
                  PERFORM READ-GLMASTER-NEXT
+             IF WS-END = "Y"
+                 CLOSE GLTRANS-LY-FILE
+                 GO TO GET-000
+             ELSE
                  GO TO GET-010.
             IF F-EXIT-CH = X"05"
                  PERFORM READ-GLMASTER-PREVIOUS
@@ -173,11 +198,16 @@
             MOVE 12 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
+            
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             IF F-NAMEFIELD = "   "
                 CLOSE GL-LY-MASTER
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
                 PERFORM OPEN-000
+                CLOSE GLTRANS-LY-FILE
                 PERFORM DISPLAY-FORM
                 PERFORM DISPLAY-FORM-GL-TOP-INFO
                 GO TO GET-000.
@@ -187,12 +217,12 @@
            IF WS-GLSUBHEADER = "    "
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR-MESSAGE
                 GO TO GET-000.
            IF WS-RESTOFACCOUNT = "      "
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR-MESSAGE
                 GO TO GET-000.
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
@@ -217,7 +247,7 @@
 
             IF GL-LY-DESCRIPTION = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
-                GO TO GET-000.
+                GO TO GET-001.
 
             MOVE "BALANCE" TO F-FIELDNAME.
             MOVE 7 TO F-CBFIELDNAME.
@@ -236,9 +266,10 @@
             MOVE 8          TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
-                 GO TO GET-000.
+                 GO TO GET-001.
             MOVE 11         TO F-CBFIELDLENGTH.
             IF F-EXIT-CH = X"07"
+                 CLOSE GLTRANS-LY-FILE
                  GO TO GET-999.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C"
                      AND NOT = X"1F" AND NOT = X"05"
@@ -255,6 +286,7 @@
                  GO TO GET-025.
             MOVE 2 TO F-CBFIELDLENGTH.
             IF F-EXIT-CH = X"07"
+                 CLOSE GLTRANS-LY-FILE
                  GO TO GET-999.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C"
                      AND NOT = X"1F" AND NOT = X"05"
@@ -275,7 +307,7 @@
                 MOVE 3010 TO POS
                 DISPLAY "Printing In Progress, Please Be Patient."
                    AT POS
-                OPEN I-O GLTRANS-LY-FILE
+                CLOSE GLTRANS-LY-FILE
                 PERFORM PRINT-ROUTINE
                 PERFORM CLEAR-TRANSACTIONS
                 CLOSE GLTRANS-LY-FILE
@@ -284,24 +316,35 @@
                 GO TO GET-999.
        GET-040.
             MOVE " " TO F-EXIT-CH.
+            CLOSE GLTRANS-LY-FILE.
 
             PERFORM READ-ALL-TRANSACTIONS.
-            MOVE "TOTTRANS" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
-            MOVE WS-NO-OF-TRANS TO F-EDNAMEFIELDCRED.
-            MOVE 5 TO F-CBFIELDLENGTH.
-            PERFORM WRITE-FIELD-CRED.
+            PERFORM FILL-BODY.
+            IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE 1   TO F-INDEX SUB-1
+                MOVE "Y" TO WS-ANSWER
+                GO TO GET-999.
 
-            MOVE "TRANSAMT" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
-            MOVE WS-TRANS-AMT TO F-EDNAMEFIELDREC.
-            MOVE 12 TO F-CBFIELDLENGTH.
-            PERFORM WRITE-FIELD-REC.
+            GO TO GET-999.
 
-           MOVE 0 TO LINES-DISPLAYED.
-           IF WS-NO-OF-TRANS = 0
-                GO TO GET-900.
-           PERFORM READ-TRANSACTIONS.
+      *      PERFORM READ-ALL-TRANSACTIONS.
+      *      MOVE "TOTTRANS" TO F-FIELDNAME.
+      *      MOVE 8 TO F-CBFIELDNAME.
+      *      MOVE WS-NO-OF-TRANS TO F-EDNAMEFIELDCRED.
+      *      MOVE 5 TO F-CBFIELDLENGTH.
+      *      PERFORM WRITE-FIELD-CRED.
+
+      *      MOVE "TRANSAMT" TO F-FIELDNAME.
+      *      MOVE 8 TO F-CBFIELDNAME.
+      *      MOVE WS-TRANS-AMT TO F-EDNAMEFIELDREC.
+      *      MOVE 12 TO F-CBFIELDLENGTH.
+      *      PERFORM WRITE-FIELD-REC.
+
+      *     MOVE 0 TO LINES-DISPLAYED.
+      *     IF WS-NO-OF-TRANS = 0
+      *          GO TO GET-900.
+      *     PERFORM READ-TRANSACTIONS.
        GET-900.
             IF WS-ANSWER = "Y"
                CLOSE GLTRANS-LY-FILE
@@ -338,11 +381,153 @@
        GET-999.
             EXIT.
       *
+       FILL-BODY SECTION.
+       FILL-000.
+           PERFORM OPEN-006.
+
+           MOVE 1 TO F-INDEX.
+           MOVE 1 TO SUB-1 SUB-2 SUB-3.
+           PERFORM SCROLL-PREVIOUS-PAGE.
+
+           MOVE 2902 TO POS
+           DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
+           AT POS
+           ADD 40 TO POS
+           DISPLAY "'F12' OR 'F11' to Scroll Up/Down," AT POS
+           MOVE 3003 TO POS
+           DISPLAY 
+        "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
+           " Transactions." AT POS.
+       FILL-010.
+      *     MOVE 3015 TO POS 
+      *     DISPLAY "Current Line#: " AT POS
+      *     ADD 16 TO POS
+           MOVE SUB-1 TO WS-BODY-LINE
+      *     DISPLAY WS-BODY-LINE AT POS.
+
+           MOVE WS-BODY-LINE    TO LINES-DISPLAYED.
+           MOVE "LINES"         TO F-FIELDNAME.
+           MOVE 5               TO F-CBFIELDNAME.
+           MOVE LINES-DISPLAYED TO F-EDNAMEFIELDCRED.
+           MOVE 5               TO F-CBFIELDLENGTH.
+           PERFORM WRITE-FIELD-CRED.
+            
+           IF SUB-1 < 1
+              MOVE 1 TO SUB-1 F-INDEX.
+
+
+            MOVE "PERIOD" TO F-FIELDNAME.
+            MOVE 6        TO F-CBFIELDNAME.
+            MOVE 2        TO F-CBFIELDLENGTH.
+            PERFORM USER-FILL-FIELD.
+            PERFORM READ-FIELD-ALPHA.
+
+      *UP-ARROW
+           IF F-EXIT-CH = X"01" AND F-INDEX = 1
+            IF SUB-1 = 1
+              GO TO FILL-010
+            ELSE
+              PERFORM SCROLL-PREVIOUS
+              MOVE 15 TO F-INDEX
+              GO TO FILL-010.
+           IF F-EXIT-CH = X"01" AND F-INDEX > 1
+              SUBTRACT 1 FROM F-INDEX 
+                              SUB-1
+            IF F-INDEX > 0
+              GO TO FILL-010
+            ELSE
+              MOVE 1 TO F-INDEX
+              PERFORM SCROLL-PREVIOUS
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010.
+      *DOWN-ARROW
+           IF F-EXIT-CH = X"0B" AND F-INDEX < 15
+            IF SUB-1 NOT = SUB-9
+              ADD 1 TO F-INDEX SUB-1
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *SCROLL-UP
+           IF F-EXIT-CH = X"11"
+            IF SUB-1 NOT > SUB-9
+              PERFORM SCROLL-NEXT
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *SCROLL-DOWN
+           IF F-EXIT-CH = X"13"
+            IF SUB-1 NOT > SUB-9
+              PERFORM SCROLL-PREVIOUS
+              MOVE 1 TO F-INDEX
+              COMPUTE SUB-1 = SUB-1 - 14
+             IF SUB-1 NOT > 1
+                 MOVE 1 TO SUB-1
+                 GO TO FILL-010
+             ELSE 
+                 GO TO FILL-010.
+      *NEXT-PAGE
+           IF F-EXIT-CH = X"0C"
+            IF SUB-1 NOT > SUB-9
+              PERFORM SCROLL-NEXT-PAGE
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010
+            ELSE
+              GO TO FILL-010.
+      *PREV-PAGE
+           IF F-EXIT-CH = X"05"
+              PERFORM SCROLL-PREVIOUS-PAGE
+              MOVE 1 TO F-INDEX
+              GO TO FILL-010.
+      *TAB - <ALT-F8>
+           IF F-EXIT-CH = X"09"
+              GO TO FILL-900.
+      *ESC
+           IF F-EXIT-CH = X"07"
+              GO TO FILL-900.
+      * <f10> to print
+           IF F-EXIT-CH = X"1F"
+                CLOSE GLTRANS-LY-FILE
+                PERFORM PRINT-ROUTINE
+                PERFORM CLEAR-TRANSACTIONS
+                MOVE " " TO WS-MESSAGE
+                PERFORM ERROR1-020
+                PERFORM ERROR-020
+                GO TO FILL-900.
+           MOVE 7 TO F-CBFIELDLENGTH.
+           PERFORM READ-FIELD-ALPHA.
+      *RETURN
+           IF F-EXIT-CH = X"0A" AND F-INDEX < 15
+             IF SUB-1 NOT = SUB-9
+              ADD 1 TO F-INDEX SUB-1
+              GO TO FILL-010
+             ELSE
+              GO TO FILL-010.
+       FILL-050.
+           ADD 1 TO SUB-1 F-INDEX.
+           IF SUB-1 > 10000
+               MOVE "10,000 LINES ARE UP, 'ESC' TO <TAB>."
+                TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO FILL-900.
+           IF F-INDEX < 16
+               GO TO FILL-010.
+           SUBTRACT 1 FROM SUB-1.
+           IF SUB-1 < 1
+              MOVE 1 TO SUB-1.
+           PERFORM SCROLL-NEXT.
+           MOVE 1 TO F-INDEX.
+           GO TO FILL-010.
+       FILL-900.
+           CLOSE GLTRANS-LY-FILE.
+       FILL-999.
+           EXIT.
+      *
        READ-TRANSACTIONS SECTION.
        RDTR-000.
            OPEN I-O GLTRANS-LY-FILE.
            IF WS-GLTRANS-LY-ST1 NOT = 0
-              MOVE "GLTRANS-LY BUSY ON OPEN, 'ESC' TO RETRY."
+              MOVE "GLTRANS-LY-LY BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
@@ -384,7 +569,7 @@
                CLOSE GLTRANS-LY-FILE
                GO TO RDTR-900.
            IF WS-GLTRANS-LY-ST1 NOT = 0
-              MOVE "GLTRANS-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
+              MOVE "GLTRANS-LY-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
@@ -480,64 +665,124 @@
            EXIT.
       *
        READ-ALL-TRANSACTIONS SECTION.
-       RALT-000.
-           OPEN I-O GLTRANS-LY-FILE.
+       RDALL-000.
+           PERFORM OPEN-006.
+           PERFORM ERROR1-020
+           PERFORM ERROR-020.
+           MOVE 2910 TO POS.
+           DISPLAY "Reading All transactions......" AT POS.
+       RDALL-005.
+           MOVE 0 TO WS-NO-OF-TRANS WS-TRANS-AMT.
+           MOVE GL-LY-NUMBER TO GLTRANS-LY-ACCNO.
+           MOVE 0         TO GLTRANS-LY-DATE.
+           START GLTRANS-LY-FILE KEY NOT < GLTRANS-LY-ACC-DATE
+               INVALID KEY NEXT SENTENCE.
+           IF WS-GLTRANS-LY-ST1 = 23 OR 35 OR 49
+               GO TO RDALL-900.
+       RDALL-010.
+           READ GLTRANS-LY-FILE NEXT
+               AT END NEXT SENTENCE.
+           IF WS-GLTRANS-LY-ST1 = 10
+               GO TO RDALL-900.
            IF WS-GLTRANS-LY-ST1 NOT = 0
-              MOVE "GLTRANS-LY BUSY ON OPEN, 'ESC' TO RETRY."
+              MOVE "GL-TRANS BUSY ON READ-ALL-NEXT, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLTRANS-LY-ST1
-              CLOSE GLTRANS-LY-FILE
-              GO TO RALT-000.
-           PERFORM ERROR1-020.
-           MOVE 2910 TO POS.
-           DISPLAY "Reading All transactions......" AT POS.
-       RALT-005.
-           MOVE 0 TO WS-NO-OF-TRANS WS-TRANS-AMT.
-
-           MOVE GL-LY-NUMBER TO GLTRANS-LY-ACCNO.
-           MOVE 0            TO GLTRANS-LY-DATE.
-           START GLTRANS-LY-FILE KEY NOT < GLTRANS-LY-ACC-DATE
-               INVALID KEY NEXT SENTENCE.
-           IF WS-GLTRANS-LY-ST1 = 23 OR 35 OR 49
-               GO TO RALT-900.
-       RALT-010.
-           READ GLTRANS-LY-FILE NEXT
-               AT END NEXT SENTENCE.
-           IF WS-GLTRANS-LY-ST1 = 10
-               GO TO RALT-900.
-           IF WS-GLTRANS-LY-ST1 NOT = 0
-               MOVE "GLTRANS-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-               MOVE 0 TO WS-GLTRANS-LY-ST1
-               GO TO RALT-010.
+              GO TO RDALL-010.
            IF GLTRANS-LY-ACCNO NOT = GL-LY-NUMBER
-               GO TO RALT-900.
+               GO TO RDALL-900.
            IF WS-PER NOT = 0
             IF GLTRANS-LY-NO NOT = WS-PER
-               GO TO RALT-010.
+               GO TO RDALL-010.
 
            IF WS-DESC-SORT = " "
-              GO TO RALT-020.
+              GO TO RDALL-020.
            MOVE GLTRANS-LY-LINE-DESC TO WS-GLDESCRIPTION.
            IF WS-DESC-SORT NOT = WS-DESC-INFO
-              GO TO RALT-010.
-       RALT-020.
+              GO TO RDALL-010.
+       RDALL-020.
            ADD GLTRANS-LY-AMOUNT TO WS-TRANS-AMT.
-           ADD 1                 TO WS-NO-OF-TRANS.
-           GO TO RALT-010.
-       RALT-900.
+           ADD 1              TO WS-NO-OF-TRANS.
+
+           MOVE GLTRANS-LY-REFERENCE         TO WS-GLTR-REF (SUB-1).
+           MOVE GLTRANS-LY-TRANS             TO WS-GLTR-TRANS (SUB-1).
+           MOVE GLTRANS-LY-TYPE              TO WS-GLTR-TYPE (SUB-1).
+
+           IF SUB-1 < 10000
+              ADD 1 TO SUB-1
+              PERFORM RDALL-910
+              GO TO RDALL-010.
+              
+           MOVE "THERE ARE MORE THAN 10,000 ITEMS ON THIS ORDER."
+             TO WS-MESSAGE
+             PERFORM ERROR1-000
+           MOVE "PRESS 'Esc' TO EXIT THE READ-ALL SECTION."
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020.
+       RDALL-900.
+           SUBTRACT 1 FROM SUB-1 WS-NO-OF-TRANS
+           MOVE SUB-1 TO SUB-9.
+           IF SUB-9 < 0
+               MOVE 0 TO SUB-9.
+       RDALL-910.
+            MOVE "TOTTRANS"     TO F-FIELDNAME.
+            MOVE 8              TO F-CBFIELDNAME.
+            MOVE WS-NO-OF-TRANS TO F-EDNAMEFIELDCRED.
+            MOVE 5              TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-CRED.
+
+            MOVE "TRANSAMT" TO F-FIELDNAME.
+            MOVE 8 TO F-CBFIELDNAME.
+            MOVE WS-TRANS-AMT TO F-EDNAMEFIELDREC.
+            MOVE 12 TO F-CBFIELDLENGTH.
+            PERFORM WRITE-FIELD-REC.
+       RDALL-920.
+      *     MOVE 2912 TO POS.
+      *     DISPLAY "Total # of Lines:" AT POS
+      *     ADD 19 TO POS.
+      *     MOVE SUB-9 TO WS-BODY-LINE.
+      *     DISPLAY WS-BODY-LINE AT POS.
+      *     ADD 1 TO SUB-9.
+       RDALL-950.
            PERFORM ERROR1-020.
            PERFORM ERROR-020.
            CLOSE GLTRANS-LY-FILE.
-       RALT-999.
+       RDALL-999.
+           EXIT.
+      *
+       READ-ORDER-ONLY SECTION.
+       RDONLY-000.
+           IF SUB-1 > SUB-9
+               GO TO RDONLY-999.
+       RDONLY-005.
+           MOVE WS-GLTR-REF (SUB-1)    TO GLTRANS-LY-REFERENCE.
+           MOVE WS-GLTR-TRANS (SUB-1)  TO GLTRANS-LY-TRANS.
+           MOVE WS-GLTR-TYPE (SUB-1)   TO GLTRANS-LY-TYPE.
+           START GLTRANS-LY-FILE KEY NOT < GLTRANS-LY-KEY
+               INVALID KEY NEXT SENTENCE.
+           IF WS-GLTRANS-LY-ST1 NOT = 0
+               CLOSE GLTRANS-LY-FILE
+               GO TO RDONLY-999.
+       RDONLY-010.
+           READ GLTRANS-LY-FILE NEXT
+               AT END NEXT SENTENCE.
+           IF WS-GLTRANS-LY-ST1 = 10
+               MOVE 1 TO F-INDEX
+               CLOSE GLTRANS-LY-FILE
+               GO TO RDONLY-999.
+           IF WS-GLTRANS-LY-ST1 NOT = 0
+              MOVE "GLTRANS BUSY ON READ-ONLY, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              GO TO RDONLY-010.
+       RDONLY-999.
            EXIT.
       *
        READ-GLMASTER SECTION.
@@ -571,19 +816,29 @@
              EXIT.
       *
        READ-GLMASTER-NEXT SECTION.
+       R-ST-NX-000.
+             MOVE "N" TO WS-END
+             PERFORM ERROR-020.
        R-ST-NX-005. 
              READ GL-LY-MASTER NEXT
                  AT END NEXT SENTENCE.
+             IF WS-GL-LY-ST1 = 10
+              MOVE "END OF NEXT-PAGE SEQUENCE, ENTER A NEW IDENTIFIER."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM START-GLMASTER
+                 MOVE "Y" TO WS-END
+                 GO TO R-ST-NX-999.
              IF WS-GL-LY-ST1 NOT = 0
-                MOVE "GLMASTER-LY BUSY ON READ-NEXT, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-GL-LY-ST1
-      *          PERFORM START-GLMASTER
-                GO TO R-ST-NX-005.
+              MOVE "GL-LY-MASTER BUSY ON READ-NEXT, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-GL-LY-ST1
+                 PERFORM START-GLMASTER
+                 GO TO R-ST-NX-005.
        R-ST-NX-010.
            MOVE GL-LY-NUMBER TO WS-GLNUMBER.
            IF WS-GLSUBHEADER = "    "
@@ -595,19 +850,28 @@
              EXIT.
       *
        READ-GLMASTER-PREVIOUS SECTION.
+       RDPREV-000.
+             MOVE 0 TO WS-GL-LY-ST1.
+             PERFORM ERROR-020.
        RDPREV-005. 
              READ GL-LY-MASTER PREVIOUS
                  AT END NEXT SENTENCE.
+             IF WS-GL-LY-ST1 = 10
+              MOVE "END OF NEXT-PAGE SEQUENCE, 'ESC' TO EXIT."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM START-GLMASTER
+                 GO TO RDPREV-999.
              IF WS-GL-LY-ST1 NOT = 0
-                MOVE "GLMASTER-LY BUSY ON READ-PREV, 'ESC' TO RETRY."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-GL-LY-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-GL-LY-ST1
-      *          PERFORM START-GLMASTER
-                GO TO RDPREV-005.
+              MOVE "GL-LY-MASTER BUSY ON READ-PREV, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-GL-LY-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-GL-LY-ST1
+                 PERFORM START-GLMASTER
+                 GO TO RDPREV-005.
        RDPREV-010.
            MOVE GL-LY-NUMBER TO WS-GLNUMBER.
            IF WS-GLSUBHEADER = "    "
@@ -620,6 +884,7 @@
       *
        PRINT-ROUTINE SECTION.
        PRR-001.
+            PERFORM OPEN-006.
             MOVE 0  TO PAGE-CNT WS-TRANS-AMT.
             MOVE 66 TO LINE-CNT.
             PERFORM GET-USER-PRINT-NAME.
@@ -747,8 +1012,155 @@
        PRR-999.
            EXIT.
       *
+       SCROLL-NEXT SECTION.
+       NEXT-000.
+            ADD 1  TO SUB-1.
+            IF SUB-1 > SUB-9
+               MOVE SUB-9 TO SUB-1.
+            IF SUB-1 < 1
+               MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO F-INDEX.
+            PERFORM CLEAR-TRANSACTIONS.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 > 9985
+                MOVE 9985 TO SUB-1.
+       NEXT-010.
+            PERFORM SCROLLING.
+       NEXT-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO NEXT-010.
+            IF SUB-1 > 9985  
+                GO TO NEXT-025.
+            MOVE 1 TO F-INDEX.
+       NEXT-025.
+            SUBTRACT 15 FROM SUB-1.
+            IF SUB-1 > 9985
+              IF SUB-25 > 9985
+               COMPUTE F-INDEX = 15 - (10001 - SUB-9)
+               MOVE SUB-25 TO SUB-1
+            ELSE
+               MOVE 1 TO F-INDEX. 
+            IF F-INDEX > 15
+                MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+      *      MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
+            MOVE SUB-1 TO WS-BODY-LINE.
+      *      DISPLAY WS-BODY-LINE AT POS.
+       NEXT-999.
+             EXIT.
+      *
+       SCROLL-NEXT-PAGE SECTION.
+       NEXT-PAGE-000.
+            ADD 15  TO SUB-1.
+            IF SUB-1 > SUB-9
+               MOVE SUB-9 TO SUB-1.
+            IF SUB-1 < 1
+               MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO F-INDEX.
+            PERFORM CLEAR-TRANSACTIONS.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 > 9985
+                 MOVE 9985 TO SUB-1.
+       NEXT-PAGE-010.
+            PERFORM SCROLLING.
+       NEXT-PAGE-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO NEXT-PAGE-010.
+            IF SUB-1 > 9985 
+                GO TO NEXT-PAGE-025.
+            MOVE 1 TO F-INDEX.
+       NEXT-PAGE-025.
+            SUBTRACT 15 FROM SUB-1.
+            IF SUB-1 > 9985
+              IF SUB-25 > 9985
+               COMPUTE F-INDEX = 15 - (10001 - SUB-9)
+               MOVE SUB-25 TO SUB-1
+            ELSE
+               MOVE 1 TO F-INDEX. 
+            IF F-INDEX > 15
+               MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+      *      MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
+            MOVE SUB-1 TO WS-BODY-LINE.
+      *      DISPLAY WS-BODY-LINE AT POS.
+       NEXT-PAGE-999.
+             EXIT.
+      *
+       SCROLL-PREVIOUS-PAGE SECTION.
+       PREV-PAGE-000.
+            PERFORM CLEAR-TRANSACTIONS.
+            SUBTRACT 15 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       PREV-PAGE-010.
+            PERFORM SCROLLING.
+       PREV-PAGE-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO PREV-PAGE-010.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 15 FROM SUB-1.
+       PREV-PAGE-025.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+      *       MOVE 3015 TO POS.
+      *      DISPLAY "Current Line#: " AT POS
+      *      ADD 16 TO POS.
+            MOVE SUB-1 TO WS-BODY-LINE.
+      *      DISPLAY WS-BODY-LINE AT POS.
+       PREV-PAGE-999.
+            EXIT.
+      *
+       SCROLL-PREVIOUS SECTION.
+       PREV-000.
+            PERFORM CLEAR-TRANSACTIONS.
+            IF F-EXIT-CH = X"01"
+               SUBTRACT 15 FROM SUB-1
+            ELSE
+               SUBTRACT 1 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       PREV-010.
+            PERFORM SCROLLING.
+       PREV-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF F-INDEX < 16
+                GO TO PREV-010.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 1 FROM SUB-1.
+       PREV-025.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+      *        MOVE 3015 TO POS.
+      *        DISPLAY "Current Line#: " AT POS
+      *        ADD 16 TO POS.
+              MOVE SUB-1 TO WS-BODY-LINE.
+      *        DISPLAY WS-BODY-LINE AT POS.
+       PREV-999.
+            EXIT.
+      *
        SCROLLING SECTION.
        SCROLL-000.
+            IF SUB-1 < SUB-9
+               PERFORM READ-ORDER-ONLY
+            ELSE
+               GO TO SCROLL-999.
+
+            IF F-INDEX < 1 
+               MOVE 1  TO F-INDEX.
+
             MOVE "LINES" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             MOVE LINES-DISPLAYED TO F-EDNAMEFIELDCRED.
@@ -797,7 +1209,7 @@
       *
        CLEAR-TRANSACTIONS SECTION.
        CLTR-000.
-            MOVE 1 TO SUB-1 F-INDEX.
+            MOVE 1 TO F-INDEX.
 
             MOVE "LINES" TO F-FIELDNAME.
             MOVE 5       TO F-CBFIELDNAME.
@@ -805,7 +1217,7 @@
             MOVE 5       TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
        CLTR-010.
-            IF SUB-1 > 15
+            IF F-INDEX > 15
                 GO TO CLTR-999.
             MOVE "PERIOD" TO F-FIELDNAME.
             MOVE 6        TO F-CBFIELDNAME.
@@ -843,9 +1255,28 @@
             MOVE 25     TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            ADD 1 TO SUB-1 F-INDEX.
+            ADD 1 TO F-INDEX.
             GO TO CLTR-010.
        CLTR-999.
+            EXIT.
+      *
+       CLEAR-MEMORY SECTION.
+       CMS-005.
+            MOVE 1 TO SUB-1.
+            MOVE 0 TO SUB-9.
+       CMS-010.
+            IF WS-GLTR-TYPE (SUB-1) NOT = 0
+                MOVE 0   TO WS-GLTR-TYPE (SUB-1)
+                            WS-GLTR-TRANS (SUB-1)
+                MOVE " " TO WS-GLTR-REF (SUB-1)
+            ELSE
+                GO TO CMS-900.
+            IF SUB-1 < 10000
+               ADD 1 TO SUB-1
+               GO TO CMS-010.
+       CMS-900.
+            MOVE 1 TO SUB-1.
+       CMS-999.
             EXIT.
       *
        READ-PARAMETER SECTION.
@@ -900,9 +1331,21 @@
             PERFORM READ-PARAMETER.
             MOVE GLPA-NAME TO CO-NAME.
             PERFORM ENTER-PERIOD-DATES.
-            PERFORM OPEN-006.
+            PERFORM OPEN-008.
             CLOSE GLPARAMETER-FILE.
+           GO TO OPEN-008.
        OPEN-006.
+           OPEN I-O GLTRANS-LY-FILE.
+           IF WS-GLTRANS-LY-ST1 NOT = 0
+              MOVE "GLTRANS-LY-ST1 ERROR ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-GLTRANS-LY-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-GLTRANS-LY-ST1
+              GO TO OPEN-006.
+       OPEN-008.
            PERFORM GET-SYSTEM-Y2K-DATE.
       *     ACCEPT WS-DATE FROM DATE.
            MOVE WS-DATE TO SPLIT-DATE.

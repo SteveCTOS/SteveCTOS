@@ -170,7 +170,6 @@
             PERFORM OPEN-006. 
             PERFORM CLEAR-MEMORY.
        GET-001.
-
             MOVE 2905 TO POS
             DISPLAY 
            "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
@@ -199,6 +198,10 @@
             MOVE 12 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
+            
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             IF F-NAMEFIELD = "   "
                 CLOSE GL-MASTER
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
@@ -214,12 +217,12 @@
            IF WS-GLSUBHEADER = "    "
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR-MESSAGE
                 GO TO GET-001.
            IF WS-RESTOFACCOUNT = "      "
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR-MESSAGE
                 GO TO GET-001.
             MOVE "ACCNO"     TO F-FIELDNAME.
             MOVE 5           TO F-CBFIELDNAME.
@@ -1228,8 +1231,6 @@
             PERFORM WRITE-FIELD-ALPHA.
        CLTR-010.
             IF F-INDEX > 15
-                PERFORM ERROR1-020
-                PERFORM ERROR-020
                 GO TO CLTR-999.
             MOVE "PERIOD" TO F-FIELDNAME.
             MOVE 6        TO F-CBFIELDNAME.
