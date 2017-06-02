@@ -1153,7 +1153,7 @@
       *
        SCROLLING SECTION.
        SCROLL-000.
-            IF SUB-1 < SUB-9
+            IF SUB-1 NOT > SUB-9
                PERFORM READ-ORDER-ONLY
             ELSE
                GO TO SCROLL-999.

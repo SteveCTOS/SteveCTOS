@@ -536,6 +536,9 @@
               GO TO FILL-010
              ELSE
               GO TO FILL-010.
+      *FINISH
+           IF F-EXIT-CH = X"04"
+              GO TO FILL-010.
        FILL-050.
            ADD 1 TO SUB-1 F-INDEX.
            IF SUB-1 > 1000
@@ -795,19 +798,8 @@
       *
        READ-ALL-TRANSACTIONS SECTION.
        RDALL-000.
-           OPEN INPUT DEBTOR-TRANS-FILE.
-           IF WS-DRTRANS-ST1 NOT = 0
-              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR-000
-              CALL "C$SLEEP" USING 1
-              PERFORM ERROR1-020
-              PERFORM ERROR-020
-              CLOSE DEBTOR-TRANS-FILE
-              GO TO RDALL-000.
-           MOVE 1 TO F-INDEX.
+           PERFORM OPEN-006.
+           MOVE 1 TO F-INDEX SUB-1.
        RDALL-005.
            MOVE DR-ACCOUNT-NUMBER TO DRTR-ACCOUNT-NUMBER.
            MOVE 0                 TO DRTR-DATE.
@@ -1281,19 +1273,33 @@
                MOVE 0 TO WS-DEBTOR-ST1
                GO TO OPEN-000.
            MOVE Ws-Co-Name to CO-NAME.
+           GO TO OPEN-008.
        OPEN-006.
+           OPEN INPUT DEBTOR-TRANS-FILE.
+           IF WS-DRTRANS-ST1 NOT = 0
+              MOVE "DRTRANS BUSY ON OPEN, IN 1 SEC GOING TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-000
+              CALL "C$SLEEP" USING 1
+              PERFORM ERROR1-020
+              PERFORM ERROR-020
+              CLOSE DEBTOR-TRANS-FILE
+              GO TO OPEN-006.
+       open-008.
            PERFORM GET-SYSTEM-Y2K-DATE.
       *     ACCEPT WS-DATE FROM DATE
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE TO H1-DATE.
-            MOVE Ws-Forms-Name   TO F-FILENAME
-            MOVE Ws-cbForms-name TO F-CBFILENAME.
-            MOVE "DrAcStIq" TO F-FORMNAME
-            MOVE 8          TO F-CBFORMNAME.
+           MOVE Ws-Forms-Name   TO F-FILENAME
+           MOVE Ws-cbForms-name TO F-CBFILENAME.
+           MOVE "DrAcStIq" TO F-FORMNAME
+           MOVE 8          TO F-CBFORMNAME.
        Copy "OpenForms".
        OPEN-999.
-            EXIT.
+           EXIT.
       *
        END-OFF SECTION.
        END-000.

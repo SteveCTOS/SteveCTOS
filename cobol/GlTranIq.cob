@@ -678,6 +678,7 @@
            MOVE 2910 TO POS.
            DISPLAY "Reading All transactions......" AT POS.
        RDALL-005.
+           MOVE 1 TO SUB-1.
            MOVE 0 TO WS-NO-OF-TRANS WS-TRANS-AMT.
            MOVE GL-NUMBER TO GLTRANS-ACCOUNT-NUMBER.
            MOVE 0         TO GLTRANS-DATE.
@@ -733,7 +734,7 @@
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020.
        RDALL-900.
-           SUBTRACT 1 FROM SUB-1 WS-NO-OF-TRANS
+           SUBTRACT 1 FROM SUB-1
            MOVE SUB-1 TO SUB-9.
            IF SUB-9 < 0
                MOVE 0 TO SUB-9.
@@ -744,10 +745,10 @@
             MOVE 5              TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-CRED.
 
-            MOVE "TRANSAMT" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
+            MOVE "TRANSAMT"   TO F-FIELDNAME.
+            MOVE 8            TO F-CBFIELDNAME.
             MOVE WS-TRANS-AMT TO F-EDNAMEFIELDREC.
-            MOVE 12 TO F-CBFIELDLENGTH.
+            MOVE 12           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-REC.
        RDALL-920.
       *     MOVE 2912 TO POS.
@@ -1167,7 +1168,7 @@
       *
        SCROLLING SECTION.
        SCROLL-000.
-            IF SUB-1 < SUB-9
+            IF SUB-1 NOT > SUB-9
                PERFORM READ-ORDER-ONLY
             ELSE
                GO TO SCROLL-999.
