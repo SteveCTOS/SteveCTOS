@@ -236,7 +236,7 @@
            "                  ENTER L=LOCAL, F=FOREIGN : [ ]" AT POS
            ADD 46 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'L'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 5         TO CDA-ROW.
            MOVE 55        TO CDA-COL.
@@ -672,7 +672,7 @@
            MOVE "¶"          TO H11-1
            MOVE "³"          TO H11-2.
            WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 1.
-
+       PRE-0071.
            MOVE 1 TO SUB-1
                      LINE-CNT.
        PRE-008.
@@ -702,6 +702,8 @@
               PERFORM PRE-660
               PERFORM PRE-600
               PERFORM PRE-006
+              PERFORM PRE-0061
+              PERFORM PRE-007
               MOVE 1 TO LINE-CNT
               GO TO PRE-008.
            IF SUB-1 < 41
@@ -897,6 +899,11 @@
            
            MOVE 1 TO LINE-CNT
            MOVE 1 TO SUB-1.
+       PRE-945.
+           MOVE " "          TO PRINT-REC SLIPE-HEAD11
+           MOVE "¶"          TO H11-1
+           MOVE "³"          TO H11-2
+           WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 2.
        PRE-950.
       ****************************************************************
       * THIS LAST WRITE IS TO PUT THE LAST RETURN CHAR ON THE VERY   *
