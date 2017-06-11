@@ -453,6 +453,9 @@
       *TAB - <ALT-F8>
            IF F-EXIT-CH = X"09"
               GO TO FILL-900.
+      *FINISH - <End>
+           IF F-EXIT-CH = X"04"
+              PERFORM END-OFF.
       *ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.

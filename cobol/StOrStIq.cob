@@ -330,6 +330,9 @@
       *ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.
+      *FINISH - <End>
+           IF F-EXIT-CH = X"04"
+              PERFORM END-OFF.
       * <f10> to print
            IF F-EXIT-CH = X"1F"
                 CLOSE OUTSTANDING-ORDERS

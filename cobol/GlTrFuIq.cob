@@ -480,6 +480,9 @@
       *TAB - <ALT-F8>
            IF F-EXIT-CH = X"09"
               GO TO FILL-900.
+      *FINISH - <End>
+           IF F-EXIT-CH = X"04"
+              PERFORM END-OFF.
       *ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.
@@ -748,7 +751,7 @@
       *     ADD 19 TO POS.
       *     MOVE SUB-9 TO WS-BODY-LINE.
       *     DISPLAY WS-BODY-LINE AT POS.
-      *     ADD 1 TO SUB-9.
+           ADD 1 TO SUB-9.
        RDALL-950.
            PERFORM ERROR1-020.
            PERFORM ERROR-020.
@@ -1162,7 +1165,7 @@
       *
        SCROLLING SECTION.
        SCROLL-000.
-            IF SUB-1 NOT > SUB-9
+            IF SUB-1 < SUB-9
                PERFORM READ-ORDER-ONLY
             ELSE
                GO TO SCROLL-999.

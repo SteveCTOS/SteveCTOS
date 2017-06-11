@@ -538,7 +538,7 @@
               GO TO FILL-010.
       *FINISH
            IF F-EXIT-CH = X"04"
-              GO TO FILL-010.
+              PERFORM END-OFF.
        FILL-050.
            ADD 1 TO SUB-1 F-INDEX.
            IF SUB-1 > 1000
