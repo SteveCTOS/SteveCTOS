@@ -3,6 +3,10 @@
        SUMQFP-010.
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED
+      
+           IF WS-AUTO-FAX NOT > " "
+               GO TO SUMQFP-999.
+
           MOVE 
           CONCATENATE('PrintMergeDrOverdue ', ' ', WS-CO-NUMBER, ' ',
            TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER-PAGE1), ' ', 
