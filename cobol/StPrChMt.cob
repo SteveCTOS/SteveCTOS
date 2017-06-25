@@ -31,9 +31,9 @@
        77  WS-HARDWARE          PIC X VALUE " ".
        77  WS-MIN-MU            PIC X(7) VALUE " ".
        77  WS-WRITE-PRICELIST   PIC X VALUE " ".
-       77  WS-FACTOR            PIC 9(2)V9999 VALUE 0.
+       77  WS-FACTOR            PIC 9(3)V99999 VALUE 0.
        77  WS-CURRENCY          PIC 9(3)V99999 VALUE 0.
-       77  WS-INDFACTOR         PIC 9(2)V9999 VALUE 0.
+       77  WS-INDFACTOR         PIC 9(3)V99999 VALUE 0.
        77  WS-MINMARGIN         PIC 9(3)V999 VALUE 0.
        77  WS-MARGIN            PIC 9(3)V999 VALUE 0.
        77  WS-RANGE1            PIC X(15) VALUE " ".
@@ -168,19 +168,19 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-020.
-            MOVE 7 TO F-CBFIELDLENGTH
+            MOVE 9 TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA
             MOVE F-NAMEFIELD TO ALPHA-RATE
             PERFORM DECIMALISE-RATE
             MOVE NUMERIC-RATE TO WS-FACTOR
-                                 F-EDNAMEFIELDFACTOR.
+                                 F-EDNAMEFIELDVALUE.
             IF WS-FACTOR = 0
               MOVE "DON'T BOTHER ME WITH A ZERO CHANGE!!!"
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE 
               GO TO GET-030.
-            MOVE 7 TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-FACTOR.
+            MOVE 9 TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-VALUE.
        GET-026.
            PERFORM ERROR1-020
            PERFORM CLEAR-010.
@@ -953,6 +953,7 @@
        Copy "ReadFieldNumeric".
        Copy "WriteFieldNumeric".
        Copy "WriteFieldFactor".
+       Copy "WriteFieldValue".
        Copy "DisplayForm".
        Copy "UserFillField".
        Copy "GetSystemY2KDate".

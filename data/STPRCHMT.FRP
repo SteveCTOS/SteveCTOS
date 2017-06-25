@@ -15,8 +15,8 @@
  *    Enter a Number between 1 & 11   : __                                 *   
  *    Begining Stock Number           : _______________                    *   
  *      Ending Stock Number           : _______________                    *   
- *    Factor (20% increase = 1.2)     : _______                            *   
- *                   {(NB. Max Format is 99.9999)}                         *   
+ *    Factor (20% increase = 1.2)     : _________                          *   
+ *                  {(NB. Max Format is 999.99999)}                        *   
  ***************************************************************************   
                                                                                
                                                                                
@@ -74,7 +74,7 @@ List of values:
 
 
 Field name: FACTOR                                           
-Row: 17   Column: 40   Width: 7                              
+Row: 17   Column: 40   Width: 9                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   

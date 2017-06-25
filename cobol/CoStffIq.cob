@@ -35,7 +35,6 @@
            03  SPLIT-MN           PIC 99.
        01  WS-STAFF-STATUS.
            03  WS-STAFF-ST1       PIC 99.
-      *     03  WS-STAFF-ST2       PIC X.
        01  W-READ-KEY             PIC X.
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY          PIC X OCCURS 11.
@@ -86,9 +85,24 @@
       *
        FILL-DATA SECTION.
        FILL-010.
-            MOVE 1 TO SUB-1 F-INDEX.
-       FILL-015.
-            MOVE 2810 TO POS.
+           MOVE 1 TO SUB-1 F-INDEX.
+
+           MOVE 2710 TO POS
+           DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
+           AT POS
+           ADD 40 TO POS
+           DISPLAY "'F12' To Scroll Up" AT POS
+           MOVE 2811 TO POS
+           DISPLAY 
+           "'F11' to Scroll Down, Or 'Alt-F8' To Change Your Status."
+            AT POS.
+
+           MOVE 2915 TO POS
+           DISPLAY 
+           "N=NOT YET IN, I=IN, O=OUT, S=SICK, L=ON LEAVE, D=SMOKING"
+           AT POS.
+        FILL-015.
+            MOVE 3110 TO POS.
             DISPLAY "    BODY LINE: " AT POS.
             ADD 16 TO POS.
             MOVE SUB-1 TO WS-BODY-LINE.
@@ -100,7 +114,7 @@
             MOVE 25          TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
       *
-      *<CODE-GO>  USED TO RE-READ AND UPDATE INFO
+      *<CODE-GO>  <ALT-G> USED TO RE-READ AND UPDATE INFO
             IF F-EXIT-CH = X"9B" OR = X"8C"
                GO TO FILL-999.
                
@@ -114,7 +128,12 @@
             IF F-EXIT-CH = X"0C"
                PERFORM SCROLL-NEXT-PAGE
                GO TO FILL-015.
-      *<SCROOL-UP>
+               
+      *<SCROLL-DOWN>
+            IF F-EXIT-CH = X"13"
+               PERFORM SCROLL-PREVIOUS
+               GO TO FILL-015.
+      *<SCROLL-UP>
             IF F-EXIT-CH = X"11"
                PERFORM SCROLL-NEXT
                GO TO FILL-015.
@@ -123,14 +142,14 @@
             IF F-EXIT-CH = X"01"
              IF F-INDEX = 1
               IF SUB-1 > 1
-                PERFORM SCROLL-PREVIOUS
+                PERFORM SCROLL-PREVIOUS-PAGE
                 GO TO FILL-015.
             IF F-EXIT-CH = X"01"
              IF F-INDEX = 1
               IF SUB-1 = 1
                GO TO FILL-015
              ELSE
-               PERFORM SCROLL-PREVIOUS
+               PERFORM SCROLL-PREVIOUS-PAGE
                GO TO FILL-015.
             IF F-EXIT-CH = X"01"
                SUBTRACT 1 FROM SUB-1 F-INDEX
@@ -152,13 +171,14 @@
                  PERFORM CLEAR-SCREEN
                  PERFORM END-OFF.
       *
-      *<CODE-MOVE> USED TO CHANGE IN/OUT TIMES ETC
+      *<CODE-MOVE> - CTOS. USED TO CHANGE IN/OUT TIMES ETC
+      *<ALT-F8> IN LINUX
             MOVE 25          TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
-            IF F-EXIT-CH = X"8F"
+            IF F-EXIT-CH = X"8F" OR = X"9D"
              IF F-NAMEFIELD = WS-TERMINALNAME
                  GO TO FILL-030.
-            IF F-EXIT-CH = X"8F"
+            IF F-EXIT-CH = X"8F" OR = X"9D"
              IF F-NAMEFIELD NOT = WS-TERMINALNAME
                  PERFORM CHECK-PASSWORD
               IF WS-PASSWORD-VALID = "N"
@@ -354,9 +374,9 @@
             MOVE 10           TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
             
-            IF WS-TERMINALNAME = "Steve Christensen" 
-             OR = "John Christensen" or = "Admin" or "Ray Engela"
-               MOVE B-DOB (SUB-1) TO SPLIT-DATE
+      *      IF WS-TERMINALNAME = "Steve Christensen" 
+      *      OR = "John Christensen" or = "Admin Server" or "Ray Engela"
+            MOVE B-DOB (SUB-1) TO SPLIT-DATE
              IF WS-MM = SPLIT-MM
               IF WS-DD = SPLIT-DD
                COMPUTE WS-AGE = WS-YY - SPLIT-YY
@@ -451,7 +471,7 @@
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
 
-            MOVE 2810 TO POS.
+            MOVE 3110 TO POS.
             DISPLAY "    BODY LINE: " AT POS.
             ADD 16 TO POS.
             MOVE SUB-1 TO WS-BODY-LINE.
@@ -493,7 +513,7 @@
                 MOVE 1 TO SUB-1.
             MOVE 1 TO F-INDEX. 
 
-            MOVE 2810 TO POS.
+            MOVE 3110 TO POS.
             DISPLAY "    BODY LINE: " AT POS.
             ADD 16 TO POS.
             MOVE SUB-1 TO WS-BODY-LINE.
@@ -503,7 +523,7 @@
       *
        SCROLL-PREVIOUS SECTION.
        PREV-000.
-            SUBTRACT 20 FROM SUB-1.
+            SUBTRACT 1 FROM SUB-1.
             MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
                  MOVE 1 TO SUB-1.
@@ -521,12 +541,40 @@
             IF SUB-1 < 1
                 MOVE 1 TO SUB-1.
 
-             MOVE 2810 TO POS.
+             MOVE 3110 TO POS.
              DISPLAY "    BODY LINE: " AT POS.
              ADD 16 TO POS.
              MOVE SUB-1 TO WS-BODY-LINE.
              DISPLAY WS-BODY-LINE AT POS.
        PREV-999.
+             EXIT.
+      *
+       SCROLL-PREVIOUS-PAGE SECTION.
+       PREV-PAGE-000.
+            SUBTRACT 20 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       PREV-PAGE-010.
+            PERFORM SCROLLING.
+       PREV-PAGE-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF SUB-1 > 50
+                GO TO PREV-PAGE-030.
+            IF F-INDEX < 21
+                GO TO PREV-PAGE-010.
+       PREV-PAGE-030.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 20 FROM SUB-1.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+             MOVE 3110 TO POS.
+             DISPLAY "    BODY LINE: " AT POS.
+             ADD 16 TO POS.
+             MOVE SUB-1 TO WS-BODY-LINE.
+             DISPLAY WS-BODY-LINE AT POS.
+       PREV-PAGE-999.
              EXIT.
       *
        OPEN-FILES SECTION.
@@ -545,6 +593,9 @@
 
            PERFORM GET-USER-MAIL-NAME.
            MOVE WS-USERNAME     TO WS-TerminalName.
+           
+      *     MOVE WS-TERMINALNAME TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        OPEN-010.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.

@@ -17,8 +17,8 @@
        77  NEW-NO             PIC X VALUE " ".      
        77  WS-END             PIC X VALUE " ".      
        77  WS-NUMBER          PIC X(5) VALUE " ".
-       77  WS-CURRENCY-TEMP   PIC S9(2)V99999 VALUE 0.
-       77  WS-EXCHANGE-DIS    PIC Z(1)9.99999.
+       77  WS-CURRENCY-TEMP   PIC S9(3)V99999 VALUE 0.
+       77  WS-EXCHANGE-DIS    PIC Z(2)9.99999.
        77  WS-SAVE            PIC X(5) VALUE " ".
        01  WS-CURRENCY-STATUS.
            03  WS-CURRENCY-ST1   PIC 99.
@@ -89,22 +89,22 @@
                GO TO GET-999.
             GO TO GET-005.
         GET-003.
-            MOVE "CURRENCY" TO F-FIELDNAME.
-            MOVE 8 TO F-CBFIELDNAME.
+            MOVE "CURRENCY"       TO F-FIELDNAME.
+            MOVE 8                TO F-CBFIELDNAME.
             MOVE CU-CURRENCY-TYPE TO F-NAMEFIELD.
-            MOVE 5 TO F-CBFIELDLENGTH.
+            MOVE 5                TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
         GET-005.
-            MOVE "DESC" TO F-FIELDNAME.
-            MOVE 4 TO F-CBFIELDNAME.
+            MOVE "DESC"         TO F-FIELDNAME.
+            MOVE 4              TO F-CBFIELDNAME.
             MOVE CU-DESCRIPTION TO F-NAMEFIELD.
-            MOVE 20 TO F-CBFIELDLENGTH.
+            MOVE 20             TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "VALUE" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "VALUE"  TO F-FIELDNAME.
+            MOVE 5        TO F-CBFIELDNAME.
             MOVE CU-VALUE TO F-EDNAMEFIELDVALUE.
-            MOVE 9 TO F-CBFIELDLENGTH.
+            MOVE 9        TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-VALUE.
             
             MOVE 2910 TO POS
@@ -170,16 +170,16 @@
                  GO TO FILL-001.
        FILL-010.
             MOVE "                    " TO F-NAMEFIELD.
-            MOVE "VALUE" TO F-FIELDNAME.
-            MOVE 5 TO F-CBFIELDNAME.
+            MOVE "VALUE"     TO F-FIELDNAME.
+            MOVE 5           TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
-            MOVE 9 TO F-CBFIELDLENGTH.
+            MOVE 9           TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO ALPHA-RATE.
             PERFORM DECIMALISE-RATE.
             
             IF F-EXIT-CH = X"1D"
-            COMPUTE NUMERIC-RATE = 1 / NUMERIC-RATE.
+               COMPUTE NUMERIC-RATE = 1 / NUMERIC-RATE.
             
             MOVE NUMERIC-RATE TO CU-VALUE
                                  F-EDNAMEFIELDVALUE.
@@ -187,7 +187,7 @@
             
             MOVE 2910 TO POS
             DISPLAY "1      = R" AT POS
-            COMPUTE WS-CURRENCY-TEMP = 1 / CU-VALUE
+            COMPUTE WS-CURRENCY-TEMP ROUNDED = 1 / CU-VALUE
             ADD 2 TO POS 
             DISPLAY CU-CURRENCY-TYPE AT POS
             ADD 8 TO POS
