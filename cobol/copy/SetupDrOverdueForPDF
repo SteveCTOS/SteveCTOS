@@ -8,6 +8,9 @@
           
       *    MOVE W-FILENAME TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
+      
+           IF WS-AUTO-FAX NOT > " "
+               GO TO SUQFD-999.
        SUQFD-010.
       * WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       * WS-PRINTER IS THE FILE NAME BEING PRINTED

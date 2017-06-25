@@ -2989,9 +2989,14 @@
                 MOVE "R"                   TO WS-REPAIR-ITEM
                 MOVE WS-REPAIR-ITEM        TO B-REPAIR (SUB-1)
                 PERFORM SCROLL-COMMENT
+              IF F-INDEX = 7
+                ADD 1 TO SUB-1 F-INDEX
+                PERFORM SCROLL-NEXT
+                GO TO FILL-005
+              ELSE
                 ADD 1 TO SUB-1 F-INDEX
                 GO TO FILL-005.
-           IF F-EXIT-CH = X"9B" OR = "C7"
+           IF F-EXIT-CH = X"9B" OR = X"C7"
             IF WS-REPAIR-ITEM = "R"
                 MOVE "*** ITEMS USED "      TO B-STOCKNUMBER (SUB-1)
                 MOVE "TO DO THE REPAIR ***" TO C-LINE (SUB-1)
@@ -3001,6 +3006,11 @@
                 MOVE "P"                    TO WS-REPAIR-ITEM
                 MOVE WS-REPAIR-ITEM         TO B-REPAIR (SUB-1)
                 PERFORM SCROLL-COMMENT
+              IF F-INDEX = 7
+                ADD 1 TO SUB-1 F-INDEX
+                PERFORM SCROLL-NEXT
+                GO TO FILL-005
+              ELSE
                 ADD 1 TO SUB-1 F-INDEX
                 GO TO FILL-005.
       *<CODE-b> = GO TO BEGINNING
@@ -3138,6 +3148,7 @@
                 PERFORM SCROLL-PREVIOUS
                 GO TO FILL-010.
             IF F-EXIT-CH = X"13"
+                PERFORM SCROLL-DOWN
                 GO TO FILL-010.
       * TAB CHARACTER
             IF F-EXIT-CH = X"09"
@@ -6274,6 +6285,33 @@
        PREV-999.
              EXIT.
       *
+       SCROLL-DOWN SECTION.
+       SCROLL-DOWN-000.
+            SUBTRACT 1 FROM SUB-1.
+            MOVE 1 TO F-INDEX.
+            IF SUB-1 < 1
+                 MOVE 1 TO SUB-1.
+       SCROLL-DOWN-010.
+            PERFORM SCROLLING.
+       SCROLL-DOWN-020.
+            ADD 1 TO F-INDEX SUB-1.
+            IF SUB-1 > 200   
+                GO TO SCROLL-DOWN-030.
+            IF B-STOCKNUMBER (SUB-1) = " "
+                MOVE " " TO B-TAX (SUB-1)
+                MOVE 0 TO B-DISCOUNTPERITEM (SUB-1).
+            IF F-INDEX < 8
+                GO TO SCROLL-DOWN-010.
+       SCROLL-DOWN-030.
+            MOVE 1 TO F-INDEX.
+            SUBTRACT 7 FROM SUB-1.
+            IF SUB-1 < 1
+                MOVE 1 TO SUB-1.
+
+            PERFORM FILL-005.
+       SCROLL-DOWN-999.
+             EXIT.
+      *
        SCROLLING SECTION.
        SCROLL-010.
             MOVE "STOCKNUMBER"         TO F-FIELDNAME.
@@ -6397,15 +6435,15 @@
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "STOCKPRICE" TO F-FIELDNAME.
-            MOVE 10 TO F-CBFIELDNAME.
-            MOVE 8 TO F-CBFIELDLENGTH.
-            MOVE " " TO F-NAMEFIELD.
+            MOVE 10           TO F-CBFIELDNAME.
+            MOVE 9            TO F-CBFIELDLENGTH.
+            MOVE " "          TO F-NAMEFIELD.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "STOCKCOST" TO F-FIELDNAME.
-            MOVE 9 TO F-CBFIELDNAME.
-            MOVE 8 TO F-CBFIELDLENGTH.
-            MOVE " " TO F-NAMEFIELD.
+            MOVE 9           TO F-CBFIELDNAME.
+            MOVE 9           TO F-CBFIELDLENGTH.
+            MOVE " "         TO F-NAMEFIELD.
             PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "DISCOUNTPERITEM" TO F-FIELDNAME.

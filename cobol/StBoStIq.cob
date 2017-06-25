@@ -210,7 +210,7 @@
        GET-030.
             IF ST-DESCRIPTION1 = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
-                GO TO GET-000.
+                GO TO GET-001.
             MOVE " " TO F-EXIT-CH.
             CLOSE STOCK-TRANS-FILE.
 
