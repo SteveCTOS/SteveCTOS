@@ -532,7 +532,7 @@
             IF WS-PRINT-NUM NOT = 4
                CLOSE PRINT-FILE
             ELSE
-               CLOSE LASER-FILE.
+               CLOSE LASER-FILE. 
        CONT-040.
       * WS-PRINT-NUM = 5.  EMAIL PRINTOUT  SEE CONT-036 NEW ENTRY
       *     IF WS-INVCRED = "D"

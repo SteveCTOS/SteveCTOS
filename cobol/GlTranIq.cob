@@ -175,7 +175,7 @@
            "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
             AT POS
             MOVE 3005 TO POS
-            DISPLAY " Or Enter Account Number." AT POS
+            DISPLAY " Or Enter Account Number." AT POS.
 
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5       TO F-CBFIELDNAME.
@@ -233,6 +233,9 @@
             PERFORM READ-GLMASTER.
             GO TO GET-020.
        GET-010.
+            PERFORM ERROR1-020
+            PERFORM ERROR-020.
+
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             MOVE GL-NUMBER TO F-NAMEFIELD.

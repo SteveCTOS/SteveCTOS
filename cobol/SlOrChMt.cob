@@ -246,6 +246,11 @@
                CALL "C$SLEEP" USING 1
                GO TO RSN-010.
             IF ST-STOCKNUMBER < WS-RANGE1
+            MOVE "STOCK FILE < RANGE1, IN 2 SEC GOING TO READ-NEXT."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000 
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR1-020
                GO TO RSN-010.
             IF ST-STOCKNUMBER > WS-RANGE2
                GO TO RSN-999.
@@ -710,7 +715,7 @@
                PERFORM ERROR-020
                CALL "C$SLEEP" USING 1
                MOVE 0 TO WS-INCR-ST1
-                GO TO UIR-500.
+               GO TO UIR-500.
            MOVE " " TO INCR-REC.
        UIR-999.
            EXIT.
