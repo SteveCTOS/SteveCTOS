@@ -151,7 +151,7 @@
             MOVE "N" TO WS-ANSWER.
             PERFORM OPEN-005.
             PERFORM CLEAR-MEMORY.
-
+       GET-001.
             MOVE 2905 TO POS
             DISPLAY 
            "Press 'PgDn' For Next Account, 'PgUp' For Previous Account,"
@@ -162,6 +162,9 @@
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
+            IF F-EXIT-CH = X"07"
+               PERFORM DISPLAY-FORM
+               GO TO GET-001.
             IF F-EXIT-CH = X"04"
                  PERFORM END-OFF.
             IF F-EXIT-CH = X"0C"
@@ -182,8 +185,7 @@
                 PERFORM CLEAR-SCREEN
                 PERFORM OPEN-000
                 PERFORM DISPLAY-FORM
-                CLOSE STOCK-TRANS-FILE
-                GO TO GET-000.
+                GO TO GET-001.
             PERFORM READ-DEBTORS.
             GO TO GET-020.
         GET-010.
@@ -230,11 +232,10 @@
            MOVE 4      TO F-CBFIELDNAME
            PERFORM USER-FILL-FIELD.
            IF F-EXIT-CH = X"01"
-               GO TO GET-000.
+               GO TO GET-001.
            IF F-EXIT-CH = X"07"
-               CLOSE STOCK-TRANS-FILE
                PERFORM DISPLAY-FORM
-               GO TO GET-000.
+               GO TO GET-001.
            MOVE 10        TO F-CBFIELDLENGTH.
            PERFORM READ-FIELD-ALPHA.
            IF F-NAMEFIELD = "  "
@@ -410,12 +411,16 @@
               GO TO FILL-900.
       *FINISH - <End>
            IF F-EXIT-CH = X"04"
+              CLOSE STOCK-TRANS-FILE
               PERFORM END-OFF.
       *ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.
       * <f10> to print
            IF F-EXIT-CH = X"1F"
+                MOVE "Printing In Progress, Please Be Patient."
+                   TO WS-MESSAGE
+                PERFORM ERROR-000
                 CLOSE STOCK-TRANS-FILE
                 PERFORM PRINT-ROUTINE
                 PERFORM CLEAR-TRANSACTIONS

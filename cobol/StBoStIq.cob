@@ -367,6 +367,9 @@
               GO TO FILL-900.
       * <f10> to print
            IF F-EXIT-CH = X"1F"
+                MOVE "Printing In Progress, Please Be Patient."
+                   TO WS-MESSAGE
+                PERFORM ERROR-000
                 CLOSE STOCK-TRANS-FILE
                 PERFORM PRINT-ROUTINE
                 PERFORM CLEAR-TRANSACTIONS
