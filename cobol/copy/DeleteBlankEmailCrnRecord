@@ -2,7 +2,7 @@
        DELETE-BLANK-EMAIL-CRN-RECORD SECTION.
        DBECR-005.
           MOVE 
-          CONCATENATE('rm ', TRIM(WS-EMAIL-CREDIT))
+          CONCATENATE('rm ', TRIM(WS-TEMP-EMAIL-FILE))
                TO WS-COMMAND-LINE.
       
       *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE

@@ -92,6 +92,7 @@
        77  PSW-SUB2             PIC S9(5)9.
        77  WS-ACC-ERROR         PIC X VALUE " ".      
        01  WS-EMAIL               PIC X(50).
+       01  WS-TEMP-EMAIL-FILE     PIC X(50).
        01  WS-SPACE-CNT           PIC 9(2) VALUE ZEROES.
        01  W-READ-KEY             PIC X(20).
        01  WS-STTRANS-STATUS.
@@ -555,19 +556,11 @@
            MOVE Ws-PrinterName (SUB-1) TO WS-PRINTER-SAVE.
            MOVE 1 TO SUB-1.
                 
-      *     MOVE WS-PRINTER-SAVE TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
            IF WS-PRINT-NUM = 4
             IF WS-INVCRED = "I" OR = "P" OR = "Q"
                PERFORM SETUP-INVOICE-FOR-PDF
             ELSE
                PERFORM SETUP-CREDIT-FOR-PDF.
-                
-      *      PERFORM SEND-REPORT-TO-PRINTER.
-
-      *      MOVE "SENT REPORT TO PRINTER" TO WS-MESSAGE
-      *      PERFORM ERROR-MESSAGE.
 
            PERFORM END-OFF.
            
@@ -575,12 +568,14 @@
        CONT-050.
       * EMAIL SECTION ONLY.
            IF WS-INVCRED = "I" OR = "P" OR = "Q"
-               MOVE WS-RANGE1        TO WS-EINVOICE
-               MOVE WS-EMAIL-INVOICE TO WS-PRINTER W-FILENAME.
+               MOVE WS-RANGE1          TO WS-EINVOICE
+               PERFORM GET-EMAIL-INVOICE-NAME
+               MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME.
                
            IF WS-INVCRED = "C"
-               MOVE WS-RANGE1        TO WS-ECREDIT
-               MOVE WS-EMAIL-CREDIT  TO WS-PRINTER W-FILENAME.
+               MOVE WS-RANGE1          TO WS-ECREDIT
+               PERFORM GET-EMAIL-INVOICE-NAME
+               MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME.
                
            OPEN OUTPUT LASER-FILE.
            PERFORM ZE1-EMAIL-HEADINGS.
@@ -592,12 +587,77 @@
                MOVE "NOTHING TO PRINT IN THAT RANGE, 'ESC' TO RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-             IF WS-INVCRED = "I"
-               PERFORM DELETE-BLANK-EMAIL-INV-RECORD
+             IF WS-INVCRED = "C" 
+               PERFORM DELETE-BLANK-EMAIL-CRN-RECORD
              ELSE
-               PERFORM DELETE-BLANK-EMAIL-CRN-RECORD.
+               PERFORM DELETE-BLANK-EMAIL-INV-RECORD.
            PERFORM END-OFF.
        CONT-999.
+           EXIT.
+      *
+       GET-EMAIL-INVOICE-NAME SECTION.
+       GEQN-006.
+            MOVE SPACES TO ALPHA-RATE DATA-RATE.
+            IF WS-INVCRED = "C"
+                MOVE "/ctools/ecredt/" TO ALPHA-RATE
+            ELSE
+                MOVE "/ctools/einvoc/" TO ALPHA-RATE.
+            
+            ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+            MOVE WS-USERNAME TO DATA-RATE.
+            MOVE 16 TO SUB-45
+            MOVE 1 TO SUB-46.
+       GEQN-007.
+            IF DAT-RATE (SUB-46) = " "
+                MOVE 1 TO SUB-46
+                MOVE SPACES TO DATA-RATE
+                GO TO GEQN-010.
+            MOVE DAT-RATE (SUB-46) TO AL-RATE (SUB-45).
+            IF SUB-45 < 100
+                ADD 1 TO SUB-45 SUB-46
+                GO TO GEQN-007.
+       GEQN-010.
+            ACCEPT WS-DATE FROM DATE YYYYMMDD.
+            MOVE WS-DATE TO DATA-RATE.
+       GEQN-015.
+            IF DAT-RATE (SUB-46) = " "
+               MOVE 1 TO SUB-46
+               MOVE SPACES TO DATA-RATE
+               GO TO GEQN-020.
+            MOVE DAT-RATE (SUB-46) TO AL-RATE (SUB-45).
+            IF SUB-45 < 100
+                ADD 1 TO SUB-45 SUB-46
+                GO TO GEQN-015.
+       GEQN-020.
+            ACCEPT WS-TIME FROM TIME.
+            MOVE WS-TIME TO DATA-RATE.
+       GEQN-025.
+            IF DAT-RATE (SUB-46) = " "
+               MOVE 1 TO SUB-46
+               MOVE SPACES TO DATA-RATE
+               GO TO GEQN-030.
+            MOVE DAT-RATE (SUB-46) TO AL-RATE (SUB-45).
+            IF SUB-45 < 100
+                ADD 1 TO SUB-45 SUB-46
+                GO TO GEQN-025.
+       GEQN-030.
+            MOVE "tmp" TO DATA-RATE.
+       GEQN-035.
+            IF DAT-RATE (SUB-46) = " "
+               MOVE 1 TO SUB-46
+               MOVE SPACES TO DATA-RATE
+               GO TO GEQN-040.
+            MOVE DAT-RATE (SUB-46) TO AL-RATE (SUB-45).
+            IF SUB-45 < 100
+                ADD 1 TO SUB-45 SUB-46
+                GO TO GEQN-035.
+       GEQN-040.
+            MOVE ALPHA-RATE TO WS-TEMP-EMAIL-FILE.
+            
+      *      MOVE WS-TEMP-EMAIL-FILE TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+
+       GEQN-999.
            EXIT.
       *
        WORK-OUT-PRINT-FILE-NAME SECTION.

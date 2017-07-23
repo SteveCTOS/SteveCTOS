@@ -1,6 +1,6 @@
       *
-       DELETE-BLANK-EMAIL-INV-RECORD SECTION.
-       DBEIR-005.
+       DELETE-BLANK-EMAIL-STATE-RECORD SECTION.
+       DBESR-005.
           MOVE 
           CONCATENATE('rm ', TRIM(WS-TEMP-EMAIL-FILE))
                TO WS-COMMAND-LINE.
@@ -9,6 +9,6 @@
       *    PERFORM ERROR-MESSAGE.
 
           CALL "SYSTEM" USING WS-COMMAND-LINE.
-       DBEIR-999.
+       DBESR-999.
            EXIT.
       *     STOP RUN.
