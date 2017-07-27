@@ -596,13 +596,15 @@
 
            IF WS-FOUND = " "
             IF WS-PRINT-NUM = 5
-               MOVE "NOTHING TO PRINT IN THAT RANGE, 'ESC' TO RE-ENTER."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
              IF WS-INVCRED = "C" 
                PERFORM DELETE-BLANK-EMAIL-CRN-RECORD
              ELSE
                PERFORM DELETE-BLANK-EMAIL-INV-RECORD.
+           IF WS-FOUND = " "
+            IF WS-PRINT-NUM = 5
+               MOVE "NOTHING TO PRINT IN THAT RANGE, 'ESC' TO RE-ENTER."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE.
            PERFORM END-OFF.
        CONT-999.
            EXIT.
