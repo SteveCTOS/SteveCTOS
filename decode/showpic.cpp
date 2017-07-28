@@ -41,14 +41,24 @@ int main(int argc, char* argv[])
   char *host = "";
   if (argc <= e_host)
   {
-    char* ssh_client = getenv("SSH_CLIENT");
-    if (ssh_client != 0)
-      host = strdup(ssh_client);
+    char* picture_server = getenv("PICTURE_SERVER");
+    if (picture_server != 0)
+    {
+      host = strdup(picture_server);
+    }
+    else
+    {
+      char* ssh_client = getenv("SSH_CLIENT"); 
+      if (ssh_client != 0)
+      {
+        host = strdup(ssh_client);
+        char* x = strchr(host, ' ');
+        if (x) *x = 0;
+      }
+    }
   }
   char* port = "32145";
   char* picture;
-  char* x = strchr(host, ' ');
-  if (x) *x = 0;
   if (argc <= e_picture)
   {
     printf("usage:\n"
