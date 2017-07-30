@@ -149,8 +149,9 @@
            Perform Open-Branch-Stock.
 
            PERFORM ERROR-020.
+       CONT-020.
            PERFORM GET-DATA
-           GO TO CONT-010.
+           GO TO CONT-020.
        CONT-999.
            Exit.
       *

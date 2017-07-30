@@ -57,9 +57,9 @@
                      AND NOT = "19" AND NOT = "20" AND NOT = "21"
                      AND NOT = "22" AND NOT = "23" AND NOT = "24"
                      AND NOT = "25" AND NOT = "26" AND NOT = "27"
-                     AND NOT = "28" AND NOT = "29"
+                     AND NOT = "28" AND NOT = "29" AND NOT = "30"
                      AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 29, Re-Enter."
+                MOVE "Selection Must Be Between 1 & 30, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -146,6 +146,8 @@
                 MOVE "SlAreaMt" TO WS-PROGRAM.
             IF WS-ANSWER = "29"
                 MOVE "SlBrOrdr" TO WS-PROGRAM.
+            IF WS-ANSWER = "30"
+                MOVE "StBrchIq" TO WS-PROGRAM.
        GET-050.
            Call Ws-Program Using Ws-Linkage.
             PERFORM CLEAR-SCREEN
