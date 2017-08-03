@@ -345,7 +345,7 @@
                PERFORM ADD-USERNAME-TO-FILE
                MOVE ALPHA-RATE         TO WS-ESTATEMENT
                PERFORM GET-EMAIL-STATEMENT-NAME
-               MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME.
+               MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME
       *         MOVE WS-EMAIL-STATEMENT TO WS-PRINTER
       *                                     W-FILENAME
                GO TO CONT-030.
