@@ -10,11 +10,18 @@
           Copy "SelectStMaster".
           Copy "SelectStockLookup".
           Copy "SelectSlDaily".
+          Copy "SelectStCatalogue".
            SELECT PRICE-MASTER ASSIGN TO "/ctools/spl/Prices"
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS PRICE-KEY
+               FILE STATUS IS WS-PRICE-STATUS.
+           SELECT PRICE-SP-MASTER ASSIGN TO "/ctools/spl/Prices"
+               ORGANIZATION IS INDEXED
+               LOCK MANUAL
+               ACCESS MODE IS DYNAMIC
+               RECORD KEY IS PRICE-SP-KEY
                FILE STATUS IS WS-PRICE-STATUS.
            SELECT PRICE-IMP-MASTER ASSIGN TO "/ctools/spl/PriceSequ"
                ORGANIZATION IS SEQUENTIAL
@@ -28,9 +35,11 @@
            COPY ChlfdStock.
            COPY ChlfdStockLookup.
            COPY ChlfdPriceUpdate.
+           COPY ChlfdPriceUpdateSpecial.
            COPY ChlfdPriceImport.
            COPY ChlfdStockLookupImport.
            COPY ChlfdDaily.
+           COPY ChlfdStCatalogue.
       *
        WORKING-STORAGE SECTION.
            77  WS-EOF             PIC X(3) VALUE "   ".
@@ -64,6 +73,8 @@
                03  WS-PRICE-ST1   PIC 99.
            01  WS-DAILY-STATUS.
                03  WS-DAILY-ST1   PIC 99.
+           01  WS-STCAT-STATUS.
+               03  WS-STCAT-ST1   PIC 99.
                
        Copy "WsDateInfo".
        Copy "FormsInfo".
@@ -91,6 +102,9 @@
            IF WS-IMP-UPDATE = "I"
               PERFORM IMPORT-DATA
               PERFORM END-OFF. 
+           IF WS-IMP-UPDATE = "Z"
+              PERFORM IMPORT-SPEC-DATA
+              PERFORM END-OFF. 
            IF WS-IMP-UPDATE = "B"
               PERFORM IMPORT-DATA.
               
@@ -111,8 +125,11 @@
            IF WS-IMP-UPDATE = "S"
               PERFORM IMPORT-LOOKUP
               GO TO CONTROL-900.
-              
-           PERFORM UPDATE-PRICES.
+
+           IF WS-IMP-UPDATE = "X"              
+               PERFORM UPDATE-SPEC-PRICES
+           ELSE 
+               PERFORM UPDATE-PRICES.
        CONTROL-900.
            PERFORM END-OFF.
        CONTROL-999.
@@ -129,7 +146,7 @@
            MOVE 0701 TO POS
            DISPLAY "NO ADDED PREFIX:" AT POS
            MOVE 0801 TO POS
-           DISPLAY "BRN, GDR, KEN," AT POS.
+           DISPLAY "BRN, DPR, GDR, KEN," AT POS.
            MOVE 0901 TO POS
            DISPLAY "MGL, MI, SCS" AT POS.
        GET-005.
@@ -178,21 +195,24 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-010.
        GET-012.
-           MOVE 1210 TO POS
+           MOVE 1410 TO POS
            DISPLAY "I=IMPORT PRICE MUST BE /ctools/spl/PriceSequ" AT POS
-           MOVE 1310 TO POS
+           MOVE 1510 TO POS
            DISPLAY "S=LOOKUP TABLE MUST BE /ctools/spl/StockSequ" AT POS
            MOVE 1110 TO POS.
            DISPLAY
-           "I=IMPORT, U=UPDATE, B=I & U, W=BLANK Lookup, S=EXCEL" &
-           "LOOKUP: [ ]"
+           "I=IMPORT, U=UPDATE, B=I & U, W=BLANK Lookup, S=EXCEL"
             AT POS
-           ADD 62 TO POS.
+           MOVE 1210 TO POS.
+           DISPLAY
+           "LOOKUP, Z=SPECIAL IMPORT, X=CREATE STOCK FILE: [ ]"
+            AT POS
+           ADD 47 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 8         TO CDA-ROW.
-           MOVE 70        TO CDA-COL.
+           MOVE 9         TO CDA-ROW.
+           MOVE 57        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
@@ -201,7 +221,8 @@
            IF W-ESCAPE-KEY = 4
               GO TO GET-010.
            IF WS-IMP-UPDATE NOT = "I" AND NOT = "U" AND NOT = "B"
-                        AND NOT = "W" AND NOT = "S"
+                        AND NOT = "W" AND NOT = "S" AND NOT = "Z"
+                        AND NOT = "X"
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-012.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -210,7 +231,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-012.
        GET-015.
-           IF WS-IMP-UPDATE = "W" OR = "S" OR = "I"
+           IF WS-IMP-UPDATE = "W" OR = "S" OR = "I" OR = "Z" OR = "X"
                GO TO GET-999.
            MOVE 1510 TO POS
            DISPLAY "UPDATE DESCRIPTIONS ON STOCK FILE : [ ]"
@@ -343,50 +364,26 @@
            MOVE PRICE-IMP-OLD-DEALER-PRICE TO ALPHA-RATE
            PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
            MOVE NUMERIC-RATE               TO PRICE-OLD-DEALER-PRICE
            
            MOVE PRICE-IMP-NEW-DEALER-PRICE TO ALPHA-RATE
            PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
            MOVE NUMERIC-RATE               TO PRICE-NEW-DEALER-PRICE
            
            MOVE PRICE-IMP-DEALER-DISCOUNT  TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
-      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100.
            MOVE NUMERIC-RATE               TO PRICE-DEALER-DISCOUNT
 
            MOVE PRICE-IMP-OLD-LIST-PRICE   TO ALPHA-RATE
            PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-      *     COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100.
            MOVE NUMERIC-RATE               TO PRICE-OLD-LIST-PRICE.
-
-
-
 
            MOVE PRICE-IMP-NEW-LIST-PRICE   TO ALPHA-RATE
            PERFORM REMOVE-LEADING-ZEROS
            PERFORM DECIMALISE-RATE
-           
-      *     MOVE PRICE-IMP-NEW-LIST-PRICE TO WS-MESSAGE
-      *     PERFORM ERROR1-000
-      *     MOVE NUMERIC-RATE TO WS-DISCOST
-      *     MOVE WS-DISCOST TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-           
-      *      COMPUTE NUMERIC-RATE = NUMERIC-RATE / 100
            MOVE NUMERIC-RATE               TO PRICE-NEW-LIST-PRICE.
-
-
-      *     MOVE NUMERIC-RATE TO WS-DISCOST
-      *     MOVE WS-DISCOST TO WS-MESSAGE
-      *     PERFORM ERROR1-000.
-      *     MOVE PRICE-NEW-LIST-PRICE TO WS-DISCOST
-      *     MOVE WS-DISCOST TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
        ID-020.
            WRITE PRICE-RECORD.
            IF WS-PRICE-ST1 = 23 OR 35 OR 49
@@ -407,10 +404,92 @@
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ID-020.
-      
-      *     PERFORM ERROR-MESSAGE.
            GO TO ID-005.
        ID-999.
+           EXIT.
+      *
+       IMPORT-SPEC-DATA SECTION.
+       ID-SPEC-000.
+           PERFORM CHECK-PREFIX-IN-STOCK.
+                 
+           MOVE 2410 TO POS
+           DISPLAY "STOCK SPECIAL PRICES BEING IMPORTED...." AT POS.
+           
+           MOVE " " TO PRICE-IMP-KEY.
+           MOVE 0 TO SUB-20.
+       ID-SPEC-005.
+           READ PRICE-IMP-MASTER
+              AT END
+                 GO TO ID-SPEC-900.
+       ID-SPEC-010.
+           PERFORM MERGE-PARTS.
+           MOVE WS-STOCK-PREFIX            TO PRICE-SP-ST-NUM.
+                 
+           MOVE 2510 TO POS
+           DISPLAY "STOCK ITEM BEING IMPORTED:      " AT POS
+           ADD 27 TO POS
+           DISPLAY PRICE-SP-ST-NUM AT POS.
+           ADD 18 TO POS
+           DISPLAY PRICE-IMP-ST-NUM AT POS.
+           
+           MOVE PRICE-IMP-DESCRIPTION      TO PRICE-SP-DESCRIPTION
+           PERFORM ENTER-UNIT-OF-SALE.
+           
+           MOVE PRICE-IMP-OLD-DEALER-PRICE TO PRICE-SP-TARIFF.
+           
+           MOVE PRICE-IMP-NEW-DEALER-PRICE TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
+           PERFORM DECIMALISE-RATE
+           MOVE NUMERIC-RATE               TO PRICE-SP-NEW-DEALER-PRICE.
+           
+           MOVE PRICE-IMP-DEALER-DISCOUNT  TO PRICE-SP-PAGE-NUMBER.
+
+           MOVE PRICE-IMP-OLD-LIST-PRICE   TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
+           PERFORM DECIMALISE-RATE
+           MOVE NUMERIC-RATE               TO PRICE-SP-OLD-LIST-PRICE.
+
+           MOVE PRICE-IMP-NEW-LIST-PRICE   TO ALPHA-RATE
+           PERFORM REMOVE-LEADING-ZEROS
+           PERFORM DECIMALISE-RATE
+           MOVE NUMERIC-RATE               TO PRICE-SP-NEW-LIST-PRICE.
+       ID-SPEC-020.
+           WRITE PRICE-SP-RECORD.
+           IF WS-PRICE-ST1 = 23 OR 35 OR 49
+                 MOVE "INVALID WRITE OF PRICE IMPORT, ITEM EXISTS"
+                  TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRICE-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 GO TO ID-SPEC-005.
+           IF WS-PRICE-ST1 = 22
+                 MOVE "ST1=22." TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 GO TO ID-SPEC-005.
+           IF WS-PRICE-ST1 NOT = 0
+                 MOVE "INVALID WRITE OF PRICE IMPORT, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-PRICE-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 GO TO ID-SPEC-020.
+
+      *      CALL "C$SLEEP" USING 1.
+
+            ADD 1 TO SUB-20.
+           
+            MOVE 2010 TO POS
+            DISPLAY "NUMBER OF RECORDS:" AT POS
+            ADD 20 TO POS
+            DISPLAY SUB-20 AT POS.
+
+            GO TO ID-SPEC-005.
+       ID-SPEC-900.
+            MOVE "IMPORT FINISHED.........." TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.   
+       ID-SPEC-999.
            EXIT.
       *
        REMOVE-LEADING-ZEROS SECTION.
@@ -442,12 +521,6 @@
            IF SUB-2 > 1
                SUBTRACT 1 FROM SUB-1 SUB-2
                GO TO RLZE-025.
-           
-      *     MOVE DATA-RATE TO WS-MESSAGE
-      *     PERFORM ERROR1-000       
-      *     MOVE ALPHA-RATE TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     PERFORM ERROR1-020.
 
            MOVE DATA-RATE TO ALPHA-RATE.
        RLZE-999.
@@ -486,6 +559,14 @@
               GO TO MP-050.
            IF WS-EOF = "GDR"
             IF WS-SC1 = "GDR"
+              MOVE SPACES            TO ALPHA-RATE
+              MOVE WS-STOCK-CHECKING TO ALPHA-RATE
+              MOVE WS-SC1 TO DATA-RATE
+              MOVE 4 TO SUB-1
+              MOVE 5 TO SUB-2
+              GO TO MP-050.
+           IF WS-EOF = "DPR"
+            IF WS-SC1 = "DPR"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
               MOVE WS-SC1 TO DATA-RATE
@@ -565,6 +646,8 @@
              GO TO CPIAS-060.
            IF WS-EOF = "SCS"
              GO TO CPIAS-065.
+           IF WS-EOF = "DPR"
+             GO TO CPIAS-070.
 
            IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "WLR"
               MOVE " " TO WS-STOCK-PREFIX.
@@ -586,6 +669,9 @@
               GO TO CPIAS-999.
        CPIAS-065. 
            MOVE "SCS" TO WS-STOCK-PREFIX
+              GO TO CPIAS-999.
+       CPIAS-070.
+           MOVE "DPR" TO WS-STOCK-PREFIX
               GO TO CPIAS-999.
        CPIAS-999.
            EXIT.
@@ -821,6 +907,34 @@
        RPM-999.
            EXIT.
       *
+       READ-PRICE-SP-MASTER SECTION.
+       RPM-SP-005.
+           START PRICE-SP-MASTER KEY NOT < PRICE-SP-KEY
+               INVALID KEY NEXT SENTENCE.
+           IF WS-PRICE-ST1 NOT = 0
+                MOVE "UNKNOWN" TO PRICE-SP-KEY
+                GO TO RPM-SP-999.
+       RPM-SP-010.
+           READ PRICE-SP-MASTER
+               INVALID KEY NEXT SENTENCE.
+           IF WS-PRICE-ST1 = 23 OR 35 OR 49
+                MOVE "UNKNOWN" TO PRICE-SP-KEY
+                GO TO RPM-SP-999.
+           IF WS-PRICE-ST1 NOT = 0
+              MOVE "ST-PRICE FILE BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PRICE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PRICE-ST1
+               GO TO RPM-SP-010.
+                 
+           MOVE 2660 TO POS
+           DISPLAY PRICE-SP-KEY AT POS.
+       RPM-SP-999.
+           EXIT.
+      *
         UPDATE-PRICES SECTION.
         UP-000.
            MOVE 2510 TO POS
@@ -941,6 +1055,159 @@
         UP-999.
              EXIT.
       *
+        UPDATE-SPEC-PRICES SECTION.
+        UP-SPEC-000.
+           MOVE 2510 TO POS
+           DISPLAY "STOCK SPECIAL CREATION BEING UPDATED ......" AT POS.
+           MOVE WS-RANGE1 TO PRICE-SP-KEY.
+           
+           START PRICE-SP-MASTER KEY NOT < PRICE-SP-KEY
+                 INVALID KEY
+                   MOVE "NO RECORDS ON PRICE LIST FILE " TO WS-MESSAGE
+                   PERFORM ERROR-MESSAGE
+                   GO TO END-900.
+           MOVE 0 TO SUB-20.
+        UP-SPEC-005.
+           READ PRICE-SP-MASTER NEXT
+               AT END NEXT SENTENCE.
+           IF WS-PRICE-ST1 = 10
+                GO TO UP-SPEC-900.
+           IF WS-PRICE-ST1 NOT = 0
+              MOVE "ST-PRICE FILE BUSY ON READ, 'ESC' TO RETRY"
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-PRICE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-PRICE-ST1
+               GO TO UP-SPEC-005.
+                 
+           MOVE 2510 TO POS
+           DISPLAY "STOCK ITEM BEING UPDATED:       " AT POS
+           ADD 27 TO POS
+           DISPLAY PRICE-SP-KEY AT POS.
+           
+           MOVE PRICE-SP-ST-NUM           TO ST-STOCKNUMBER
+                                             ST-CATEGORY
+
+           MOVE PRICE-SP-DESCRIPTION      TO WS-DESC
+           MOVE WS-DESC1                  TO ST-DESCRIPTION1
+           MOVE WS-DESC2                  TO ST-DESCRIPTION2
+           
+           MOVE "EACH"                    TO ST-UNITOFMEASURE
+
+           MOVE PRICE-SP-TARIFF           TO ST-DUTYTARIFF
+
+           MOVE WS-DATE                   TO ST-LASTPRICECHANGE
+
+           MOVE PRICE-SP-NEW-DEALER-PRICE TO ST-LASTCOST
+                                             ST-AVERAGECOST
+                                            
+           MOVE 0                         TO ST-SUPPLIERDISC
+           MOVE "S"                       TO ST-ANALYSIS.
+
+           MOVE PRICE-SP-NEW-LIST-PRICE   TO ST-PRICE.
+
+           MOVE "DRAPER" TO ST-SUPPLIER.
+           MOVE "PND"    TO ST-CURRENCY.
+           MOVE "IMPORT" TO ST-BINLOCATION.
+           MOVE "N"      TO ST-PERMIT.
+
+           MOVE WS-DATE  TO ST-DATE-CREATED
+                            ST-LASTPRICECHANGE.
+           MOVE 25       TO ST-MIN-PERC.
+
+           MOVE 5 TO    ST-DISCOUNT1
+           MOVE 10 TO   ST-DISCOUNT2
+           MOVE 15 TO   ST-DISCOUNT3 
+           MOVE 20 TO   ST-DISCOUNT4 
+           MOVE 2.5 TO  ST-DISCOUNT5 
+           MOVE 7.5 TO  ST-DISCOUNT6 
+           MOVE 12.5 TO ST-DISCOUNT7  
+           MOVE 25 TO   ST-DISCOUNT8  
+           MOVE 30 TO   ST-DISCOUNT9.
+
+
+           MOVE 0 TO ST-FOREIGNCOST
+                     ST-OLDPRICE
+                     ST-SUPPLIERDISC
+                     ST-CURRENCY-RATE
+                     ST-MAXIMUMLEVEL
+                     ST-MINIMUMLEVEL
+                     ST-QTYONHAND 
+                     ST-QTYONRESERVE
+                     ST-QTYONORDER 
+                     ST-QTYONBORDER
+                     ST-LASTSALEDATE
+                     ST-LASTRECEIPTDATE
+                     ST-LASTORDERDATE
+                     ST-QTYRECMTD
+                     ST-QTYRECYTD  
+                     ST-QTYRECLAST  
+                     ST-QTYADJMTD 
+                     ST-QTYADJYTD 
+                     ST-QTYADJLAST
+                     ST-SALESUNITMTD
+                     ST-SALESUNITSYTD
+                     ST-SALESUNITSLAST 
+                     ST-SALESRANDSMTD 
+                     ST-SALESRANDSYTD 
+                     ST-SALESRANDSLAST 
+                     ST-SALESCOSTMTD 
+                     ST-SALESCOSTYTD
+                     ST-SALESCOSTLAST
+                     ST-DUTYPERCENT
+                     ST-SURCHARGE
+                     ST-QTY-ST-TAKE.
+
+                       
+           MOVE 1 TO ST-MINBUYQTY
+                     ST-DEL-DELAY.
+           
+        UP-SPEC-035.
+           WRITE STOCK-RECORD
+                 INVALID KEY
+                 MOVE "INVALID WRITE OF STOCK-RECORD" TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 MOVE WS-STOCK-ST1 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 PERFORM ERROR-MESSAGE.
+                 
+           PERFORM WRITE-CATALOGUE-RECORD.
+
+           ADD 1 TO SUB-20.
+           
+           MOVE 2210 TO POS
+           DISPLAY "NUMBER OF RECORDS:" AT POS
+           ADD 20 TO POS
+           DISPLAY SUB-20 AT POS.
+ 
+           GO TO UP-SPEC-005.
+        UP-SPEC-900.
+            MOVE "UPDATE SPECIAL FINISHED.........." TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.   
+        UP-SPEC-999.
+             EXIT.
+      *
+       WRITE-CATALOGUE-RECORD SECTION.
+       RSR-005.
+          MOVE ST-STOCKNUMBER       TO STCAT-STOCKNUMBER
+          MOVE PRICE-SP-PAGE-NUMBER TO STCAT-PAGE-NUM.
+       RSR-020.
+          WRITE STCAT-RECORD
+              INVALID KEY NEXT SENTENCE.
+          IF WS-STCAT-ST1 NOT = 0
+              MOVE "ST-CATALOGUE BUSY ON WRITE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO RSR-020.
+       RSR-999.
+          EXIT.
+      *
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O STOCK-MASTER.
@@ -955,6 +1222,8 @@
        OPEN-003.
            IF WS-IMP-UPDATE = "U"
                GO TO OPEN-005.
+           IF WS-IMP-UPDATE = "X"
+               GO TO OPEN-0051.
            OPEN I-O PRICE-IMP-MASTER.
            IF WS-STOCK-ST1 NOT = 0
              MOVE 
@@ -977,7 +1246,20 @@
              PERFORM ERROR1-020
              GO TO OPEN-005.
            GO TO OPEN-010.
+       OPEN-0051.
+           OPEN I-O PRICE-SP-MASTER.
+           IF WS-PRICE-ST1 NOT = 0
+             MOVE "ERC ON OPEN I-O PRICE-SP LIST - /ctools/spl/Prices."
+              TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-PRICE-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             GO TO OPEN-0051.
+           GO TO OPEN-016.
        OPEN-006.
+           IF WS-IMP-UPDATE = "Z"
+               GO TO OPEN-007.
            OPEN OUTPUT PRICE-MASTER.
            IF WS-PRICE-ST1 NOT = 0
              MOVE 
@@ -988,6 +1270,18 @@
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
              GO TO OPEN-006.
+           GO TO OPEN-015.
+       OPEN-007.
+           OPEN OUTPUT PRICE-SP-MASTER.
+           IF WS-PRICE-ST1 NOT = 0
+             MOVE 
+             "ERC ON OPEN OUTPUT PRICE-SP LIST - /ctools/spl/Prices."
+              TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE WS-PRICE-ST1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             PERFORM ERROR1-020
+             GO TO OPEN-007.
            GO TO OPEN-015.
        OPEN-010.
            OPEN I-O STLOOK-MASTER.
@@ -1004,7 +1298,7 @@
              GO TO OPEN-010.
        OPEN-015.
            IF WS-IMP-UPDATE NOT = "S"
-               GO TO OPEN-020.
+               GO TO OPEN-016.
            OPEN I-O STOCK-IMP-MASTER.
            IF WS-STOCK-ST1 NOT = 0
              MOVE "ERROR ON OPENING EXCEL FILE - /spl/StockSequ."
@@ -1014,17 +1308,27 @@
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
              GO TO OPEN-015.
+       OPEN-016.
+            OPEN I-O STCAT-MASTER.
+            IF WS-STCAT-ST1 NOT = 0
+               MOVE 0 TO WS-STCAT-ST1
+               MOVE "ST-CATALOGUE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO OPEN-016.
        OPEN-020.
            PERFORM GET-SYSTEM-Y2K-DATE.
            MOVE WS-DATE TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT.
-        OPEN-999.
+       OPEN-999.
            EXIT.
       *
         END-OFF SECTION.
         END-000.
            CLOSE STOCK-MASTER
                  PRICE-MASTER
+                 PRICE-SP-MASTER
+                 STCAT-MASTER
                  STLOOK-MASTER.
         END-900.
            EXIT PROGRAM.
