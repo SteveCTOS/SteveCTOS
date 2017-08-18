@@ -541,12 +541,56 @@
        EUOS-999.
            EXIT.
       *
+       FIX-SIZE-OF-NUMBER SECTION.
+       FSON-005.
+           MOVE SPACES        TO ALPHA-RATE DATA-RATE.
+           MOVE PRICE-IMP-KEY TO ALPHA-RATE.
+           MOVE 000000 TO DATA-RATE.
+
+      *     MOVE PRICE-IMP-KEY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     MOVE DATA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     MOVE ALPHA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE 6 TO SUB-1
+                     SUB-2.
+       FSON-010.
+           IF AL-RATE (SUB-1) = " "
+              SUBTRACT 1 FROM SUB-1
+              GO TO FSON-010.
+       FSON-020.
+           MOVE AL-RATE (SUB-1) TO DAT-RATE (SUB-2)
+           IF SUB-1 > 1
+              SUBTRACT 1 FROM SUB-1 SUB-2
+              GO TO FSON-020.
+              
+           GO TO FSON-040.
+       FSON-030.
+           IF SUB-2 > 0
+              MOVE "0" TO DAT-RATE (SUB-2)
+              SUBTRACT 1 FROM SUB-2
+              GO TO FSON-030.
+       FSON-040.
+           MOVE DATA-RATE TO PRICE-IMP-KEY.
+
+      *     MOVE PRICE-IMP-KEY TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       FSON-999.
+           EXIT.
+      *
        MERGE-PARTS SECTION.
        MP-010.
-           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
-           MOVE PRICE-IMP-KEY    TO WS-SP2
-                                    WS-STOCK-CHECKING
-           MOVE WS-STOCK-PREFIX  TO ALPHA-RATE.
+           MOVE SPACES                 TO ALPHA-RATE DATA-RATE.
+
+           IF WS-EOF = "DPR"
+              PERFORM FIX-SIZE-OF-NUMBER.           
+
+           MOVE PRICE-IMP-KEY       TO WS-SP2
+                                       WS-STOCK-CHECKING
+           MOVE WS-STOCK-PREFIX     TO ALPHA-RATE.
+
            MOVE 1 TO SUB-1 SUB-2.
            
            IF WS-EOF = "BRN"
@@ -567,9 +611,9 @@
               GO TO MP-050.
            IF WS-EOF = "DPR"
             IF WS-SC1 = "DPR"
-              MOVE SPACES            TO ALPHA-RATE
+              MOVE SPACE             TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
+              MOVE WS-SC1            TO DATA-RATE
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
@@ -628,6 +672,9 @@
        MP-900.
            MOVE ALPHA-RATE TO WS-STOCK-PREFIX.
            MOVE SPACES     TO ALPHA-RATE.
+           
+      *     MOVE WS-STOCK-PREFIX TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        MP-999.
            EXIT.
       *
@@ -1099,13 +1146,14 @@
            MOVE PRICE-SP-TARIFF           TO ST-DUTYTARIFF
 
            MOVE WS-DATE                   TO ST-LASTPRICECHANGE
-
+                                            
            MOVE PRICE-SP-NEW-DEALER-PRICE TO ST-LASTCOST
                                              ST-AVERAGECOST
-                                            
+
            MOVE 0                         TO ST-SUPPLIERDISC
            MOVE "S"                       TO ST-ANALYSIS.
 
+           MOVE PRICE-SP-OLD-LIST-PRICE   TO ST-FOREIGNCOST
            MOVE PRICE-SP-NEW-LIST-PRICE   TO ST-PRICE.
 
            MOVE "DRAPER" TO ST-SUPPLIER.

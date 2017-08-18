@@ -354,16 +354,12 @@
                 MOVE 0 TO F-EXIT-CH
                 MOVE 0 TO SUB-2
                 MOVE 1 TO SUB-3
-                MOVE 0501 TO POS
-                DISPLAY WS-BRANCH-LINE-DESC AT POS
                 MOVE 800 TO WS-SUB1-DIS.
             IF F-EXIT-CH = X"05"
                 PERFORM CLEAR-MIDDLE
                 MOVE 1 TO F-EXIT-CH
                 MOVE 0 TO SUB-2
                 MOVE 1 TO SUB-3
-                MOVE 0501 TO POS
-                DISPLAY WS-BRANCH-LINE-DESC AT POS
                 MOVE 800 TO WS-SUB1-DIS.
             IF F-EXIT-CH = X"07"
                 MOVE " " TO WS-SHORTDESC
@@ -530,12 +526,16 @@
                 MOVE 0 TO F-EXIT-CH
                 MOVE 0 TO SUB-2
                 MOVE 1 TO SUB-3
+                MOVE 0701 TO POS
+                DISPLAY WS-BRANCH-LINE-DESC AT POS
                 MOVE 800 TO WS-SUB1-DIS.
             IF F-EXIT-CH = X"05"
                 PERFORM CLEAR-MIDDLE
                 MOVE 1 TO F-EXIT-CH
                 MOVE 0 TO SUB-2
                 MOVE 1 TO SUB-3
+                MOVE 0701 TO POS
+                DISPLAY WS-BRANCH-LINE-DESC AT POS
                 MOVE 800 TO WS-SUB1-DIS.
             IF F-EXIT-CH = X"07"
                 MOVE " " TO WS-SHORTDESC
