@@ -71,14 +71,14 @@
            MOVE 1201 TO POS
            DISPLAY "ST-FOREIGNCOST" AT POS
            MOVE 1301 TO POS
-           DISPLAY "ST-PRICE" AT POS
+           DISPLAY "ST-PRICE / ST-CURRENCY-RATE" AT POS
            
            MOVE 1401 TO POS
            DISPLAY "ST-CURRENCY" AT POS
            MOVE 1501 TO POS
            DISPLAY "ST-OLDPRICE" AT POS
            MOVE 1601 TO POS
-           DISPLAY "ST-SUPPLIERDISC/ST-MIN-PERC" AT POS
+           DISPLAY "ST-SUPPLIERDISC / ST-MIN-PERC" AT POS
 
            MOVE 1701 TO POS
            DISPLAY "ST-DISCOUNT1-9" AT POS
@@ -101,7 +101,7 @@
            MOVE 2601 TO POS
            DISPLAY "ST-DEL-DELAY" AT POS
            MOVE 2701 TO POS
-           DISPLAY "ST-QTYONHAND/ST-QTYONRESERVE" AT POS
+           DISPLAY "ST-QTYONHAND / ST-QTYONRESERVE" AT POS
            MOVE 2801 TO POS
            DISPLAY "ST-FIELDFIX               " AT POS
            MOVE 535 TO POS
@@ -117,14 +117,14 @@
            MOVE 1330 TO POS
            DISPLAY "NEW DATA FOR THE FIELD :[                    ]"
                  AT POS
-           MOVE 1524 TO POS
+           MOVE 1924 TO POS
            DISPLAY "BE FULLY AWARE OF FIELD LENGTHS BEFORE ENTERING."
-                AT POS
+                 AT POS.
 
            MOVE " " TO WS-BEG-STOCK WS-END-STOCK WS-FIELD WS-NEW-DATA.
        CONTROL-010.
            MOVE " " TO WS-MESSAGE
-      *     MOVE 2501 TO POS
+           MOVE 3001 TO POS
            DISPLAY WS-MESSAGE AT POS.
            PERFORM OPEN-FILES.
            
@@ -239,6 +239,7 @@
                       OR = "ST-DISCOUNT3"    OR = "ST-DISCOUNT4"
                       OR = "ST-DISCOUNT5"    OR = "ST-DISCOUNT6"
                       OR = "ST-DISCOUNT7"    OR = "ST-DISCOUNT8"
+                      OR = "ST-CURRENCY-RATE"
                       OR = "ST-DISCOUNT9"    OR = "ST-AVERAGECOST"
                       OR = "ST-LASTCOST"     OR = "ST-DUTYPERCENT"
                       OR = "ST-DUTYTARIFF"   OR = "ST-MAXIMUMLEVEL"
@@ -318,7 +319,7 @@
            MOVE 1330 TO POS
            DISPLAY "NEW DATA FOR THE FIELD :[                    ]"
                   AT POS
-           MOVE 1524 TO POS
+           MOVE 1924 TO POS
            DISPLAY "BE FULLY AWARE OF FIELD LENGTHS BEFORE ENTERING."
                AT POS
            MOVE 1355 TO POS
@@ -384,7 +385,7 @@
                GO TO GET-500.
        GET-600.
             MOVE " " TO WS-MESSAGE
-            MOVE 1420 TO POS
+            MOVE 3001 TO POS
             DISPLAY WS-MESSAGE AT POS
             PERFORM ERROR-020.
        GET-999.
@@ -519,6 +520,15 @@
             IF WS-FIELD = "ST-FOREIGNCOST"
              IF WS-FIELD-MUST-MATCH = "N"
                MOVE NUMERIC-RATE TO ST-FOREIGNCOST
+               GO TO PRR-050.
+            IF WS-FIELD = "ST-CURRENCY-RATE"
+             IF WS-FIELD-MUST-MATCH = "Y"
+              IF ST-FOREIGNCOST = WS-MATCH
+               MOVE NUMERIC-RATE TO ST-CURRENCY-RATE
+               GO TO PRR-050.
+            IF WS-FIELD = "ST-CURRENCY-RATE"
+             IF WS-FIELD-MUST-MATCH = "N"
+               MOVE NUMERIC-RATE TO ST-CURRENCY-RATE
                GO TO PRR-050.
             IF WS-FIELD = "ST-SUPPLIERDISC"
              IF WS-FIELD-MUST-MATCH = "N"

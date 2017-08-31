@@ -326,7 +326,7 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CB-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CB-ST1
               GO TO RD-015.
@@ -356,7 +356,7 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CBTRANS-ST1
               GO TO PRR-002.
@@ -516,7 +516,7 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO RP-000.
@@ -531,7 +531,7 @@
                TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CB-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CB-ST1
               GO TO OPEN-000.
@@ -542,7 +542,7 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-GLPARAMETER-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLPARAMETER-ST1
               GO TO OPEN-005.
@@ -558,7 +558,7 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CBTRANS-ST1
               GO TO OPEN-010.
