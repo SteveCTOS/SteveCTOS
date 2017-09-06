@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # The renaming of FNB '*.Exp' Files to add in the month & year for filing
 import glob, os, sys
-comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
+comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS', 'KGI']
 months = ['Mar17', 'Apr17', 'May17', 'Jun17', 'Jul17', 'Aug17', 'Sep17', 'Oct17', 'Nov17', 'Dec17', 'Jan18', 'Feb18']
 comp = sys.argv[1]
 month = sys.argv[2]

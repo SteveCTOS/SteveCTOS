@@ -233,14 +233,14 @@
        GET-015.
            IF WS-IMP-UPDATE = "W" OR = "S" OR = "I" OR = "Z" OR = "X"
                GO TO GET-999.
-           MOVE 1510 TO POS
+           MOVE 1610 TO POS
            DISPLAY "UPDATE DESCRIPTIONS ON STOCK FILE : [ ]"
            AT POS
            ADD 37 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 12        TO CDA-ROW.
+           MOVE 13        TO CDA-ROW.
            MOVE 46        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -258,13 +258,13 @@
               DISPLAY " " AT 3079 WITH BELL
               GO TO GET-015.
        GET-020.
-           MOVE 1710 TO POS.
+           MOVE 1810 TO POS.
            DISPLAY "F=FOREIGN, L=LOCAL PRICES         : [ ]" AT POS.
            ADD 37 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 14        TO CDA-ROW.
+           MOVE 15        TO CDA-ROW.
            MOVE 46        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -284,13 +284,13 @@
        GET-025.
            MOVE "N" TO WS-UP-COST.
            MOVE " " TO ALPHA-RATE.
-           MOVE 1910 TO POS.
+           MOVE 2010 TO POS.
            DISPLAY "UPDATE LAST COST ON STOCK FILE    : [ ]" AT POS.
            ADD 37 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 16        TO CDA-ROW.
+           MOVE 17        TO CDA-ROW.
            MOVE 46        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
@@ -309,13 +309,13 @@
                GO TO GET-025.
        GET-030.
            MOVE " " TO ALPHA-RATE.
-           MOVE 2010 TO POS.
+           MOVE 2210 TO POS.
            DISPLAY "UPDATE USING LOOKUP TABLE. Y OR N : [ ]" AT POS.
            ADD 37 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 17        TO CDA-ROW.
+           MOVE 19        TO CDA-ROW.
            MOVE 46        TO CDA-COL.
            MOVE CDA-GREEN TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
