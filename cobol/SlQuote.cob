@@ -9,7 +9,7 @@
           CRT STATUS IS W-CRTSTATUS.
         SPECIAL-NAMES.
         CLASS WS-VALID-EMAIL IS
-          '@' '_' '.' '-'
+          '@' '_' '.' '-' '#'
           'a' THRU 'i'
           'j' THRU 'r'
           's' THRU 'z'

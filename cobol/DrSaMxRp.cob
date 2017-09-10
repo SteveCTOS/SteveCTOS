@@ -389,17 +389,17 @@
               INVALID KEY NEXT SENTENCE.
               
            IF WS-RANDOM-ST1 NOT = 0
-               MOVE 
-              "RANDOM-FILE BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-RANDOM-ST1 TO WS-MESSAGE
-               PERFORM ERROR-000
+      *         MOVE 
+      *        "RANDOM-FILE BUSY ON WRITE, IN 1 SEC GOING TO RETRY."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-RANDOM-ST1 TO WS-MESSAGE
+      *         PERFORM ERROR-000
                CALL "C$SLEEP" USING 1
-               PERFORM ERROR1-020
-               PERFORM ERROR-020
-              ADD 1 TO RANDOM-INDEX
-              GO TO WRR-005.
+      *         PERFORM ERROR1-020
+      *         PERFORM ERROR-020
+               ADD 1 TO RANDOM-INDEX
+               GO TO WRR-005.
               
            GO TO WRR-999.
               

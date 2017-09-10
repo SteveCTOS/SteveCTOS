@@ -3,20 +3,20 @@
 *   *   **********************{** SPECIAL PROGRAM MENU **}*********************
 *   *   *                                                                     *
 *   *   *   1. Debtor Master File (ALL Fields)                                *
-*   *   *                                                                     *
 *   *   *   2. Debtor Transactions                                            *
-*   *   *                                                                     *
 *   *   *   3. Debtor Master Change Number                                    *
-*   *   *                                                                     *
 *   *   *   4. Debtor Sales Figures Added to Another Account                  *
-*   *   *                                                                     *
 *   *   *   5. Debtor Sales Analysis Checking on Register                     *
-*   *   *                                                                     *
 *   *   *   6. Debtor Master Period Aging Reset with Transactions             *
-*   *   *                                                                     *
 *   *   *   7. Debtor Salesman Number Change                                  *
+*   *   *   8. Debtor Old / Deleted Account Enquiry                           *
+*   *   *                                                                     *
+*   *   *   9. DrTrans Export / Import Fix                                    *
+*   *   *  10. DrMaster Export / Import Fix                                   *
+*   *   *                                                                     *
+*   *   *                                                                     *
 *****   *                                                                     *
-    *   *   8. Debtor Old / Deleted Account Enquiry                           *
+    *   *                                                                     *
     *****                                                                     *
         *                                                                     *
         ************************ENTER SELECTION : __***************************

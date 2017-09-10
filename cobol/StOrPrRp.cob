@@ -12,7 +12,7 @@
     
         SPECIAL-NAMES.
         CLASS WS-VALID-EMAIL IS
-          '@' '_' '.' '-'
+          '@' '_' '.' '-' '#'
           'a' THRU 'i'
           'j' THRU 'r'
           's' THRU 'z'

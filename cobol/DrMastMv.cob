@@ -1,5 +1,5 @@
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. StTranMv.
+        PROGRAM-ID. DrMastMv.
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
@@ -7,42 +7,40 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT STOCK-TRANS-FILE ASSIGN TO Ws-StTrans
+           SELECT DEBTOR-MASTER ASSIGN TO Ws-Debtor
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
-               RECORD KEY IS STTR-KEY
-               ALTERNATE RECORD KEY IS STTR-ST-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS STTR-AC-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS STTR-DATE WITH DUPLICATES
-               ALTERNATE RECORD KEY IS
-                               STTR-COMPLETE WITH DUPLICATES
-               ALTERNATE RECORD KEY IS
-                               STTR-STOCK-NUMBER WITH DUPLICATES
-               ALTERNATE RECORD KEY IS 
-                               STTR-ACCOUNT-NUMBER WITH DUPLICATES
-                     FILE STATUS IS WS-STTR-STATUS.
+               RECORD KEY IS DR-KEY
+               ALTERNATE RECORD KEY IS DR-ALT-KEY WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR-SALES-YTD WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR-SALES-LAST WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR-DISCOUNT-CODE WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR-SUPPLY-Y-N WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR-SALESMAN WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR-CORPORATE-GROUP
+                  WITH DUPLICATES
+               FILE STATUS IS WS-DEBTOR-STATUS.
                      
-           SELECT STOCK1-TRANS-FILE ASSIGN TO Ws-StTransTemp
+           SELECT DEBTOR1-MASTER ASSIGN TO Ws-DebtorTemp
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
-               RECORD KEY IS STTR1-KEY
-               ALTERNATE RECORD KEY IS STTR1-ST-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS STTR1-AC-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS STTR1-DATE WITH DUPLICATES
-               ALTERNATE RECORD KEY IS
-                               STTR1-COMPLETE WITH DUPLICATES
-               ALTERNATE RECORD KEY IS
-                               STTR1-STOCK-NUMBER WITH DUPLICATES
-               ALTERNATE RECORD KEY IS 
-                               STTR1-ACCOUNT-NUMBER WITH DUPLICATES
-                     FILE STATUS IS WS-STTR-STATUS.
+               RECORD KEY IS DR1-KEY
+               ALTERNATE RECORD KEY IS DR1-ALT-KEY WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR1-SALES-YTD WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR1-SALES-LAST WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR1-DISCOUNT-CODE WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR1-SUPPLY-Y-N WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR1-SALESMAN WITH DUPLICATES
+               ALTERNATE RECORD KEY IS DR1-CORPORATE-GROUP
+                  WITH DUPLICATES
+               FILE STATUS IS WS-DEBTOR-STATUS.
       *
         DATA DIVISION.
         FILE SECTION.
-           COPY "ChlfdStTrans".
-           COPY "ChlfdStTrans1".
+           COPY "ChlfdDebtor".
+           COPY "ChlfdDebtor1".
       *
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
@@ -51,7 +49,7 @@
            01  WS-CHECK-ST.
                03  WS-CHECK-1    PIC X.
                03  WS-CHECK-BAL  PIC X(14).
-           01  WS-STTR-STATUS.
+           01  WS-DEBTOR-STATUS.
                03  WS-STAT1      PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
@@ -76,10 +74,10 @@
        A-ACCEPT SECTION.
        A-AC001.
            MOVE 0820 TO POS.
-           DISPLAY "** ST-TRANS EXPORT / IMPORT OF DATA **" AT POS
+           DISPLAY "** DRMASTER EXPORT / IMPORT OF DATA **" AT POS
            MOVE 1010 TO POS
            DISPLAY 
-           "ENTER E=EXPORT TO StTransTemp, I=IMPORT FROM Temp: [ ]"
+           "ENTER E=EXPORT TO DrMastTemp, I=IMPORT FROM Temp:  [ ]"
               AT POS
            MOVE 1110 TO POS
            DISPLAY "OR ENTER X=EXIT THE PROGRAM." AT POS
@@ -112,16 +110,16 @@
       *
         A-INIT SECTION.
         A-000.
-           MOVE Ws-StTrans TO WS-MESSAGE
+           MOVE Ws-Debtor TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
-           MOVE Ws-StTransTemp TO WS-MESSAGE
+           MOVE Ws-DebtorTemp TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
            IF WS-ACCEPT = "I"
-               OPEN OUTPUT STOCK-TRANS-FILE
+               OPEN OUTPUT DEBTOR-MASTER
            ELSE
-               OPEN I-O STOCK-TRANS-FILE.
+               OPEN I-O DEBTOR-MASTER.
            
       *     MOVE WS-ACCEPT TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -129,13 +127,13 @@
            PERFORM ERROR-MESSAGE.
            
            IF WS-ACCEPT = "E"
-               MOVE 0 TO STTR-KEY
-              START STOCK-TRANS-FILE KEY NOT < STTR-KEY.
+               MOVE 0 TO DR-KEY
+              START DEBTOR-MASTER KEY NOT < DR-KEY.
             
            IF WS-ACCEPT = "E"
-              OPEN OUTPUT STOCK1-TRANS-FILE
+              OPEN OUTPUT DEBTOR1-MASTER
            ELSE
-              OPEN I-O STOCK1-TRANS-FILE.
+              OPEN I-O DEBTOR1-MASTER.
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -151,33 +149,28 @@
       *
         B-EXPORT SECTION.
         BE-005.
-           READ STOCK-TRANS-FILE NEXT WITH LOCK
+           READ DEBTOR-MASTER NEXT WITH LOCK
                AT END 
              DISPLAY WS-COUNT
              GO TO BE-EXIT.
                
-           DISPLAY STTR-KEY  AT 1505
-           DISPLAY STTR-DATE AT 1520
+           DISPLAY DR-KEY  AT 1505
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
 
-           MOVE STOCK-TRANS-REC    TO STOCK1-TRANS-REC.
-           MOVE STTR-COMPLETE      TO STTR1-COMPLETE
-                                      STTR1-AC-COMPLETE
-                                      STTR1-ST-COMPLETE.
+           MOVE DEBTOR-RECORD    TO DEBTOR1-RECORD.
         BE-010.
-           WRITE STOCK1-TRANS-REC
+           WRITE DEBTOR1-RECORD
                  INVALID KEY
              MOVE "INVALID WRITE FOR ISAM-EXPORT FILE..." TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE WS-STAT1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE STTR1-KEY TO WS-MESSAGE
+             MOVE DR1-KEY TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
-             ADD 1 TO STTR-TRANSACTION-NUMBER
-                      STTR-REFERENCE1
-                      START STOCK-TRANS-FILE KEY > STTR-KEY.
+             ADD 1 TO DR-ACCOUNT-NUMBER
+                  START DEBTOR-MASTER KEY > DR-KEY.
                       
       *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
       *       DISPLAY WS-STAT1
@@ -190,18 +183,17 @@
       *
         B-IMPORT SECTION.
         BI-005.
-           READ STOCK1-TRANS-FILE NEXT WITH LOCK
+           READ DEBTOR1-MASTER NEXT WITH LOCK
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY STTR1-KEY AT 1505
-           DISPLAY STTR1-DATE AT 1520
+           DISPLAY DR1-KEY AT 1505
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
            
-           MOVE STOCK1-TRANS-REC    TO STOCK-TRANS-REC.
+           MOVE DEBTOR1-RECORD    TO DEBTOR-RECORD.
         BI-010.
-           WRITE STOCK-TRANS-REC
+           WRITE DEBTOR-RECORD
                  INVALID KEY
              MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
              PERFORM ERROR1-000
@@ -210,13 +202,13 @@
              PERFORM ERROR1-020.
       *       DISPLAY "INVALID WRITE FOR ISAM FILE..."
       *       DISPLAY WS-STAT1
-      *       CLOSE STOCK-TRANS-FILE
-      *             STOCK1-TRANS-FILE
+      *       CLOSE DEBTOR-MASTER
+      *             DEBTOR1-MASTER
       *       CALL "C$SLEEP" USING 3
       *         EXIT PROGRAM.
       *       STOP RUN.
       
-      *      MOVE SPACES TO STOCK-TRANS-REC.
+      *      MOVE SPACES TO DEBTOR-RECORD.
             
             GO TO BI-005.
         BI-EXIT.
@@ -224,8 +216,8 @@
       *    
         C-END SECTION.
         C-000.
-           CLOSE STOCK-TRANS-FILE
-                 STOCK1-TRANS-FILE.
+           CLOSE DEBTOR-MASTER
+                 DEBTOR1-MASTER.
            MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
         C-EXIT.

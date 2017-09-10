@@ -651,6 +651,11 @@
            PERFORM RC-005.
        CDN-040.
            PERFORM RC-010.
+           
+      *     IF SUB-4 > 65
+      *        MOVE DATA-NAME TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE.
+
            IF WS-DATA-STATUS = 10
                PERFORM RC-900
                GO TO CDN-900.
@@ -661,6 +666,11 @@
            MOVE DATA-NAME TO DATA-RATE
            PERFORM CDN-025
            PERFORM CHECK-DATA-NAME-POSITION           
+           
+      *     IF SUB-4 > 65
+      *        MOVE ALPHA-RATE TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE.
+
            PERFORM CDN-031.
            
            GO TO CDN-040.
@@ -745,11 +755,15 @@
       * LIKE:SUB4=6 EQUALS WS-STOCK.  ADD THE ENTRY INTO LINKAGE       *
       * LIKE:03 WS-STOCK   PIC X(40).  NB ADD THE NEW ENTRY INTO       *
       * DATA NAME PROGRAM IN THE SYSTEM MANAGERS MENU TO DEFINE WHERE  *
-      * ON THE DISK THE FILE IS FOUND LIKE - STMASTER.  THE [WIN]<DATA>*
+      * ON THE DISK THE FILE IS FOUND LIKE - StMaster.  /ctools/data01 *
       * GETS ADDED AUTOMATICALLY BY THE "COMPANY VOL / DIR INFO" PRGRAM*
       *                                                                *
       *  THEN RE-COMPILE THIS PROGRAM WITH ENTRIES IN FOLLOWING FILES  *
       *  <COPY>CHECKDATANAMEPOSITION & <COPY>CHLFDLINKAGE CHANGED.     *
+      * ALSO RECOMPILE MainCont.cob                                    *
+      *                                                                *
+      * IN LINUX DO A make clean AND THEN A make install TO RECOMPILE  *
+      * ALL PROGRAMS TO TAKE CARE OF THE CHANGES                       *
       ******************************************************************
        Copy "CheckDataNamePosition".
        Copy "ReadMenuKBD".

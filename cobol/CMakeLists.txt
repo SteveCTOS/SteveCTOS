@@ -87,7 +87,7 @@ set (debtors_list
   DrInteMt  DrLablRp  DrLaSoRp  DrMailRp  DrMasOld  DrMasSMt  DrMaster
   DrMastIq  DrMastMt  DrMastRp  DrNameIq  DrNamOld  DrNmFxRp  DrNoChMt
   DrNumber  DrPaymnt  DrPrAcRp  DrRepRst  DrSaCoMt  DrSaCoRp  DrSaMxRp 
-  DrStatRp  DrTrans   
+  DrStatRp  DrTrans   DrTranMv  DrMastMv
 )
 
 set (general_list 

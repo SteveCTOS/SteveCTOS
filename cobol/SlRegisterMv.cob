@@ -78,6 +78,8 @@
            MOVE 1010 TO POS
            DISPLAY "ENTER E=EXPORT TO ASCII, I=IMPORT FROM ASCII: [ ]"
               AT POS
+           MOVE 1110 TO POS
+           DISPLAY "OR ENTER X=EXIT THE PROGRAM." AT POS
            MOVE 1057 TO POS
 
            MOVE ' '       TO CDA-DATA.
