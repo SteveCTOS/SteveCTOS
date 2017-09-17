@@ -3,10 +3,11 @@
             03  PRICE-IMP-KEY.
                 05  PRICE-IMP-ST-NUM       PIC X(20).
             03  FILLER                     PIC X(01).
-            03  PRICE-IMP-DESCRIPTION      PIC X(61).
+            03  PRICE-IMP-DESCRIPTION      PIC X(60).
+            03  FILLER                     PIC X(01).
             03  PRICE-IMP-UNIT-OF-SALE     PIC X(10).
             03  FILLER                     PIC X(01).
-            03  PRICE-IMP-OLD-DEALER-PRICE PIC X(15).
+            03  PRICE-IMP-OLD-DEALER-PRICE PIC X(14).
             03  FILLER                     PIC X(01).
             03  PRICE-IMP-NEW-DEALER-PRICE PIC X(14).
             03  FILLER                     PIC X(01).

@@ -139,16 +139,16 @@
        GET-000.
            MOVE " " TO WS-RANGE1 WS-RANGE2.
            MOVE 0401 TO POS
-           DISPLAY "ADDED PREFIX:" AT POS
+           DISPLAY "USE LOOKUP:" AT POS
            MOVE 0501 TO POS
-           DISPLAY "BKM, CK, FLK, WLR" AT POS
+           DISPLAY "BKM, CK, FLK, GDR, WLR" AT POS
            
            MOVE 0701 TO POS
-           DISPLAY "NO ADDED PREFIX:" AT POS
+           DISPLAY "DON'T USE LOOKUP:" AT POS
            MOVE 0801 TO POS
-           DISPLAY "BRN, DPR, GDR, KEN," AT POS.
+           DISPLAY "BRN, DPR, KEN," AT POS.
            MOVE 0901 TO POS
-           DISPLAY "MGL, MI, SCS" AT POS.
+           DISPLAY "MGL, MT, SCS" AT POS.
        GET-005.
            MOVE 821 TO POS.
            DISPLAY "FROM STOCK NUMBER: [               ]" AT POS
@@ -606,14 +606,6 @@
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
-           IF WS-EOF = "GDR"
-            IF WS-SC1 = "GDR"
-              MOVE SPACES            TO ALPHA-RATE
-              MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
-              MOVE 4 TO SUB-1
-              MOVE 5 TO SUB-2
-              GO TO MP-050.
            IF WS-EOF = "DPR"
             IF WS-SC1 = "DPR"
               MOVE SPACE             TO ALPHA-RATE
@@ -638,8 +630,8 @@
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
-           IF WS-EOF = "MI "
-            IF WS-SC1 = "MI "
+           IF WS-EOF = "MT "
+            IF WS-SC1 = "MT "
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
               MOVE WS-SC1 TO DATA-RATE
@@ -654,7 +646,7 @@
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
-           IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "WLR"
+           IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
               MOVE SPACES TO DATA-RATE
@@ -690,18 +682,16 @@
              GO TO CPIAS-020.
            IF WS-EOF = "BRN"
              GO TO CPIAS-030.
-           IF WS-EOF = "GDR"
-             GO TO CPIAS-042.
            IF WS-EOF = "MGL"
              GO TO CPIAS-050.
-           IF WS-EOF = "MI "
+           IF WS-EOF = "MT "
              GO TO CPIAS-060.
            IF WS-EOF = "SCS"
              GO TO CPIAS-065.
            IF WS-EOF = "DPR"
              GO TO CPIAS-070.
 
-           IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "WLR"
+           IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
               MOVE " " TO WS-STOCK-PREFIX.
            GO TO CPIAS-999.
        CPIAS-020.
@@ -710,14 +700,11 @@
        CPIAS-030.
            MOVE "BRN " TO WS-STOCK-PREFIX
               GO TO CPIAS-999.
-       CPIAS-042.
-           MOVE "GDR " TO WS-STOCK-PREFIX
-              GO TO CPIAS-999.
        CPIAS-050.
            MOVE "MGL " TO WS-STOCK-PREFIX
               GO TO CPIAS-999.
        CPIAS-060. 
-           MOVE "MI " TO WS-STOCK-PREFIX
+           MOVE "MT " TO WS-STOCK-PREFIX
               GO TO CPIAS-999.
        CPIAS-065. 
            MOVE "SCS" TO WS-STOCK-PREFIX
@@ -1028,7 +1015,7 @@
               PERFORM READ-LOOKUP-FILE
            ELSE
               MOVE ST-KEY TO PRICE-KEY.
-              
+           
            IF WS-USE-LOOKUP-DATA = "Y"
             IF PRICE-KEY = "UNKNOWN"
              MOVE "D" TO ST-ANALYSIS
