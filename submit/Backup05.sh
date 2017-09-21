@@ -28,6 +28,10 @@ rm /BACKUPHDD/ctools/data10/*
 rm /BACKUPHDD/ctools/data11/*
 rm /BACKUPHDD/ctools/data12/*
 
+echo Removing Spl and Lock files.....
+rm /ctools/lock/*db.00*
+rm /ctools/spl/*
+
 mkdir /media/ctools/USB/data01
 mkdir /media/ctools/USB/data02
 mkdir /media/ctools/USB/data03
@@ -72,10 +76,6 @@ cp -a /ctools/data12/* /media/ctools/USB/data12
 #rm *-*
 #rm /ctools/spl/*
 #cd /ctools/bin
-
-echo Removing Spl and Lock files.....
-rm /ctools/lock/_db.*
-rm /ctools/spl/*
 
 Submit MainCont TapeBackupVol.Sub01
 
