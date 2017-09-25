@@ -218,8 +218,10 @@
        PR-000.
            IF PRINT-SB NOT = " "
                MOVE PRINT-SB TO PB-INITIAL
+               MOVE 0        TO PB-INVOICE
            ELSE
-               MOVE " "      TO PB-INITIAL.
+               MOVE " "      TO PB-INITIAL
+               MOVE 0        TO PB-INVOICE.
            START PULL-BY KEY NOT < PB-KEY
              INVALID KEY NEXT SENTENCE.
            IF WS-PULLBY-ST1 NOT = 0
@@ -357,7 +359,7 @@
                GO TO SL-999.
            IF WS-RANGE NOT = "Y"
                GO TO SL-999.
-           IF WS-PULLBY-ST1 NOT = "1"
+           IF WS-PULLBY-ST1 NOT = 10
               WRITE PRINT-REC FROM HEAD3 AFTER 2
               WRITE PRINT-REC FROM HEAD4 AFTER 1
               MOVE " " TO PRINT-REC

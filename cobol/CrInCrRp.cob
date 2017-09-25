@@ -230,8 +230,12 @@
            
            IF WS-JRN-ACCEPT > " "
               MOVE WS-JRN-ACCEPT TO CRJRN-REFERENCE
+              MOVE 0             TO CRJRN-TRANS
+                                    CRJRN-TYPE
            ELSE
-              MOVE " "           TO CRJRN-REFERENCE.
+              MOVE " "           TO CRJRN-REFERENCE
+              MOVE 0             TO CRJRN-TRANS
+                                    CRJRN-TYPE.
            
            START CRJRN-FILE KEY NOT < CRJRN-KEY
               INVALID KEY NEXT SENTENCE.

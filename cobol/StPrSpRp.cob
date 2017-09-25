@@ -100,7 +100,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER1.
 
-      *     ACCEPT WS-ANSWER1 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-005.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
@@ -122,7 +121,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER2.
 
-      *     ACCEPT WS-ANSWER2 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-010.
            IF WS-ANSWER2 = " "
@@ -136,28 +134,30 @@
        CONTROL-020.
            MOVE 1510 TO POS.
            DISPLAY 
-            "Y=Print & Write File To Disk, N=Print Only,"
-                 AT POS
+            "Y=Print & Write File To Disk, N=Print Only," AT POS
            MOVE 1610 TO POS
            DISPLAY
-            "P=Print From Existing Special Pricelist.          [ ]"
+        "P=Print From Existing Specials & Delete Non Stock Specials [ ]"
                 AT POS
            MOVE 1710 TO POS
            DISPLAY
             "Answer Y/N = Non Current Specials will be Deleted."
                 AT POS.
-           MOVE 1661 TO POS.
+           MOVE 1810 TO POS
+           DISPLAY
+            "Answer Y/N = Non Current Specials will be Deleted."
+                AT POS.
+           MOVE 1670 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 13        TO CDA-ROW.
-           MOVE 60        TO CDA-COL.
+           MOVE 69        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER3.
 
-      *     ACCEPT WS-ANSWER3 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-012.
            IF WS-ANSWER3 = " "
@@ -176,24 +176,23 @@
                 GO TO CONTROL-035.
            MOVE 1810 TO POS.
            DISPLAY
-           "ENTER A FACTOR X AVERAGE COST FOR SPECIAL PRICE   [       ]"
-                    AT POS.
+           "ENTER A FACTOR X AVERAGE COST FOR SPECIAL PRICE" &
+           "      [       ]" AT POS.
            MOVE 1910 TO POS.
            DISPLAY
-           "E.G. 25% = 1.25                FORMAT FOR FACTOR = 999.999"
-            AT POS.
-           MOVE 1861 TO POS.
+           "E.G. 25% = 1.25                FORMAT FOR FACTOR" &
+           "    = 999.999" AT POS.
+           MOVE 1864 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 7         TO CDA-DATALEN.
            MOVE 15        TO CDA-ROW.
-           MOVE 60        TO CDA-COL.
+           MOVE 63        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER4.
 
-      *     ACCEPT WS-ANSWER4 AT POS.
            IF W-ESCAPE-KEY = 4
                GO TO CONTROL-020.
            IF WS-ANSWER4 = " "
@@ -208,7 +207,7 @@
            MOVE WS-ANSWER4 TO ALPHA-RATE.
            PERFORM DECIMALISE-RATE.
            MOVE NUMERIC-RATE TO WS-FACTOR WS-FACTOR-DIS.
-           MOVE 1861 TO POS.
+           MOVE 1864 TO POS.
            DISPLAY WS-FACTOR-DIS AT POS.
        CONTROL-032.
            MOVE 2110 TO POS
@@ -217,22 +216,21 @@
               AT POS
            MOVE 2210 TO POS
            DISPLAY
-           " Before The Item Should Be Printed As On Special.   [  ]"
-                AT POS
-           ADD 53 TO POS.
+           " Before The Item Should Be Printed As On Special." &
+           "         [  ]" AT POS
+           ADD 59 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 2         TO CDA-DATALEN.
            MOVE 19        TO CDA-ROW.
-           MOVE 62        TO CDA-COL.
+           MOVE 68        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ANSWER5.
 
-      *     ACCEPT WS-ANSWER5 AT POS.
            IF W-ESCAPE-KEY = 4
-               GO TO CONTROL-020.
+               GO TO CONTROL-025.
            MOVE WS-ANSWER5 TO ALPHA-RATE
            PERFORM DECIMALISE-RATE
            MOVE NUMERIC-RATE TO WS-MONTHS.
@@ -347,6 +345,7 @@
            IF PAGE-CNT = 1
                WRITE PRINT-REC FROM COMPANY-LINE
            ELSE
+               WRITE PRINT-REC AFTER 1
                WRITE PRINT-REC FROM COMPANY-LINE AFTER PAGE.
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC FROM HEAD1 AFTER 1
@@ -422,7 +421,7 @@
            START STPR-MASTER KEY NOT < STPR-KEY
               INVALID KEY NEXT SENTENCE.
        SPR-005.
-           READ STPR-MASTER NEXT
+           READ STPR-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
            IF WS-STPR-ST1 = 10
                GO TO SPR-999.
@@ -468,6 +467,7 @@
            IF PAGE-CNT = 1
                WRITE PRINT-REC FROM COMPANY-LINE
            ELSE
+               WRITE PRINT-REC AFTER 1
                WRITE PRINT-REC FROM COMPANY-LINE AFTER PAGE.
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC FROM HEAD1 AFTER 1
@@ -567,7 +567,8 @@
            IF WS-STOCK-ST1 = 23 OR 35 OR 49
                MOVE "**INVALID NUMBER**" TO ST-DESCRIPTION1
                MOVE " "                  TO ST-DESCRIPTION2
-               MOVE 0 TO STPR-PRICE ST-QTYONHAND
+               MOVE 0                    TO STPR-PRICE
+                                            ST-QTYONHAND
                GO TO RS-999.
            IF WS-STOCK-ST1 NOT = 0
               MOVE "STOCK BUSY ON READ, 'ESC' TO RE-TRY."
