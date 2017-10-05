@@ -326,12 +326,13 @@
        GET-010.
            MOVE " " TO WS-COMMENT (SUB-1).
            PERFORM ERROR-020.
+           MOVE 1514 TO POS
            DISPLAY WS-MESSAGE AT POS.
            IF SUB-1 < 4
                ADD 1 TO SUB-1
                GO TO GET-010.
            MOVE 1 TO SUB-1.
-           MOVE 1401 TO POS.
+           MOVE 1410 TO POS.
            DISPLAY
            "ENTER A COMMENT TO BE PRINTED ON THE REMITTANCE, 4 " &
            "LINES MAXIMUM." AT POS.
@@ -341,9 +342,9 @@
            DISPLAY "]" AT POS.
            MOVE " " TO WS-MESSAGE.
        GET-015.
-           MOVE 1501 TO POS.
+           MOVE 1504 TO POS.
            DISPLAY "No=" AT POS.
-           ADD 4 TO POS.
+           ADD 3 TO POS.
            DISPLAY SUB-1 AT POS.
            MOVE 1515 TO POS.
            

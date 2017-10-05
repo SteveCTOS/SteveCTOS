@@ -46,6 +46,9 @@ rm /BACKUPHDD/ctools/data10/*
 rm /BACKUPHDD/ctools/data11/*
 rm /BACKUPHDD/ctools/data12/*
 
+echo Removing Lock files.....
+rm /ctools/lock/*db.00*
+
 mkdir /media/ctools/USB/data01
 mkdir /media/ctools/USB/data02
 mkdir /media/ctools/USB/data03
