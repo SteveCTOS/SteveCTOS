@@ -29,6 +29,9 @@ mkdir /media/ctools/USB/data10
 mkdir /media/ctools/USB/data11
 mkdir /media/ctools/USB/data12
 
+echo Removing Lock files.....
+rm /ctools/lock/*db.00*
+
 echo The After YearEnd Backup is Being Run.....
 echo Copying Data01.....
 cp -a /ctools/data01/* /media/ctools/USB/data01
