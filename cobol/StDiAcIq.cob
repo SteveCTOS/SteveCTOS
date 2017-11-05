@@ -892,6 +892,8 @@
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
                MOVE 0 TO WS-SBREP-ST1
+               GO TO RSB-030.
+               
            MOVE SBREP-REPNAME TO WS-SALESMAN.
        RSB-999.
             EXIT.
