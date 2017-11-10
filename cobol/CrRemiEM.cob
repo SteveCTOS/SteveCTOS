@@ -331,6 +331,10 @@
            IF SUB-1 < 4
                ADD 1 TO SUB-1
                GO TO GET-010.
+           MOVE "PLEASE CONTACT YVONNE, PENNY OR KIM ON 011-618-3325"
+             TO WS-COMMENT (1)
+           MOVE "FOR ANY ACCOUNT QUERIES." TO WS-COMMENT (2).
+
            MOVE 1 TO SUB-1.
            MOVE 1410 TO POS.
            DISPLAY

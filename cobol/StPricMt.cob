@@ -595,15 +595,24 @@
        MP-010.
            MOVE SPACES                 TO ALPHA-RATE DATA-RATE.
 
-           IF WS-EOF = "DPR"
+           IF WS-IMP-UPDATE = "Z" 
+            IF WS-EOF = "DPR"
               PERFORM FIX-SIZE-OF-NUMBER
               MOVE PRICE-IMP-SP-KEY    TO WS-SP2
                                           WS-STOCK-CHECKING
+              GO TO MP-020.
+
+           IF WS-EOF = "DPR"
+              MOVE PRICE-IMP-KEY          TO PRICE-IMP-SP-KEY
+              PERFORM FIX-SIZE-OF-NUMBER
+              MOVE PRICE-IMP-SP-KEY       TO PRICE-IMP-KEY
+                                             WS-SP2
+                                             WS-STOCK-CHECKING
            ELSE 
               MOVE PRICE-IMP-KEY       TO WS-SP2
                                           WS-STOCK-CHECKING.
-
            MOVE WS-STOCK-PREFIX     TO ALPHA-RATE.
+       MP-020.
            MOVE 1 TO SUB-1 SUB-2.
            
            IF WS-EOF = "BRN"
