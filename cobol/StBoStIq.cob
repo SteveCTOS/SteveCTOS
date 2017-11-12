@@ -816,6 +816,9 @@
            START STOCK-TRANS-FILE KEY NOT < STTR-ST-KEY
                 INVALID KEY NEXT SENTENCE.
             IF WS-STTRANS-ST1 NOT = 0
+              MOVE "STTRANS BUSY ON START, 'ESC' TO EXIT."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-900.
        PRR-002.
@@ -835,12 +838,13 @@
                PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
                GO TO PRR-002.
-           IF STTR-ST-COMPLETE NOT = "N"
+           IF STTR-ST-COMPLETE = "L" OR = "Y"
                GO TO PRR-900.
+      *      IF STTR-ST-COMPLETE NOT = "N" AND NOT = " " AND NOT = "B"
+      *                     AND NOT = "C" AND NOT = "D"
+      *         GO TO PRR-900.
            IF STTR-TYPE NOT = 4 AND NOT = 7
                GO TO PRR-002.
-            IF STTR-ST-COMPLETE NOT = "N"
-               GO TO PRR-900.
            MOVE STTR-STOCK-NUMBER TO SPLIT-STOCK.
            IF STTR-STOCK-NUMBER < ST-STOCKNUMBER
                GO TO PRR-002.
@@ -876,6 +880,7 @@
                 MOVE " "   TO D-PULLED
             ELSE
                 MOVE "P"   TO D-PULLED.
+           MOVE STTR-REFERENCE1         TO D-1STINV
            MOVE STTR-DATE               TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE            TO D-1STDATE
@@ -887,7 +892,7 @@
            WRITE PRINT-REC FROM DETAIL-LINE
            COMPUTE STTR-ORDERQTY = STTR-ORDERQTY - STTR-SHIPPEDQTY
            ADD STTR-ORDERQTY            TO WS-ORDERQTY
-           ADD STTR-SHIPQTY             TO WS-SHIPQTY
+           ADD STTR-SHIPQTY             TO WS-SHIPQTY.
 
            MOVE " " TO PRINT-REC
            ADD 1 TO LINE-CNT

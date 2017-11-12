@@ -744,7 +744,7 @@
       *                       W-DELAY.
 
            IF WS-DELAY-FAX = "Y"
-               CALL "C$SLEEP" USING 10.
+               CALL "C$SLEEP" USING 5.
            MOVE " " TO WS-PRINTER.
            MOVE WS-DOTPRINTER TO WS-PRINTER.
            GO TO RDM-010.
