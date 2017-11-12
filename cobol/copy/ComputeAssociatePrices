@@ -33,8 +33,14 @@
       **************
            IF ST-CATEGORY = "WLR" OR = "ORX" OR = "PAN" OR = "XRN"
                        OR = "AB " OR = "BTS" OR = "SCS" OR = "MC "
-                       OR = "XLT" OR = "RCT"
+                       OR = "XLT" OR = "RCT" OR = "KAR"
               COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.030
+              GO TO CASP-010.
+      **************
+      *10.0% ITEMS *
+      **************
+           IF ST-CATEGORY = "DPR"
+              COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.10
               GO TO CASP-010.
       **************************************************************
       *ADDED WS-CO-NUMBER TO THIS SECTION FOR GRC PURPOSES         *

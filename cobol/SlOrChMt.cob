@@ -262,9 +262,11 @@
                  GO TO RSN-010.
        RSN-050.
             MOVE 2610 TO POS
-            DISPLAY "READING BACK-ORDER ITEMS...    " AT POS
+            DISPLAY "READING BACK-ORDER ITEMS...               " AT POS
             COMPUTE WS-QUANTITY = ST-QTYONHAND + ST-QTYONRESERVE
             PERFORM CHECK-PREVIOUS-ALLOC-TOTAL.
+            MOVE 2610 TO POS
+            DISPLAY "AFTER CHECK-PREVIOUS.........             " AT POS
             
       *NEW SECTION - SEE CPAT-005.
             COMPUTE WS-QUANTITY =
@@ -325,7 +327,7 @@
             REWRITE STOCK-RECORD
                INVALID KEY NEXT SENTENCE.
             IF WS-ST-ST1 NOT = 0
-            MOVE
+               MOVE
            "NEXT STOCK FILE BUSY ON RE-WRITE, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000 
@@ -344,6 +346,8 @@
       *
        CHECK-PREVIOUS-ALLOC-TOTAL SECTION.
        CPAT-000.
+            MOVE 2610 TO POS
+            DISPLAY "CHECKING PREVIOUS QTY'S ......            " AT POS
       *      PERFORM OPEN-010.
             MOVE 0 TO WS-STTR-ORDERQTY
                       WS-STTR-SHIPQTY
@@ -353,6 +357,8 @@
                       WS-SHIPQTY-ALLOC-NO-CHNG.
                       
             PERFORM CLEAR-UNALLOCATED-NUMBERS.
+            MOVE 2610 TO POS
+            DISPLAY "AFTER CLEARING UN-ALLOC.....              " AT POS
             
             MOVE " "            TO STTR2-ST-COMPLETE
             MOVE ST-STOCKNUMBER TO STTR2-STOCK-NUMBER
@@ -385,8 +391,12 @@
             IF STTR2-STOCK-NUMBER NOT = ST-STOCKNUMBER
                GO TO CPAT-900.
             IF STTR2-TYPE NOT = 4 AND NOT = 7
+      *         MOVE "GOING TO CPAT-002, TYPE NOT 4 OR 7" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                GO TO CPAT-002.
             IF STTR2-ST-COMPLETE = "L" OR = "Y" OR = "R"
+      *         MOVE "GOING TO CPAT-002, COMP = L, Y OR R" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                GO TO CPAT-002.
        CPAT-005.
       ******************************************************************
@@ -448,6 +458,8 @@
       *
        CLEAR-UNALLOCATED-NUMBERS SECTION.
        CUN-005.
+            MOVE 2610 TO POS
+            DISPLAY "CLEARING UN-ALLOC NUMBERS.....          " AT POS
            MOVE 0 TO SUB-1.
        CUN-010.
            ADD 1 TO SUB-1.
@@ -469,6 +481,10 @@
        ENTER-UNALLOCATED-NUMBERS SECTION.
        EON-005.
            PERFORM READ-REGISTER.
+
+           MOVE 2610 TO POS
+           DISPLAY "ENTER UNALLOC NUMBERS ...........          " AT POS
+          
            IF WS-ALLOC-TO-SUSP = "A" OR = "P"
             IF INCR-PRINTED = "S"
               GO TO EON-010.
@@ -751,6 +767,9 @@
       *
        READ-REGISTER SECTION.
        RIR-000.
+           MOVE 2610 TO POS
+           DISPLAY "READING REGISTER ................          " AT POS
+
            MOVE STTR2-REFERENCE1 TO INCR-INVOICE.
            MOVE STTR2-TYPE       TO INCR-TRANS.
            START INCR-REGISTER KEY NOT < INCR-KEY
