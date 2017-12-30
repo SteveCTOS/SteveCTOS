@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import glob, os, sys
-comps = ['ctj', 'grc', 'ctn', 'orx', 'sfj', 'csc', 'sfi', 'qtm', 'hky', 'krs']
+comps = ['ctj', 'grc', 'ctn', 'orx', 'sfj', 'csc', 'sfi', 'qtm', 'hky', 'krs', 'kgi']
 months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
 comp = sys.argv[1]
 month = sys.argv[2]

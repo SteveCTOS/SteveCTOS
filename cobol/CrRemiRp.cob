@@ -261,7 +261,7 @@
            03  T-ACC          PIC X(10) VALUE " ".
            03  T-NAME         PIC X(26) VALUE " ".
            03  T-AMT          PIC Z(7)9.99-.
-           03  FILLER         PIC X(3) VALUE " ".
+           03  FILLER         PIC X(1) VALUE " ".
            03  T-DISC         PIC Z(6)9.99-.
            03  FILLER         PIC X(48) VALUE " ".
        01  A-COMPANY-DETAIL-LINE.

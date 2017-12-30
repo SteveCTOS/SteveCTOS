@@ -550,7 +550,7 @@
       ****************************************
       * BOND PAYMENTS IN PROPERTY COMPANIES  *
       ****************************************
-      * FOR QTM, HKY & KRS
+      * FOR QTM, HKY & KRS & KGI
            IF WS-SALOB-1-10 = "FNB OB 000"
             IF WS-SALOB-1-13 = "BOND PAYMENT"
               MOVE " *" TO BANK-CAMS-FOUND
@@ -811,6 +811,32 @@
               MOVE " Loan Paid                                   "
                   TO WS-NARRATIVE 
               MOVE "75-040-70-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+      * KGI=4
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-4-26 = "CTJ-KGI LOAN              "
+             IF WS-CO-NUMBER = 1
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan To Company                             "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-75-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "KGI-CTJ LO"
+             IF WS-LOAN-4-26 = "AN PD                     "
+              IF WS-CO-NUMBER = 1
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan Paid                                   "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-75-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
@@ -1160,6 +1186,33 @@
               GO TO RCF-030.
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-4-26 = "KRS-CTJ LOAN PD           "
+             IF WS-CO-NUMBER = 12
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan Paid                                   "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-05-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+      * PROCESSED IN KGI
+      * CTJ=1
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "CTJ-KGI LO"
+             IF WS-LOAN-4-26 = "AN                        "
+              IF WS-CO-NUMBER = 12
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan To Company                             "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-05-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-4-26 = "KGI-CTJ LOAN PD           "
              IF WS-CO-NUMBER = 12
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950

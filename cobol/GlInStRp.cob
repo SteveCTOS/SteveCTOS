@@ -173,15 +173,18 @@
                 MOVE "50-200-05-00" TO WS-NEXT-NUMBER
                 GO TO GET-999.
             IF SUB-1 = 3
-                MOVE "50-200-10-00" TO WS-NEXT-NUMBER
+                MOVE "50-200-08-00" TO WS-NEXT-NUMBER
                 GO TO GET-999.
             IF SUB-1 = 4
+                MOVE "50-200-10-00" TO WS-NEXT-NUMBER
+                GO TO GET-999.
+            IF SUB-1 = 5
                 MOVE "50-200-15-00" TO WS-NEXT-NUMBER
                 GO TO GET-999.
       *      IF SUB-1 = 5
       *          MOVE "50-200-20-00" TO WS-NEXT-NUMBER
       *          GO TO GET-999.
-            IF SUB-1 = 5
+            IF SUB-1 = 6
                 MOVE "TOTAL COST OF SALES" TO D-NAME
                 MOVE WS-COLUMN1            TO D-MV-PTD
                                               WS-MTD-COST
@@ -202,7 +205,7 @@
                 MOVE GL-PER (SUB-4)   TO WS-MTD-SALES
                 MOVE WS-MARGIN-MV-YTD TO WS-YTD-SALES
                 GO TO GET-999.
-            IF SUB-1 = 6
+            IF SUB-1 = 7
                 WRITE PRINT-REC FROM UNDER-LINE
                 MOVE " " TO PRINT-REC
                 MOVE "GROSS PROFIT(-)/LOSS" TO D-NAME1
@@ -247,85 +250,85 @@
                                    WS-COLUMN7
                 MOVE "50-010      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 7
+            IF SUB-1 = 8
                 MOVE "50-020      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 8
+            IF SUB-1 = 9
                 MOVE "50-025      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 9
+            IF SUB-1 = 10
                 MOVE "50-030      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 10
+            IF SUB-1 = 11
                 MOVE "50-035      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 11
+            IF SUB-1 = 12
                 MOVE "50-040      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 12
+            IF SUB-1 = 13
                 MOVE "50-045      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 13
+            IF SUB-1 = 14
                 MOVE "50-050      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 14
+            IF SUB-1 = 15
                 MOVE "50-090      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 15
+            IF SUB-1 = 16
                 MOVE "50-052      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 16
+            IF SUB-1 = 17
                 MOVE "50-055      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 17
+            IF SUB-1 = 18
                 MOVE "50-060      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 18
+            IF SUB-1 = 19
                 MOVE "50-070      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 19
+            IF SUB-1 = 20
                 MOVE "50-078      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 20
+            IF SUB-1 = 21
                 MOVE "50-075      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 21
+            IF SUB-1 = 22
                 MOVE "50-080      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 22
+            IF SUB-1 = 23
                 MOVE "50-082      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 23
+            IF SUB-1 = 24
                 MOVE "50-084      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 24
+            IF SUB-1 = 25
                 MOVE "50-085      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 25
+            IF SUB-1 = 26
                 MOVE "50-092      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 26
+            IF SUB-1 = 27
                 MOVE "50-095      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 27
+            IF SUB-1 = 28
                 MOVE "50-100      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 28
+            IF SUB-1 = 29
                 MOVE "50-106      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 29
+            IF SUB-1 = 30
                 MOVE "50-110      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 30
+            IF SUB-1 = 31
                 MOVE "50-400      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 31
+            IF SUB-1 = 32
                 MOVE "50-076      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 32
+            IF SUB-1 = 33
                 MOVE "50-115      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 33
+            IF SUB-1 = 34
                 WRITE PRINT-REC FROM UNDER-LINE
                 MOVE " " TO PRINT-REC
                 MOVE "TOTAL EXPENSES    " TO D-NAME
@@ -370,16 +373,16 @@
       *     IF SUB-1 = 34
       *         MOVE "60-015      " TO WS-NEXT-NUMBER
       *         GO TO GET-999.
-            IF SUB-1 = 34
+            IF SUB-1 = 35
                 MOVE "60-300      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 35
+            IF SUB-1 = 36
                 MOVE "60-400      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 36
+            IF SUB-1 = 37
                 MOVE "55-010      " TO WS-NEXT-NUMBER
                 GO TO GET-999.
-            IF SUB-1 = 37
+            IF SUB-1 = 38
                 WRITE PRINT-REC FROM UNDER-LINE
                 MOVE " " TO PRINT-REC UNDER-LINE
                 MOVE "PROFIT(-)/LOSS NOT POSTED" TO D-NAME

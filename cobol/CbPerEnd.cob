@@ -748,7 +748,7 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CBTRANS-ST1
               GO TO CH-FU-900.

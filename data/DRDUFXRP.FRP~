@@ -20,7 +20,7 @@
         *    (B=Bad ONLY, Y=Both, N=No Bad Faxes)                     *         
         *   Send Internal Cash a/c's           : _                    *         
         *    (C=Cash ONLY, N=No Cash a/c's, Y=All a/c's)              *         
-        *   I=Invoice Date, D=Delivery Date    : _                    *         
+        *   I=Invoice Data, D=Delivery Date    : _                    *         
         ***************************************************************         
                                                                                 
                                                                                 
