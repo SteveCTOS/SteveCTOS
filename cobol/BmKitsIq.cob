@@ -367,13 +367,16 @@
               PERFORM SCROLL-PREVIOUS-PAGE
               MOVE 1 TO F-INDEX
               GO TO FILL-010.
-      *TAB - <ALT-F8>
+      *TAB
            IF F-EXIT-CH = X"09"
               GO TO FILL-900.
-      *ESC
+      *FINISH - End
+           IF F-EXIT-CH = X"04"
+              PERFORM END-OFF.
+      *CANCEL - ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.
-      * <f10> to print
+      *F10 - Print
            IF F-EXIT-CH = X"1F"
                 PERFORM PRINT-ROUTINE
                 PERFORM CLEAR-TRANSACTIONS

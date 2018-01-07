@@ -2,8 +2,8 @@
 * Account Number : ____________                    Current Period : __        *
 *  ________________________________________            __________ : __________*
 * Account Balance: ____________                                               *
-* Period Activity: ____________                 Total No Of Trans :  ____     *
-* Period to Read : __                        Last Displayed Trans : _____     *
+* Period Activity: ____________                 Total No Of Trans : ______    *
+* Period to Read : __                        Last Displayed Trans : ______    *
 *******************************************************************************
    Jrn No  *Tp*A*   Date   *Gl Exp Acc  *   Rand Amt *Transaction Description  
  __________*__*_*__________*____________*____________*_________________________
@@ -132,7 +132,7 @@ List of values:
 
 
 Field name: TOTTRANS                                         
-Row: 4    Column: 69   Width: 4                              
+Row: 4    Column: 68   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -162,7 +162,7 @@ List of values:
 
 
 Field name: LINES                                            
-Row: 5    Column: 68   Width: 5                              
+Row: 5    Column: 68   Width: 6                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
