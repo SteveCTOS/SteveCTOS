@@ -294,6 +294,7 @@
        PR-000.
            PERFORM SUB-015.
            
+           MOVE " "       TO TRANS-LINE.
            MOVE WS-RANGE1 TO CRTR-ACC-NUMBER.
            MOVE 0         TO CRTR-DATE CR-ACCOUNT-NUMBER.
            START CRTR-FILE KEY NOT < CRTR-ACC-DATE

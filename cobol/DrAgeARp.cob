@@ -366,6 +366,7 @@
        PRINT-ROUTINE SECTION.
        PR-000.
            MOVE "N" TO WS-SKIPACCOUNT.
+           MOVE " " TO TRANS-LINE.
            MOVE SPACES    TO DEBTOR-RECORD
            MOVE WS-RANGE1 TO DRTR-ACC-KEY.
            MOVE 0         TO DRTR-DATE.

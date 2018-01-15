@@ -312,6 +312,7 @@
       *
        PRINT-ROUTINE SECTION.
        PR-000.
+           MOVE " "       TO TRANS-LINE.
            MOVE 0         TO CR-ACCOUNT-NUMBER.
            MOVE WS-RANGE1 TO CRJRN-CRACC-NUMBER.
            START CRJRN-FILE KEY NOT < CRJRN-CRACC-NUMBER
