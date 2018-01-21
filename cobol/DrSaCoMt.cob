@@ -66,7 +66,7 @@
                         WS-END.
             MOVE 2310 TO POS
             DISPLAY
-            "ENTER SALESMAN No AND PRESS <F10> TO DELETE ALL RECORDS"
+            "ENTER SALESMAN No & PRESS <F10> TO DELETE ALL RECORDS"
                 AT POS.
             MOVE 2410 TO POS
             DISPLAY
@@ -74,7 +74,7 @@
                 AT POS.
             MOVE 2510 TO POS
             DISPLAY
-        "ENTER SALESMAN No AND PRESS <SHIFT-PAGE-DOWN> TO READ BY REP#."
+        "OR ENTER SALESMAN No & PRESS <Alt-PgDn> TO READ BY REP#."
                 AT POS.
         GET-001.
             MOVE SPACES       TO F-NAMEFIELD.
@@ -120,7 +120,7 @@
                  PERFORM CLEAR-FORM
                  PERFORM GET-003 THRU GET-006
                  GO TO GET-999.
-      *<CODE-PAGE-DOWN>
+      *<ALT-PAGE-DOWN>
             IF F-EXIT-CH = X"8C"
                  PERFORM START-PAGE-DOWN-RECORD
                  PERFORM READ-NEXT
@@ -173,7 +173,7 @@
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE
-              "     <'ESC'> THEN <F10> TO DELETE THIS RECORD."
+              "     <ESC> THEN <F10> TO DELETE THIS RECORD."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
             IF NEW-NO NOT = "Y" 
@@ -183,7 +183,7 @@
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE
-              "     <'ESC'> THEN <F10> TO DELETE THIS RECORD."
+              "PRESS <ESC> THEN <F10> TO DELETE THIS RECORD."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
                
@@ -241,6 +241,14 @@
             DISPLAY WS-MESSAGE AT POS
             MOVE 2410 TO POS
             DISPLAY WS-MESSAGE AT POS.
+            MOVE 2510 TO POS
+            DISPLAY WS-MESSAGE AT POS.
+
+            MOVE 2410 TO POS
+            DISPLAY 
+            "ENTER THE CONTACT NAME/S & CELL NUMBERS FOR THE CLIENT...." 
+                  AT POS.
+
             MOVE "                                   " TO F-NAMEFIELD.
             MOVE "NAME" TO F-FIELDNAME.
             MOVE 4 TO F-CBFIELDNAME.
@@ -279,6 +287,11 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO FILL-001.
        FILL-015.
+            MOVE 2410 TO POS
+            DISPLAY 
+            "ENTER THE WEEK & DAY NUMBER FOR THIS CLIENT..............." 
+                  AT POS.
+
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "AREA" TO F-FIELDNAME.
             MOVE 4 TO F-CBFIELDNAME.
@@ -320,6 +333,11 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO FILL-015.
        FILL-020.
+            MOVE 2410 TO POS
+            DISPLAY 
+            "ENTER THE AREA-NAME FOR THE WEEK/DAY NUMBER..............." 
+                  AT POS.
+
             MOVE "                                   " TO F-NAMEFIELD.
             MOVE "AREA-NAME" TO F-FIELDNAME.
             MOVE 9 TO F-CBFIELDNAME.
@@ -335,6 +353,8 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO FILL-020.
+            IF F-EXIT-CH = X"01"
+               GO TO FILL-015.
             IF F-EXIT-CH = X"0C"
                PERFORM REWRITE-RECORD
                PERFORM READ-NEXT

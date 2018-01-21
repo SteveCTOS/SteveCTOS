@@ -147,10 +147,10 @@
                        DETAIL-LINE
            WRITE PRINT-REC.
 
-           MOVE "R/D CHEQUES         :" TO D-NAME
-           MOVE DIST-RDCHEQUEWEEK       TO D-AMTWEEK
-           MOVE DIST-RDCHEQUEPTD        TO D-AMTPTD
-           MOVE DIST-RDCHEQUEYTD        TO D-AMTYTD
+           MOVE "R/D CHEQUES        :" TO D-NAME
+           MOVE DIST-RDCHEQUEWEEK      TO D-AMTWEEK
+           MOVE DIST-RDCHEQUEPTD       TO D-AMTPTD
+           MOVE DIST-RDCHEQUEYTD       TO D-AMTYTD
            WRITE PRINT-REC FROM DETAIL-LINE AFTER 1
            MOVE " " TO PRINT-REC
                        DETAIL-LINE

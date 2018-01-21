@@ -350,11 +350,12 @@
            MOVE 2510 TO POS
            DISPLAY "STOCK PRICES BEING IMPORTED...." AT POS.
            
+           MOVE 0   TO SUB-20.
            MOVE " " TO PRICE-IMP-KEY.
        ID-005.
            READ PRICE-IMP-MASTER
               AT END
-                 GO TO ID-999.
+                 GO TO ID-900.
        ID-010.
            PERFORM MERGE-PARTS.
            MOVE WS-STOCK-PREFIX            TO PRICE-ST-NUM.
@@ -368,6 +369,8 @@
            
            MOVE PRICE-IMP-DESCRIPTION      TO PRICE-DESCRIPTION
            PERFORM ENTER-UNIT-OF-SALE.
+           
+           MOVE "EACH"                     TO PRICE-UNIT-OF-SALE.
            
            MOVE PRICE-IMP-OLD-DEALER-PRICE TO ALPHA-RATE
            PERFORM REMOVE-LEADING-ZEROS
@@ -412,7 +415,18 @@
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ID-020.
+
+            ADD 1 TO SUB-20.
+           
+            MOVE 2010 TO POS
+            DISPLAY "NUMBER OF RECORDS:" AT POS
+            ADD 20 TO POS
+            DISPLAY SUB-20 AT POS.
+
            GO TO ID-005.
+       ID-900.
+            MOVE "IMPORT FINISHED.........." TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.   
        ID-999.
            EXIT.
       *
@@ -424,7 +438,7 @@
            DISPLAY "STOCK SPECIAL PRICES BEING IMPORTED...." AT POS.
            
            MOVE " " TO PRICE-IMP-SP-KEY.
-           MOVE 0 TO SUB-20.
+           MOVE 0   TO SUB-20.
        ID-SPEC-005.
            READ PRICE-IMP-SP-MASTER
               AT END
@@ -563,7 +577,7 @@
            MOVE PRICE-IMP-SP-KEY TO ALPHA-RATE.
            MOVE 000000           TO DATA-RATE.
 
-      *     MOVE PRICE-IMP-KEY TO WS-MESSAGE
+      *     MOVE PRICE-IMP-SP-KEY TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
       *     MOVE DATA-RATE TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -586,8 +600,11 @@
            MOVE DATA-RATE TO PRICE-IMP-SP-KEY.
 
       *     IF PRICE-IMP-SP-KEY > "X15007"
+      *     MOVE "FSON-040" TO WS-MESSAGE
+      *     PERFORM ERROR1-000
       *     MOVE PRICE-IMP-SP-KEY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
        FSON-999.
            EXIT.
       *
@@ -614,28 +631,55 @@
            MOVE WS-STOCK-PREFIX     TO ALPHA-RATE.
        MP-020.
            MOVE 1 TO SUB-1 SUB-2.
+    
+         
+      *     MOVE "MP-020" TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
+      *     MOVE WS-EOF TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     MOVE WS-SC1 TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
            
+      *     MOVE WS-STOCK-CHECKING TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     PERFORM ERROR1-020.
+
            IF WS-EOF = "BRN"
             IF WS-SC1 = "BRN"
               MOVE SPACES            TO ALPHA-RATE
-              MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
-              MOVE 4 TO SUB-1
-              MOVE 5 TO SUB-2
-              GO TO MP-050.
-           IF WS-EOF = "DPR"
-            IF WS-SC1 = "DPR"
-              MOVE SPACE             TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
               MOVE WS-SC1            TO DATA-RATE
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
+
+           IF WS-EOF = "DPR"
+      *      IF WS-SC1 = "DPR"
+            
+      *      MOVE "YES" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+            
+              MOVE SPACE             TO ALPHA-RATE
+              MOVE WS-STOCK-CHECKING TO ALPHA-RATE
+      *        MOVE PRICE-IMP-SP-KEY  TO ALPHA-RATE
+              MOVE WS-EOF            TO DATA-RATE
+              MOVE 1 TO SUB-1
+              MOVE 5 TO SUB-2
+         
+      *     MOVE "MP-050" TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE ALPHA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     MOVE DATA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+
+              GO TO MP-050.
+
            IF WS-EOF = "KEN"
             IF WS-SC1 = "KEN"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
+              MOVE WS-SC1            TO DATA-RATE
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
@@ -643,7 +687,7 @@
             IF WS-SC1 = "MGL"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
+              MOVE WS-SC1            TO DATA-RATE
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
@@ -651,7 +695,7 @@
             IF WS-SC1 = "MT "
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
+              MOVE WS-SC1            TO DATA-RATE
               MOVE 3 TO SUB-1
               MOVE 4 TO SUB-2
               GO TO MP-050.
@@ -659,14 +703,14 @@
             IF WS-SC1 = "SCS"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-SC1 TO DATA-RATE
+              MOVE WS-SC1            TO DATA-RATE
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
            IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE SPACES TO DATA-RATE
+              MOVE SPACES            TO DATA-RATE
               MOVE 1      TO SUB-1
               MOVE 1      TO SUB-2
               GO TO MP-015.
@@ -687,8 +731,11 @@
            MOVE ALPHA-RATE TO WS-STOCK-PREFIX.
            MOVE SPACES     TO ALPHA-RATE.
            
+      *     MOVE "MP-900" TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
       *     MOVE WS-STOCK-PREFIX TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
+      *     PERFORM ERROR1-020.
        MP-999.
            EXIT.
       *
@@ -995,6 +1042,7 @@
         UP-000.
            MOVE 2510 TO POS
            DISPLAY "STOCK PRICES BEING UPDATED ........" AT POS.
+           MOVE 0 TO SUB-20.
 
            IF WS-USE-LOOKUP-DATA = "Y"
               MOVE WS-RANGE1 TO ST-KEY
@@ -1016,12 +1064,12 @@
            READ STOCK-MASTER NEXT WITH LOCK
                AT END 
                DISPLAY " FILE AT END, FINISHING"
-               GO TO UP-999.
+               GO TO UP-900.
            
            IF ST-STOCKNUMBER < WS-RANGE1
               GO TO UP-005.    
            IF ST-STOCKNUMBER > WS-RANGE2
-              GO TO UP-999.
+              GO TO UP-900.
                  
            MOVE 2510 TO POS
            DISPLAY "STOCK ITEM BEING UPDATED:       " AT POS
@@ -1098,7 +1146,7 @@
               IF PRICE-NEW-DEALER-PRICE NOT = ST-LASTCOST
                  MOVE PRICE-NEW-DEALER-PRICE  TO ST-LASTCOST.
         UP-035.
-           IF ST-UNITOFMEASURE = "0001"
+           IF ST-UNITOFMEASURE = "0001" OR = "0000" OR = "    "
                MOVE "EACH" TO ST-UNITOFMEASURE.
            REWRITE STOCK-RECORD
                  INVALID KEY
@@ -1107,7 +1155,18 @@
                  MOVE WS-STOCK-ST1 TO WS-MESSAGE
                  PERFORM ERROR1-000
                  PERFORM ERROR-MESSAGE.
+
+            ADD 1 TO SUB-20.
+           
+            MOVE 2610 TO POS
+            DISPLAY "NUMBER OF RECORDS:" AT POS
+            ADD 20 TO POS
+            DISPLAY SUB-20 AT POS.
+
            GO TO UP-005.
+        UP-900.
+            MOVE "UPDATE FINISHED.........." TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE.   
         UP-999.
              EXIT.
       *
@@ -1174,15 +1233,15 @@
                             ST-LASTPRICECHANGE.
            MOVE 25       TO ST-MIN-PERC.
 
-           MOVE 5 TO    ST-DISCOUNT1
-           MOVE 10 TO   ST-DISCOUNT2
-           MOVE 15 TO   ST-DISCOUNT3 
-           MOVE 20 TO   ST-DISCOUNT4 
-           MOVE 2.5 TO  ST-DISCOUNT5 
-           MOVE 7.5 TO  ST-DISCOUNT6 
+           MOVE 5    TO ST-DISCOUNT1
+           MOVE 10   TO ST-DISCOUNT2
+           MOVE 15   TO ST-DISCOUNT3 
+           MOVE 20   TO ST-DISCOUNT4 
+           MOVE 2.5  TO ST-DISCOUNT5 
+           MOVE 7.5  TO ST-DISCOUNT6 
            MOVE 12.5 TO ST-DISCOUNT7  
-           MOVE 25 TO   ST-DISCOUNT8  
-           MOVE 30 TO   ST-DISCOUNT9.
+           MOVE 25   TO ST-DISCOUNT8  
+           MOVE 30   TO ST-DISCOUNT9.
 
 
            MOVE 0 TO ST-OLDPRICE

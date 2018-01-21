@@ -12,7 +12,7 @@
           Copy "SelectStChanges".
           Copy "SelectSlParameter".
           Copy "SelectSlDaily".
-           SELECT PRINT-FILE ASSIGN TO "/ctools/spl/PriceLists"
+           SELECT PRINT-FILE ASSIGN TO WS-PRICELIST-NAME
                FILE STATUS IS WS-SPOOL-STATUS
                ORGANIZATION IS LINE SEQUENTIAL.
       *
@@ -30,6 +30,7 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-FOUND             PIC X VALUE " ".
+       77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  W-CALC               PIC 9(8) VALUE 0.
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  PAGE-CNT             PIC 9(3) VALUE 0.
@@ -58,6 +59,10 @@
            03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-STCHANGE-STATUS.
            03  WS-STCHANGE-ST1    PIC 99.
+       01  WS-PRICELIST-NAME.
+           03  WS-PRICELIST       PIC X(24) VALUE 
+                       "/ctools/spl/PriceListsCo".
+           03  WS-PRICELIST-CO    PIC XX.  
        01  WS-DAILY-MESSAGE.
            03  WS-DAILY-1ST       PIC X(20) VALUE " ".
            03  WS-DAILY-2ND       PIC X(20) VALUE " ".
@@ -139,6 +144,14 @@
        Procedure Division Using Ws-Linkage.
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
+           PERFORM CLEAR-SCREEN
+           MOVE 315 TO POS
+           DISPLAY "** STOCK PRICELIST REPORT BY NUMBER **" AT POS
+           MOVE 415 TO POS
+           DISPLAY "**************************************" AT POS.
+       CONTROL-003.
+           Copy "PrinterAccept".
+
            PERFORM OPEN-FILES
            PERFORM CLEAR-SCREEN
            PERFORM DISPLAY-FORM
@@ -150,28 +163,37 @@
            IF WS-TYPE-OF-TRANS NOT = "P" AND NOT = "R"
                PERFORM NUMBER-OF-COPIES
                GO TO CONTROL-950.
+
+           MOVE WS-CO-NUMBER      TO WS-PRICELIST-CO.
+           MOVE WS-PRICELIST-NAME TO WS-PRINTER. 
            OPEN OUTPUT PRINT-FILE.
-           IF WS-SPOOL-ST1 NOT = 0
-              MOVE "SPOOLER STATUS BUSY ON OPEN, 'ESC' TO RETRY."
-              TO WS-MESSAGE
-              PERFORM ERROR1-000
-              MOVE WS-SPOOL-ST1 TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              PERFORM ERROR1-020
-              GO TO CONTROL-032.
-           MOVE WTELL-PAUSE TO PRINT-REC.
-           WRITE PRINT-REC.
-           MOVE " " TO PRINT-REC.
-           IF WS-TYPE-OF-TRANS = "R"
-              MOVE "  " TO PRINT-REC
-              WRITE PRINT-REC.
+      *     IF WS-SPOOL-ST1 NOT = 0
+      *        MOVE "SPOOLER STATUS BUSY ON OPEN, 'ESC' TO RETRY."
+      *        TO WS-MESSAGE
+      *        PERFORM ERROR1-000
+      *        MOVE WS-SPOOL-ST1 TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+      *        PERFORM ERROR1-020
+      *        GO TO CONTROL-032.
+      *     MOVE WTELL-PAUSE TO PRINT-REC.
+      *     WRITE PRINT-REC.
+      *     MOVE " " TO PRINT-REC.
+      *     IF WS-TYPE-OF-TRANS = "R"
+      *        MOVE "  " TO PRINT-REC
+      *        WRITE PRINT-REC.
            MOVE " " TO PRINT-REC.
        CONTROL-035.
            PERFORM NUMBER-OF-COPIES.
            IF WS-FOUND = " "
                MOVE "NOTHING TO PRINT IN THAT RANGE." TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
-           PERFORM END-000
+           PERFORM END-000.
+           
+      * NEW GO TO COMMAND FOR LINUX AS WE DO NOT HAVE CONTROL OF THE 
+      * PRINTER LIKE WE HAD IN CTOS.
+           CLOSE PRINT-FILE.
+           GO TO CONTROL-038.
+           
            MOVE " " TO PRINT-REC.
            WRITE PRINT-REC
            WRITE PRINT-REC
@@ -185,15 +207,19 @@
            WRITE PRINT-REC
            MOVE " " TO PRINT-REC.
            CLOSE PRINT-FILE.
+           
+       CONTROL-038.    
            PERFORM SEND-REPORT-TO-PRINTER.
            CLOSE STOCK-MASTER
                  STOCKCHANGE-MASTER
                  StNwPr-Master.
+                 
+           GO TO CONTROL-950.
        CONTROL-040.
            IF WS-FOUND NOT = " "
                PERFORM CHECK-SPOOLER.
        CONTROL-950.
-           PERFORM END-500.
+           PERFORM END-900.
        CONTROL-999.
             EXIT.
       *
@@ -1179,7 +1205,7 @@
            PERFORM GET-USER-MAIL-NAME
            PERFORM GET-REPORT-Y2K-DATE
            PERFORM PRINT-REPORT-INFO.
-       END-500.
+       END-900.
            EXIT PROGRAM.
        END-999.
            EXIT.
