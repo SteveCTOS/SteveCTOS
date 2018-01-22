@@ -165,6 +165,7 @@
                GO TO CONTROL-950.
 
            MOVE WS-CO-NUMBER      TO WS-PRICELIST-CO.
+           MOVE WS-PRINTER        TO WS-PRINTER-SAVE.
            MOVE WS-PRICELIST-NAME TO WS-PRINTER. 
            OPEN OUTPUT PRINT-FILE.
       *     IF WS-SPOOL-ST1 NOT = 0
@@ -503,6 +504,8 @@
             ADD 1 TO WS-NO-COPIES.
             IF WS-NO-COPIES-GRP = WS-COPIES
                GO TO NOC-999.
+            MOVE " " TO PRINT-REC
+            WRITE PRINT-REC AFTER PAGE.
             MOVE 0 TO PAGE-CNT.
             MOVE 66 TO LINE-CNT.
             GO TO NOC-010.
@@ -590,6 +593,10 @@
        PRR-050.
            ADD 1         TO PAGE-CNT
            MOVE PAGE-CNT TO H1-PAGE.
+            IF WS-PRINT-TYPE = 2
+               MOVE WS-PRINT-COMP TO PRINT-REC
+               WRITE PRINT-REC
+               MOVE " " TO PRINT-REC.
            IF PAGE-CNT = 1
                WRITE PRINT-REC FROM COMPANY-LINE AFTER 1
            ELSE
