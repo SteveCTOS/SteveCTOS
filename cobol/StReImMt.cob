@@ -471,10 +471,14 @@
                       WS-DUTY-AMOUNT
                       IMRE-RATEPAID
                       IMRE-RAND-AMT-PAID
+                      WS-ORDER-DISC
                       SUB-25.
             MOVE "N" TO IMRE-UPDATED-YN.
-            MOVE "  " TO WS-UPDATE WS-UP-SELL
-                         WS-UP-FORGN WS-BYORD-STOCK.
+            MOVE "  " TO WS-UPDATE 
+                         WS-UP-SELL
+                         WS-UP-FORGN
+                         WS-DISCOUNT-ENTRY
+                         WS-BYORD-STOCK.
             PERFORM CLEAR-ORDER-TOTALS.
        GET-010.
            MOVE 2910 TO POS
@@ -1307,8 +1311,10 @@
                 MOVE B-COST (SUB-1) TO WS-B-COST.
             MOVE F-NAMEFIELD TO B-STOCKNUMBER (SUB-1)
                                 WS-STOCKNUMBER.
-
-            PERFORM READ-STOCK.
+            IF B-LINE-COSTED (SUB-1) = "Y"
+                GO TO FILL-019
+            ELSE
+                PERFORM READ-STOCK.
             IF ST-DESCRIPTION1 = "NOT THERE!!!"
                 MOVE "INVALID STOCK NUMBER" TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
@@ -1355,7 +1361,7 @@
       *                             F-EDNAMEFIELDAMOUNTDIS.
       *      MOVE 5              TO F-CBFIELDLENGTH.
       *      PERFORM WRITE-FIELD-AMOUNTDIS.
-
+       FILL-019.
             MOVE B-QUANTITY (SUB-1)     TO WS-B-QUANTITY.
             MOVE B-DISCOUNTPERC (SUB-1) TO WS-B-DISCOUNTPERC.    
        FILL-020.
@@ -1399,6 +1405,7 @@
                 MOVE B-DISCOUNTPERC (SUB-1) TO F-EDNAMEFIELDAMOUNTDIS.
             IF SUB-6 = 0
                 GO TO FILL-040.
+            IF B-LINE-COSTED (SUB-1) NOT = "Y"
             MOVE B-DISCOUNTPERC (SUB-6) TO B-DISCOUNTPERC (SUB-1)
                                            F-EDNAMEFIELDAMOUNTDIS.
 
@@ -2644,7 +2651,7 @@
                MOVE " " TO F-NAMEFIELD
                PERFORM WRITE-FIELD-ALPHA
             ELSE
-             MOVE B-DISCOUNTPERC (SUB-1) TO F-EDNAMEFIELDAMOUNTDIS
+               MOVE B-DISCOUNTPERC (SUB-1) TO F-EDNAMEFIELDAMOUNTDIS
                PERFORM WRITE-FIELD-AMOUNTDIS.
 
             MOVE "DUTYPERCENT" TO F-FIELDNAME.
