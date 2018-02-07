@@ -213,24 +213,42 @@
                PERFORM ERROR-000
                GO TO FILL-013.
            IF F-EXIT-CH = X"12" AND F-INDEX < 15
+            IF WS-CRED-NUM (SUB-1) NOT = " "
               PERFORM FILL-050
               ADD 1 TO F-INDEX SUB-1 SUB-2
+              GO TO FILL-005
+            ELSE
               GO TO FILL-005.
            IF F-EXIT-CH = X"0B" AND F-INDEX < 15
+            IF WS-CRED-NUM (SUB-1) NOT = " "
               ADD 1 TO F-INDEX SUB-1 SUB-2
+              GO TO FILL-005
+            ELSE
               GO TO FILL-005.
            IF F-EXIT-CH = X"0A" AND F-INDEX < 15
+            IF WS-CRED-NUM (SUB-1) NOT = " "
               ADD 1 TO F-INDEX SUB-1 SUB-2
+              GO TO FILL-005
+            ELSE
               GO TO FILL-005.
            IF F-EXIT-CH = X"0B" AND F-INDEX = 15
+            IF WS-CRED-NUM (SUB-1) NOT = " "
               PERFORM FILL-050
-              GO TO FILL-060.
+              GO TO FILL-060
+            ELSE
+              GO TO FILL-005.
            IF F-EXIT-CH = X"0A" AND F-INDEX = 15
+            IF WS-CRED-NUM (SUB-1) NOT = " "
               PERFORM FILL-050
-              GO TO FILL-060.
+              GO TO FILL-060
+            ELSE
+              GO TO FILL-005.
            IF F-EXIT-CH = X"12" AND F-INDEX = 15
+            IF WS-CRED-NUM (SUB-1) NOT = " "
               PERFORM FILL-050
-              GO TO FILL-060.
+              GO TO FILL-060
+            ELSE
+              GO TO FILL-005.
            IF F-EXIT-CH = X"07"
               PERFORM CLEAR-FIELDS
               PERFORM CLEAR-BODY
