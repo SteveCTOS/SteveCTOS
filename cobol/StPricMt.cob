@@ -1098,6 +1098,9 @@
             IF PRICE-KEY = "UNKNOWN"
              MOVE "D" TO ST-ANALYSIS
             GO TO UP-035.
+
+           IF ST-CATEGORY = "DPR"
+              MOVE PRICE-OLD-LIST-PRICE   TO ST-FOREIGNCOST.
            
            IF WS-FOR-LOC = "L"
             IF PRICE-NEW-LIST-PRICE = ST-PRICE
