@@ -36,6 +36,7 @@
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "DrNameIq".
        77  WS-STOCK-INQUIRY     PIC X(8) VALUE "StMastIq".
        77  WS-PORDER-INQUIRY    PIC X(8) VALUE "SlPoShIq".
+       77  WS-LINKED-NUMBER     PIC X(7) VALUE " ".
        77  WS-PAYED             PIC 9(8)V99 VALUE 0.
        77  WS-WORKTOTAL         PIC 9(8)V99 VALUE 0.
        77  WS-WORKTOTAL2        PIC 9(8)V99 VALUE 0.
@@ -145,6 +146,17 @@
        CONTROL-999.
            EXIT.
       *
+       GET-NUMBER-TO-DISPLAY SECTION.
+       GNTD-005.
+           MOVE SPACES TO ALPHA-RATE.
+           MOVE WS-LINK-ACCOUNT TO ALPHA-RATE.
+           IF AL-RATE (1) = "1"
+              MOVE "I" TO AL-RATE (1)
+           ELSE
+              MOVE "C" TO AL-RATE (1).
+       GNTD-999.
+           EXIT.
+      *
        GET-DATA SECTION.
        GET-010.
            MOVE "TYPE-OF-READ" TO F-FIELDNAME
@@ -156,6 +168,14 @@
            DISPLAY
            "I=Inv, C=C/N, O=P/Slip, Q=Quote, R=Repair; Enter " &
            "the #, Then PRESS <F5> to View." AT POS.
+
+            IF WS-LINK-ACCOUNT > 0
+                PERFORM GET-NUMBER-TO-DISPLAY
+                MOVE "ACCOUNTNO"      TO F-FIELDNAME
+                MOVE 9                TO F-CBFIELDNAME
+                MOVE ALPHA-RATE       TO F-NAMEFIELD
+                MOVE 7                TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "                        " TO F-NAMEFIELD.
             MOVE " " TO WS-DIS.

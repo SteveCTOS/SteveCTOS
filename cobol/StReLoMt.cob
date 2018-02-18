@@ -845,7 +845,7 @@
       *ZOOMBOX MODE                                 *
       * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
       ***********************************************
-      *IN CTOS: <CODE-Z>; <ALT-Z> IN LINUX
+      *IN CTOS: <CODE-Z>;  IN LINUX: <ALT-Z>
            IF F-EXIT-CH = X"FA" OR = X"DA"
                 MOVE SUB-1   TO SUB-1SAVE
                 MOVE F-INDEX TO F-INDEXSAVE

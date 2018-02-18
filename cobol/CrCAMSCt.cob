@@ -122,10 +122,13 @@
            IF WS-CRCHEQUE-ST1 = 10
                GO TO RDT-999.
            IF WS-CRCHEQUE-ST1 NOT = 0
-               MOVE 0 TO WS-CRCAMSTRANS-ST1
-               MOVE "CRCHEQUE BUSY ON READ-NEXT,  'ESC' TO RETRY." 
+               MOVE "CRCHEQUE BUSY ON READ-NEXT, 'ESC' TO RETRY." 
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-CRCHEQUE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CRCAMSTRANS-ST1
                GO TO RDT-010.
 
            MOVE CRCH-CHEQUE-NO     TO CR-CAMS-TRANS-NUM
@@ -174,20 +177,31 @@
       *
        WRITE-CAMS-TRANSACTION SECTION.
        WRPTR-000.
-           MOVE 3010 TO POS
+           MOVE 2810 TO POS
            DISPLAY "WRITING CAMS-TRANSACTION..........              "
              AT POS.
        WRPTR-010.
            WRITE CR-CAMS-TRANS-REC
                  INVALID KEY NEXT SENTENCE.
+           IF WS-CRCAMSTRANS-ST1 = 22
+               MOVE
+         "CAMS FILE ALREADY POSTED THIS MONTH FOR ACCOUNT," &
+         " 'ESC' TO CHECK NEXT ACCOUNT." TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO WRPTR-999.
            IF WS-CRCAMSTRANS-ST1 NOT = 0
-                MOVE 0 TO WS-CRCAMSTRANS-ST1
-                MOVE
+               MOVE
             "CAMS FILE BUSY ON WRITE, ALREADY EXISTS, 'ESC' TO EXIT."
                    TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                GO TO WRPTR-999.
+               PERFORM ERROR1-000
+               MOVE WS-CRCAMSTRANS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-CRCAMSTRANS-ST1
+               GO TO WRPTR-999.
            PERFORM ERROR-020.
+           MOVE 2810 TO POS
+           DISPLAY WS-MESSAGE AT POS.
        WRPTR-999.
               EXIT.
       *

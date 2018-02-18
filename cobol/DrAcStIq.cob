@@ -23,6 +23,7 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "DrNameIq".
+       77  WS-INV-INQ-PROGRAM   PIC X(8) VALUE "SlInOrIq".
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-ANSWER            PIC X VALUE "Y".
        77  WS-DEBTORNUMBER      PIC X(7) VALUE " ".
@@ -40,6 +41,7 @@
            03  WS-SCROLL-NUM OCCURS 1000.
              05  WS-DR-TYPE       PIC 99.
              05  WS-DR-TRANS      PIC 9(6).
+             05  WS-DR-REF2       PIC 9(6).
        01  WS-TYPES.
            03  FILLER          PIC X(7) VALUE "INVOICE".
            03  FILLER          PIC X(7) VALUE "PAYMENT".
@@ -187,7 +189,7 @@
             DISPLAY WS-MESSAGE AT POS
             MOVE 2801 TO POS 
             DISPLAY WS-MESSAGE AT POS.
-
+        GET-011.
             MOVE "ACCNO"           TO F-FIELDNAME.
             MOVE 5                 TO F-CBFIELDNAME.
             MOVE DR-ACCOUNT-NUMBER TO F-NAMEFIELD
@@ -360,7 +362,7 @@
             MOVE DR-SUPPLY-Y-N    TO F-NAMEFIELD.
             MOVE 1                TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.
-
+       GET-015.
             PERFORM READ-ALL-TRANSACTIONS.
             PERFORM FILL-BODY.
             IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
@@ -429,7 +431,7 @@
            MOVE 1 TO SUB-1 SUB-2 SUB-3.
       *     PERFORM SCROLL-NEXT.
            PERFORM SCROLL-PREVIOUS-PAGE.
-
+       FILL-001.
            MOVE 2702 TO POS
            DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
            AT POS
@@ -439,6 +441,8 @@
            DISPLAY 
         "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
            " Transactions." AT POS.
+           MOVE 2950 TO POS
+           DISPLAY "'Alt-Z' = Zoom on trans." AT POS.
        FILL-010.
            MOVE 3015 TO POS 
            DISPLAY "Current Line#: " AT POS
@@ -539,6 +543,35 @@
       *FINISH
            IF F-EXIT-CH = X"04"
               PERFORM END-OFF.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>;  IN LINUX: <ALT-Z>
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+            IF WS-DR-TYPE (SUB-1) = 1 OR = 6
+                PERFORM ADD-TYPE-TO-NUMBER
+                MOVE ALPHA-RATE TO WS-LINK-ACCOUNT
+            ELSE
+                MOVE 0          TO WS-LINK-ACCOUNT.
+
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1        TO SUB-1SAVE
+                MOVE F-INDEX      TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-INV-INQ-PROGRAM USING WS-LINKAGE
+                CANCEL WS-INV-INQ-PROGRAM
+                MOVE 0 TO WS-LINK-ACCOUNT
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM GET-011
+                PERFORM FILL-001
+                PERFORM CALC-POS-OF-CURSOR
+                SUBTRACT 1 FROM SUB-9
+                PERFORM RDALL-910
+                GO TO FILL-010.
+            IF F-NAMEFIELD = " "
+                GO TO FILL-010.
        FILL-050.
            ADD 1 TO SUB-1 F-INDEX.
            IF SUB-1 > 1000
@@ -557,6 +590,40 @@
        FILL-900.
            CLOSE DEBTOR-TRANS-FILE.
        FILL-999.
+           EXIT.
+      *
+       ADD-TYPE-TO-NUMBER SECTION.
+       ATTN-005.
+           MOVE SPACES TO ALPHA-RATE
+                           DATA-RATE.
+           MOVE WS-DR-REF2 (SUB-1) TO DATA-RATE.
+           IF WS-DR-TYPE (SUB-1) = 1
+               MOVE 1 TO AL-RATE (1)
+           ELSE
+               MOVE 6 TO AL-RATE (1).
+           MOVE 1 TO SUB-10
+           MOVE 2 TO SUB-15.
+       ATTN-010.
+           IF SUB-15 < 8
+              MOVE DAT-RATE (SUB-10) TO AL-RATE (SUB-15)
+              ADD 1 TO SUB-10 SUB-15
+              GO TO ATTN-010.
+       ATTN-999.
+           EXIT.
+      *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-005.
+             IF SUB-1SAVE < 10
+                 GO  TO CPOC-500.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 0 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
            EXIT.
       *
        PRINT-ROUTINE SECTION.
@@ -839,7 +906,8 @@
                GO TO RDALL-900.
        RDALL-020.
            MOVE DRTR-TYPE               TO WS-DR-TYPE (SUB-1)
-           MOVE DRTR-TRANSACTION-NUMBER TO WS-DR-TRANS (SUB-1).
+           MOVE DRTR-TRANSACTION-NUMBER TO WS-DR-TRANS (SUB-1)
+           MOVE DRTR-REFERENCE2         TO WS-DR-REF2 (SUB-1).
            
            IF SUB-1 < 1000
               ADD 1 TO SUB-1 F-INDEX
@@ -857,7 +925,7 @@
            MOVE SUB-1 TO SUB-9.
            IF SUB-9 < 0
                MOVE 0 TO SUB-9.
-           
+       RDALL-910.
            MOVE 2912 TO POS.
            DISPLAY "Total # of Lines:" AT POS
            ADD 19 TO POS.
@@ -1117,6 +1185,7 @@
             IF WS-DR-TYPE (SUB-1) NOT = 0
                 MOVE 0 TO WS-DR-TYPE (SUB-1)
                           WS-DR-TRANS (SUB-1)
+                          WS-DR-REF2 (SUB-1)
             ELSE
                 GO TO CMS-900.
             IF SUB-1 < 1000
