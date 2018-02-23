@@ -355,23 +355,6 @@ Y
 Y
 
 
-17
-XX
-/ctools/ctn/SL17B
-
-N
-N
-
-
-17
-XX
-/ctools/ctn/SL17C
-
-Y
-Y
-
-
-
 #04
 #04
 2
@@ -430,10 +413,12 @@ XX
 #04
 3
 2
+
 17
 XX
 /ctools/ctn/SL17B
 
+N
 N
 
 
@@ -442,7 +427,7 @@ XX
 /ctools/ctn/SL17C
 
 Y
-
+Y
 
 19
 XX
