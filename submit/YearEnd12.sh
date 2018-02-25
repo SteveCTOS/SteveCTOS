@@ -14,7 +14,7 @@ cp /ctools/spl/ctoolsDrLaserCo12 /ctools/krs/drlaserco12
 #cp /ctools/spl/drnomalco12 /ctools/krs/drnomalco12
 #cp /ctools/spl/dremailco12 /ctools/krs/dremailco12
 #cp /ctools/krs/sl11 /ctools/spl/krsdrage
-cp /ctools/spl/DBPrintCo12 /ctools/krs/DBPrintCo12
+cp /ctools/spl/DBPrintCo12 /ctools/krs/dbprintco12
 
 #mkdir /media/ctools/USB/data12
 

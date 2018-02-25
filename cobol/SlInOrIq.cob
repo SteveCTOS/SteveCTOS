@@ -151,8 +151,12 @@
            MOVE SPACES TO ALPHA-RATE.
            MOVE WS-LINK-ACCOUNT TO ALPHA-RATE.
            IF AL-RATE (1) = "1"
-              MOVE "I" TO AL-RATE (1)
-           ELSE
+              MOVE "I" TO AL-RATE (1).
+           IF AL-RATE (1) = "3"
+              MOVE "Q" TO AL-RATE (1).
+           IF AL-RATE (1) = "4"
+              MOVE "O" TO AL-RATE (1).
+           IF AL-RATE (1) = "6"
               MOVE "C" TO AL-RATE (1).
        GNTD-999.
            EXIT.

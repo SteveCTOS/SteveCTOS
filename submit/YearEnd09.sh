@@ -14,7 +14,7 @@ cp /ctools/spl/ctoolsDrLaserCo09 /ctools/sfi/drlaserco09
 #cp /ctools/spl/drnomalco09 /ctools/sfi/drnomalco09
 #cp /ctools/spl/dremailco09 /ctools/sfi/dremailco09
 #cp /ctools/sfi/sl11 /ctools/spl/sfidrage
-cp /ctools/spl/DBPrintCo09 /ctools/sfi/DBPrintCo09
+cp /ctools/spl/DBPrintCo09 /ctools/sfi/dbprintco09
 
 #mkdir /media/ctools/USB/data09
 

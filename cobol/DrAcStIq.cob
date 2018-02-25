@@ -612,9 +612,6 @@
            EXIT.
       *
        CALC-POS-OF-CURSOR SECTION.
-       CPOC-005.
-             IF SUB-1SAVE < 10
-                 GO  TO CPOC-500.
        CPOC-010.
             COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
             IF SUB-1 < 0

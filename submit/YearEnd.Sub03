@@ -412,6 +412,14 @@ XX
 XX
 /ctools/ctn/SL15
 
+N
+N
+
+
+15
+XX
+/ctools/ctn/SL15C
+
 Y
 Y
 
@@ -445,6 +453,33 @@ Z
 Y
 
 Y
+
+
+
+28
+XX
+/ctools/ctn/ ST28A
+A
+ZZZZZ
+200
+R
+T
+N
+
+
+
+28
+XX
+/ctools/ctn/ ST28B
+A
+ZZZZZ
+200
+U
+T
+N
+
+
+
 
 
 
