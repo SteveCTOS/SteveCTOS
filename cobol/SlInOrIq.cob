@@ -158,6 +158,8 @@
               MOVE "O" TO AL-RATE (1).
            IF AL-RATE (1) = "6"
               MOVE "C" TO AL-RATE (1).
+           IF AL-RATE (1) = "8"
+              MOVE "Q" TO AL-RATE (1).
        GNTD-999.
            EXIT.
       *

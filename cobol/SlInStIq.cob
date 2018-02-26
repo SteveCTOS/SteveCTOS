@@ -1509,6 +1509,7 @@
                 MOVE 0 TO WS-STTR-TYPE (SUB-1)
                           WS-STTR-REF (SUB-1)
                           WS-STTR-TRANS (SUB-1)
+                          WS-STTR-REF2 (SUB-1)
             ELSE
                 GO TO CMS-900.
             IF SUB-1 < 10000

@@ -144,6 +144,21 @@
        CONTROL-999.
            EXIT.
       *
+       GET-NUMBER-TO-DISPLAY SECTION.
+       GNTD-005.
+           MOVE SPACES TO ALPHA-RATE.
+           MOVE WS-LINK-ACCOUNT TO ALPHA-RATE.
+           IF AL-RATE (1) = "1"
+              MOVE "I" TO AL-RATE (1).
+           IF AL-RATE (1) = "3"
+              MOVE "Q" TO AL-RATE (1).
+           IF AL-RATE (1) = "4"
+              MOVE "O" TO AL-RATE (1).
+           IF AL-RATE (1) = "6"
+              MOVE "C" TO AL-RATE (1).
+       GNTD-999.
+           EXIT.
+      *
        GET-DATA SECTION.
        GET-010.
             MOVE 0420 TO POS
@@ -158,6 +173,14 @@
            DISPLAY
            "I=Invoice, C=C/Note, O=P/Slip, Q=Quote, R=Repair; " &
            "The #, Then PRESS <F5> to View." AT POS.
+
+            IF WS-LINK-ACCOUNT > 0
+                PERFORM GET-NUMBER-TO-DISPLAY
+                MOVE "ACCOUNTNO"      TO F-FIELDNAME
+                MOVE 9                TO F-CBFIELDNAME
+                MOVE ALPHA-RATE       TO F-NAMEFIELD
+                MOVE 7                TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA.
 
             MOVE "                        " TO F-NAMEFIELD.
             MOVE " " TO WS-DIS.

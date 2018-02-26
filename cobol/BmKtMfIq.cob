@@ -166,6 +166,15 @@
        CONTROL-999.
            EXIT.
       *
+       GET-NUMBER-TO-DISPLAY SECTION.
+       GNTD-005.
+           MOVE SPACES TO ALPHA-RATE.
+           MOVE WS-LINK-ACCOUNT TO ALPHA-RATE.
+           IF AL-RATE (1) = "7"
+              MOVE "*" TO AL-RATE (1).
+       GNTD-999.
+           EXIT.
+      *
        GET-DATA SECTION.
        GET-010.
             MOVE "                        " TO F-NAMEFIELD.
@@ -191,6 +200,16 @@
               MOVE 3010 TO POS
               DISPLAY
            " '*' & NUMBER FOR EXISTING BILL OF MATERIAL." AT POS
+
+
+            IF WS-LINK-ACCOUNT > 0
+                PERFORM GET-NUMBER-TO-DISPLAY
+                MOVE "REFNO"          TO F-FIELDNAME
+                MOVE 5                TO F-CBFIELDNAME
+                MOVE ALPHA-RATE       TO F-NAMEFIELD
+                MOVE 7                TO F-CBFIELDLENGTH
+                PERFORM WRITE-FIELD-ALPHA.
+
             MOVE "REFNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             MOVE 7 TO F-CBFIELDLENGTH.

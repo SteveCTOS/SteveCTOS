@@ -27,8 +27,11 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
+       77  WS-INV-INQ-PROGRAM   PIC X(8) VALUE "SlInOrIq".
+       77  WS-BM-INQ-PROGRAM    PIC X(8) VALUE "BmKtMfIq".
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
+       77  WS-TYPE-OF-TRANS     PIC X VALUE " ".
        77  WS-NONSTOCK          PIC X VALUE " ".
        77  WS-NEWINPUT          PIC X VALUE " ".
        77  WS-STOCKNUMBER       PIC X(15) VALUE " ".
@@ -43,6 +46,7 @@
              05  WS-STTR-TYPE   PIC 99.
              05  WS-STTR-REF    PIC 9(6).
              05  WS-STTR-TRANS  PIC 9(6).
+             05  WS-STTR-REF2   PIC 9(6).
        01  WS-STDESC.
            03  WS-DESC1         PIC X(20) VALUE " ".
            03  WS-DESC2         PIC X(20) VALUE " ".
@@ -273,7 +277,7 @@
            MOVE 1 TO F-INDEX.
            MOVE 1 TO SUB-1 SUB-2 SUB-3.
            PERFORM SCROLL-PREVIOUS-PAGE.
-
+       FILL-001.
            MOVE 2702 TO POS
            DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
            AT POS
@@ -283,6 +287,8 @@
            DISPLAY 
         "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
            " Transactions." AT POS.
+           MOVE 2950 TO POS
+           DISPLAY "'Alt-Z' = Zoom on trans." AT POS.
        FILL-010.
            MOVE 3015 TO POS 
            DISPLAY "Current Line#: " AT POS
@@ -377,6 +383,50 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 GO TO FILL-900.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>;  IN LINUX: <ALT-Z>
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+            IF WS-STTR-TYPE (SUB-1) = 1 OR = 4 OR = 7 OR = 8
+                PERFORM ADD-TYPE-TO-NUMBER
+                MOVE ALPHA-RATE TO WS-LINK-ACCOUNT
+            ELSE
+                MOVE 0          TO WS-LINK-ACCOUNT.
+
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+            IF WS-STTR-TYPE (SUB-1) = 7
+                MOVE SUB-1        TO SUB-1SAVE
+                MOVE F-INDEX      TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-BM-INQ-PROGRAM USING WS-LINKAGE
+                CANCEL WS-BM-INQ-PROGRAM
+                MOVE 0 TO WS-LINK-ACCOUNT
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM GET-010 THRU GET-020
+                PERFORM FILL-001
+                PERFORM CALC-POS-OF-CURSOR
+                SUBTRACT 1 FROM SUB-9
+                PERFORM RDALL-920
+                GO TO FILL-010.
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+            IF WS-STTR-TYPE (SUB-1) = 1 OR = 4 OR = 8
+                MOVE SUB-1        TO SUB-1SAVE
+                MOVE F-INDEX      TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-INV-INQ-PROGRAM USING WS-LINKAGE
+                CANCEL WS-INV-INQ-PROGRAM
+                MOVE 0 TO WS-LINK-ACCOUNT
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM GET-010 THRU GET-020
+                PERFORM FILL-001
+                PERFORM CALC-POS-OF-CURSOR
+                SUBTRACT 1 FROM SUB-9
+                PERFORM RDALL-920
+                GO TO FILL-010.
            MOVE 7 TO F-CBFIELDLENGTH.
            PERFORM READ-FIELD-ALPHA.
       *RETURN
@@ -404,6 +454,93 @@
        FILL-900.
            CLOSE STOCK-TRANS-FILE.
        FILL-999.
+           EXIT.
+      *
+       ADD-TYPE-TO-NUMBER SECTION.
+       ATTN-001.
+           MOVE " " TO WS-TYPE-OF-TRANS WS-MESSAGE.
+           MOVE 3035 TO POS
+           DISPLAY "ENTER: 1=INV, 4=P/SLIP, 7=BM, 8=QUOTE:[ ]" AT POS
+           MOVE 3074 TO POS.
+
+           IF WS-STTR-TYPE (SUB-1) = 1
+               MOVE "1"              TO CDA-DATA.
+           IF WS-STTR-TYPE (SUB-1) = 4
+               MOVE "4"              TO CDA-DATA.
+           IF WS-STTR-TYPE (SUB-1) = 7
+               MOVE "7"              TO CDA-DATA.
+           IF WS-STTR-TYPE (SUB-1) = 8
+               MOVE "8"              TO CDA-DATA.
+           MOVE 1                    TO CDA-DATALEN.
+           MOVE 27                   TO CDA-ROW.
+           MOVE 73                   TO CDA-COL.
+           MOVE CDA-WHITE            TO CDA-COLOR.
+           MOVE 'F'                  TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-TYPE-OF-TRANS.
+
+           IF WS-TYPE-OF-TRANS NOT = "1" AND NOT = "4" 
+                           AND NOT = "7" AND NOT = "8"
+                MOVE "YOU MUST ENTER EITHER 1 OR 4 OR 7 OR 8, RE-ENTER."
+                TO WS-MESSAGE
+                PERFORM ERROR1-MESSAGE
+                GO TO ATTN-001.
+
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO ATTN-005
+           ELSE
+               MOVE 3010 TO POS
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO ATTN-001.
+       ATTN-005.
+           MOVE SPACES TO ALPHA-RATE
+                           DATA-RATE.
+           IF WS-STTR-TYPE (SUB-1) = 4
+            IF WS-TYPE-OF-TRANS = "4"
+               MOVE WS-STTR-REF (SUB-1) TO DATA-RATE
+               MOVE 4 TO AL-RATE (1)
+               GO TO ATTN-006.
+           IF WS-STTR-TYPE (SUB-1) = 4
+            IF WS-TYPE-OF-TRANS = "1"
+               MOVE WS-STTR-REF2 (SUB-1) TO DATA-RATE
+               MOVE 1 TO AL-RATE (1)
+               GO TO ATTN-006.
+           IF WS-STTR-TYPE (SUB-1) = 4
+            IF WS-TYPE-OF-TRANS = "8"
+               MOVE WS-STTR-REF2 (SUB-1) TO DATA-RATE
+               MOVE 8 TO AL-RATE (1)
+               GO TO ATTN-006.
+           IF WS-STTR-TYPE (SUB-1) = 7
+            IF WS-TYPE-OF-TRANS = "7"
+               MOVE 7 TO AL-RATE (1)
+               MOVE WS-STTR-REF (SUB-1) TO DATA-RATE
+               GO TO ATTN-006.
+           IF WS-STTR-TYPE (SUB-1) = 8
+            IF WS-TYPE-OF-TRANS = "8"
+               MOVE 8 TO AL-RATE (1)
+               MOVE WS-STTR-REF (SUB-1) TO DATA-RATE
+               GO TO ATTN-006.
+       ATTN-006.
+           MOVE 1 TO SUB-10
+           MOVE 2 TO SUB-15.
+       ATTN-010.
+           IF SUB-15 < 8
+              MOVE DAT-RATE (SUB-10) TO AL-RATE (SUB-15)
+              ADD 1 TO SUB-10 SUB-15
+              GO TO ATTN-010.
+       ATTN-999.
+           EXIT.
+      *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 1 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
            EXIT.
       *
        READ-TRANSACTIONS SECTION.
@@ -626,6 +763,18 @@
             MOVE WS-SHIPQTY  TO F-EDNAMEFIELDQTY
             PERFORM WRITE-FIELD-QTY.
        RDALL-920.
+            MOVE "TOT-ORD"       TO F-FIELDNAME
+            MOVE 7               TO F-CBFIELDNAME
+            MOVE WS-ORDERQTY     TO F-EDNAMEFIELDQTY
+            MOVE 5               TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-QTY.
+
+            MOVE "TOT-SHP"   TO F-FIELDNAME
+            MOVE 7           TO F-CBFIELDNAME
+            MOVE WS-SHIPQTY  TO F-EDNAMEFIELDQTY
+            MOVE 5           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-QTY.
+
            MOVE 2912 TO POS.
            DISPLAY "Total # of Lines:" AT POS
            ADD 19 TO POS.
@@ -674,7 +823,9 @@
       *     IF STTR-REFERENCE1 NOT = INCR-INVOICE
       *         MOVE STTR-KEY TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
+           IF STTR-REFERENCE1 NOT = INCR-INVOICE
               PERFORM READ-ORDER-REGISTER.
+           MOVE INCR-BO-INV-NO TO WS-STTR-REF2 (SUB-1).
        RDONLY-999.
            EXIT.
       *
@@ -1273,6 +1424,7 @@
                 MOVE 0 TO WS-STTR-TYPE (SUB-1)
                           WS-STTR-REF (SUB-1)
                           WS-STTR-TRANS (SUB-1)
+                          WS-STTR-REF2 (SUB-1)
             ELSE
                 GO TO CMS-900.
             IF SUB-1 < 10000
@@ -1368,5 +1520,6 @@
        Copy "ClearScreen".
        Copy "ErrorMessage".
        Copy "Error1Message".
+       Copy "CTOSCobolAccept".
       *
       * END-OF-JOB.

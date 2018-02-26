@@ -493,7 +493,6 @@
        ADD-TYPE-TO-NUMBER SECTION.
        ATTN-001.
            MOVE " " TO WS-TYPE-OF-TRANS WS-MESSAGE.
-      *     PERFORM ERROR-020.
            MOVE 3040 TO POS
            DISPLAY "ENTER: 1=INV, 4=P/SLIP, 6=C/NOTE: [ ]" AT POS
            MOVE 3076 TO POS.
@@ -1212,12 +1211,6 @@
                PERFORM READ-ORDER-ONLY
             ELSE
                GO TO SCROLL-999.
-
-      *      IF F-INDEX NOT < 15
-      *         MOVE 1 TO F-INDEXSAVE
-      *      ELSE
-      *         MOVE F-INDEX TO F-INDEXSAVE.
-            
             MOVE "STOCKNO"         TO F-FIELDNAME
             MOVE 7                 TO F-CBFIELDNAME
             MOVE STTR-STOCK-NUMBER TO F-NAMEFIELD
@@ -1294,6 +1287,7 @@
                 MOVE 0 TO WS-STTR-TYPE (SUB-1)
                           WS-STTR-REF (SUB-1)
                           WS-STTR-TRANS (SUB-1)
+                          WS-STTR-REF2 (SUB-1)
             ELSE
                 GO TO CMS-900.
             IF SUB-1 < 50000
