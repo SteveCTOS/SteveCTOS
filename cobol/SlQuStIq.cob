@@ -28,6 +28,7 @@
       *
        WORKING-STORAGE SECTION.
        77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
+       77  WS-INV-INQ-PROGRAM   PIC X(8) VALUE "SlInOrIq".
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-NEWINPUT          PIC X VALUE " ".
@@ -248,7 +249,7 @@
            MOVE 1 TO F-INDEX.
            MOVE 1 TO SUB-1 SUB-2 SUB-3.
            PERFORM SCROLL-PREVIOUS-PAGE.
-
+       FILL-001.
            MOVE 2702 TO POS
            DISPLAY "Press 'PgDn' For More, 'PgUp' For Prev,"
            AT POS
@@ -258,6 +259,8 @@
            DISPLAY 
         "'ESC' OR 'TAB' To Clear The Screen, 'F10' To Print All" &
            " Transactions." AT POS.
+           MOVE 2950 TO POS
+           DISPLAY "'Alt-Z' = Zoom on trans." AT POS.
        FILL-010.
            MOVE 3015 TO POS 
            DISPLAY "Current Line#: " AT POS
@@ -332,6 +335,10 @@
       *TAB - <ALT-F8>
            IF F-EXIT-CH = X"09"
               GO TO FILL-900.
+      *FINISH - <End>
+           IF F-EXIT-CH = X"04"
+              CLOSE STOCK-TRANS-FILE
+              PERFORM END-OFF.
       *ESC
            IF F-EXIT-CH = X"07"
               GO TO FILL-900.
@@ -344,6 +351,34 @@
                 PERFORM ERROR1-020
                 PERFORM ERROR-020
                 GO TO FILL-900.
+      ***********************************************
+      *ZOOMBOX MODE                                 *
+      * <CODE-z> = X"FA"  <CODE-SHIFT-Z> = X"DA"    *
+      ***********************************************
+      *IN CTOS: <CODE-Z>;  IN LINUX: <ALT-Z>
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+            IF WS-STTR-TYPE (SUB-1) = 8
+                PERFORM ADD-TYPE-TO-NUMBER
+                MOVE ALPHA-RATE TO WS-LINK-ACCOUNT
+            ELSE
+                MOVE 0          TO WS-LINK-ACCOUNT.
+                
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+                MOVE SUB-1        TO SUB-1SAVE
+                MOVE F-INDEX      TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-INV-INQ-PROGRAM USING WS-LINKAGE
+                CANCEL WS-INV-INQ-PROGRAM
+                MOVE 0 TO WS-LINK-ACCOUNT
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM GET-010 THRU GET-020
+                PERFORM FILL-001
+                PERFORM CALC-POS-OF-CURSOR
+                SUBTRACT 1 FROM SUB-9
+                PERFORM RDALL-920
+                GO TO FILL-010.
+
            MOVE 7 TO F-CBFIELDLENGTH.
            PERFORM READ-FIELD-ALPHA.
       *RETURN
@@ -371,6 +406,39 @@
        FILL-900.
            CLOSE STOCK-TRANS-FILE.
        FILL-999.
+           EXIT.
+      *
+       ADD-TYPE-TO-NUMBER SECTION.
+       ATTN-005.
+           MOVE SPACES TO ALPHA-RATE
+                           DATA-RATE.
+           MOVE WS-STTR-REF (SUB-1) TO DATA-RATE
+           MOVE 8 TO AL-RATE (1)
+           GO TO ATTN-006.
+
+           MOVE "0000000" TO ALPHA-RATE
+           GO TO ATTN-999.
+       ATTN-006.
+           MOVE 1 TO SUB-10
+           MOVE 2 TO SUB-15.
+       ATTN-010.
+           IF SUB-15 < 8
+              MOVE DAT-RATE (SUB-10) TO AL-RATE (SUB-15)
+              ADD 1 TO SUB-10 SUB-15
+              GO TO ATTN-010.
+       ATTN-999.
+           EXIT.
+      *
+       CALC-POS-OF-CURSOR SECTION.
+       CPOC-010.
+            COMPUTE SUB-1 = SUB-1SAVE - F-INDEXSAVE.
+            IF SUB-1 < 0
+               MOVE 1 TO SUB-1.
+            PERFORM SCROLL-NEXT.
+       CPOC-500.
+            MOVE SUB-1SAVE   TO SUB-1
+            MOVE F-INDEXSAVE TO F-INDEX.
+       CPOC-999.
            EXIT.
       *
        READ-TRANSACTIONS SECTION.
