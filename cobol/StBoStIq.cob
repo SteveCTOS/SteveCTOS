@@ -26,9 +26,10 @@
            03  FILLER           PIC X(255).
       *
        WORKING-STORAGE SECTION.
-       77  WS-INQUIRY-PROGRAM   PIC X(8) VALUE "StMastIq".
-       77  WS-INV-INQ-PROGRAM   PIC X(8) VALUE "SlInOrIq".
-       77  WS-BM-INQ-PROGRAM    PIC X(8) VALUE "BmKtMfIq".
+       77  WS-INQUIRY-PROGRAM       PIC X(8) VALUE "StMastIq".
+       77  WS-INV-INQ-PROGRAM       PIC X(8) VALUE "SlInOrIq".
+       77  WS-INV-INQ-LYR-PROGRAM   PIC X(8) VALUE "SlInOrLy".
+       77  WS-BM-INQ-PROGRAM        PIC X(8) VALUE "BmKtMfIq".
        77  WS-DRTR-TYPE         PIC 99 VALUE 0.
        77  WS-ANSWER            PIC X VALUE " ".
        77  WS-TYPE-OF-TRANS     PIC X VALUE " ".
@@ -47,6 +48,7 @@
              05  WS-STTR-REF    PIC 9(6).
              05  WS-STTR-TRANS  PIC 9(6).
              05  WS-STTR-REF2   PIC 9(6).
+             05  WS-STTR-DATE   PIC 9(8).
        01  WS-STDESC.
            03  WS-DESC1         PIC X(20) VALUE " ".
            03  WS-DESC2         PIC X(20) VALUE " ".
@@ -411,8 +413,28 @@
                 SUBTRACT 1 FROM SUB-9
                 PERFORM RDALL-920
                 GO TO FILL-010.
+               
            IF F-EXIT-CH = X"FA" OR = X"DA"
-            IF WS-STTR-TYPE (SUB-1) = 1 OR = 4 OR = 8
+                PERFORM CHECK-YEAR-OF-TRANS.
+
+           IF F-EXIT-CH = X"FA" OR = X"DA"
+            IF WS-TYPE-OF-TRANS = 1
+             IF WS-STTR-DATE (SUB-1) < WS-BEG-DATE
+                MOVE SUB-1        TO SUB-1SAVE
+                MOVE F-INDEX      TO F-INDEXSAVE
+                PERFORM CLEAR-SCREEN
+                CALL WS-INV-INQ-LYR-PROGRAM USING WS-LINKAGE
+                CANCEL WS-INV-INQ-LYR-PROGRAM
+                MOVE 0 TO WS-LINK-ACCOUNT
+                PERFORM CLEAR-SCREEN
+                PERFORM DISPLAY-FORM
+                PERFORM GET-010 THRU GET-020
+                PERFORM FILL-001
+                PERFORM CALC-POS-OF-CURSOR
+                SUBTRACT 1 FROM SUB-9
+                PERFORM RDALL-920
+                GO TO FILL-010.
+           IF F-EXIT-CH = X"FA" OR = X"DA"
                 MOVE SUB-1        TO SUB-1SAVE
                 MOVE F-INDEX      TO F-INDEXSAVE
                 PERFORM CLEAR-SCREEN
@@ -454,6 +476,14 @@
        FILL-900.
            CLOSE STOCK-TRANS-FILE.
        FILL-999.
+           EXIT.
+      *
+       CHECK-YEAR-OF-TRANS SECTION.
+       CYOT-000.
+            MOVE WS-DATE TO WS-BEG-DATE.
+            MOVE 01      TO WS-BEG-DD
+            MOVE 03      TO WS-BEG-MM.
+       CYOT-999.
            EXIT.
       *
        ADD-TYPE-TO-NUMBER SECTION.
@@ -826,6 +856,7 @@
            IF STTR-REFERENCE1 NOT = INCR-INVOICE
               PERFORM READ-ORDER-REGISTER.
            MOVE INCR-BO-INV-NO TO WS-STTR-REF2 (SUB-1).
+           MOVE INCR-BO-DATE   TO WS-STTR-DATE (SUB-1).
        RDONLY-999.
            EXIT.
       *

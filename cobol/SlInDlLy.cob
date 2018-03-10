@@ -123,11 +123,6 @@
            MOVE 'F'       TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-CASH-ACCEPT.
-
-           MOVE 3010 TO POS
-           DISPLAY INCR-LY-INVCRED-AMT AT POS
-           MOVE 3025 To POS
-           DISPLAY WS-CASH-ACCEPT AT POS.
            
            IF W-ESCAPE-KEY = 4
               GO TO QPC-505.
@@ -145,7 +140,7 @@
            DISPLAY "IS THE AMOUNT ENTERED CORRECT : [ ]" AT POS
            ADD 33 TO POS
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'Y'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 27        TO CDA-ROW.
            MOVE 42        TO CDA-COL.
@@ -154,6 +149,8 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-DIS.
 
+           IF W-ESCAPE-KEY = 4
+              GO TO QPC-515.
            IF WS-DIS NOT = "Y" AND NOT = "N"
               DISPLAY " " AT 3079 WITH BELL
               GO TO QPC-517.
@@ -192,7 +189,7 @@
                GO TO QPC-900.
            IF Ws-CashSale-ST1 NOT = 0
                MOVE
-                "CashSale RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
+                "CASHSALE RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
@@ -208,12 +205,12 @@
               INVALID KEY NEXT SENTENCE.
            IF WS-CASHSALE-ST1 = 23 OR 35 OR 49
                MOVE
-          "THIS CashSale RECORD DOESN'T EXIST TO DELETE, 'ESC' TO EXIT."
+          "THIS CASHSALE RECORD DOESN'T EXIST TO DELETE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO QPC-900.
            IF WS-CASHSALE-ST1 NOT = 0
-               MOVE "CASHSALE BUSY ON READ, 'ESC' TO RE-TRY."
+               MOVE "CASHSALE BUSY ON READ TO DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
@@ -240,12 +237,15 @@
            EXIT.
       *
        GET-DATA SECTION.
-       GET-000. 
-            MOVE 2810 TO POS
+       GET-000.
+            MOVE 0424 TO POS
+            DISPLAY " **** LAST YEAR PROCESSING  ****" AT POS.
+            
+            MOVE 2710 TO POS
             DISPLAY
            "ENTER THE INVOICE# AND <PgDn> TO READ NUMBERS ONWARDS"
               AT POS
-            MOVE 2910 TO POS
+            MOVE 2810 TO POS
             DISPLAY 
            "OR ENTER INVOICE # & <ALT-G> TO RECALL A FLAGGED INVOICE."
               AT POS.
@@ -490,9 +490,10 @@
                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-LY-ST1
                GO TO ROT-010.
                
-           IF F-EXIT-CH NOT = X"9B"
+           IF F-EXIT-CH NOT = X"9B" AND NOT = X"C7"
             IF INCR-LY-PULL-DATE NOT = 0
                MOVE
              "THIS INVOICE NUMBER HAS ALREADY BEEN ALLOCATED, RE-ENTER."
@@ -534,6 +535,7 @@
                MOVE WS-INCR-LY-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
+               MOVE 0 TO WS-INCR-LY-ST1
                GO TO RWR-010.
            ACCEPT WS-TIME FROM TIME.
            MOVE WS-DEL-DATE (SUB-1) TO INCR-LY-PULL-DATE

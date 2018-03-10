@@ -161,18 +161,15 @@
       *
        GET-DATA SECTION.
        GET-010.
-            MOVE 0420 TO POS
-            DISPLAY "** LAST YEAR INFO **" AT POS.
-            
            MOVE "TYPE-OF-READ" TO F-FIELDNAME
            MOVE 12             TO F-CBFIELDNAME
-           MOVE "**INVOICE/C-NOTE/P-SLIP/QUOTE INQUIRY**" TO F-NAMEFIELD
+           MOVE "*LAST YEAR INV/C-NOTE/P-SLIP/QUOTE INQ*" TO F-NAMEFIELD
            MOVE 40             TO F-CBFIELDLENGTH
            PERFORM WRITE-FIELD-ALPHA.
            MOVE 2901 TO POS.
            DISPLAY
-           "I=Invoice, C=C/Note, O=P/Slip, Q=Quote, R=Repair; " &
-           "The #, Then PRESS <F5> to View." AT POS.
+           "I=Inv, C=C/N, O=P/Slip, Q=Quote, R=Repair; " &
+           "Enter the #, Then PRESS <F5> to View." AT POS.
 
             IF WS-LINK-ACCOUNT > 0
                 PERFORM GET-NUMBER-TO-DISPLAY
@@ -640,19 +637,19 @@
             MOVE "TYPE-OF-READ" TO F-FIELDNAME.
             MOVE 12 TO F-CBFIELDNAME.
             IF F-NAMEFIELDRED1 = "I"
-               MOVE "** INVOICE INQUIRY PROGRAM BY INVOICE **"
+               MOVE "* LAST YEAR INVOICE INQUIRY BY INVOICE *"
                TO F-NAMEFIELD.
             IF F-NAMEFIELDRED1 = "R"
-               MOVE "** REPAIRS INQUIRY PROGRAM BY REPAIR **"
+               MOVE "* LAST YEAR REPAIRS INQUIRY BY REPAIR *"
                TO F-NAMEFIELD.
             IF F-NAMEFIELDRED1 = "C"
-               MOVE "** C/NOTES INQUIRY PROGRAM BY C/NOTE  **"
+               MOVE "* LAST YEAR C/NOTES INQUIRY BY C/NOTE *"
                TO F-NAMEFIELD.
             IF F-NAMEFIELDRED1 = "O"
-               MOVE " ** P/SLIP INQUIRY PROGRAM BY P/SLIP **"
+               MOVE " * LAST YEAR P/SLIP INQUIRY BY P/SLIP *"
                TO F-NAMEFIELD.
             IF F-NAMEFIELDRED1 = "Q"
-               MOVE "  ** QUOTE INQUIRY PROGRAM BY QUOTE **"
+               MOVE "  *LAST YEAR QUOTE INQUIRY BY QUOTE *"
                TO F-NAMEFIELD.
             MOVE 40 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-ALPHA.

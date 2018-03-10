@@ -165,13 +165,13 @@
               INVALID KEY NEXT SENTENCE.
            IF Ws-CashSale-ST1 = 22 OR = 23 OR = 35 OR = 49
       *         MOVE
-      *          "CashSale RECORD ALREADY EXISTS, 'ESC' TO EXIT."
+      *          "CASHSALE RECORD ALREADY EXISTS, 'ESC' TO EXIT."
       *         TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO QPC-530.
            IF Ws-CashSale-ST1 NOT = 0
                MOVE
-                "CashSale RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
+                "CASHSALE RECORD NOT WRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
@@ -183,13 +183,13 @@
               INVALID KEY NEXT SENTENCE.
            IF Ws-CashSale-ST1 = 22 OR = 23 OR = 35 OR = 49
       *          MOVE
-      *          "CashSale RECORD ALREADY EXISTS, 'ESC' TO EXIT."
+      *          "CASHSALE RECORD ALREADY EXISTS, 'ESC' TO EXIT."
       *         TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO QPC-900.
            IF Ws-CashSale-ST1 NOT = 0
                MOVE
-                "CashSale RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
+                "CASHSALE RECORD NOT REWRITTEN, ADVISE YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
@@ -201,34 +201,34 @@
            START CASH-SALE KEY NOT < CS-KEY
               INVALID KEY NEXT SENTENCE.
        QPC-605.
-           READ Cash-Sale WITH LOCK
+           READ CASH-SALE WITH LOCK
               INVALID KEY NEXT SENTENCE.
-           IF Ws-CashSale-ST1 = 23 OR = 35 OR = 49
+           IF WS-CASHSALE-ST1 = 23 OR = 35 OR = 49
                MOVE
-          "THIS CashSale RECORD DOESN'T EXIST TO DELETE, 'ESC' TO EXIT."
+          "THIS CASHSALE RECORD DOESN'T EXIST TO DELETE, 'ESC' TO EXIT."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO QPC-900.
-           IF Ws-CashSale-ST1 NOT = 0
-               MOVE "CashSale BUSY ON READ TO DELETE, 'ESC' TO RE-TRY."
+           IF WS-CASHSALE-ST1 NOT = 0
+               MOVE "CASHSALE BUSY ON READ TO DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020.
+               PERFORM ERROR1-020
                GO TO QPC-605.
            MOVE 2650 TO POS
            DISPLAY "** FOUND **" AT POS.
        QPC-610.
-           DELETE Cash-Sale
+           DELETE CASH-SALE
               INVALID KEY NEXT SENTENCE.
-           IF Ws-CashSale-ST1 NOT = 0
-               MOVE "CashSale BUSY ON DELETE, 'ESC' TO RE-TRY."
+           IF WS-CASHSALE-ST1 NOT = 0
+               MOVE "CASHSALE BUSY ON DELETE, 'ESC' TO RE-TRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-CASHSALE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020.
+               PERFORM ERROR1-020
                GO TO QPC-610.
        QPC-900.
            PERFORM ERROR-020.
@@ -578,7 +578,8 @@
            READ DEBTOR-TRANS-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-               MOVE "DEBTOR TRANS NOT THERE" TO WS-MESSAGE
+               MOVE "DR-TRANS NOT THERE ON READ-LOCK, 'ESC' TO EXIT."
+                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
@@ -603,10 +604,10 @@
                PERFORM ERROR-MESSAGE
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 = 91
-               MOVE 0 TO WS-DRTRANS-ST1
                MOVE "DR-TRANS NOT UPDATED, ST1=91, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-DRTRANS-ST1
                GO TO UDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
                MOVE "DR-TRANS BUSY ON REWRITE, 'ESC' TO RETRY."
