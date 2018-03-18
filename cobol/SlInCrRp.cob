@@ -807,6 +807,7 @@
            MOVE " " TO WS-FOUND.
            MOVE "N" TO WS-COMPLETE.
            MOVE 0   TO INCR-INVOICE WS-DATE.
+           MOVE 0   TO SUB-1 SUB-20.
        RD-010.
            IF WS-INVCRED = "I" OR = "C"
               PERFORM READ-INVOICE-REGISTER.
@@ -1928,6 +1929,7 @@
            MOVE "³"     TO PLCR-CHAR2.
            IF WS-INVCRED = "P"
               MOVE "*PROFORMA INVOICE *" TO PL-TYPE.
+       LPE-011.
            MOVE PA-NAME TO PL-NAME.
            WRITE LASER-REC FROM LASER-PCREDITLINE.
            MOVE " "     TO LASER-REC.
@@ -2068,7 +2070,7 @@
               GO TO LPE-030.
            IF SUB-2 > 20
                MOVE 1 TO SUB-2
-               ADD 1 TO WS-PAGE
+               ADD 1  TO WS-PAGE
                GO TO LPE-010.
            IF SUB-1 > 300
                GO TO LPE-030.
@@ -2110,8 +2112,8 @@
            IF WS-INVCRED NOT = "P"
              GO TO LPE-025.
              
-           MOVE B-ORDERQTY        TO PL-ORDER
-                                     PL-SHIP
+           MOVE B-ORDERQTY         TO PL-ORDER
+                                      PL-SHIP
            COMPUTE B-NETT = B-ORDERQTY *
              (B-STOCKPRICE - (B-STOCKPRICE * B-DISCOUNTPERITEM / 100))
            MOVE B-NETT  TO PL-NETT
@@ -2751,7 +2753,7 @@
            MOVE " " TO WS-BO-REDUCED-MESSAGE
                        WS-BO-FOUND.
            IF WS-ADD-TOGETHER NOT = "Y"
-               MOVE 0 TO SUB-1.
+               MOVE 0 TO SUB-1 SUB-20.
            IF Ws-EnterOption = "1"
               GO TO RQP-050.
        RQP-002.
@@ -2843,6 +2845,7 @@
                MOVE 0 TO WS-SUBTOTAL WS-INVOICETOTAL
                MOVE INCR-ADDONS  TO WS-ADDONAMT
                MOVE INCR-LINENO  TO SUB-20.
+               
            IF WS-PRINT-NUM = 5
               PERFORM ENTER-EMAIL-ADDRESS.
        RQP-999.
@@ -3144,55 +3147,55 @@
       *
        CHECK-EMAIL-FOR-VALIDITY SECTION.
        CEFV-005.
-             MOVE 0 TO SUB-1.
+             MOVE 0           TO SUB-15.
              MOVE SPACES      TO ALPHA-RATE
              MOVE F-NAMEFIELD TO ALPHA-RATE.
              MOVE "N"         TO WS-ACC-ERROR.
        CEFV-010.
-             ADD 1 TO SUB-1.
-             IF SUB-1 > 42
+             ADD 1 TO SUB-15.
+             IF SUB-15 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
-             IF AL-RATE (SUB-1) = "@"
-                MOVE 0 TO SUB-1
+             IF AL-RATE (SUB-15) = "@"
+                MOVE 0 TO SUB-15
                 GO TO CEFV-020.
              GO TO CEFV-010.
        CEFV-020.
-             ADD 1 TO SUB-1.
-             IF SUB-1 > 42
+             ADD 1 TO SUB-15.
+             IF SUB-15 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
-             IF AL-RATE (SUB-1) = "."
+             IF AL-RATE (SUB-15) = "."
                 GO TO CEFV-025.
              GO TO CEFV-020.
        CEFV-025.
       *ADDED THIS NEXT LINE SO THAT WE DON'T CHECK FOR AN EXTRA . OR COM
              GO TO CEFV-999.
        
-             ADD 1 TO SUB-1.
-             IF AL-RATE (SUB-1) = "c"
+             ADD 1 TO SUB-15.
+             IF AL-RATE (SUB-15) = "c"
                 GO TO CEFV-026
              ELSE
-                SUBTRACT 1 FROM SUB-1
+                SUBTRACT 1 FROM SUB-15
                 GO TO CEFV-030.
              MOVE "Y" TO WS-ACC-ERROR.
        CEFV-026.
-             ADD 1 TO SUB-1.
-             IF AL-RATE (SUB-1) = "o"
+             ADD 1 TO SUB-15.
+             IF AL-RATE (SUB-15) = "o"
                 GO TO CEFV-027.
-             SUBTRACT 2 FROM SUB-1
+             SUBTRACT 2 FROM SUB-15
              GO TO CEFV-030.
        CEFV-027.
-             ADD 1 TO SUB-1.
-             IF AL-RATE (SUB-1) = "m"
+             ADD 1 TO SUB-15.
+             IF AL-RATE (SUB-15) = "m"
                 GO TO CEFV-040.
-             SUBTRACT 3 FROM SUB-1.
+             SUBTRACT 3 FROM SUB-15.
        CEFV-030.
-             ADD 1 TO SUB-1.
-             IF SUB-1 > 42
+             ADD 1 TO SUB-15.
+             IF SUB-15 > 42
                 MOVE "Y" TO WS-ACC-ERROR
                 GO TO CEFV-900.
-             IF AL-RATE (SUB-1) = "."
+             IF AL-RATE (SUB-15) = "."
                 GO TO CEFV-040.
              GO TO CEFV-030.
         CEFV-040.

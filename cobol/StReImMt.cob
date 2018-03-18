@@ -1397,6 +1397,7 @@
             MOVE B-COST (SUB-1) TO F-EDNAMEFIELDFOREIGN99
             PERFORM WRITE-FIELD-FOREIGN99.
 
+            MOVE 0 TO F-EDNAMEFIELDAMOUNTDIS.
             MOVE SUB-1 TO SUB-6.
             SUBTRACT 1 FROM SUB-6. 
             IF SUB-6 < 1
@@ -1406,8 +1407,8 @@
             IF SUB-6 = 0
                 GO TO FILL-040.
             IF B-LINE-COSTED (SUB-1) NOT = "Y"
-            MOVE B-DISCOUNTPERC (SUB-6) TO B-DISCOUNTPERC (SUB-1)
-                                           F-EDNAMEFIELDAMOUNTDIS.
+               MOVE B-DISCOUNTPERC (SUB-6) TO B-DISCOUNTPERC (SUB-1)
+                                              F-EDNAMEFIELDAMOUNTDIS.
 
             IF F-EXIT-CH NOT = X"1D"
              IF SUB-1 > 1
@@ -1418,8 +1419,8 @@
        FILL-040.
             MOVE "                    " TO F-NAMEFIELD.
             MOVE "DISCOUNTPERCENT" TO F-FIELDNAME.
-            MOVE 15 TO F-CBFIELDNAME.
-            MOVE 6 TO F-CBFIELDLENGTH.
+            MOVE 15                TO F-CBFIELDNAME.
+            MOVE 6                 TO F-CBFIELDLENGTH.
             PERFORM WRITE-FIELD-AMOUNTDIS.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
@@ -1545,6 +1546,54 @@
             GO TO FILL-010.
        FILL-999.
              EXIT.
+      *
+       DISPLAY-REST-OF-LINE SECTION.
+       DROL-010.
+           MOVE "COSTEACH"     TO F-FIELDNAME
+           MOVE 8              TO F-CBFIELDNAME
+           MOVE 12             TO F-CBFIELDLENGTH
+           MOVE B-COST (SUB-1) TO F-EDNAMEFIELDFOREIGN99
+           PERFORM WRITE-FIELD-FOREIGN99.
+
+           MOVE "DISCOUNTPERCENT"      TO F-FIELDNAME
+           MOVE 15                     TO F-CBFIELDNAME
+           MOVE B-DISCOUNTPERC (SUB-1) TO F-EDNAMEFIELDAMOUNTDIS
+           MOVE 6                      TO F-CBFIELDLENGTH
+           PERFORM WRITE-FIELD-AMOUNTDIS.
+           
+           PERFORM COMPUTE-RUNNING-TOTAL.
+
+           COMPUTE B-DUTYAMOUNT (SUB-1) ROUNDED =
+                B-COST (SUB-1) / IMRE-EXCHANGERATE.
+           COMPUTE B-DUTYAMOUNT (SUB-1) ROUNDED =
+               (B-DUTYAMOUNT (SUB-1) - (B-DUTYAMOUNT (SUB-1) *
+                B-DISCOUNTPERC (SUB-1) / 100)).
+           COMPUTE B-DUTYAMOUNT (SUB-1) ROUNDED =
+               (B-DUTYAMOUNT (SUB-1) * B-DUTYPERC (SUB-1) / 100).
+
+            MOVE "LDCOST" TO F-FIELDNAME.
+            MOVE 6        TO F-CBFIELDNAME.
+            MOVE 11       TO F-CBFIELDLENGTH.
+            COMPUTE B-LANDEDCOST (SUB-1) ROUNDED =
+                (B-COST (SUB-1) / IMRE-EXCHANGERATE).
+            COMPUTE B-LANDEDCOST (SUB-1) ROUNDED =
+                (B-LANDEDCOST (SUB-1) - (B-LANDEDCOST (SUB-1) *
+                 B-DISCOUNTPERC (SUB-1) / 100)).
+            COMPUTE B-LANDEDCOST (SUB-1) ROUNDED = (B-LANDEDCOST (SUB-1)
+                 + (((IMRE-ONCOSTPERCENT + B-DUTYPERC (SUB-1) +
+                 B-SURCHPERC (SUB-1)) * B-LANDEDCOST (SUB-1)) / 100)).
+            MOVE B-LANDEDCOST (SUB-1) TO F-EDNAMEFIELD99Mil.
+            PERFORM WRITE-FIELD-99Mil.
+
+            MOVE "SPRICE" TO F-FIELDNAME
+            MOVE 6        TO F-CBFIELDNAME
+            MOVE 11       TO F-CBFIELDLENGTH.
+            COMPUTE B-SELLING (SUB-1) ROUNDED = (B-LANDEDCOST (SUB-1)
+              + ((B-LANDEDCOST (SUB-1) * IMRE-MARKUPPERCENT) / 100)).
+            MOVE B-SELLING (SUB-1) TO F-EDNAMEFIELD99Mil.
+            PERFORM WRITE-FIELD-99Mil.
+       DROL-999.
+            EXIT.
       *
        PRINT-LABELS SECTION.
        PR-000.
@@ -2380,54 +2429,6 @@
                GO TO RNSI-005.
        RNSI-999.
            EXIT.
-      *
-       DISPLAY-REST-OF-LINE SECTION.
-       DROL-010.
-           MOVE "COSTEACH"     TO F-FIELDNAME
-           MOVE 8              TO F-CBFIELDNAME
-           MOVE 12             TO F-CBFIELDLENGTH
-           MOVE B-COST (SUB-1) TO F-EDNAMEFIELDFOREIGN99
-           PERFORM WRITE-FIELD-FOREIGN99.
-
-           MOVE "DISCOUNTPERCENT"      TO F-FIELDNAME
-           MOVE 15                     TO F-CBFIELDNAME
-           MOVE B-DISCOUNTPERC (SUB-1) TO F-EDNAMEFIELDAMOUNTDIS
-           MOVE 6                      TO F-CBFIELDLENGTH
-           PERFORM WRITE-FIELD-AMOUNTDIS.
-           
-           PERFORM COMPUTE-RUNNING-TOTAL.
-
-           COMPUTE B-DUTYAMOUNT (SUB-1) ROUNDED =
-                B-COST (SUB-1) / IMRE-EXCHANGERATE.
-           COMPUTE B-DUTYAMOUNT (SUB-1) ROUNDED =
-               (B-DUTYAMOUNT (SUB-1) - (B-DUTYAMOUNT (SUB-1) *
-                B-DISCOUNTPERC (SUB-1) / 100)).
-           COMPUTE B-DUTYAMOUNT (SUB-1) ROUNDED =
-               (B-DUTYAMOUNT (SUB-1) * B-DUTYPERC (SUB-1) / 100).
-
-            MOVE "LDCOST" TO F-FIELDNAME.
-            MOVE 6        TO F-CBFIELDNAME.
-            MOVE 11       TO F-CBFIELDLENGTH.
-            COMPUTE B-LANDEDCOST (SUB-1) ROUNDED =
-                (B-COST (SUB-1) / IMRE-EXCHANGERATE).
-            COMPUTE B-LANDEDCOST (SUB-1) ROUNDED =
-                (B-LANDEDCOST (SUB-1) - (B-LANDEDCOST (SUB-1) *
-                 B-DISCOUNTPERC (SUB-1) / 100)).
-            COMPUTE B-LANDEDCOST (SUB-1) ROUNDED = (B-LANDEDCOST (SUB-1)
-                 + (((IMRE-ONCOSTPERCENT + B-DUTYPERC (SUB-1) +
-                 B-SURCHPERC (SUB-1)) * B-LANDEDCOST (SUB-1)) / 100)).
-            MOVE B-LANDEDCOST (SUB-1) TO F-EDNAMEFIELD99Mil.
-            PERFORM WRITE-FIELD-99Mil.
-
-            MOVE "SPRICE" TO F-FIELDNAME
-            MOVE 6        TO F-CBFIELDNAME
-            MOVE 11       TO F-CBFIELDLENGTH.
-            COMPUTE B-SELLING (SUB-1) ROUNDED = (B-LANDEDCOST (SUB-1)
-              + ((B-LANDEDCOST (SUB-1) * IMRE-MARKUPPERCENT) / 100)).
-            MOVE B-SELLING (SUB-1) TO F-EDNAMEFIELD99Mil.
-            PERFORM WRITE-FIELD-99Mil.
-       DROL-999.
-            EXIT.
       *
        COMPUTE-RUNNING-TOTAL SECTION.
        CRT-005.
