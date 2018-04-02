@@ -68,7 +68,8 @@
             MOVE 7           TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"1D"
-                MOVE "INVALID KEY." TO WS-MESSAGE
+                MOVE "INVALID KEY PRESSED, MUST BE <Return> OR <F8>."
+                TO WS-MESSAGE
                 PERFORM ERROR-000
                 GO TO GET-000.
 
@@ -112,13 +113,13 @@
                    
             MOVE 0 TO F-EXIT-CH.
             IF WS-DEBTOR-ST1 NOT = 0
-                MOVE "BAD START, 'ESC' TO SEE ERROR STATUS."
+                MOVE "BAD START, 'ESC' TO EXIT AND RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                MOVE WS-DEBTOR TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+      *          MOVE WS-DEBTOR TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 PERFORM CLEAR-MIDDLE
                 CLOSE DEBTOR-MASTER

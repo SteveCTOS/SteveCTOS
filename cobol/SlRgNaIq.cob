@@ -124,13 +124,13 @@
                    INVALID KEY NEXT SENTENCE.
 
             IF WS-INCR-ST1 NOT = 0
-                MOVE "BAD START, 'ESC' TO SEE ERROR STATUS."
+                MOVE "BAD START TO REGISTER, 'ESC' TO EXIT AND RETRY."
                 TO WS-MESSAGE
-                PERFORM ERROR-000
+                PERFORM ERROR1-000
                 MOVE WS-INCR-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                MOVE WS-REGISTER TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
+      *          MOVE WS-REGISTER TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 PERFORM CLEAR-MIDDLE
                 CLOSE INCR-REGISTER

@@ -238,6 +238,8 @@
             CLOSE INCR-REGISTER.
             
             PERFORM READ-ALL-TRANSACTIONS.
+            IF WS-ANSWER =  "N"
+               GO TO GET-999.
             PERFORM FILL-BODY.
             IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
                 PERFORM CLEAR-TRANSACTIONS
@@ -431,9 +433,10 @@
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
-               MOVE INCR-PORDER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE "Y" TO WS-ANSWER
+      *         MOVE INCR-PORDER TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               CLOSE INCR-REGISTER
+               MOVE "N" TO WS-ANSWER
                GO TO RDTR-999.
            MOVE "Y" TO WS-NEWINPUT.
            MOVE 1 TO SUB-1 F-INDEX.
@@ -573,16 +576,17 @@
            START INCR-REGISTER KEY NOT < INCR-PORDER
                 INVALID KEY NEXT SENTENCE.
            IF WS-INCR-ST1 NOT = 0
-               MOVE "REGISTER BUSY ON START, 'ESC' TO EXIT."
+               MOVE "REGISTER BUSY ON START, 'ESC' TO EXIT AND RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
-               MOVE INCR-PORDER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               MOVE "Y" TO WS-ANSWER
+      *         MOVE INCR-PORDER TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               CLOSE INCR-REGISTER
+               MOVE "N" TO WS-ANSWER
                GO TO RDALL-999.
            MOVE "Y" TO WS-NEWINPUT.
            MOVE 1 TO SUB-1 F-INDEX.

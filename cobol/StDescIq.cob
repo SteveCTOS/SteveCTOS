@@ -250,12 +250,12 @@
                INVALID KEY NEXT SENTENCE.
             MOVE 0 TO F-EXIT-CH.
             IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON START, 'ESC' TO EXIT."
+               MOVE "STOCK FILE BAD START, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
+      *         PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO READ-999.
             MOVE 0 TO SUB-2 SUB-3.
