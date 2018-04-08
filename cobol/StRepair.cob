@@ -3957,12 +3957,12 @@
               PERFORM ERROR1-020
               GO TO RQBA-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
+               CALL "C$SLEEP" USING 2
                PERFORM ERROR1-020
                PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
@@ -4772,7 +4772,8 @@
            READ STOCK-TRANS-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
            IF WS-STTRANS-ST1 NOT = 0
-               MOVE "ST-TRANS FILE BUSY ON READ-LOCK, 'ESC' TO RETRY."
+               MOVE 
+               "ST-TRANS BUSY CAN-TRANS-000 READ-LOCK, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
@@ -5252,12 +5253,12 @@
               MOVE 0 TO STTR-TYPE
               GO TO DST-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
+               CALL "C$SLEEP" USING 2
                PERFORM ERROR1-020
                PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
@@ -5299,12 +5300,12 @@
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
            IF WS-STTRANS-ST1 NOT = 0
-              MOVE "STTRANS BUSY ON READ-NEXT, IN 1 SEC GOING TO RETRY."
+              MOVE "STTRANS BUSY ON READ-NEXT, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STTRANS-ST1 TO WS-MESSAGE
                PERFORM ERROR-000
-               CALL "C$SLEEP" USING 1
+               CALL "C$SLEEP" USING 2
                PERFORM ERROR1-020
                PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
@@ -5814,6 +5815,13 @@
        RSALES-950.
             CLOSE SALES-ANALYSIS.
             IF WS-SALES-ST1 NOT = 0
+               MOVE "SALES ANALYSIS BUSY ON CLOSE, 'ESC' TO RETRY"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SALES-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SALES-ST1
                GO TO RSALES-950.
        RSALES-999.
             EXIT.
@@ -5948,7 +5956,14 @@
        SFRN-001.
            START STOCK-MASTER KEY NOT < ST-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-STOCK-ST1 = 10 OR = 91
+           IF WS-STOCK-ST1 NOT = 0
+               MOVE "START STOCK RECORD SFRN-001, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                MOVE " " TO ST-STOCKNUMBER
                GO TO SFRN-001.
        SFRN-999.
@@ -5965,6 +5980,13 @@
                MOVE 0 TO WS-STOCK-ST1
                GO TO RNSI-999.
            IF WS-STOCK-ST1 = 91
+               MOVE "STOCK RECORD ERC 91 RNSI-005, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                MOVE " " TO ST-STOCKNUMBER
                PERFORM START-FOR-READ-NEXT
                GO TO RNSI-005.
@@ -5996,6 +6018,13 @@
                MOVE 0 TO WS-STOCK-ST1
                GO TO RPREV-999.
            IF WS-STOCK-ST1 = 91
+               MOVE "STOCK RECORD ERC 91 RPREV-005, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
                MOVE " " TO ST-STOCKNUMBER
                PERFORM START-FOR-READ-NEXT
                GO TO RPREV-005.
@@ -6053,7 +6082,7 @@
                MOVE "NO PARAMETER RECORD ON FILE, CALL YOUR SUPERVISOR."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-               STOP RUN.
+               EXIT PROGRAM.
            IF WS-SLPARAMETER-ST1 NOT = 0
               MOVE "PARAMETER RECORD BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
@@ -6735,12 +6764,15 @@
            IF WS-FAX-ST1 = 23 OR 35 OR 49
                 MOVE
                 "WE HAVE A PROBLEM IN THE FAXPARMETER FILE ON READ"
-                   TO WS-MESSAGE
-                   PERFORM ERROR-MESSAGE
-                 GO TO RDFXPRM-010.
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-FAX-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                GO TO RDFXPRM-010.
            IF WS-FAX-ST1 NOT = 0
                 MOVE "FAX RECORD BUSY ON READ, PRESS 'ESC' TO RETRY"
-                  TO WS-MESSAGE
+                TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-FAX-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
@@ -6752,7 +6784,7 @@
       *
        OPEN-FILES SECTION.
        OPEN-000.
-           OPEN I-O PARAMETER-FILE.
+           PERFORM OPEN-014.
            PERFORM READ-PARAMETER.
            MOVE PA-GST-PERCENT TO WS-GST-PERCENT.
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -6792,77 +6824,104 @@
            CLOSE PARAMETER-FILE.
        OPEN-011.
            OPEN I-O DEBTOR-MASTER.
-           IF WS-DEBTOR-ST1 NOT = 0 
-              MOVE 0 TO WS-DEBTOR-ST1
+           IF WS-DEBTOR-ST1 NOT = 0
               MOVE "DEBTOR FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DEBTOR-ST1
               GO TO OPEN-011.
        OPEN-012.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0 
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STOCK-ST1
               GO TO OPEN-012.
        OPEN-013.
            OPEN I-O STPR-MASTER.
            IF WS-STPR-ST1 NOT = 0 
-              MOVE 0 TO WS-STPR-ST1
               MOVE "SPECIAL PRICE FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
               GO TO OPEN-013.
        OPEN-014.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO OPEN-014.
        OPEN-015.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "ST-TRANS FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO OPEN-015.
        OPEN-016.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
               MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-INCR-ST1
               GO TO OPEN-016.
        OPEN-018.
            OPEN I-O Fax-Parameter.
            IF WS-FAX-ST1 NOT = 0 
-              MOVE 0 TO WS-FAX-ST1
               MOVE "FaxParam FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-FAX-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-FAX-ST1
               GO TO OPEN-018.
            Perform Read-FaxParam.
            CLOSE Fax-Parameter.
        OPEN-019.
             OPEN I-O STDISC-MASTER.
             IF WS-STDISC-ST1 NOT = 0
-               MOVE 0 TO WS-STDISC-ST1
-               MOVE "STOCK SPEC-DISC BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-019.
+              MOVE "STOCK SPEC-DISC BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STDISC-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STDISC-ST1
+              GO TO OPEN-019.
        OPEN-020.
            OPEN I-O TOOLKITS.
            IF WS-TOOLKIT-ST1 NOT = 0
-               MOVE 0 TO WS-TOOLKIT-ST1
-               MOVE "TOOLKIT FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+              MOVE "TOOLKIT FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-TOOLKIT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-TOOLKIT-ST1
               GO TO OPEN-020.
        OPEN-021.
            MOVE Ws-Forms-Name   TO F-FILENAME

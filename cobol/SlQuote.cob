@@ -4855,7 +4855,7 @@
            IF TO-COMPONENT-NUMBER = " "
                GO TO R-KIT-010.
            IF TO-TOOLKIT-NUMBER NOT = WS-TOOLKIT-NUMBER
-               MOVE "1" TO WS-TOOLKIT-ST1
+               MOVE 1 TO WS-TOOLKIT-ST1
                GO TO R-KIT-999.
        R-KIT-020.
            MOVE TO-COMPONENT-NUMBER TO B-STOCKNUMBER (SUB-1)
@@ -6750,7 +6750,7 @@
       *      IF WS-GSTNO = "EXPORT"
       *       IF WS-TAXAMT > 0
       *         MOVE
-      *       "AN EXPORT SALE CANNOT HAVE VAT ALLOCATED TO IT, RE-ENTER."
+      *      "AN EXPORT SALE CANNOT HAVE VAT ALLOCATED TO IT, RE-ENTER."
       *           TO WS-MESSAGE
       *           PERFORM ERROR-MESSAGE
       *           GO TO TO-000.
@@ -6868,7 +6868,7 @@
        SFRN-001.
            START STOCK-MASTER KEY NOT < ST-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-STOCK-ST1 = 10 OR = 91
+           IF WS-STOCK-ST1 NOT = 0
              MOVE "STOCK BUSY ON STOCK-START-FOR-READ, 'ESC' TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000
@@ -7641,6 +7641,35 @@
             MOVE INVQUES-ACC-OVER-LIMIT  TO WS-QUES-ACC-OVER-LIMIT.
        RINVQUES-999.
             EXIT.
+      *
+       READ-FAXPARAM SECTION.
+       RDFXPRM-000.
+           MOVE 1 TO FAX-PARMKEY.
+           START FAX-PARAMETER KEY NOT < FAX-PAKEY.
+       RDFXPRM-010.
+           READ FAX-PARAMETER
+                 INVALID KEY NEXT SENTENCE.
+           IF WS-FAX-ST1 = 23 OR 35 OR 49
+                MOVE
+            "WE HAVE A PROBLEM IN FAX-PARAMETER ON READ, 'ESC' TO RETRY"
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-FAX-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-FAX-ST1
+                 GO TO RDFXPRM-010.
+           IF WS-FAX-ST1 NOT = 0
+                MOVE "FAX RECORD BUSY ON READ, 'ESC' TO RETRY."
+                  TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE WS-FAX-ST1 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
+                 MOVE 0 TO WS-FAX-ST1
+                 GO TO RDFXPRM-010.
+       RDFXPRM-999.
+             EXIT.
       *-----------------------------------------------------------*
        Z1-HEADINGS SECTION.
       *-----------------------------------------------------------*
@@ -7872,35 +7901,6 @@
             MOVE WS-YY TO WS-QUOTE-YY.
        OPEN-999.
            EXIT.
-      *
-       READ-FAXPARAM SECTION.
-       RDFXPRM-000.
-           MOVE 1 TO FAX-PARMKEY.
-           START FAX-PARAMETER KEY NOT < FAX-PAKEY.
-       RDFXPRM-010.
-           READ FAX-PARAMETER
-                 INVALID KEY NEXT SENTENCE.
-           IF WS-FAX-ST1 = 23 OR 35 OR 49
-                MOVE
-            "WE HAVE A PROBLEM IN FAX-PARAMETER ON READ, 'ESC' TO RETRY"
-                 TO WS-MESSAGE
-                 PERFORM ERROR1-000
-                 MOVE WS-FAX-ST1 TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 PERFORM ERROR1-020
-                 MOVE 0 TO WS-FAX-ST1
-                 GO TO RDFXPRM-010.
-           IF WS-FAX-ST1 NOT = 0
-                MOVE "FAX RECORD BUSY ON READ, 'ESC' TO RETRY."
-                  TO WS-MESSAGE
-                 PERFORM ERROR1-000
-                 MOVE WS-FAX-ST1 TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 PERFORM ERROR1-020
-                 MOVE 0 TO WS-FAX-ST1
-                 GO TO RDFXPRM-010.
-       RDFXPRM-999.
-             EXIT.
       *
        END-OFF SECTION.
        END-000.
