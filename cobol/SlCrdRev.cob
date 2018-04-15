@@ -536,11 +536,8 @@
            MOVE WS-INVOICE   TO STTR-REFERENCE1.
            MOVE 6            TO STTR-TYPE.
            MOVE 0            TO STTR-TRANSACTION-NUMBER.
-      *     MOVE WS-STTRANSNO TO STTR-TRANSACTION-NUMBER.
            START STOCK-TRANS-FILE KEY NOT < STTR-KEY
               INVALID KEY NEXT SENTENCE.
-           IF WS-STTRANS-ST1 = 0
-              GO TO RSTT-010.
            IF WS-STTRANS-ST1 = 23 OR 35 OR 49
               MOVE 0 TO STTR-TYPE
               GO TO RSTT-999.
@@ -641,7 +638,6 @@
                 PERFORM ERROR1-020
                 MOVE 0 TO WS-STTRANS-ST1
                 GO TO DEL-ST-030.
-           MOVE 0 TO WS-STTRANS-ST1.
        DEL-ST-050.
            ADD 1 TO SUB-1.
            IF SUB-1 > 200
@@ -882,7 +878,6 @@
               PERFORM ERROR-MESSAGE
               GO TO UDT-999.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DR-TRANS FILE BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
                PERFORM ERROR1-000
@@ -974,10 +969,13 @@
               PERFORM ERROR-MESSAGE
               GO TO UPDIS-900.
            IF WS-DISTRIBUTION-ST1 NOT = 0 
-              MOVE 0 TO WS-DISTRIBUTION-ST1
               MOVE "DISTRIBUTION BUSY ON READ, 'ESC' TO RE-TRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DISTRIBUTION-ST1
               GO TO UPDIS-010.
            SUBTRACT WS-SUBTOTAL FROM DIST-CNOTEWEEK
                                      DIST-CNOTEPTD
@@ -1014,9 +1012,13 @@
               PERFORM ERROR-MESSAGE
               GO TO UPDIS-900.
            IF WS-DISTRIBUTION-ST1 NOT = 0 
-              MOVE 0 TO WS-DISTRIBUTION-ST1
               MOVE "DISTRIBUTION BUSY ON REWRITE, 'ESC' TO RETRY"
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DISTRIBUTION-ST1
               PERFORM ERROR-MESSAGE
               GO TO UPDIS-010.
        UPDIS-900.
@@ -1444,71 +1446,99 @@
            IF WS-SOLDBY-ST1 NOT = 0
               MOVE "SOLDBY-FILE BUSY ON OPEN. 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SOLDBY-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SOLDBY-ST1
               GO TO OPEN-010.
        OPEN-011.
            OPEN I-O DEBTOR-MASTER.
            IF WS-DEBTOR-ST1 NOT = 0 
-              MOVE 0 TO WS-DEBTOR-ST1
               MOVE "DEBTOR FILE BUSY ON OPEN. 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DEBTOR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DEBTOR-ST1
               GO TO OPEN-011.
        OPEN-012.
            OPEN I-O STOCK-MASTER.
            IF WS-STOCK-ST1 NOT = 0 
-              MOVE 0 TO WS-STOCK-ST1
               MOVE "STOCK FILE BUSY ON OPEN. 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STOCK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STOCK-ST1
               GO TO OPEN-012.
        OPEN-013.
             OPEN I-O SALES-ANALYSIS.
             IF WS-SALES-ST1 NOT = 0
-               MOVE 0 TO WS-SALES-ST1
-               MOVE "SALES FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-013.
+              MOVE "SALES FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SALES-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SALES-ST1
+              GO TO OPEN-013.
        OPEN-014.
            OPEN I-O DISTRIBUTIONS.
            IF WS-DISTRIBUTION-ST1 NOT = 0
-              MOVE 0 TO WS-DISTRIBUTION-ST1
               MOVE "DISTRIBUTION FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DISTRIBUTION-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DISTRIBUTION-ST1
               GO TO OPEN-014.
        OPEN-015.
            OPEN I-O STOCK-TRANS-FILE.
            IF WS-STTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-STTRANS-ST1
               MOVE "STOCK TRANS. FILE BUSY ON OPEN. 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STTRANS-ST1
               GO TO OPEN-015.
        OPEN-016.
            OPEN I-O DEBTOR-TRANS-FILE.
            IF WS-DRTRANS-ST1 NOT = 0 
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DEBTOR TRANS. FILE BUSY ON OPEN. 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO OPEN-016.
        OPEN-017.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0 
-              MOVE 0 TO WS-INCR-ST1
               MOVE "INV/CR. REGISTER BUSY ON OPEN. 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-INCR-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-INCR-ST1
               GO TO OPEN-017.
        OPEN-018.
            OPEN I-O SPECIALS-FILE.
            IF WS-SPECIALS-ST1 NOT = 0 
-              MOVE 0 TO WS-SPECIALS-ST1
               MOVE "SPECIALS FILE BUSY ON OPEN I-O, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SPECIALS-ST1
               GO TO OPEN-019.
            GO TO OPEN-020.
        OPEN-019.
@@ -1517,7 +1547,11 @@
               MOVE 0 TO WS-SPECIALS-ST1
               MOVE "SPECIALS FILE BUSY ON OPEN OUTPUT, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SPECIALS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SPECIALS-ST1
               GO TO OPEN-018.
        OPEN-020.
            MOVE Ws-Forms-Name   TO F-FILENAME

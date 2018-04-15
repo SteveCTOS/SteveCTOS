@@ -672,7 +672,7 @@
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK-ST1 = 23 OR 35 OR 49
                 PERFORM CLEAR-SCREEN-FORM          
-                MOVE WS-STOCKNUMBER TO ST-STOCKNUMBER
+                MOVE WS-STOCKNUMBER         TO ST-STOCKNUMBER
                 MOVE "Enter An Existing St" TO ST-DESCRIPTION1
                 MOVE "ock Item, Try Again!" TO ST-DESCRIPTION2
                 GO TO R-ST-900.
@@ -861,42 +861,55 @@
            IF WS-STOCK-ST1 NOT = 0
               MOVE "STOCK FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-000
               MOVE WS-STOCK-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               MOVE 0 TO WS-STOCK-ST1
               GO TO OPEN-000.
        OPEN-005.
             OPEN I-O STPR-MASTER.
             IF WS-STPR-ST1 NOT = 0
-               MOVE 0 TO WS-STPR-ST1
-               MOVE "STOCK PRICE FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-005.
+              MOVE "STOCK PRICE FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STPR-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STPR-ST1
+              GO TO OPEN-005.
        OPEN-006.
             OPEN I-O STCAT-MASTER.
             IF WS-STCAT-ST1 NOT = 0
-               MOVE 0 TO WS-STCAT-ST1
-               MOVE "ST-CATALOGUE FILE BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-006.
+              MOVE "ST-CATALOGUE FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STCAT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STCAT-ST1
+              GO TO OPEN-006.
        OPEN-007.
             OPEN I-O STALT-MASTER.
             IF WS-STALT-ST1 NOT = 0
-               MOVE 0 TO WS-STALT-ST1
-               MOVE "ST-ALTERNATIVES BUSY ON OPEN, 'ESC' TO RETRY."
-               TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               GO TO OPEN-007.
+              MOVE "ST-ALTERNATIVES BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-STALT-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-STALT-ST1
+              GO TO OPEN-007.
        OPEN-008.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE 0 TO WS-SLPARAMETER-ST1
               MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-SLPARAMETER-ST1
               GO TO OPEN-008.
            PERFORM READ-INVQUES-FILE.
            PERFORM READ-PARAMETER.
