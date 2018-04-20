@@ -67,3 +67,7 @@ cp /ctools/pdf07/* /home/ctools/Dropbox/ChristensenPDF/'Saftec (JHB)'/
 cp /ctools/pdf08/* /home/ctools/Dropbox/ChristensenPDF/'Christensen Saftec (Cape)'/
 
 echo PDF update to Dropbox is finished ........
+cd /ctools/bin
+
+cp /ctools/image/$1Co0* /ctools/estate
+echo Statement files copied to /ctools/estate ........

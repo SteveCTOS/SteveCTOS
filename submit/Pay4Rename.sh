@@ -7,3 +7,6 @@
 
 python renamewmans.py $1 $2
 echo   The rename of all COID WMans files Run Successfully 
+
+python renameye.py $1 $2
+echo   The rename of all Year-End Final Reports Run Successfully 

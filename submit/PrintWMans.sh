@@ -2,7 +2,7 @@
 
 # Enter $1 for the month / year of the print file.
 # example.  From the command line run the following:
-# PrintWMans.sh Jun16
+# PrintWMans.sh Feb18
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1WMansCTJ
 

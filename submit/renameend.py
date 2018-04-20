@@ -2,7 +2,7 @@
 # The renaming of Payslyp 'END' Files to 'End' & add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
-months = ['Mar17', 'Apr17', 'May17', 'Jun17', 'Jul17', 'Aug17', 'Sep17', 'Oct17', 'Nov17', 'Dec17', 'Jan18', 'Feb18']
+months = ['Mar18', 'Apr18', 'May18', 'Jun18', 'Jul18', 'Aug18', 'Sep18', 'Oct18', 'Nov18', 'Dec18', 'Jan19', 'Feb19']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):

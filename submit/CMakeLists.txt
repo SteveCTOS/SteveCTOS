@@ -106,6 +106,7 @@ set (copy_list
   renamepen.py
   renametax.py
   renamewmans.py
+  renameye.py
   StMinMax.Sub01
   StMinMax.Sub02
   StMinMax.Sub03
