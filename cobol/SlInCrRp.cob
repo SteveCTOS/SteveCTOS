@@ -435,7 +435,7 @@
            MOVE " " TO WS-MESSAGE.
            PERFORM ERROR-020.
        CONT-031.
-      *D=dOCBASE ASCII TEXT,
+      *D=DOCUBASE ASCII TEXT,
       *X=NEW PDF FORMAT PRINT
            IF WS-INVCRED = "D" OR = "X"
                GO TO CONT-032.
@@ -557,7 +557,7 @@
            MOVE 1 TO SUB-1.
                 
            IF WS-PRINT-NUM = 4
-            IF WS-INVCRED = "I" OR = "P" OR = "Q"
+            IF WS-INVCRED = "I" OR = "P"
                PERFORM SETUP-INVOICE-FOR-PDF
             ELSE
                PERFORM SETUP-CREDIT-FOR-PDF.
@@ -567,7 +567,13 @@
            GO TO CONT-999.
        CONT-050.
       * EMAIL SECTION ONLY.
-           IF WS-INVCRED = "I" OR = "P" OR = "Q"
+           IF WS-INVCRED = "I"
+               MOVE WS-RANGE1          TO WS-EINVOICE
+               PERFORM GET-EMAIL-INVOICE-NAME
+               MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME.
+
+           IF WS-INVCRED = "P"
+               MOVE "/ctools/eprofo/"  TO WS-EI-FIL
                MOVE WS-RANGE1          TO WS-EINVOICE
                PERFORM GET-EMAIL-INVOICE-NAME
                MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME.
@@ -601,8 +607,10 @@
        GEQN-006.
             MOVE SPACES TO ALPHA-RATE DATA-RATE.
             IF WS-INVCRED = "C"
-                MOVE "/ctools/ecredt/" TO ALPHA-RATE
-            ELSE
+                MOVE "/ctools/ecredt/" TO ALPHA-RATE.
+           IF WS-INVCRED = "P"
+                MOVE "/ctools/eprofo/" TO ALPHA-RATE.
+           IF WS-INVCRED = "I"
                 MOVE "/ctools/einvoc/" TO ALPHA-RATE.
             
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
@@ -685,7 +693,7 @@
       *     PERFORM ERROR-MESSAGE.
 
            MOVE SPACES TO DATA-RATE.
-           IF WS-INVCRED = "I" OR = "P" OR = "Q"
+           IF WS-INVCRED = "I" OR = "P"
                MOVE "InPrintCo" TO DATA-RATE
            ELSE
                MOVE "CrPrintCo" TO DATA-RATE.
