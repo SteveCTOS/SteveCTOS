@@ -1201,7 +1201,7 @@
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-3-10 = "CTJ-KGI LO"
              IF WS-LOAN-4-26 = "AN                        "
-              IF WS-CO-NUMBER = 12
+              IF WS-CO-NUMBER = 4
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Loan To Company                             "
@@ -1213,7 +1213,7 @@
               GO TO RCF-030.
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-4-26 = "KGI-CTJ LOAN PD           "
-             IF WS-CO-NUMBER = 12
+             IF WS-CO-NUMBER = 4
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Loan Paid                                   "
