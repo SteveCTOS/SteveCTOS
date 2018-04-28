@@ -289,6 +289,9 @@
        01  WS-EMAIL-CREDIT.
            03  WS-EC-FIL        PIC X(15) VALUE "/ctools/ecredt/".
            03  WS-ECREDIT       PIC X(6).
+       01  WS-EMAIL-FINAL.
+           03  WS-EF-FIL        PIC X(15) VALUE " ".
+           03  WS-BAL-OF-NAME   PIC X(35).
        01 WS-FST-LINE.
           05  WS-DELIM-F             PIC  X(2).
           05  WS-DATA-F              PIC  X(132).
@@ -599,19 +602,40 @@
                MOVE "NOTHING TO PRINT IN THAT RANGE, 'ESC' TO RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
+           IF WS-FOUND NOT = " "
+            IF WS-PRINT-NUM = 5
+               PERFORM MOVE-EMAIL-FROM-EIMAGE-SETUP
+               PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE.
            PERFORM END-OFF.
        CONT-999.
            EXIT.
       *
+       MOVE-EMAIL-FROM-EIMAGE-SETUP SECTION.
+       MERFES-005.
+             MOVE WS-TEMP-EMAIL-FILE TO WS-EMAIL-FINAL.
+             
+             IF WS-INVCRED = "I"
+                 MOVE "/ctools/einvoc/" TO WS-EF-FIL.
+             IF WS-INVCRED = "P"
+                 MOVE "/ctools/eprofo/" TO WS-EF-FIL.
+             IF WS-INVCRED = "C"
+                 MOVE "/ctools/ecredt/" TO WS-EF-FIL.
+       MERFES-999.
+            EXIT.
+      *
        GET-EMAIL-INVOICE-NAME SECTION.
        GEQN-006.
             MOVE SPACES TO ALPHA-RATE DATA-RATE.
-            IF WS-INVCRED = "C"
-                MOVE "/ctools/ecredt/" TO ALPHA-RATE.
-           IF WS-INVCRED = "P"
-                MOVE "/ctools/eprofo/" TO ALPHA-RATE.
-           IF WS-INVCRED = "I"
-                MOVE "/ctools/einvoc/" TO ALPHA-RATE.
+
+            MOVE "/ctools/eimage/" TO ALPHA-RATE.
+
+
+      *      IF WS-INVCRED = "C"
+      *         MOVE "/ctools/ecredt/" TO ALPHA-RATE.
+      *      IF WS-INVCRED = "P"
+      *         MOVE "/ctools/eprofo/" TO ALPHA-RATE.
+      *      IF WS-INVCRED = "I"
+      *         MOVE "/ctools/einvoc/" TO ALPHA-RATE.
             
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
             MOVE WS-USERNAME TO DATA-RATE.
@@ -3352,6 +3376,7 @@
        Copy "SetupCreditForPDFOnly".
        Copy "DeleteBlankEmailInvRecord".
        Copy "DeleteBlankEmailCrnRecord".
+       Copy "MoveEmailRecordFromEimage".
        Copy "GetUserPrintName".
        Copy "SendReportToPrinter".
       ******************

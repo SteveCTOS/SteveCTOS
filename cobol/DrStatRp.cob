@@ -69,8 +69,11 @@
        01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-EMAIL-STATEMENT.
-           03  WS-ES-FIL        PIC X(15) VALUE "/ctools/estate/".
+           03  WS-ES-FIL        PIC X(15) VALUE "/ctools/eimage/".
            03  WS-EStatement    PIC X(100).
+       01  WS-EMAIL-FINAL.
+           03  WS-EF-FIL        PIC X(15) VALUE " ".
+           03  WS-BAL-OF-NAME   PIC X(100).
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1       PIC 99.
        01  WS-DRTRANS-STATUS.
@@ -333,23 +336,21 @@
       * NEXT LINE USED TO ZERO SUB-1 AND MOVE SPACES TO ALPHA-RATE
            Perform CDNVD-005.
            
-           IF WS-PRINTER-TYPE = 1
+           IF WS-PRINTER-TYPE = "1"
                MOVE "/ctools/spl/DrStateCo" To Alpha-Rate.
-           IF WS-PRINTER-TYPE = 2
+           IF WS-PRINTER-TYPE = "2"
                MOVE "/ctools/spl/DrLaserCo" To Alpha-Rate.
-           IF WS-PRINTER-TYPE = 3
+           IF WS-PRINTER-TYPE = "3"
                MOVE "/ctools/spl/DrEMailCo" To Alpha-Rate.
-           IF WS-PRINTER-TYPE = 4
+           IF WS-PRINTER-TYPE = "4"
                MOVE "/ctools/spl/DrNoMalCo" To Alpha-Rate.
-           IF WS-PRINTER-TYPE = 5
+           IF WS-PRINTER-TYPE = "5"
                PERFORM ADD-USERNAME-TO-FILE
                MOVE ALPHA-RATE         TO WS-ESTATEMENT
                PERFORM GET-EMAIL-STATEMENT-NAME
                MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME
-      *         MOVE WS-EMAIL-STATEMENT TO WS-PRINTER
-      *                                     W-FILENAME
                GO TO CONT-030.
-           IF WS-PRINTER-TYPE = 6
+           IF WS-PRINTER-TYPE = "6"
                GO TO CONT-035.
                
       *NEXT LINE USED TO CHECK THE VALUE OF SUB-1 WHICH IS THE NAME
@@ -380,15 +381,14 @@
                PERFORM ERROR1-020
                GO TO CONT-030.
        CONT-035.
-           IF WS-PRINTER-TYPE = 6
+           IF WS-PRINTER-TYPE = "6"
               PERFORM PRINT-PDF-ONLY
               CLOSE DEBTOR-MASTER
                     DEBTOR-TRANS-FILE
               CLOSE PDF-FILE
               GO TO CONT-950.
-           IF WS-PRINTER-TYPE = 1
-      *        MOVE WTELL-PAUSE TO PRINT-REC
-      *        WRITE PRINT-REC
+              
+           IF WS-PRINTER-TYPE = "1"
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC BEFORE PAGE
               PERFORM PRINT-STATEMENT
@@ -403,18 +403,22 @@
                CALL "C$SLEEP" USING 2
                PERFORM ERROR-020.
                
-           IF WS-PRINTER-TYPE = 1
+           IF WS-PRINTER-TYPE = "1"
                MOVE " " TO PRINT-REC
                WRITE PRINT-REC BEFORE PAGE
                MOVE " " TO PRINT-REC.
            CLOSE PRINT-FILE.
            CLOSE DEBTOR-MASTER
                  DEBTOR-TRANS-FILE.
+           
            IF WS-FOUND = " "
-            IF WS-PRINTER-TYPE = 5
-               PERFORM DELETE-BLANK-EMAIL-STATE-RECORD.
+            IF WS-PRINTER-TYPE = "5"
+               PERFORM DELETE-BLANK-EMAIL-STATE-RECORD
+               GO TO CONT-950.
        CONT-040.
-           IF WS-PRINTER-TYPE = 5
+           IF WS-PRINTER-TYPE = "5"
+               PERFORM MOVE-EMAIL-FROM-EIMAGE-SETUP
+               PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE.
               GO TO CONT-950.
            IF WS-IMM-PRINT = "N"
               GO TO CONT-900.
@@ -434,10 +438,18 @@
        CONT-999.
            EXIT.
       *
+       MOVE-EMAIL-FROM-EIMAGE-SETUP SECTION.
+       MERFES-005.
+             MOVE WS-TEMP-EMAIL-FILE TO WS-EMAIL-FINAL.
+             
+             MOVE "/ctools/estate/" TO WS-EF-FIL.
+       MERFES-999.
+            EXIT.
+      *
        GET-EMAIL-STATEMENT-NAME SECTION.
        GEQN-006.
             MOVE SPACES TO ALPHA-RATE DATA-RATE.
-            MOVE "/ctools/estate/" TO ALPHA-RATE.
+            MOVE "/ctools/eimage/" TO ALPHA-RATE.
             
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
             MOVE WS-USERNAME TO DATA-RATE.
@@ -541,13 +553,13 @@
                GO TO WOPFN-010.
        WOPFN-020.
            MOVE SPACES TO DATA-RATE.
-           IF WS-PRINTER-TYPE = 1
+           IF WS-PRINTER-TYPE = "1"
                MOVE "DrStateCo" To DATA-Rate.
-           IF WS-PRINTER-TYPE = 2
+           IF WS-PRINTER-TYPE = "2"
                MOVE "DrLaserCo" To DATA-Rate.
-           IF WS-PRINTER-TYPE = 3
+           IF WS-PRINTER-TYPE = "3"
                MOVE "DrEMailCo" To DATA-Rate.
-           IF WS-PRINTER-TYPE = 4
+           IF WS-PRINTER-TYPE = "4"
                MOVE "DrNoMalCo" To DATA-Rate.
                
            MOVE 1            TO SUB-2.
@@ -2303,6 +2315,7 @@
        Copy "SetupStatementForPDFOnly".
        Copy "SetupStatementNoMailForPDF".
        Copy "DeleteBlankEmailStateRecord".
+       Copy "MoveEmailRecordFromEimage".
       ******************
       *Mandatory Copies*
       ******************

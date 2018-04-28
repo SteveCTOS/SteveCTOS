@@ -168,6 +168,7 @@
        77  WS-ACC-ERROR         PIC X VALUE " ".      
        77  WS-QUOTE-NAME        PIC X(25) VALUE " ".
        01  WS-EMAIL             PIC X(50).
+       01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  W-READ-KEY           PIC X(11).
        01  W-CRTSTATUS          PIC 9(4) value 0.
@@ -248,10 +249,13 @@
            03  WS-FIL-Y         PIC X.
            03  WS-QUOTE-YY      PIC 99.
        01  WSF-MAIL-QUOTE.
-           03  WSF-Q-FIL        PIC X(15) VALUE "/ctools/equote/".
+           03  WSF-Q-FIL        PIC X(15) VALUE "/ctools/eimage/".
            03  WSF-QUOTE        PIC X(7).
            03  FILLER           PIC X VALUE "-".
            03  WSF-PRINTNUMBER  PIC 99.
+       01  WS-EMAIL-FINAL.
+           03  WS-EF-FIL        PIC X(15) VALUE " ".
+           03  WS-BAL-OF-NAME   PIC X(35).
        01  WSF-FAX-QUOTE.
            03  WSF-F-FIL        PIC X(12) VALUE "/ctools/fax/".
            03  WSF-FAX          PIC X(10).
@@ -585,7 +589,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-PRINT-SUF-COMMENT.
 
-      *    ACCEPT WS-PRINT-SUF-COMMENT AT POS.
            IF WS-PRINT-SUF-COMMENT NOT = "N" AND NOT = "Y"
               GO TO CONTROL-008.
            MOVE 2910 TO POS
@@ -3597,7 +3600,7 @@
               PERFORM WRITE-ROUTINE.
        FINAL-ENTRY-960.
       *********************************************
-      *COPY WRITTEN TO /ctools/equote/ SECTION   **
+      *COPY WRITTEN TO /ctools/eimage/ SECTION   **
       *********************************************
            IF WS-AUTO-FAX NOT = "E" 
                GO TO GET-999.
@@ -3615,6 +3618,9 @@
            DISPLAY "WRITING EMAIL DISK FILE .............      "
            AT POS
            PERFORM WRITE-EMAIL-ROUTINE.
+
+           PERFORM MOVE-EMAIL-FROM-EIMAGE-SETUP
+           PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE.
        GET-999.
             EXIT.
       *
@@ -4972,6 +4978,14 @@
        RLZ-999.
            EXIT.
       *
+       MOVE-EMAIL-FROM-EIMAGE-SETUP SECTION.
+       MERFES-005.
+             MOVE WS-TEMP-EMAIL-FILE TO WS-EMAIL-FINAL.
+             
+             MOVE "/ctools/equote/" TO WS-EF-FIL.
+       MERFES-999.
+            EXIT.
+      *
        GET-EMAIL-QUOTE-NAME SECTION.
        GEQN-000.
            MOVE " " TO ALPHA-RATE
@@ -4991,6 +5005,8 @@
 
            MOVE " "        TO WSF-QUOTE.
            MOVE ALPHA-RATE TO WSF-QUOTE.
+
+           MOVE WSF-MAIL-QUOTE TO WS-TEMP-EMAIL-FILE
            MOVE 1 TO SUB-1 SUB-2.
        GEQN-999.
            EXIT.
@@ -7939,6 +7955,7 @@
        Copy "SetupQuoteForPDF".
        Copy "SetupQuote2ForPDF".
        Copy "SetupMergeQuoteForPDF".
+       Copy "MoveEmailRecordFromEimage".
        Copy "ZoomBox".
       ******************
       *Mandatory Copies*
