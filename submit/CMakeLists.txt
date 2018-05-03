@@ -75,7 +75,7 @@ set (copy_list
   MonthEnd02.sh
   MonthEnd03.sh
   MonthEnd05.sh
-  MonthEnd07.sh
+  MonthEnd07.sh 
   MonthEnd08.sh
   MonthEnd09.sh
   MonthEnd10.sh

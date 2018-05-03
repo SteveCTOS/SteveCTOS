@@ -418,8 +418,8 @@
        CONT-040.
            IF WS-PRINTER-TYPE = "5"
                PERFORM MOVE-EMAIL-FROM-EIMAGE-SETUP
-               PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE.
-              GO TO CONT-950.
+               PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE
+               GO TO CONT-950.
            IF WS-IMM-PRINT = "N"
               GO TO CONT-900.
            IF WS-FOUND = "Y"
@@ -2262,12 +2262,17 @@
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
-              PERFORM END-OFF.
+              MOVE "NO DR-TRANS RECORDS ON START, 'ESC' TO EXIT."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              CLOSE DEBTOR-MASTER
+                    DEBTOR-TRANS-FILE
+              EXIT PROGRAM.
            IF WS-DRTRANS-ST1 NOT = 0
-              MOVE 0 TO WS-DRTRANS-ST1
               MOVE "DEBTOR TRANS FILE BUSY ON START, 'ESC' TO RETRY."
                TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              MOVE 0 TO WS-DRTRANS-ST1
               GO TO OPEN-040.
            GO TO OPEN-120.
        OPEN-120.
@@ -2289,8 +2294,8 @@
       *
        END-OFF SECTION.
        END-010.
-           CLOSE PRINT-FILE
-                 DEBTOR-MASTER
+           CLOSE PRINT-FILE.
+           CLOSE DEBTOR-MASTER
                  DEBTOR-TRANS-FILE.
        END-900.
       *     STOP RUN.
