@@ -73,6 +73,7 @@
        77  WS-PRINTING-TYPE     PIC X VALUE " ".
        77  WS-ACC-ERROR         PIC X VALUE " ".      
        01  WS-EMAIL             PIC X(50).
+       01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-COMMENT-LINE.
@@ -242,9 +243,12 @@
            03  FILLER          PIC X(65) VALUE " ".
        01  WS-EMAIL-PORDER.
          02  WS-EMAIL-SETUP-FILE.
-           03  WS-EP-FIL             PIC X(15) VALUE "/ctools/epordr/".
-           03  WS-EPORDER            PIC X(7).
-         02  WS-TEMP-EMAIL-FILE      PIC X(50) VALUE " ".
+           03  WS-EP-FIL              PIC X(15) VALUE "/ctools/eimage/".
+           03  WS-EPORDER             PIC X(7).
+         02  WS-EMAIL-TEMP-ORDER-FILE PIC X(50) VALUE " ".
+       01  WS-EMAIL-FINAL.
+           03  WS-EF-FIL        PIC X(15) VALUE " ".
+           03  WS-BAL-OF-NAME   PIC X(35).
        01 WS-FST-LINE.
           05  WS-DELIM-F             PIC  X(2).
           05  WS-DATA-F              PIC  X(86).
@@ -463,7 +467,7 @@
            PERFORM GET-EMAIL-PORDR-NAME.
            MOVE Spaces              TO WS-PRINTER.
       *     MOVE Ws-Email-POrder     To Ws-Printer.
-           MOVE WS-TEMP-EMAIL-FILE TO WS-printer.
+           MOVE WS-EMAIL-TEMP-ORDER-FILE TO WS-PRINTER.
 
       *     MOVE WS-PRINTER TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -2177,8 +2181,18 @@
               GO TO PRE-920.
        PRE-950.
            CLOSE PRINT-SLIP.
+           PERFORM MOVE-EMAIL-FROM-EIMAGE-SETUP
+           PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE.
        PRE-999.
            EXIT.
+      *
+       MOVE-EMAIL-FROM-EIMAGE-SETUP SECTION.
+       MERFES-005.
+             MOVE WS-TEMP-EMAIL-FILE TO WS-EMAIL-FINAL.
+             
+             MOVE "/ctools/epordr/" TO WS-EF-FIL.
+       MERFES-999.
+            EXIT.
       *
        GET-EMAIL-PORDR-NAME SECTION.
        GEQN-000.
@@ -2206,7 +2220,7 @@
            MOVE 1 TO SUB-1 SUB-2.
        GEQN-006.
             MOVE SPACES TO ALPHA-RATE DATA-RATE.
-            MOVE "/ctools/epordr/" TO ALPHA-RATE
+            MOVE "/ctools/eimage/" TO ALPHA-RATE
             ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
             MOVE WS-USERNAME TO DATA-RATE.
             MOVE 16 TO SUB-45
@@ -2256,9 +2270,10 @@
                 ADD 1 TO SUB-45 SUB-46
                 GO TO GEQN-035.
        GEQN-040.
-            MOVE ALPHA-RATE TO WS-TEMP-EMAIL-FILE.
-            
-      *      MOVE WS-TEMP-EMAIL-FILE TO WS-MESSAGE
+            MOVE ALPHA-RATE TO WS-EMAIL-TEMP-ORDER-FILE
+                               WS-TEMP-EMAIL-FILE.
+
+      *      MOVE WS-EMAIL-TEMP-ORDER-FILE TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE.
 
        GEQN-999.
@@ -2704,6 +2719,7 @@
        Copy "SetupPOrderForPDF".
        Copy "SetupPOrder2ForPDF".
        Copy "SetupMergePOrderForPDF".
+       Copy "MoveEmailRecordFromEimage".
       ******************
       *Mandatory Copies*
       ******************
