@@ -294,6 +294,8 @@
               PERFORM ERROR1-000
               MOVE WS-GLTRANS-ST1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
+              MOVE GLTRANS-KEY TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-GLTRANS-ST1
               GO TO RALT-010.

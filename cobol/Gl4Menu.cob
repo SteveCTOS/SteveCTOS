@@ -50,8 +50,8 @@
             ELSE
                MOVE F-NAMEFIELD TO WS-ANSWER.
             IF WS-ANSWER NOT = " 1" AND NOT = " 2" AND NOT = " 3"
-                     AND NOT = " 4" AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 4, Re-Enter."
+                     AND NOT = " 4" AND NOT = " 5" AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 5, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -88,6 +88,8 @@
                MOVE "GlAsInRp" TO WS-PROGRAM.
            IF WS-ANSWER = " 4"
                MOVE "GlRandom" TO WS-PROGRAM.
+           IF WS-ANSWER = " 5"
+               MOVE "GlTranMv" TO WS-PROGRAM.
 
            Call Ws-Program Using Ws-Linkage.
            PERFORM CLEAR-SCREEN

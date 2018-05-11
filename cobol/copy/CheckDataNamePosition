@@ -148,6 +148,8 @@
            If Sub-4 = 73
             Move Alpha-Rate to Ws-DrTransTemp.
            If Sub-4 = 74
-            Move Alpha-Rate to Ws-DebtorTemp.
+            Move Alpha-Rate to Ws-DrMasterTemp.
+           If Sub-4 = 75
+            Move Alpha-Rate to Ws-GlTransTemp.
        CDNN-999.
            Exit.

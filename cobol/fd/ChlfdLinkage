@@ -111,5 +111,6 @@
           03 WS-CRTRANSTEMP       PIC X(40).
           03 WS-CRJRNTEMP         PIC X(40).
           03 WS-DRTRANSTEMP       PIC X(40).
-          03 WS-DEBTORTEMP        PIC X(40).
+          03 WS-DRMASTERTEMP      PIC X(40).
+          03 WS-GLTRANSTEMP       PIC X(40).
       *

@@ -95,7 +95,7 @@ set (general_list
   GlJrnARp  GlJrnBat  GlJrnlMt  GlJrnLRp  GlMaLyIq  GlMaster  GlMastIq
   GlMastLy  GlMastMt  GlMastRp  GlNameIq  GlNameLy  GlNoChMt  GlParmMt
   GlPerEnd  GlRandom  GlTbLyRp  GlTranIq  GlTranLy  GlTrans   GlTrBaRp  
-  GlTrbSRp  GlTrFuIq  GlTrLyIq  GlTrSrch
+  GlTrbSRp  GlTrFuIq  GlTrLyIq  GlTrSrch  GlTranMv
 )
 
 set (sales_list 
