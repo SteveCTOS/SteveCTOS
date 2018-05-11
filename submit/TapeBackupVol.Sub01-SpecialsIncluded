@@ -17,6 +17,23 @@ ZZZZZZZZ
 N
 
 
+8
+X
+CTJ-SP1
+A
+ZZZZZZ
+P
+
+8
+X
+CTJ-SP2
+A
+ZZZZZZ
+Y
+1.25
+12
+
+
 #04
 #04
 8
@@ -70,6 +87,23 @@ R
 
 ZZZZZZZZ
 N
+
+
+8
+X
+CTN-SP1
+A
+ZZZZZZ
+P
+
+8
+X
+CTN-SP2
+A
+ZZZZZZ
+Y
+1.25
+12
 
 
 #04
@@ -126,6 +160,23 @@ ZZZZ
 N
 
 
+8
+X
+SFJ-SP1
+A
+ZZZZZZ
+P
+
+8
+X
+SFJ-SP2
+A
+ZZZZZZ
+Y
+1.25
+12
+
+
 #04
 #04
 8
@@ -154,6 +205,23 @@ R
 
 ZZZZ
 Y
+
+
+8
+X
+CSC-SP1
+A
+ZZZZZZ
+P
+
+8
+X
+CSC-SP2
+A
+ZZZZZZ
+Y
+1.25
+12
 
 
 #04
@@ -189,14 +257,6 @@ N
 X
 ctj-aa2
 D
-N
-
-
-
-20
-X
-ctj-aa3
-B
 N
 
 

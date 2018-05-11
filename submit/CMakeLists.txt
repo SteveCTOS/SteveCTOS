@@ -131,6 +131,8 @@ set (copy_list
   StMinMaxLy05.sh
   StMinMaxLy07.sh
   StMinMaxLy08.sh
+  StSpecials.Sub01
+  StSpecials.sh
   StockCheck.Sub01
   StockCheck.sh
   TapeBackup.Sub01
