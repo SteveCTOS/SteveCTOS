@@ -205,7 +205,7 @@
            MOVE 1510 TO POS
            DISPLAY "S=LOOKUP TABLE MUST BE /ctools/spl/StockSequ" AT POS
            MOVE 1610 TO POS
-           DISPLAY "Z=LOOKUP TABLE MUST BE /ctools/spl/StockSequSp"
+           DISPLAY "Z=LOOKUP TABLE MUST BE /ctools/spl/PriceSequSp"
               AT POS
            MOVE 1110 TO POS.
            DISPLAY

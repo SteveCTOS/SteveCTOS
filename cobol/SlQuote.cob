@@ -94,10 +94,10 @@
        77  WS-COMMENTLINE       PIC X(30) VALUE " ".
        77  WS-STTR-ORDERQTY     PIC 9(5) VALUE 0.
        77  WS-STTR-SHIPQTY      PIC 9(5) VALUE 0.
-       77  WS-ADDONFREIGHT      PIC 9(4)V99 VALUE 0.
-       77  WS-POSTADDON         PIC 9(4)V99 VALUE 0.
-       77  WS-HANDADDON         PIC 9(4)V99 VALUE 0.
-       77  WS-MISCADDON         PIC 9(4)V99 VALUE 0.
+       77  WS-ADDONFREIGHT      PIC 9(8)V99 VALUE 0.
+       77  WS-POSTADDON         PIC 9(8)V99 VALUE 0.
+       77  WS-HANDADDON         PIC 9(8)V99 VALUE 0.
+       77  WS-MISCADDON         PIC 9(8)V99 VALUE 0.
        77  WS-SUBTOTAL          PIC 9(8)V99 VALUE 0.
        77  WS-ADDONAMT          PIC 9(8)V99 VALUE 0.
        77  WS-TAXAMT            PIC 9(8)V99 VALUE 0.
@@ -3050,11 +3050,14 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-190.
-            MOVE 7 TO F-CBFIELDLENGTH.
-            PERFORM READ-FIELD-ALPHA.
-            MOVE F-NAMEFIELD TO ALPHA-RATE.
-            PERFORM DECIMALISE-RATE.
-            MOVE NUMERIC-RATE TO WS-ADDONFREIGHT.
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM READ-FIELD-ALPHA
+            MOVE F-NAMEFIELD  TO ALPHA-RATE
+            PERFORM DECIMALISE-RATE
+            MOVE NUMERIC-RATE TO WS-ADDONFREIGHT
+                                 F-EDNAMEFIELDAMOUNT
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-AMOUNT.
        GET-210.
             MOVE "                   " TO F-NAMEFIELD.
             MOVE "POSTADDON" TO F-FIELDNAME.
@@ -3062,11 +3065,14 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-200.
-            MOVE 7 TO F-CBFIELDLENGTH.
-            PERFORM READ-FIELD-ALPHA.
-            MOVE F-NAMEFIELD TO ALPHA-RATE.
-            PERFORM DECIMALISE-RATE.
-            MOVE NUMERIC-RATE TO WS-POSTADDON.
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM READ-FIELD-ALPHA
+            MOVE F-NAMEFIELD  TO ALPHA-RATE
+            PERFORM DECIMALISE-RATE
+            MOVE NUMERIC-RATE TO WS-POSTADDON
+                                 F-EDNAMEFIELDAMOUNT
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-AMOUNT.
        GET-220.
             MOVE "                   " TO F-NAMEFIELD.
             MOVE "HANDADDON" TO F-FIELDNAME.
@@ -3074,11 +3080,14 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-210.
-            MOVE 7 TO F-CBFIELDLENGTH.
-            PERFORM READ-FIELD-ALPHA.
-            MOVE F-NAMEFIELD TO ALPHA-RATE.
-            PERFORM DECIMALISE-RATE.
-            MOVE NUMERIC-RATE TO WS-HANDADDON.
+            MOVE 9 TO F-CBFIELDLENGTH
+            PERFORM READ-FIELD-ALPHA
+            MOVE F-NAMEFIELD  TO ALPHA-RATE
+            PERFORM DECIMALISE-RATE
+            MOVE NUMERIC-RATE TO WS-HANDADDON
+                                 F-EDNAMEFIELDAMOUNT
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-AMOUNT.
        GET-230.
             MOVE "                   " TO F-NAMEFIELD.
             MOVE "MISC.ADDON" TO F-FIELDNAME.
@@ -3086,11 +3095,14 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-220.
-            MOVE 7 TO F-CBFIELDLENGTH.
-            PERFORM READ-FIELD-ALPHA.
-            MOVE F-NAMEFIELD TO ALPHA-RATE.
-            PERFORM DECIMALISE-RATE.
-            MOVE NUMERIC-RATE TO WS-MISCADDON.
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM READ-FIELD-ALPHA
+            MOVE F-NAMEFIELD  TO ALPHA-RATE
+            PERFORM DECIMALISE-RATE
+            MOVE NUMERIC-RATE TO WS-MISCADDON
+                                 F-EDNAMEFIELDAMOUNT
+            MOVE 9            TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-AMOUNT.
             
       *X"55" = POSITION 21 IN THE PSWD TABLE OF 92
       *
