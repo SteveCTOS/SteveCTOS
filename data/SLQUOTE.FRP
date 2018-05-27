@@ -17,10 +17,10 @@ _________________________ Phone  ____________________
   _______________*_____*____________________*____*_________*_________*_____*_  
   _______________*_____*____________________*____*_________*_________*_____*_  
                                                                                
-     ________________________________________    Add-On    SubTotal __________ 
-   Comment ______________________________       __________ Cost     __________ 
-   Freight   Postage    Labour     Misc.         VAT       Percent  __________ 
-   _______   _______    _______   _______       __________ Total    __________ 
+     ________________________________________    Add-Ons    SubTotal__________ 
+ Comment ______________________________        ___________  Cost    __________ 
+ Freight      Postage     Labour       Misc.     V.A.T.     Percent __________ 
+___________ ___________ ___________ ___________ __________  Total   __________ 
 *******************************************************************************
                                                                                
                                                                                
@@ -1245,7 +1245,7 @@ List of values:
 
 
 Field name: SUBTOTAL                                         
-Row: 19   Column: 68   Width: 10                             
+Row: 19   Column: 68   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1275,7 +1275,7 @@ List of values:
 
 
 Field name: ADDONAMT                                         
-Row: 20   Column: 48   Width: 10                             
+Row: 20   Column: 48   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1290,7 +1290,7 @@ List of values:
 
 
 Field name: TOTALCOST                                        
-Row: 20   Column: 68   Width: 10                             
+Row: 20   Column: 68   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1305,7 +1305,7 @@ List of values:
 
 
 Field name: TOTALPERCENT                                     
-Row: 21   Column: 68   Width: 10                             
+Row: 21   Column: 68   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1320,7 +1320,7 @@ List of values:
 
 
 Field name: ADDONFREIGHT                                     
-Row: 22   Column: 3    Width: 7                              
+Row: 22   Column: 0    Width: 11                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1335,7 +1335,7 @@ List of values:
 
 
 Field name: POSTADDON                                        
-Row: 22   Column: 13   Width: 7                              
+Row: 22   Column: 12   Width: 11                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1350,7 +1350,7 @@ List of values:
 
 
 Field name: HANDADDON                                        
-Row: 22   Column: 24   Width: 7                              
+Row: 22   Column: 24   Width: 11                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1365,7 +1365,7 @@ List of values:
 
 
 Field name: MISC.ADDON                                       
-Row: 22   Column: 34   Width: 7                              
+Row: 22   Column: 36   Width: 11                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1380,7 +1380,7 @@ List of values:
 
 
 Field name: TAXAMT                                           
-Row: 22   Column: 48   Width: 10                             
+Row: 22   Column: 48   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
@@ -1395,7 +1395,7 @@ List of values:
 
 
 Field name: INVOICETOTAL                                     
-Row: 22   Column: 68   Width: 10                             
+Row: 22   Column: 68   Width: 11                             
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   

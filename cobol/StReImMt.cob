@@ -1311,10 +1311,7 @@
                 MOVE B-COST (SUB-1) TO WS-B-COST.
             MOVE F-NAMEFIELD TO B-STOCKNUMBER (SUB-1)
                                 WS-STOCKNUMBER.
-            IF B-LINE-COSTED (SUB-1) = "Y"
-                GO TO FILL-019
-            ELSE
-                PERFORM READ-STOCK.
+            PERFORM READ-STOCK.
             IF ST-DESCRIPTION1 = "NOT THERE!!!"
                 MOVE "INVALID STOCK NUMBER" TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
@@ -1331,6 +1328,9 @@
             MOVE 20                  TO F-CBFIELDLENGTH.
             MOVE ST-DESCRIPTION2     TO F-NAMEFIELD.
             PERFORM WRITE-FIELD-ALPHA.
+
+      *      IF B-LINE-COSTED (SUB-1) = "Y"
+      *          GO TO FILL-019.
 
             IF B-LINE-COSTED (SUB-1) NOT = "Y"
                 MOVE "COSTEACH"     TO F-FIELDNAME

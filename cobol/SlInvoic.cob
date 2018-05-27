@@ -2443,13 +2443,13 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-190.
-            MOVE 9            TO F-CBFIELDLENGTH
+            MOVE 11           TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA
             MOVE F-NAMEFIELD  TO ALPHA-RATE
             PERFORM DECIMALISE-RATE
-            MOVE NUMERIC-RATE TO WS-ADDONFREIGHT F-EDNAMEFIELDAMOUNT
-            MOVE 9            TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE NUMERIC-RATE TO WS-ADDONFREIGHT F-EDNAMEFIELD99MIL
+            MOVE 11           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-210.
             MOVE "                   " TO F-NAMEFIELD
             MOVE "POSTADDON"           TO F-FIELDNAME
@@ -2457,13 +2457,13 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-200.
-            MOVE 9             TO F-CBFIELDLENGTH
+            MOVE 11             TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA
             MOVE F-NAMEFIELD   TO ALPHA-RATE
             PERFORM DECIMALISE-RATE
-            MOVE NUMERIC-RATE  TO WS-POSTADDON F-EDNAMEFIELDAMOUNT
-            MOVE 9             TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE NUMERIC-RATE  TO WS-POSTADDON F-EDNAMEFIELD99MIL
+            MOVE 11             TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-220.
             MOVE "                   " TO F-NAMEFIELD
             MOVE "HANDADDON"           TO F-FIELDNAME
@@ -2471,13 +2471,13 @@
             PERFORM USER-FILL-FIELD
             IF F-EXIT-CH = X"01"
                 GO TO GET-210.
-            MOVE 9 TO F-CBFIELDLENGTH
+            MOVE 11 TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA
             MOVE F-NAMEFIELD  TO ALPHA-RATE
             PERFORM DECIMALISE-RATE
-            MOVE NUMERIC-RATE TO WS-HANDADDON F-EDNAMEFIELDAMOUNT
-            MOVE 9            TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE NUMERIC-RATE TO WS-HANDADDON F-EDNAMEFIELD99MIL
+            MOVE 11           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-230.
             MOVE "                   " TO F-NAMEFIELD
             MOVE "MISC.ADDON"          TO F-FIELDNAME
@@ -2485,13 +2485,13 @@
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
                 GO TO GET-220.
-            MOVE 7 TO F-CBFIELDLENGTH
+            MOVE 11 TO F-CBFIELDLENGTH
             PERFORM READ-FIELD-ALPHA
             MOVE F-NAMEFIELD  TO ALPHA-RATE
             PERFORM DECIMALISE-RATE
-            MOVE NUMERIC-RATE TO WS-MISCADDON F-EDNAMEFIELDAMOUNT
-            MOVE 9            TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE NUMERIC-RATE TO WS-MISCADDON F-EDNAMEFIELD99MIL
+            MOVE 11           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
             
       *X"55" = POSITION 21 IN THE PSWD TABLE OF 92
       *
@@ -2515,21 +2515,21 @@
        GET-245.
             MOVE "SUBTOTAL"  TO F-FIELDNAME
             MOVE 8           TO F-CBFIELDNAME
-            MOVE WS-SUBTOTAL TO F-EDNAMEFIELD9MIL
-            MOVE 10          TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-SUBTOTAL TO F-EDNAMEFIELD99MIL
+            MOVE 11          TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-250.
             MOVE "ADDONAMT"  TO F-FIELDNAME
             MOVE 8           TO F-CBFIELDNAME
-            MOVE WS-ADDONAMT TO F-EDNAMEFIELD9MIL
-            MOVE 10          TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-ADDONAMT TO F-EDNAMEFIELD99MIL
+            MOVE 11          TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-260.
             MOVE "TAXAMT"  TO F-FIELDNAME
             MOVE 6         TO F-CBFIELDNAME
-            MOVE WS-TAXAMT TO F-EDNAMEFIELD9MIL
-            MOVE 10        TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-TAXAMT TO F-EDNAMEFIELD99MIL
+            MOVE 11        TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-270.
             IF F-EXIT-CH = X"1D"
                COMPUTE WS-ADDONAMT = WS-ADDONFREIGHT + WS-POSTADDON + 
@@ -2541,9 +2541,9 @@
                                       WS-ADDONAMT.
             MOVE "INVOICETOTAL"  TO F-FIELDNAME
             MOVE 12              TO F-CBFIELDNAME
-            MOVE WS-INVOICETOTAL TO F-EDNAMEFIELD9MIL
-            MOVE 10              TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-INVOICETOTAL TO F-EDNAMEFIELD99MIL
+            MOVE 11              TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        GET-900.
             PERFORM USER-FILL-FIELD.
             IF F-EXIT-CH = X"01"
@@ -3669,25 +3669,25 @@
            MOVE "TOTALCOST"     TO F-FIELDNAME.
            MOVE 9               TO F-CBFIELDNAME.
            IF WS-COST-DISPLAY = "N"
-              MOVE 0            TO F-EDNAMEFIELD9MIL
+              MOVE 0            TO F-EDNAMEFIELD99MIL
            ELSE
-              MOVE WS-COSTTOTAL TO F-EDNAMEFIELD9MIL.
-           MOVE 10              TO F-CBFIELDLENGTH.
-           PERFORM WRITE-FIELD-9MIL.
+              MOVE WS-COSTTOTAL TO F-EDNAMEFIELD99MIL.
+           MOVE 11              TO F-CBFIELDLENGTH.
+           PERFORM WRITE-FIELD-99MIL.
 
            MOVE "TOTALPERCENT" TO F-FIELDNAME.
            MOVE 12             TO F-CBFIELDNAME.
            IF WS-COST-DISPLAY = "N"
-              MOVE 0           TO F-EDNAMEFIELD9MIL
+              MOVE 0           TO F-EDNAMEFIELD99MIL
            ELSE
-              MOVE WS-PERC     TO F-EDNAMEFIELD9MIL.
-           MOVE 10             TO F-CBFIELDLENGTH.
-           PERFORM WRITE-FIELD-9MIL.
+              MOVE WS-PERC     TO F-EDNAMEFIELD99MIL.
+           MOVE 11             TO F-CBFIELDLENGTH.
+           PERFORM WRITE-FIELD-99MIL.
 
            MOVE "SUBTOTAL"    TO F-FIELDNAME.
            MOVE 8             TO F-CBFIELDNAME.
-           MOVE WS-WORKTOTAL2 TO F-EDNAMEFIELD9MIL.
-           MOVE 10            TO F-CBFIELDLENGTH.
+           MOVE WS-WORKTOTAL2 TO F-EDNAMEFIELD99MIL.
+           MOVE 11            TO F-CBFIELDLENGTH.
            PERFORM WRITE-FIELD-9MIL.
        RUN-999.
            EXIT.
@@ -5441,51 +5441,51 @@
 
             MOVE "ADDONFREIGHT"  TO F-FIELDNAME
             MOVE 12              TO F-CBFIELDNAME
-            MOVE WS-ADDONFREIGHT TO F-EDNAMEFIELDAMOUNT
-            MOVE 9               TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE WS-ADDONFREIGHT TO F-EDNAMEFIELD99MIL
+            MOVE 11              TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
 
             MOVE "POSTADDON"  TO F-FIELDNAME
             MOVE 9            TO F-CBFIELDNAME
-            MOVE WS-POSTADDON TO F-EDNAMEFIELDAMOUNT
-            MOVE 9            TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE WS-POSTADDON TO F-EDNAMEFIELD99MIL
+            MOVE 11           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
 
             MOVE "HANDADDON"  TO F-FIELDNAME
             MOVE 9            TO F-CBFIELDNAME
-            MOVE WS-HANDADDON TO F-EDNAMEFIELDAMOUNT
-            MOVE 9            TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE WS-HANDADDON TO F-EDNAMEFIELD99MIL
+            MOVE 11           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL
 
             MOVE "MISC.ADDON" TO F-FIELDNAME
             MOVE 10           TO F-CBFIELDNAME
-            MOVE WS-MISCADDON TO F-EDNAMEFIELDAMOUNT
-            MOVE 9            TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-AMOUNT.
+            MOVE WS-MISCADDON TO F-EDNAMEFIELD99MIL
+            MOVE 11           TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
 
             MOVE "SUBTOTAL"  TO F-FIELDNAME
             MOVE 8           TO F-CBFIELDNAME
-            MOVE WS-SUBTOTAL TO F-EDNAMEFIELD9MIL
-            MOVE 10          TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-SUBTOTAL TO F-EDNAMEFIELD99MIL
+            MOVE 11          TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
 
             MOVE "ADDONAMT"  TO F-FIELDNAME
             MOVE 8           TO F-CBFIELDNAME
-            MOVE WS-ADDONAMT TO F-EDNAMEFIELD9MIL
-            MOVE 10          TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-ADDONAMT TO F-EDNAMEFIELD99MIL
+            MOVE 11          TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
 
             MOVE "TAXAMT"  TO F-FIELDNAME
             MOVE 6         TO F-CBFIELDNAME
-            MOVE WS-TAXAMT TO F-EDNAMEFIELD9MIL
-            MOVE 10        TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-TAXAMT TO F-EDNAMEFIELD99MIL
+            MOVE 11        TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
 
             MOVE "INVOICETOTAL"  TO F-FIELDNAME
             MOVE 12              TO F-CBFIELDNAME
-            MOVE WS-INVOICETOTAL TO F-EDNAMEFIELD9MIL
-            MOVE 10              TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-9MIL.
+            MOVE WS-INVOICETOTAL TO F-EDNAMEFIELD99MIL
+            MOVE 11              TO F-CBFIELDLENGTH
+            PERFORM WRITE-FIELD-99MIL.
        FIND-999.  
             EXIT.
       *
@@ -5960,52 +5960,52 @@
       *
        CLEAR-BOTTOM-FIELDS SECTION.
        CBF-000.
-            MOVE "ADDONFREIGHT" TO F-FIELDNAME
-            MOVE 12             TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 9              TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "ADDONFREIGHT" TO F-FIELDNAME.
+            MOVE 12             TO F-CBFIELDNAME.
+            MOVE 11             TO F-CBFIELDLENGTH.
+            MOVE SPACES         TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "POSTADDON"    TO F-FIELDNAME
-            MOVE 9              TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 9              TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "POSTADDON" TO F-FIELDNAME.
+            MOVE 9           TO F-CBFIELDNAME.
+            MOVE 11          TO F-CBFIELDLENGTH.
+            MOVE SPACES      TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "HANDADDON"    TO F-FIELDNAME
-            MOVE 9              TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 9              TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "HANDADDON" TO F-FIELDNAME.
+            MOVE 9           TO F-CBFIELDNAME.
+            MOVE 11          TO F-CBFIELDLENGTH.
+            MOVE SPACES      TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "MISC.ADDON"   TO F-FIELDNAME
-            MOVE 10             TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 9              TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "MISC.ADDON" TO F-FIELDNAME.
+            MOVE 10           TO F-CBFIELDNAME.
+            MOVE 11           TO F-CBFIELDLENGTH.
+            MOVE SPACES       TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "SUBTOTAL"     TO F-FIELDNAME
-            MOVE 8              TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 10             TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "SUBTOTAL" TO F-FIELDNAME.
+            MOVE 8          TO F-CBFIELDNAME.
+            MOVE 11         TO F-CBFIELDLENGTH.
+            MOVE SPACES     TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "ADDONAMT"     TO F-FIELDNAME
-            MOVE 8              TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 10             TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "ADDONAMT" TO F-FIELDNAME.
+            MOVE 8          TO F-CBFIELDNAME.
+            MOVE 11         TO F-CBFIELDLENGTH.
+            MOVE SPACES     TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "TAXAMT"       TO F-FIELDNAME
-            MOVE 6              TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 10             TO F-CBFIELDLENGTH
-            PERFORM WRITE-FIELD-ALPHA
+            MOVE "TAXAMT"   TO F-FIELDNAME.
+            MOVE 6          TO F-CBFIELDNAME.
+            MOVE 11         TO F-CBFIELDLENGTH.
+            MOVE SPACES     TO F-NAMEFIELD.
+            PERFORM WRITE-FIELD-ALPHA.
 
-            MOVE "INVOICETOTAL" TO F-FIELDNAME
-            MOVE 12             TO F-CBFIELDNAME
-            MOVE " "            TO F-NAMEFIELD
-            MOVE 10             TO F-CBFIELDLENGTH
+            MOVE "INVOICETOTAL" TO F-FIELDNAME.
+            MOVE 12             TO F-CBFIELDNAME.
+            MOVE 11             TO F-CBFIELDLENGTH.
+            MOVE SPACES         TO F-NAMEFIELD.
             PERFORM WRITE-FIELD-ALPHA.
        CBF-999.
             EXIT.
@@ -6801,6 +6801,7 @@
        Copy "WriteFieldAlpha".
        Copy "WriteFieldAmount".
        Copy "WriteField9Mil".
+       Copy "WriteField99Mil".
        Copy "WriteFieldAmount1".
        Copy "WriteFieldAmountDis".
        Copy "WriteFieldNumeric".
