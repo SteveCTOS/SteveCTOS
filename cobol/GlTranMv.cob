@@ -196,7 +196,7 @@
              PERFORM ERROR1-020.
       *       DISPLAY "INVALID WRITE FOR ISAM FILE..."
       *       DISPLAY WS-STAT1
-      *       CLOSE GLTRANS-FILE
+      *       CLOSE GLTRANS-FILEx
       *             GLTRANS1-FILE
       *       CALL "C$SLEEP" USING 3
       *         EXIT PROGRAM.

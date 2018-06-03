@@ -2403,6 +2403,7 @@
                          WS-MISCADDON.
             MOVE 1 TO F-INDEX.
             PERFORM GET-240.
+            PERFORM GET-245.
             PERFORM GET-250.
             PERFORM GET-260.
             PERFORM GET-270.
@@ -3688,7 +3689,7 @@
            MOVE 8             TO F-CBFIELDNAME.
            MOVE WS-WORKTOTAL2 TO F-EDNAMEFIELD99MIL.
            MOVE 11            TO F-CBFIELDLENGTH.
-           PERFORM WRITE-FIELD-9MIL.
+           PERFORM WRITE-FIELD-99MIL.
        RUN-999.
            EXIT.
       *

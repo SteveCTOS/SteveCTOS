@@ -497,7 +497,7 @@
       **************************************************************
       * FORMS WORK FIELDS
       **************************************************************
-       Copy "FormsInfo".
+       Copy "FormsInfo". 
            03  F-NAMEFIELDRED.
                05  F-NAMEFIELDRED1 PIC X.
                05  F-NAMEFIELDRED7 PIC X(6).
