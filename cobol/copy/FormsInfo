@@ -109,6 +109,10 @@
            03  F-EXIT-ICH          BINARY-SHORT.
            03  F-EXIT-CH           PIC X.
            03  FILLER              PIC X(13).
+       01  F-EXITSTATE-SAVE.
+           03  F-EXIT-ICH-SAVE     BINARY-SHORT.
+           03  F-EXIT-CH-SAVE      PIC X.
+           03  FILLER              PIC X(13).
        01  F-DISPLAY.
            03  F-POSITION.
                05  F-LINEPOS       PIC 99.

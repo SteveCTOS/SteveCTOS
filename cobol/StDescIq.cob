@@ -147,7 +147,7 @@
            
            Move 3020 to Pos
            Display "Opening Branch Files.............." At Pos.
-           Perform Open-Branch-Stock.
+           Perform Open-Branch-Stock. 
 
            PERFORM ERROR-020.
        CONTROL-010.
@@ -201,6 +201,7 @@
           "Press <ALT-F10> To view ALL Branch Stock By Stock Number."
              AT POS.
 
+       GET-010.
            MOVE "SHORTDESC" TO F-FIELDNAME.
            MOVE 9           TO F-CBFIELDNAME.
            PERFORM USER-FILL-FIELD.
@@ -227,12 +228,39 @@
       * 
            IF F-EXIT-CH = X"1F" OR = X"9F"
               MOVE "N" TO WS-ONHAND-ONLY
-              GO TO GET-999.
+              MOVE F-EXIT-CH TO F-EXIT-CH-SAVE
+              GO TO GET-020.
       
            IF F-EXIT-CH = X"99" OR = X"1B" OR = X"9D"
               MOVE "Y" TO WS-ONHAND-ONLY
            ELSE
               MOVE "N" TO WS-ONHAND-ONLY.
+           
+           MOVE F-EXIT-CH TO F-EXIT-CH-SAVE.
+       GET-020.
+           MOVE "CAT" TO F-FIELDNAME.
+           MOVE 3     TO F-CBFIELDNAME.
+           PERFORM USER-FILL-FIELD.
+           IF F-EXIT-CH = X"04"
+               PERFORM END-OFF.
+           IF F-EXIT-CH = X"01"
+               GO TO GET-010.
+           PERFORM ERROR-020.
+           MOVE 3    TO F-CBFIELDLENGTH.
+           PERFORM READ-FIELD-ALPHA.
+           MOVE F-NAMEFIELD TO WS-CATEGORY.
+
+           MOVE SPACES TO WS-MESSAGE
+           MOVE 1505 TO POS
+           DISPLAY WS-MESSAGE AT POS
+           MOVE 1605 TO POS
+           DISPLAY WS-MESSAGE AT POS.
+           MOVE 1805 TO POS
+           DISPLAY WS-MESSAGE AT POS
+           MOVE 1905 TO POS
+           DISPLAY WS-MESSAGE AT POS.
+           
+           MOVE F-EXIT-CH-SAVE TO F-EXIT-CH.
        GET-999.
             EXIT.
       *
@@ -252,10 +280,10 @@
             IF WS-STOCK-ST1 NOT = 0
                MOVE "STOCK FILE BAD START, 'ESC' TO EXIT."
                TO WS-MESSAGE
-      *         PERFORM ERROR1-000
-      *         MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
-      *         PERFORM ERROR1-020
+               PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO READ-999.
             MOVE 0 TO SUB-2 SUB-3.
@@ -295,6 +323,11 @@
                PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO READ-010.
+               
+            IF WS-CATEGORY > " "
+             IF ST-CATEGORY NOT = WS-CATEGORY
+                GO TO READ-010.
+                
             IF WS-ONHAND-ONLY = "Y"
              IF ST-QTYONHAND NOT > 0
                 MOVE 2701 TO POS
@@ -479,6 +512,11 @@
                PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO READ-BR-010.
+               
+            IF WS-CATEGORY > " "
+             IF ST-CATEGORY NOT = WS-CATEGORY
+                GO TO READ-BR-010.
+
             IF WS-ONHAND-ONLY = "Y"
              IF ST-QTYONHAND NOT > 0
                 MOVE 2701 TO POS
@@ -659,6 +697,11 @@
                 GO TO RDSP-010.
                 
             PERFORM READ-STOCK.
+               
+            IF WS-CATEGORY > " "
+             IF ST-CATEGORY NOT = WS-CATEGORY
+                GO TO RDSP-010.
+            
             IF WS-ONHAND-ONLY = "Y"
              IF ST-QTYONHAND NOT > 0
                 MOVE 2701 TO POS

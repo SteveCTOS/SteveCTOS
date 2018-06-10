@@ -1,7 +1,7 @@
 *****************{** SHORT STOCK DESCRIPTION INQUIRY **}*********************** 
                                                  {      Sort Key: Stock Special}  
 Short Description: __________                    {By Description  <Ret>        }  
-                                                 {By Stock Number <f8>     <F5>}  
+Sort By Category : ___                           {By Stock Number <f8>     <F5>}  
 Stock Number   Stock Description                 {         Price    Spec A Hand}  
                                                                                 
                                                                                 
@@ -25,11 +25,26 @@ Stock Number   Stock Description                 {         Price    Spec A Hand}
                                                                                 
                                                                                 
 
-Form name: StDescIq                        size: 440   bytes
-height: 26    width: 80    number of fields: 3              
+Form name: StDescIq                        size: 600   bytes
+height: 26    width: 80    number of fields: 4              
 
 Field name: SHORTDESC                                        
 Row: 2    Column: 19   Width: 10                             
+Repeating? No   Index:        (first:        last:      )    
+Control: Tx  Justification: L   Sequence number:             
+Secret? No   Protected? No   Mandatory? No                   
+Default:                                                     
+Show default? Yes  Auto-exit? No   Unselected: E  Selected: E
+Validation routine:                                          
+Help message:                                                
+                                                             
+Selected Color Number: 4           Unselected Color Number: 0
+List of values:                                              
+
+
+
+Field name: CAT                                             
+Row: 3   Column: 19   Width: 3                              
 Repeating? No   Index:        (first:        last:      )    
 Control: Tx  Justification: L   Sequence number:             
 Secret? No   Protected? No   Mandatory? No                   
