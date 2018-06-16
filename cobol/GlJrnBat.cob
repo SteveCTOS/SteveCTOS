@@ -698,7 +698,7 @@
               GO TO WRTR-015.
        WRTR-020.
             ADD 1 TO SUB-1.
-            IF SUB-1 < 50
+            IF SUB-1 < 51
                 GO TO WRTR-010.
        WRTR-900.
             MOVE 2620 TO POS.

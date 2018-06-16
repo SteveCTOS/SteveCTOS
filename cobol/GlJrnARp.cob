@@ -306,6 +306,7 @@
             WRITE PRINT-REC FROM HEAD3
             MOVE " " TO PRINT-REC
             WRITE PRINT-REC
+            MOVE " " TO PRINT-REC DETAIL-LINE.
             MOVE 5 TO LINE-CNT.
        PRR-020.
             IF LINE-CNT > 60
