@@ -665,93 +665,93 @@
 
            MOVE 2  TO SUB-1.               
            ADD ST2-SALESUNITMTD   TO WS-SALESQTY
-                                   WSI-SALESQTY
-                                   TOT-SALESQTY.
+                                    WSI-SALESQTY
+                                    TOT-SALESQTY.
            ADD ST2-SALESUNITSYTD  TO WS-SALESQTY-YTD
-                                   WSI-SALESQTY-YTD
-                                   TOT-SALESQTY-YTD.
+                                    WSI-SALESQTY-YTD
+                                    TOT-SALESQTY-YTD.
            ADD ST2-SALESUNITSLAST TO WS-SALESQTY-LAST
-                                   WSI-SALESQTY-LAST
-                                   TOT-SALESQTY-LAST.
+                                    WSI-SALESQTY-LAST
+                                    TOT-SALESQTY-LAST.
            ADD ST2-SALESRANDSMTD  TO WS-SALESAMT
-                                   WSI-SALESAMT
-                                   TOT-SALESAMT.
+                                    WSI-SALESAMT
+                                    TOT-SALESAMT.
            ADD ST2-SALESRANDSYTD  TO WS-SALESAMT-YTD
-                                   WSI-SALESAMT-YTD
-                                   TOT-SALESAMT-YTD.
+                                    WSI-SALESAMT-YTD
+                                    TOT-SALESAMT-YTD.
            ADD ST2-SALESRANDSLAST TO WS-SALESAMT-LAST
-                                   WSI-SALESAMT-LAST
-                                   TOT-SALESAMT-LAST.
+                                    WSI-SALESAMT-LAST
+                                    TOT-SALESAMT-LAST.
            ADD ST2-SALESCOSTMTD   TO WS-COST
-                                   WSI-COST
-                                   TOT-COST.
+                                    WSI-COST
+                                    TOT-COST.
            ADD ST2-SALESCOSTYTD   TO WS-COST-YTD
-                                   WSI-COST-YTD
-                                   TOT-COST-YTD.
+                                    WSI-COST-YTD
+                                    TOT-COST-YTD.
            ADD ST2-SALESCOSTLAST  TO WS-COST-LAST
-                                   WSI-COST-LAST
-                                   TOT-COST-LAST.
+                                    WSI-COST-LAST
+                                    TOT-COST-LAST.
                
            MOVE 3  TO SUB-1.               
            ADD ST3-SALESUNITMTD   TO WS-SALESQTY
-                                   WSI-SALESQTY
-                                   TOT-SALESQTY.
+                                    WSI-SALESQTY
+                                    TOT-SALESQTY.
            ADD ST3-SALESUNITSYTD  TO WS-SALESQTY-YTD
-                                   WSI-SALESQTY-YTD
-                                   TOT-SALESQTY-YTD.
+                                    WSI-SALESQTY-YTD
+                                    TOT-SALESQTY-YTD.
            ADD ST3-SALESUNITSLAST TO WS-SALESQTY-LAST
-                                   WSI-SALESQTY-LAST
-                                   TOT-SALESQTY-LAST.
+                                    WSI-SALESQTY-LAST
+                                    TOT-SALESQTY-LAST.
            ADD ST3-SALESRANDSMTD  TO WS-SALESAMT
-                                   WSI-SALESAMT
-                                   TOT-SALESAMT.
+                                    WSI-SALESAMT
+                                    TOT-SALESAMT.
            ADD ST3-SALESRANDSYTD  TO WS-SALESAMT-YTD
-                                   WSI-SALESAMT-YTD
-                                   TOT-SALESAMT-YTD.
+                                    WSI-SALESAMT-YTD
+                                    TOT-SALESAMT-YTD.
            ADD ST3-SALESRANDSLAST TO WS-SALESAMT-LAST
-                                   WSI-SALESAMT-LAST
-                                   TOT-SALESAMT-LAST.
+                                    WSI-SALESAMT-LAST
+                                    TOT-SALESAMT-LAST.
            ADD ST3-SALESCOSTMTD   TO WS-COST
-                                   WSI-COST
-                                   TOT-COST.
+                                    WSI-COST
+                                    TOT-COST.
            ADD ST3-SALESCOSTYTD   TO WS-COST-YTD
-                                   WSI-COST-YTD
-                                   TOT-COST-YTD.
+                                    WSI-COST-YTD
+                                    TOT-COST-YTD.
            ADD ST3-SALESCOSTLAST  TO WS-COST-LAST
-                                   WSI-COST-LAST
-                                   TOT-COST-LAST.
+                                    WSI-COST-LAST
+                                    TOT-COST-LAST.
                
             IF WS-STOCK4 = " "
                 GO TO PRG-022.
 
            MOVE 4  TO SUB-1.               
            ADD ST4-SALESUNITMTD   TO WS-SALESQTY
-                                   WSI-SALESQTY
-                                   TOT-SALESQTY.
+                                    WSI-SALESQTY
+                                    TOT-SALESQTY.
            ADD ST4-SALESUNITSYTD  TO WS-SALESQTY-YTD
-                                   WSI-SALESQTY-YTD
-                                   TOT-SALESQTY-YTD.
+                                    WSI-SALESQTY-YTD
+                                    TOT-SALESQTY-YTD.
            ADD ST4-SALESUNITSLAST TO WS-SALESQTY-LAST
-                                   WSI-SALESQTY-LAST
-                                   TOT-SALESQTY-LAST.
+                                    WSI-SALESQTY-LAST
+                                    TOT-SALESQTY-LAST.
            ADD ST4-SALESRANDSMTD  TO WS-SALESAMT
-                                   WSI-SALESAMT
-                                   TOT-SALESAMT.
+                                    WSI-SALESAMT
+                                    TOT-SALESAMT.
            ADD ST4-SALESRANDSYTD  TO WS-SALESAMT-YTD
-                                   WSI-SALESAMT-YTD
-                                   TOT-SALESAMT-YTD.
+                                    WSI-SALESAMT-YTD
+                                    TOT-SALESAMT-YTD.
            ADD ST4-SALESRANDSLAST TO WS-SALESAMT-LAST
-                                   WSI-SALESAMT-LAST
-                                   TOT-SALESAMT-LAST.
+                                    WSI-SALESAMT-LAST
+                                    TOT-SALESAMT-LAST.
            ADD ST4-SALESCOSTMTD   TO WS-COST
-                                   WSI-COST
-                                   TOT-COST.
+                                    WSI-COST
+                                    TOT-COST.
            ADD ST4-SALESCOSTYTD   TO WS-COST-YTD
-                                   WSI-COST-YTD
-                                   TOT-COST-YTD.
+                                    WSI-COST-YTD
+                                    TOT-COST-YTD.
            ADD ST4-SALESCOSTLAST  TO WS-COST-LAST
-                                   WSI-COST-LAST
-                                   TOT-COST-LAST.
+                                    WSI-COST-LAST
+                                    TOT-COST-LAST.
        PRG-022.
            IF WS-ANSWER3 = "G"
                GO TO PRG-005.
@@ -811,34 +811,34 @@
            MOVE ST1-SALESRANDSMTD TO DG-SALESAMT.
            MOVE ST1-SALESCOSTMTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSMTD - ST1-SALESCOSTMTD).
-           MOVE WS-MARGIN        TO DG-MARGIN.
+               (ST1-SALESRANDSMTD - ST1-SALESCOSTMTD).
+           MOVE WS-MARGIN         TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST1-SALESCOSTMTD) * 100.
            MOVE WS-PERC          TO DG-PERC.
            WRITE PRINT-REC FROM DETAILG-LINE AFTER 1.
            MOVE " " TO PRINT-REC DG-BRANCH-NAME.
 
-           MOVE 0                TO WS-MARGIN
-                                    WS-PERC.
+           MOVE 0                 TO WS-MARGIN
+                                     WS-PERC.
            MOVE ST1-SALESUNITSYTD TO DG-SALESQTY.
            MOVE ST1-SALESRANDSYTD TO DG-SALESAMT.
            MOVE ST1-SALESCOSTYTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSYTD - ST1-SALESCOSTYTD).
-           MOVE WS-MARGIN        TO DG-MARGIN.
+               (ST1-SALESRANDSYTD - ST1-SALESCOSTYTD).
+           MOVE WS-MARGIN         TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST1-SALESCOSTYTD) * 100.
-           MOVE WS-PERC          TO DG-PERC.
+           MOVE WS-PERC           TO DG-PERC.
            WRITE PRINT-REC FROM DETAILG-LINE AFTER 1.
            MOVE " " TO PRINT-REC.
-           MOVE 0                 TO WS-MARGIN
-                                     WS-PERC.
+           MOVE 0                  TO WS-MARGIN
+                                      WS-PERC.
            MOVE ST1-SALESUNITSLAST TO DG-SALESQTY.
            MOVE ST1-SALESRANDSLAST TO DG-SALESAMT.
            MOVE ST1-SALESCOSTLAST  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSLAST - ST1-SALESCOSTLAST).
+               (ST1-SALESRANDSLAST - ST1-SALESCOSTLAST).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST1-SALESCOSTLAST) * 100.
@@ -856,7 +856,7 @@
            MOVE ST2-SALESRANDSMTD TO DG-SALESAMT.
            MOVE ST2-SALESCOSTMTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSMTD - ST2-SALESCOSTMTD).
+               (ST2-SALESRANDSMTD - ST2-SALESCOSTMTD).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST2-SALESCOSTMTD) * 100.
@@ -870,7 +870,7 @@
            MOVE ST2-SALESRANDSYTD TO DG-SALESAMT.
            MOVE ST2-SALESCOSTYTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSYTD - ST2-SALESCOSTYTD).
+               (ST2-SALESRANDSYTD - ST2-SALESCOSTYTD).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST2-SALESCOSTYTD) * 100.
@@ -883,7 +883,7 @@
            MOVE ST2-SALESRANDSLAST TO DG-SALESAMT.
            MOVE ST2-SALESCOSTLAST  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSLAST - ST2-SALESCOSTLAST).
+               (ST2-SALESRANDSLAST - ST2-SALESCOSTLAST).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST2-SALESCOSTLAST) * 100.
@@ -901,7 +901,7 @@
            MOVE ST3-SALESRANDSMTD TO DG-SALESAMT.
            MOVE ST3-SALESCOSTMTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSMTD - ST3-SALESCOSTMTD).
+               (ST3-SALESRANDSMTD - ST3-SALESCOSTMTD).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST3-SALESCOSTMTD) * 100.
@@ -915,7 +915,7 @@
            MOVE ST3-SALESRANDSYTD TO DG-SALESAMT.
            MOVE ST3-SALESCOSTYTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSYTD - ST3-SALESCOSTYTD).
+               (ST3-SALESRANDSYTD - ST3-SALESCOSTYTD).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST3-SALESCOSTYTD) * 100.
@@ -928,7 +928,7 @@
            MOVE ST3-SALESRANDSLAST TO DG-SALESAMT.
            MOVE ST3-SALESCOSTLAST  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSLAST - ST3-SALESCOSTLAST).
+               (ST3-SALESRANDSLAST - ST3-SALESCOSTLAST).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST3-SALESCOSTLAST) * 100.
@@ -948,7 +948,7 @@
            MOVE ST4-SALESRANDSMTD TO DG-SALESAMT.
            MOVE ST4-SALESCOSTMTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSMTD - ST4-SALESCOSTMTD).
+               (ST4-SALESRANDSMTD - ST4-SALESCOSTMTD).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST4-SALESCOSTMTD) * 100.
@@ -962,7 +962,7 @@
            MOVE ST4-SALESRANDSYTD TO DG-SALESAMT.
            MOVE ST4-SALESCOSTYTD  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSYTD - ST4-SALESCOSTYTD).
+               (ST4-SALESRANDSYTD - ST4-SALESCOSTYTD).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST4-SALESCOSTYTD) * 100.
@@ -975,7 +975,7 @@
            MOVE ST4-SALESRANDSLAST TO DG-SALESAMT.
            MOVE ST4-SALESCOSTLAST  TO DG-COSTSAMT.
            COMPUTE WS-MARGIN ROUNDED =
-               (ST-SALESRANDSLAST - ST4-SALESCOSTLAST).
+               (ST4-SALESRANDSLAST - ST4-SALESCOSTLAST).
            MOVE WS-MARGIN        TO DG-MARGIN.
            COMPUTE WS-PERC ROUNDED =
                (WS-MARGIN / ST4-SALESCOSTLAST) * 100.
@@ -1820,12 +1820,29 @@
                MOVE "** REPORT RUN FOR INDIVIDUAL COMPANY **"
                  TO PRINT-REC 
                WRITE PRINT-REC AFTER 2.
+       END-101.
+            IF WS-STOCK1 = " "
+                GO TO END-102.
+            CLOSE STOCK-MASTER1.
+       END-102.
+            IF WS-STOCK2 = " "
+                GO TO END-103.
+            CLOSE STOCK-MASTER2.
+       END-103.
+            IF WS-STOCK3 = " "
+                GO TO END-104.
+            CLOSE STOCK-MASTER3.
+       END-104.
+            IF WS-STOCK4 = " "
+                GO TO END-450.
+            CLOSE STOCK-MASTER4.
        END-450.
            PERFORM GET-USER-MAIL-NAME
            PERFORM GET-REPORT-Y2K-DATE
            PERFORM PRINT-REPORT-INFO.
        END-500.
            CLOSE PRINT-FILE.
+           
            PERFORM SEND-REPORT-TO-PRINTER.
            CLOSE STOCK-MASTER.
        END-900.
