@@ -7,7 +7,8 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-         Copy "SelectSlRegister".
+           Copy "SelectSlRegister".
+           Copy "SelectSlParameter".
            SELECT RANDOM-FILE ASSIGN TO WS-RANDOM-FILE
                ORGANIZATION IS INDEXED
                ACCESS MODE IS DYNAMIC
@@ -19,6 +20,7 @@
        DATA DIVISION.
        FILE SECTION.
            COPY ChlfdRegister.
+           COPY ChlfdParam.
            
        FD  RANDOM-FILE.
        01  RANDOM-REC.
@@ -43,6 +45,7 @@
        77  WS-CRNO              PIC 9(5) VALUE 0.
        77  WS-IMARGIN           PIC S9(8)V99 VALUE 0.
        77  WS-IPERC             PIC S9(8)V99 VALUE 0.
+       77  WS-VAT-PERC          PIC 99V99 VALUE 0.
        77  WS-XPORTI-INVOICE    PIC S9(8)V99 VALUE 0.
        77  WS-XPORTI-TAX        PIC S9(8)V99 VALUE 0.
        77  WS-XPORTI-ADDON      PIC S9(8)V99 VALUE 0.
@@ -81,6 +84,8 @@
        01  W-YY                 PIC ZZZ9.
        01  WS-INCR-STATUS.
            03  WS-INCR-ST1      PIC 99.
+       01  WS-SLPARAMETER-STATUS.
+           03  WS-SLPARAMETER-ST1 PIC 99.
        01  WS-RANDOM-STATUS.
            03  WS-RANDOM-ST1    PIC 99.
        01  WEEK-DATE.
@@ -396,11 +401,21 @@
            MOVE INCR-SALES        TO D-SALES
            MOVE INCR-INVCRED-AMT  TO D-INVAMT
            MOVE INCR-TAX          TO D-TAX.
-           COMPUTE WS-VATABLE ROUNDED = INCR-INVCRED-AMT / 114 * 14.
+      *     IF INCR-SALES NOT = 6 AND NOT = 52
+           COMPUTE WS-VATABLE ROUNDED = 
+              (INCR-INVCRED-AMT / (100 + WS-VAT-PERC)) * WS-VAT-PERC.
            IF WS-VATABLE NOT = INCR-TAX
               MOVE "V"            TO D-TAX-ERROR
            ELSE
               MOVE " "            TO D-TAX-ERROR.
+                      
+      *     MOVE WS-VATABLE TO TOT-TAX
+      *     MOVE TOT-TAX TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE D-TAX TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
+                      
                       
            MOVE INCR-ADDONS       TO D-ADDON
            MOVE INCR-DISCOUNT     TO D-DISCOUNT
@@ -474,7 +489,7 @@
                 GO TO PR-002.
                 
            WRITE PRINT-REC FROM DETAIL-LINE AFTER 1
-           MOVE " " TO PRINT-REC
+           MOVE " " TO PRINT-REC D-TAX-ERROR
            ADD 1 TO WS-LINE
 
             
@@ -785,10 +800,44 @@
        DST-999.
            EXIT.
       *
+       READ-PARAMETER SECTION.
+       RP-000.
+           MOVE 0 TO PA-TYPE.
+           MOVE 1 TO PA-RECORD.
+           READ PARAMETER-FILE
+               INVALID KEY NEXT SENTENCE.
+           IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
+               DISPLAY "NO PARAMETER RECORD!!!!"
+               CALL "LOCKKBD" USING F-FIELDNAME
+               EXIT PROGRAM.
+           IF WS-SLPARAMETER-ST1 NOT = 0
+              MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RP-000.
+            MOVE PA-GST-PERCENT TO WS-VAT-PERC.
+       RP-999.
+           EXIT.
+      *
        OPEN-FILES SECTION.
-       OPEN-014.
+       OPEN-004.
            MOVE 2910 TO POS
            DISPLAY "Opening files ......" AT POS.
+       OPEN-006.
+           OPEN I-O PARAMETER-FILE.
+           IF WS-SLPARAMETER-ST1 NOT = 0
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO OPEN-006.
+
+           PERFORM READ-PARAMETER.
+           CLOSE PARAMETER-FILE.
        OPEN-015.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0
@@ -796,7 +845,7 @@
               MOVE "REGISTER FILE BUSY ON OPEN, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              GO TO OPEN-014.
+              GO TO OPEN-015.
            MOVE Ws-Co-Name TO CO-NAME.
        OPEN-016.
            GO TO OPEN-036.
