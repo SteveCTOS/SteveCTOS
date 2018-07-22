@@ -384,14 +384,19 @@
                 MOVE "Q" TO D-DELETE
                 GO TO DI-999.
        DI-005.
-           IF ST-SALESUNITMTD = 0
-            AND ST-SALESUNITSYTD = 0
-             AND ST-SALESUNITSLAST = 0
-                MOVE "Y" TO D-DELETE
-                GO TO DI-010
+           IF ST-SALESUNITSYTD = 0
+            AND ST-SALESUNITSLAST = 0
+             AND ST-QTYRECYTD = 0
+              AND ST-QTYRECLAST = 0
+               AND ST-QTYADJYTD = 0
+                AND ST-QTYADJLAST = 0
+                 AND ST-SALESCOSTYTD = 0
+                  AND ST-SALESCOSTLAST = 0
+                   MOVE "Y" TO D-DELETE
+                   GO TO DI-010
             ELSE
-                MOVE "S" TO D-DELETE
-                GO TO DI-999.
+                   MOVE "S" TO D-DELETE
+                   GO TO DI-999.
            GO TO DI-999.
        DI-010.
            DELETE STOCK-MASTER

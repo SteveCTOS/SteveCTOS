@@ -83,3 +83,4 @@
               GO TO WSTCH-020.
        WSTCH-999.
            EXIT.
+      *

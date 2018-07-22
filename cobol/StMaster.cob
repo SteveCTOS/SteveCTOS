@@ -3413,6 +3413,32 @@
        DELETE-STOCK-RECORD SECTION.
        DSR-000.
             IF NEW-STOCKNO = "Y"
+               PERFORM RELEASE-STOCK-RECORD
+               GO TO DSR-999.
+       DSR-005.
+            IF ST-QTYONHAND NOT = 0
+             OR ST-QTYONRESERVE NOT = 0
+              OR ST-QTYONBORDER NOT = 0
+               OR ST-QTYONORDER NOT = 0
+               MOVE
+           "QTY VALUES NOT = ZERO, CAN'T DELETE, 'ESC' TO CLEAR SCREEN."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM RELEASE-STOCK-RECORD
+               GO TO DSR-999.
+           IF ST-SALESUNITSYTD NOT = 0
+            OR ST-SALESUNITSLAST NOT = 0
+             OR ST-QTYRECYTD NOT = 0
+              OR ST-QTYRECLAST NOT = 0
+               OR ST-QTYADJYTD NOT = 0
+                OR ST-QTYADJLAST NOT = 0
+                 OR ST-SALESCOSTYTD NOT = 0
+                  OR ST-SALESCOSTLAST NOT = 0
+               MOVE
+           "HISTORY NOT = ZERO, CAN'T DELETE, 'ESC' TO CLEAR SCREEN."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM RELEASE-STOCK-RECORD
                GO TO DSR-999.
        DSR-010.
            DELETE STOCK-MASTER

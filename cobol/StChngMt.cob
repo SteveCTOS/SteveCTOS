@@ -760,14 +760,30 @@
             IF NEW-STOCKNO = "Y"
                GO TO DSR-999.
        DSR-005.
-            IF ST-QTYONHAND > 0
-             OR ST-QTYONRESERVE > 0
-              OR ST-QTYONBORDER > 0
-               OR ST-QTYONORDER > 0
+            IF ST-QTYONHAND NOT = 0
+             OR ST-QTYONRESERVE NOT = 0
+              OR ST-QTYONBORDER NOT = 0
+               OR ST-QTYONORDER NOT = 0
                MOVE ST-STOCKNUMBER         TO WS-DAILY-1ST
                MOVE "NOT DELETED BY CHNGE" TO WS-DAILY-2ND
                MOVE "PROGRAM. QTY ON HAND" TO WS-DAILY-3RD
                MOVE "ETC. NOT = ZERO.    " TO WS-DAILY-4TH
+               PERFORM WRITE-DAILY
+               MOVE "D" TO ST-ANALYSIS
+               PERFORM REWRITE-STOCK-RECORD
+               GO TO DSR-999.
+           IF ST-SALESUNITSYTD NOT = 0
+            OR ST-SALESUNITSLAST NOT = 0
+             OR ST-QTYRECYTD NOT = 0
+              OR ST-QTYRECLAST NOT = 0
+               OR ST-QTYADJYTD NOT = 0
+                OR ST-QTYADJLAST NOT = 0
+                 OR ST-SALESCOSTYTD NOT = 0
+                  OR ST-SALESCOSTLAST NOT = 0
+               MOVE ST-STOCKNUMBER         TO WS-DAILY-1ST
+               MOVE "NOT DELETED BY CHNGE" TO WS-DAILY-2ND
+               MOVE "PROGRAM. QTY SOLD OR" TO WS-DAILY-3RD
+               MOVE "REC ETC. NOT = ZERO." TO WS-DAILY-4TH
                PERFORM WRITE-DAILY
                MOVE "D" TO ST-ANALYSIS
                PERFORM REWRITE-STOCK-RECORD
