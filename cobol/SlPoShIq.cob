@@ -238,8 +238,8 @@
             CLOSE INCR-REGISTER.
             
             PERFORM READ-ALL-TRANSACTIONS.
-            IF WS-ANSWER =  "N"
-               GO TO GET-999.
+      *      IF WS-ANSWER =  "N"
+      *         GO TO GET-999.
             PERFORM FILL-BODY.
             IF F-EXIT-CH = X"07" OR = X"09" OR = X"1F"
                 PERFORM CLEAR-TRANSACTIONS
@@ -414,6 +414,9 @@
            MOVE 1 TO F-INDEX.
            GO TO FILL-010.
        FILL-900.
+           MOVE " " TO WS-MESSAGE
+           PERFORM ERROR1-020
+           PERFORM ERROR-020.
            CLOSE INCR-REGISTER.
        FILL-999.
            EXIT.
@@ -586,7 +589,7 @@
       *         MOVE INCR-PORDER TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                CLOSE INCR-REGISTER
-               MOVE "N" TO WS-ANSWER
+               MOVE "Y" TO WS-ANSWER
                GO TO RDALL-999.
            MOVE "Y" TO WS-NEWINPUT.
            MOVE 1 TO SUB-1 F-INDEX.

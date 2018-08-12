@@ -414,6 +414,9 @@
            MOVE 1 TO F-INDEX.
            GO TO FILL-010.
        FILL-900.
+           MOVE " " TO WS-MESSAGE
+           PERFORM ERROR1-020
+           PERFORM ERROR-020.
            CLOSE INCR-LY-REGISTER.
        FILL-999.
            EXIT.
