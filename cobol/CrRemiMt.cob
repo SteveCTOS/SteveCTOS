@@ -697,9 +697,47 @@
                MOVE 1 TO SUB-1 F-INDEX
                PERFORM ERROR1-020
                GO TO FILL-165.
-            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+             IF F-EXIT-CH = X"1D"
+               GO TO FILL-190.
+           IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
                DISPLAY " " AT 3079 WITH BELL
                GO TO FILL-175.
+               
+            GO TO FILL-165.
+        FILL-190.
+            MOVE "                    " TO F-NAMEFIELD.
+
+            MOVE "BAL-FROM-REMIT"     TO F-FIELDNAME
+            MOVE 14                   TO F-CBFIELDNAME
+            PERFORM USER-FILL-FIELD.
+            MOVE 12                   TO F-CBFIELDLENGTH
+            PERFORM READ-FIELD-ALPHA.
+            MOVE F-NAMEFIELD  TO ALPHA-RATE.
+            PERFORM DECIMALISE-RATE.
+            MOVE NUMERIC-RATE TO F-EDNAMEFIELDREC
+                                 CRREM-BAL-FROM-REMIT.
+            PERFORM WRITE-FIELD-REC.
+
+            IF F-EXIT-CH = X"01"
+               MOVE 1 TO SUB-1 F-INDEX
+               PERFORM ERROR1-020
+               GO TO FILL-175.
+            IF F-EXIT-CH = X"1B"
+               PERFORM REWRITE-CRREM-RECORD
+               PERFORM CLEAR-FORM
+              GO TO FILL-999.
+            IF F-EXIT-CH = X"0C"
+               PERFORM REWRITE-CRREM-RECORD
+               PERFORM READ-REMIT-NEXT
+             IF WS-END = "Y"
+               PERFORM CLEAR-FORM
+               GO TO FILL-999
+             ELSE
+               PERFORM GET-003 THRU GET-050
+               GO TO FILL-001.
+            IF F-EXIT-CH NOT = X"0A" AND NOT = X"0B"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO FILL-190.
                
             GO TO FILL-165.
        FILL-999.
