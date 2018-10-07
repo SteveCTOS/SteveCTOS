@@ -589,8 +589,9 @@
             IF WS-ANSWER1 = "M"
                MOVE CB-BALANCE TO CB-OPEN-PER-BAL.
             IF WS-ANSWER1 = "Y"
-               MOVE CB-BALANCE TO CB-OPEN-PER-BAL
-                                  CB-OPEN-YEAR-BAL.
+               MOVE CB-OPEN-YEAR-BAL TO CB-LY-OPEN-BAL
+               MOVE CB-BALANCE       TO CB-OPEN-PER-BAL
+                                        CB-OPEN-YEAR-BAL.
             IF WS-ANSWER1 = "M"
                  GO TO GLM-020.
             MOVE 0 TO SUB-1.
