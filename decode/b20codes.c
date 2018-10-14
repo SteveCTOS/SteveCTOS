@@ -103,8 +103,7 @@ int main(int argc, char *argv[])
   add_field(0x18, "F4          (F4)");
   add_field(0x19, "F5          (F5)");
   add_field(0x1a, "F6          (F6)");
-  add_field(0x1b, "GO          (L-A-Return)");
-  add_field(0x1b, "GO          (R-A-Return)");
+  add_field(0x1b, "GO          (A-Return)");
   add_field(0x1c, "F7          (F7)");
   add_field(0x1d, "F8          (F8)");
   add_field(0x1e, "F9          (F9)");
