@@ -398,6 +398,9 @@
       * <f10> to print
            IF F-EXIT-CH = X"1F"
                 CLOSE STOCK-TRANS-FILE
+                MOVE "Printing In Progress, Please Be Patient."
+                   TO WS-MESSAGE
+                PERFORM ERROR-000
                 PERFORM PRINT-ROUTINE
                 PERFORM CLEAR-TRANSACTIONS
                 MOVE " " TO WS-MESSAGE
@@ -834,6 +837,7 @@
        PRR-000.
            MOVE 0  TO PAGE-CNT
            MOVE 66 TO LINE-CNT.
+           PERFORM OPEN-005.
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
            MOVE "Q"               TO STTR-AC-COMPLETE
