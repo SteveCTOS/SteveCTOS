@@ -8,22 +8,19 @@ lp -d $3 /ctools/spl/$1InPrintCo$2.pdf
 
 #rm /ctools/spl/$1InPrintCo$2.pdf
 
-#FORMAT FOR STANDARD FILE PRINTING IS:
-#lp -d W-PRINTERNAME W-PRINTFILE
-#
-#To print off the command line after making changes to the e.g. /ctools/spl/steveInPrintCo08 file: 
-# command is: PrintInvoice   $1  $2 $3        $4                                                   
-#        e.g. PrintInvoice steve 08 CTJ-MP171 /ctools/spl/InPrintCo                                
-#                                                                                                  
-#--So far the variables which will be specified from inside the COBOL programs are:                
-#---$1 = The username                         e.g. steve                                           
-#---$2 = The company number from 01 to 12     e.g. 07                                              
-#---$3 = The Printername to print the file to e.g. MP250
-#---$4 = The Print file name which will replace /ctools/spl/InPrintCo01.pdf when specified in COBOL
+#To print off the command line after making changes to e.g. /ctools/spl/steveInPrintCo08 file: 
+# command is: PrintInvoice   $1  $2 $3        $4                                               
+#        e.g. PrintInvoice steve 08 CTJ-MP171 /ctools/spl/InPrintCo                            
+#                                                                                              
+#--So far the variables which will be specified from inside the COBOL programs are:            
+#---$1 = The username                         e.g. steve                                       
+#---$2 = The company number from 01 to 12     e.g. 07                                          
+#---$3 = The Printername to print the file to e.g. MP250                                       
+#---$4 = The Print file which will replace /ctools/spl/InPrintCo01.pdf when specified in COBOL 
 
 #this param is 4 from within the Invoice/Credit print program
 #---$4 = Print Y/N : Y=Print, N=No Print (Create PDF ONLY for Docutrieve Purposes)
 #
+#FORMAT FOR STANDARD FILE PRINTING IS:
+#lp -d W-PRINTERNAME W-PRINTFILE
 #
-#--- add any extra commands here - perhaps cups printing
-#--- or sendfax via hylaFAX

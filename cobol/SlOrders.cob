@@ -584,7 +584,6 @@
               PERFORM CTOS-ACCEPT
               MOVE CDA-DATA TO WS-ADD-TO-OLD-ORDER
            
-      *     ACCEPT WS-ADD-TO-OLD-ORDER AT POS.
            IF WS-ADD-TO-OLD-ORDER = "N"
               GO TO CTEO-300.
            IF WS-ADD-TO-OLD-ORDER NOT = "Y"
@@ -6467,11 +6466,14 @@
                ADD B-ORDERQTY (SUB-1)        TO ST-QTYONRESERVE
                                                 ST-QTYONBORDER
                MOVE B-ORDERQTY (SUB-1)        TO B-SHIPQTY (SUB-1)
+               MOVE ST-AVERAGECOST            TO B-STOCKCOST (SUB-1)
                GO TO RSQ-020.
-           MOVE ST-QTYONHAND             TO B-SHIPQTY (SUB-1)
-           ADD  ST-QTYONHAND             TO ST-QTYONRESERVE
-           MOVE 0                        TO ST-QTYONHAND
-           ADD B-ORDERQTY (SUB-1)        TO ST-QTYONBORDER.
+			   
+           MOVE ST-QTYONHAND              TO B-SHIPQTY (SUB-1)
+           ADD  ST-QTYONHAND              TO ST-QTYONRESERVE
+           MOVE 0                         TO ST-QTYONHAND
+           ADD B-ORDERQTY (SUB-1)         TO ST-QTYONBORDER
+           MOVE ST-AVERAGECOST            TO B-STOCKCOST (SUB-1)
            ADD 1 TO WS-BO-NUMBER.
        RSQ-020.
            REWRITE STOCK-RECORD

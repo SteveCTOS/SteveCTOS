@@ -13,8 +13,8 @@ set (copy_list
   Backup05.sh
   Backup06.sh
   Backup07.sh
+  BackupCtools.sh
   Branch01.Sub
-  Branch01.sh
   Branch03.Sub
   Branch03.sh
   Branch07.Sub
@@ -75,7 +75,7 @@ set (copy_list
   MonthEnd02.sh
   MonthEnd03.sh
   MonthEnd05.sh
-  MonthEnd07.sh 
+  MonthEnd07.sh
   MonthEnd08.sh
   MonthEnd09.sh
   MonthEnd10.sh
