@@ -728,7 +728,7 @@
            IF WS-TYPE NOT = 0
               MOVE WS-TYPE TO DRTR-TYPE
            ELSE
-              MOVE 01      TO DRTR-TYPE.
+              MOVE 0       TO DRTR-TYPE.
            MOVE 1          TO DRTR-TRANSACTION-NUMBER.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-KEY
                INVALID KEY NEXT SENTENCE.

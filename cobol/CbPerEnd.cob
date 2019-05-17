@@ -360,10 +360,11 @@
                GO TO CH-TR-PS-010.
            IF CBTRANS-DATE > GL-ENDDATE (WS-CBTRANS-NO)
                GO TO CH-TR-PS-010.
-           IF CBTRANS-TYPE-OF-POST = "C" OR = "D" OR "G"
+           IF CBTRANS-TYPE-OF-POST = "C" OR = "D" OR "G" OR = "S"
                GO TO CH-TR-PS-010.
            IF CBTRANS-ALLOCATED = "Y" OR = "H"
                GO TO CH-TR-PS-010.
+               
            MOVE
             "SOME TRANSACTION HAVE NOT BEEN POSTED, 'ESC' TO EXIT."
               TO WS-MESSAGE
