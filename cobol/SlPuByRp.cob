@@ -232,7 +232,7 @@
                WRITE PRINT-REC AFTER 2
                MOVE "PULL-BY FILE BAD START, 'ESC' TO EXIT."
                TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+               PERFORM ERROR-000
                GO TO PR-999.
        PR-001.
            READ PULL-BY NEXT WITH LOCK

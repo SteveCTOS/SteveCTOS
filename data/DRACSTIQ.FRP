@@ -2,12 +2,12 @@
 * Account: _______                                                            *
 * Name   : ________________________________________ Phone:____________________*
 *          _________________________                Cont :____________________*
-*          _________________________                Account Bal  : ___________*
-*          _________________________                Previous Bal : ___________*
+*          _________________________                Acc Balance  : ___________*
+*          _________________________                Prev Balance : ___________*
 *Credit Limit   :     ______ Sales ptd: ___________ Current      : ___________*
 *Date Created   : __________ Sales ytd: ___________ (31-60)      : ___________*
-*Date Last Sale : __________ Sales L/Y: ___________ (61-90)      : ___________*
-*Date Last Payed: __________ Costs ptd: ___________ (91-120)     : ___________*
+*Date Last Sale : __________ Sales l/y: ___________ (61-90)      : ___________*
+*Date Last Paid : __________ Costs ptd: ___________ (91-120)     : ___________*
 *Sales Analysis :         __ Costs ytd: ___________ (121+)       : ___________*
 *Sales Rep #    :          _ Discount :          _  Supply Y/N/S : _          *
 * Type  *Ref No*   Date   * Date Del *     Order No.    *Begin Amt *Remain Amt*

@@ -1859,7 +1859,8 @@
       *
        GET-DATA SECTION.
        GET-010.
-      *      PERFORM CI-900.
+            PERFORM CI-900.
+                        
             MOVE "                        " TO F-NAMEFIELD.
             MOVE "N" TO WS-ZERODIS
                         WS-PASSWORD-VALID

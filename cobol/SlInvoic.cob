@@ -1355,6 +1355,9 @@
        GET-DATA SECTION.
        GET-010.
             PERFORM CI-900.
+            UNLOCK INCR-REGISTER
+            UNLOCK STOCK-TRANS-FILE.
+                        
             MOVE "INVOICEDATE" TO F-FIELDNAME.
             MOVE 11            TO F-CBFIELDNAME.
             MOVE WS-DATE       TO SPLIT-DATE.

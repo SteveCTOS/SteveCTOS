@@ -195,6 +195,8 @@
            START SOLD-BY KEY NOT < SB-KEY
               INVALID KEY NEXT SENTENCE.
            IF WS-SOLDBY-ST1 NOT = 0
+               MOVE 88 TO WS-SOLDBY-ST1
+               PERFORM PRINT-HEADINGS
                PERFORM SUB-LINE
                PERFORM PRINT-TOTALS
                GO TO PRR-999.
