@@ -3345,7 +3345,7 @@
            "In Batch, & <F4> = Suspend Order" AT POS
            MOVE 2805 TO POS
            DISPLAY
-           "NB! Ship Via = 'Collect At Counter' Will Print Immediately"
+           "NB! Ship Via = 'Collect At Counter' Will Print Immediately."
               AT POS.
            PERFORM USER-FILL-FIELD.
            IF F-EXIT-CH = X"01"
