@@ -3,6 +3,8 @@
         AUTHOR.     STEVE CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -527,14 +529,22 @@
                PERFORM PRINT-REPORT-INFO.
                
            CLOSE PRINT-FILE.
-           PERFORM SEND-REPORT-TO-PRINTER.
+           IF WS-PRINTERNUMBER (21) NOT = 20 AND NOT = 0
+                PERFORM SEND-REPORT-TO-PRINTER
+                GO TO END-900.
+           IF WS-PRINTERNUMBER (21) = 0
+                GO TO END-900.
            
-           IF WS-PRINTER = "[VID]" OR = "[Vid]"
-              MOVE 3010 TO POS
-              DISPLAY "Press ANY KEY to EXIT the program.             "
-              AT POS
-              MOVE 2850 TO POS
-              ACCEPT WS-ACCEPT AT POS.
+            MOVE "When Finished Viewing The Report, Press Q to Quit."
+              TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE. 
+              
+            MOVE 
+            CONCATENATE('less ', ' ', TRIM(WS-PRINTER))
+                TO WS-COMMAND-LINE.
+      
+            CALL "SYSTEM" USING WS-COMMAND-LINE.
+      *      RETURNING W-STATUS.
        END-900.
            CLOSE DEBTOR-MASTER.
            EXIT PROGRAM.
