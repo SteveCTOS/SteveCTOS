@@ -55,8 +55,8 @@
                      AND NOT = "13" AND NOT = "14" AND NOT = "15"
                      AND NOT = "16" AND NOT = "17" AND NOT = "18"
                      AND NOT = "19" AND NOT = "20" AND NOT = "21"
-                     AND NOT = "22" AND NOT = "XX"
-            MOVE "Selection Must Be Between 1 & 22, Press 'Esc'"
+                     AND NOT = "22" AND NOT = "23" AND NOT = "XX"
+            MOVE "Selection Must Be Between 1 & 23, Press 'Esc'"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -127,6 +127,8 @@
                 MOVE "StTranMv" TO WS-PROGRAM.
             IF WS-ANSWER = "22"
                 MOVE "StTrLyMv" TO WS-PROGRAM.
+            IF WS-ANSWER = "23"
+                MOVE "StCataMv" TO WS-PROGRAM.
             CALL WS-PROGRAM USING Ws-Linkage.
             PERFORM CLEAR-SCREEN
             CANCEL WS-PROGRAM

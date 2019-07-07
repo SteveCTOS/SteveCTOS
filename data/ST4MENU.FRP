@@ -17,7 +17,7 @@
 *  *  *  8. Stock Imports Entry/Edit                                          *
 *  *  *                                   21. StTrans Export / Import Fix     *
 *  *  *  9. StockNumber Checking Between  22. StTransLy Export / Import Fix   *
-*  *  *     DataBases (CTJ, CTN, CSC etc.)                                    *
+*  *  *     DataBases (CTJ, CTN, CSC etc) 23. StCatalogue Export / Import Fix *
 ****  *     Based on "Stock NewPriceList".                                    *
    ****                                                                       *
       * 10. Stock Category's for Branch Update.                               *

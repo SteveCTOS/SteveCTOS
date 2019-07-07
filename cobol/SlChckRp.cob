@@ -47,6 +47,7 @@
        77  WS-VATABLE           PIC S9(8)V99 VALUE 0.
        77  WS-ACCEPT            PIC XX VALUE " ".
        77  WS-YYACCEPT          PIC X(4) VALUE " ".
+       77  WS-VAT-PERC          PIC 99V99 VALUE 0.
        77  WS-PERC-DIS          PIC Z(8)9.99.
        77  WS-PERC              PIC S9(8)V99 VALUE 0.
        77  WS-RAND-ACCEPT       PIC X(11) VALUE " ".
@@ -689,7 +690,8 @@
            MOVE WS-TOTI-NETT     TO TOT-REG-NETT
            MOVE WS-TOTI-COST     TO TOT-REG-COST.
            
-           COMPUTE WS-VATABLE ROUNDED = WS-TOTI-INVOICE / 114 * 14.
+           COMPUTE WS-VATABLE ROUNDED = WS-TOTI-INVOICE / 
+              ((WS-VAT-PERC + 100) * WS-VAT-PERC).
            IF WS-VATABLE NOT = WS-TOTI-TAX
               MOVE "V"            TO TOT-REG-TAX-ERR
            ELSE
@@ -712,7 +714,8 @@
            MOVE WS-TOTC-NETT     TO TOT-REG-NETT
            MOVE WS-TOTC-COST     TO TOT-REG-COST.
            
-           COMPUTE WS-VATABLE ROUNDED = WS-TOTC-INVOICE / 114 * 14.
+           COMPUTE WS-VATABLE ROUNDED = WS-TOTC-INVOICE /
+              ((WS-VAT-PERC + 100) * WS-VAT-PERC).
            IF WS-VATABLE NOT = WS-TOTC-TAX
               MOVE "V"           TO TOT-REG-TAX-ERR
            ELSE
@@ -742,7 +745,8 @@
            MOVE WS-TOTI-NETT     TO TOT-REG-NETT
            MOVE WS-TOTI-COST     TO TOT-REG-COST.
            
-           COMPUTE WS-VATABLE ROUNDED = WS-TOTI-INVOICE / 114 * 14.
+           COMPUTE WS-VATABLE ROUNDED = WS-TOTI-INVOICE /
+              ((WS-VAT-PERC + 100) * WS-VAT-PERC).
            IF WS-VATABLE NOT = WS-TOTI-TAX
               MOVE "V"           TO TOT-REG-TAX-ERR
            ELSE
@@ -1270,6 +1274,29 @@
        PGLS-999.
            EXIT.
       *
+       READ-PARAMETER SECTION.
+       RP-000.
+           MOVE 0 TO PA-TYPE.
+           MOVE 1 TO PA-RECORD.
+           READ PARAMETER-FILE
+               INVALID KEY NEXT SENTENCE.
+           IF WS-SLPARAMETER-ST1 = 23 OR 35 OR 49
+               DISPLAY "NO PARAMETER RECORD!!!!"
+               CALL "LOCKKBD" USING F-FIELDNAME
+               EXIT PROGRAM.
+           IF WS-SLPARAMETER-ST1 NOT = 0
+              MOVE "PARAMETER BUSY ON READ, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-SLPARAMETER-ST1
+               GO TO RP-000.
+            MOVE PA-GST-PERCENT TO WS-VAT-PERC.
+       RP-999.
+           EXIT.
+      *
        READ-TERMS-FILE SECTION.
        RTERM-000.
             MOVE 1 TO SUB-1
@@ -1336,6 +1363,7 @@
               PERFORM ERROR-MESSAGE
               GO TO OPEN-018.
            MOVE ALL "X" TO STORE-TERM
+           PERFORM READ-PARAMETER.
            PERFORM READ-TERMS-FILE
            CLOSE PARAMETER-FILE.
        OPEN-020.

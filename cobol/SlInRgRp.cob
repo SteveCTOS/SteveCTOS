@@ -174,7 +174,7 @@
            03  TOT-INVAMT       PIC Z(7)9.99.
            03  FILLER           PIC X(1) VALUE " ".
            03  TOT-TAX          PIC Z(7)9.99.
-           03  FILLER           PIC X(1) VALUE " ".
+           03  TOT-REG-TAX-ERR  PIC X(1) VALUE " ".
            03  TOT-ADDON        PIC Z(7)9.99.
            03  FILLER           PIC X(1) VALUE " ".
            03  TOT-DISCOUNT     PIC Z(7)9.99.

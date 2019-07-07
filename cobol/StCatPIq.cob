@@ -114,9 +114,9 @@
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO GET-001.
-            IF WS-TYPE = "   "
+            IF WS-TYPE = " "
                 GO TO GET-001.
-            IF WS-TYPE = "   "
+            IF WS-TYPE = " "
                 CLOSE STOCK-MASTER
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
@@ -130,6 +130,10 @@
             MOVE "STOCK" TO F-FIELDNAME
             MOVE 5       TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
+            IF F-EXIT-CH = X"01"
+                 GO TO GET-001.
+            IF F-EXIT-CH = X"07"
+                GO TO GET-999.
             IF WS-TYPE = "P"
                MOVE F-NAMEFIELD TO STCAT-PAGE-NUM
             ELSE
@@ -150,8 +154,6 @@
                GO TO GET-000.
             IF F-EXIT-CH = X"04"
                  PERFORM END-OFF.
-            IF F-EXIT-CH = X"01"
-                 GO TO GET-001.
             MOVE 15 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-STOCKNUMBER.
@@ -164,7 +166,7 @@
       *       IF STCAT-STOCKNUMBER = 0 OR = "   "
       *          GO TO GET-005.
             IF WS-TYPE = "N"
-             IF STCAT-STOCKNUMBER = 0 OR = "   "
+             IF STCAT-STOCKNUMBER = 0 OR = " "
                 CLOSE STOCK-MASTER
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
@@ -172,7 +174,7 @@
                 PERFORM DISPLAY-FORM
                 GO TO GET-005.
             IF WS-TYPE = "P"
-             IF STCAT-PAGE-NUM = 0 OR = "   "
+             IF STCAT-PAGE-NUM = 0 OR = " "
                 CLOSE STOCK-MASTER
                 CALL WS-INQUIRY-PROGRAM USING WS-LINKAGE
                 CANCEL WS-INQUIRY-PROGRAM
@@ -182,6 +184,8 @@
             MOVE " " TO F-EXIT-CH.
 
             PERFORM READ-TRANSACTIONS.
+            IF WS-ANSWER = "Y"
+                GO TO GET-999.
        GET-900.
            IF WS-STCAT-ST1 = 88
                 GO TO GET-999.
@@ -251,10 +255,18 @@
                PERFORM ERROR1-020
                MOVE 0 TO WS-STCAT-ST1
                GO TO RDTR-010.
-           IF WS-TYPE = "P"
-            IF STCAT-PAGE-NUM NOT = WS-STOCKNUMBER
-               MOVE 1 TO F-INDEX
-               GO TO RDTR-999.
+      *     IF WS-TYPE = "P"
+      *      IF STCAT-PAGE-NUM NOT = WS-STOCKNUMBER
+      *         MOVE "CAT NOT = WS-STOCKNUMBER" TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         MOVE STCAT-PAGE-NUM TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-STOCKNUMBER TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         PERFORM ERROR1-020
+      *         MOVE "Y" TO WS-ANSWER
+      *         MOVE 1 TO F-INDEX
+      *         GO TO RDTR-999.
            IF WS-MESSAGE NOT = " "
                PERFORM ERROR1-020.
        RDTR-020. 
@@ -299,6 +311,10 @@
                     AND NOT = 1
                 MOVE 16 TO F-INDEX
                 GO TO RDTR-020.
+
+      *     MOVE "GOING TO READ STOCK" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+
            PERFORM READ-STOCK
            PERFORM SCROLLING
            ADD 1 TO F-INDEX
@@ -333,6 +349,10 @@
       *
        START-CATALOGUE SECTION.
        ST-ST-000.
+
+      *     MOVE "GOING TO START-CAT" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
               IF WS-TYPE = "N"
                  MOVE WS-STOCKNUMBER TO STCAT-STOCKNUMBER
                  START STCAT-MASTER KEY NOT < STCAT-STOCKNUMBER
@@ -346,6 +366,14 @@
                  MOVE "NO RECORD WITH THAT NUMBER, 'ESC' TO EXIT."
                  TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE.
+
+      *     MOVE "FINISHED START OF CAT" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *         MOVE STCAT-PAGE-NUM TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-STOCKNUMBER TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE.
+
        ST-ST-999.
              EXIT.
       *
