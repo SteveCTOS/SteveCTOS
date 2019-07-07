@@ -8,12 +8,14 @@
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
           Copy "SelectStCatalogue".
+          Copy "SelectStMaster".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                 ORGANIZATION IS LINE SEQUENTIAL.
       *
         DATA DIVISION.
         FILE SECTION.
            COPY ChlfdStCatalogue.
+           COPY ChlfdStock.
       *
        FD  PRINT-FILE.
        01  PRINT-REC.
@@ -24,10 +26,13 @@
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  PAGE-CNT             PIC 9(3) VALUE 0.
        77  WS-STORE             PIC X(3) VALUE " ".
+       77  WS-DELETE            PIC X VALUE " ".
        77  WS-RANGE1            PIC X(15) VALUE " ".
        77  WS-RANGE2            PIC X(15) VALUE " ".
        01  WS-STCAT-STATUS.
            03  WS-STCAT-ST1     PIC 99.
+       01  WS-STOCK-STATUS.
+           03  WS-STOCK-ST1     PIC 99.
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -146,6 +151,25 @@
        GET-999.
            EXIT.
       *
+       DELETE-CATALOGUE-RECORD SECTION.
+       DSR-000.
+            IF WS-DELETE NOT = "Y"
+               GO TO DSR-999.
+       DSR-010.
+            DELETE STCAT-MASTER
+               INVALID KEY NEXT SENTENCE.
+            IF WS-STCAT-ST1 NOT = 0
+              MOVE "ST-CATALOGUE BUSY ON DELETE, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCAT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STCAT-ST1
+               GO TO DSR-010. 
+       DSR-999.
+            EXIT. 
+      *
        PRINT-ROUTINE SECTION.
        PRR-000.
             MOVE WS-RANGE1 TO STCAT-STOCKNUMBER.
@@ -155,7 +179,7 @@
                GO TO PRR-999.
             MOVE " " TO DETAIL-LINE.
        PRR-002.
-            READ STCAT-MASTER NEXT
+            READ STCAT-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
             IF WS-STCAT-ST1 = 10
                MOVE 0 TO WS-STCAT-ST1
@@ -204,6 +228,10 @@
             WRITE PRINT-REC
             MOVE 5 TO LINE-CNT.
        PRR-020.
+           PERFORM READ-STOCK.
+           IF WS-DELETE = "Y"
+              PERFORM DELETE-CATALOGUE-RECORD
+              GO TO PRR-002.
            IF D-STOCK1 = " "
               MOVE STCAT-STOCKNUMBER  TO D-STOCK1
               MOVE STCAT-PAGE-NUM     TO D-PAGE1
@@ -232,6 +260,29 @@
        PRR-999.
            EXIT.
       *
+       READ-STOCK SECTION.
+       RS-000.
+            MOVE STCAT-STOCKNUMBER TO ST-STOCKNUMBER
+            START STOCK-MASTER KEY NOT < ST-KEY.
+            MOVE " " TO WS-DELETE.
+       RS-010.
+            READ STOCK-MASTER
+                INVALID KEY NEXT SENTENCE.
+            IF WS-STOCK-ST1 = 23 OR 35 OR 49
+                MOVE "Y" TO WS-DELETE
+                GO TO RS-999.
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON READ, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO RS-010.
+       RS-999.
+            EXIT.
+      *
        OPEN-FILES SECTION.
        OPEN-000.
            OPEN I-O STCAT-MASTER.
@@ -241,6 +292,14 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               GO TO OPEN-000.
+       OPEN-005.
+            OPEN I-O STOCK-MASTER.
+            IF WS-STOCK-ST1 NOT = 0
+               MOVE 0 TO WS-STOCK-ST1
+               MOVE "STOCK-MASTER FILE BUSY ON OPEN 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               GO TO OPEN-005.
        OPEN-010.
            MOVE Ws-Co-Name TO CO-NAME
            PERFORM GET-SYSTEM-Y2K-DATE.
@@ -263,6 +322,7 @@
            MOVE WS-PRINT-NORMAL TO PRINT-REC
            WRITE PRINT-REC.
            CLOSE STCAT-MASTER
+                 STOCK-MASTER
                  PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
        END-900.
