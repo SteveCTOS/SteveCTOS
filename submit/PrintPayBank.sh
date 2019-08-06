@@ -4,13 +4,15 @@
 # example.  From the command line run the following:
 # PrintPayBank.sh Jun16
 
+lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1Totals
+
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankCTJ
 
-lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankGRC
+#lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankGRC
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankCTN
 
-lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankORX
+#lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankORX
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1BankSFJ
 

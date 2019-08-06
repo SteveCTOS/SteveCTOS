@@ -6,11 +6,11 @@
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxCTJ
 
-lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxGRC
+#lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxGRC
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxCTN
 
-lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxORX
+#lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxORX
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1TaxSFJ
 

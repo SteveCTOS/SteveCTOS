@@ -6,11 +6,11 @@
 
 lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PayCTJ
 
-lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PayGRC
+#lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PayGRC
 
 #lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PayCTN
 
-lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PayORX
+#lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PayORX
 
 #lp -d CTJ-Spl -o cpi=17 /ctools/temp/$1PaySFJ
 
