@@ -124,7 +124,6 @@ This repository is in bitbucket being used for free and as such it has a maximum
 	- change the Printer entries to allow browsing and guest ok = yes
 	- change the entry by removing the ; in front of the entry usershare max shares = 100
 	
-<<<<<<< HEAD
   14. Copy All the data off your memory stick USB from the ctools folder.
     - Make sure you do NOT copy the /ctools/bin, /ctools/dev, folders which have already been made in this new installation.
   
@@ -142,6 +141,3 @@ This repository is in bitbucket being used for free and as such it has a maximum
 
 
    - ***END***
-=======
-	- *END*
->>>>>>> 0d877ea65dfe2de41648fe70ce92092fa39acf37
