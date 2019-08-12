@@ -31,7 +31,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
 	
   3. Using Software Manager install
     
-     - putty
+     - putty - Only for Linux Mint 17.1, 2 or 3
      - openssh server
      - sublime text
      - doublecmd gtk 
@@ -41,17 +41,23 @@ This repository is in bitbucket being used for free and as such it has a maximum
   4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
 	
      - sudo mkdir /ctools
-     - sudo chown ctools:ctools /ctools
+	
+    4.1  Set all folders in ctools to ctools ownership.
+      - cd /ctools
+      - sudo chown -R ctools:ctools *
+      - Also can do like this:    sudo chown ctools:ctools /ctools
+  
      - mkdir /ctools/dev
      - cd /ctools/dev
      - git config --global user.email "Steve@Christensen.co.za"
      - git config --global user.name "Steve Christensen"
                          <username>   <pswd>
-     - git clone https://VincentRisi:Atl45514n@bitbucket.org/VincentRisi/ctos4ctools source
+     - sudo git clone https://VincentRisi:Atl45514n@bitbucket.org/VincentRisi/ctos4ctools source
      - mkdir build
      - cd build
-     - cmake ../source
-     - make install
+     - sudo cmake ../source
+     - sudo make -k
+     - sudo make install
 	
   5. Change the key bindings using dconf-editor - you must first install:
 	
@@ -79,21 +85,59 @@ This repository is in bitbucket being used for free and as such it has a maximum
   9.  Installing PUtty on Linux Mint 19.1 >
 	- Download  putty-0.72.tar.gz from the PUtty website
 	- Put the `putty-0.72.tar.gz` into the directory  `/home/ctools/Downloads`
-	- cd home/ctools/Downloads
+	- cd /home/ctools/Downloads
 	- tar vxf putty-0.72.tar.gz
 	
 	- use menu on the pc by pressing the windows button and select Administrator/Synaptic Package Manager
 	- Select Search - it will pop up a Find dialog
 	- Look for Gtk selecting Look in Name Search
-	- Scroll down to lib-gtk-3-dev, mark it and the libgtk-3-doc for installation then hit the apply button.
+	- Scroll down to libgtk-3-dev, mark it and the libgtk-3-doc for installation then hit the apply button.
 	
 	- In a Terminal
 	- cd /home/ctools/Downloads/putty-0.72
 	- ./configure
-	- make
-	- make install
+	- sudo make
+	- sudo make install
 	
 	- putty should now work properly on the Linux box
+
+  10. Setup all the new users 
+    - Press windows key 
+    - go to System Settings
+    - go to Users & Groups
+    - Add user with a temp password.  Make sure to add in ctools, lpadmin, plugdev,sambashare
+        to the user groups...
 	
+  11. Set user passwords by 
+    - su <enter>  this to enter the root user which has powers to change user passwords
+	- ctos 
+	-
+    - passwd <username>
+    - enter the temp password then enter a new password
+
+  12. Add all the users into the same group namely ctools
+    - sudo usermod -g ctools <username>
+
+  13. Change the WORKGROUP in Samba to allow printers to work in the group  
+    - edit /etc/samba/smb.conf using sublime-text editor 
+	- look for the WORKGROUP entry and change it to CTJ
+	- change the Printer entries to allow browsing and guest ok = yes
+	- change the entry by removing the ; in front of the entry usershare max shares = 100
 	
-	- *END*
+  14. Copy All the data off your memory stick USB from the ctools folder.
+    - Make sure you do NOT copy the /ctools/bin, /ctools/dev, folders which have already been made in this new installation.
+  
+  15. Change permissions on the /ctools folder once 14. above has been done.  This will allow ALL users to access these sub folders.
+   -  cd /ctools
+   -  chmod 775 *
+   -  chmod -R g+rw *
+	
+  16. On the Server, to get the Right-Alt key (right Alt being Alt Gr) to work as a Left-Alt key in CTOS do the following:
+   -  press <Windows key>
+   -  Go to Settings
+   -  Go to keyboard, then layouts tab, select the KBD on the left of the screen "English (South Africa)"
+   -  then the Options tab, then "Alt/win behaviour" and change the default to "Alt and Meta are on Alt keys"
+   -  then the right-Alt works like the Left-Alt key.....
+
+
+   - ***END***
