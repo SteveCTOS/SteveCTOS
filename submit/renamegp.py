@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import glob, os, sys
-comps = ['gp1', 'gp2', 'gpa',]
+comps = ['gp1', 'gp2', 'gp3', 'gpa',]
 months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
 comp = sys.argv[1] 
 month = sys.argv[2]
