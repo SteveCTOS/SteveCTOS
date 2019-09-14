@@ -31,6 +31,9 @@
             OR = "MAG" OR = "XRN" OR = "PAN" OR = "VIK" OR = "KAR"
               COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.025
               GO TO CSP-010.
+           IF ST-CATEGORY = "RES"
+              COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.10
+              GO TO CSP-010.
            IF ST-STOCKNUMBER = "ORX SR3AS" OR = "ORX SR3ASN"
                        OR = "ORX SUPERPRO" OR = "ORX SUPERPROK"
               COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.025

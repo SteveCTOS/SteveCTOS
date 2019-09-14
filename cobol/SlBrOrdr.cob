@@ -487,7 +487,8 @@
               PERFORM COMPUTE-ASSOCIATE-PRICES.
               
            MOVE ST-PRICE          TO STTR-PRICE
-           MOVE 0                 TO STTR-ITEMDISC.
+           MOVE 0                 TO STTR-ITEMDISC
+                                        B-DISCOUNTPERITEM (SUB-1).
            
            GO TO RSQT-020.
        RSQT-015.

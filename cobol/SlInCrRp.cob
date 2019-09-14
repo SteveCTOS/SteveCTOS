@@ -982,8 +982,8 @@
                 MOVE 1 TO WS-PRINT-NUM WS-PROG-TYPE
                 GO TO GET-900.
             MOVE
-            "ENTER I=INVOICE, C=CREDIT, D=D/BASE OR P=PROFORMA " &
-            " INVOICE, X=PDF MONTH-END PRINT"
+            "ENTER I=INVOICE, C=CREDIT, D=D/BASE, P=PROFORMA, " &
+            "X=PDF M/END PRINT."
              TO WS-MESSAGE
             PERFORM ERROR-MESSAGE
             GO TO GET-000.
