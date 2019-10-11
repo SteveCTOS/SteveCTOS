@@ -1131,7 +1131,6 @@
            MOVE " " TO PRINT-REC WSF-STOCK-LINE.
        WRFAX-020.
            ADD 1 TO SUB-1 LINE-CNT.
-           
            IF Fax-PaNumber = 3
             IF LINE-CNT > 55
               ADD 1 TO PAGE-CNT
@@ -1140,7 +1139,6 @@
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC BEFORE PAGE
               GO TO WRFAX-003.
-              
            IF Fax-PaNumber = 4
             IF LINE-CNT > 59
              IF PAGE-CNT = 1
@@ -1207,10 +1205,9 @@
               WRITE PRINT-REC FROM WF-CONTINUE-LINE
               MOVE " " TO PRINT-REC
               WRITE PRINT-REC BEFORE PAGE.
-              
-           IF Fax-PaNumber = 4
       * THIS NEXT SECTION FOR END OF ST-TRANS AND BEGINNING OF THE TOTAL
       * SECTION WHICH REQUIRES 20 LINES TO FINISH
+           IF Fax-PaNumber = 4
             IF LINE-CNT > 40
                ADD 1 TO PAGE-CNT
                MOVE PAGE-CNT TO WF-NEWF-PAGE
@@ -1221,8 +1218,10 @@
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
                  OPEN OUTPUT PRINT-FILE
+                 WRITE PRINT-REC
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT TO WS-HYLA-PAGE2
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
@@ -1232,18 +1231,14 @@
                  WRITE PRINT-REC
                  PERFORM WRFAX-003
              ELSE
-      *     IF Fax-PaNumber = 4
-      *      IF LINE-CNT > 50
-      *         ADD 1 TO PAGE-CNT
-      *         MOVE PAGE-CNT TO WF-NEWF-PAGE
-      *         WRITE PRINT-REC FROM WF-CONTINUE-LINE
-      *         MOVE " " TO PRINT-REC
              IF PAGE-CNT > 2
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
+                 WRITE PRINT-REC
                  WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
                  MOVE SPACES TO PRINT-REC
-                 WRITE PRINT-REC AFTER 2
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
                  MOVE PAGE-CNT TO WS-HYLA-PAGE2
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
@@ -1364,12 +1359,12 @@
               TO PRINT-REC
               WRITE PRINT-REC
               MOVE " " TO PRINT-REC.
-           WRITE PRINT-REC
+      *     WRITE PRINT-REC
            MOVE "QUOTE PREPARED BY:" TO WSS-SALES-DESC
            MOVE WS-SALESMAN          TO WSS-SALESMAN
            WRITE PRINT-REC FROM WS-SALESMAN-LINE
            MOVE " " TO PRINT-REC WS-SALESMAN-LINE
-           WRITE PRINT-REC.
+      *     WRITE PRINT-REC.
       *********************************************************
       * FAX-JOBNUMBER IS ONLY FOR EPS TYPE FAXES - CODE 1 & 2 *
       *********************************************************
@@ -1409,7 +1404,6 @@
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-QUOTE-FOR-PDF
-                 
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-QUOTE2-FOR-PDF
                  PERFORM SETUP-MERGE-QUOTE-FOR-PDF.
@@ -1984,6 +1978,10 @@
            DISPLAY
            " TO CHANGE QUOTE, OR ENTER QUOTE # & <F3> TO CHANGE " &
            "P/ORDER #." AT POS.
+           MOVE 3110 TO POS
+           DISPLAY "QUOTE ENQUIRES:BY ACC=QUOTEAC, BY STOCK=QUOTEST"
+            AT POS
+
             MOVE "ACCOUNTNO" TO F-FIELDNAME.
             MOVE 9 TO F-CBFIELDNAME.
             PERFORM USER-FILL-FIELD.
@@ -2071,6 +2069,9 @@
               
            PERFORM ERROR1-020
            PERFORM ERROR-020.
+           MOVE 3110 TO POS
+           DISPLAY WS-MESSAGE AT POS.
+
            IF F-EXIT-CH = X"19" OR = X"1F"
             IF F-NAMEFIELDRED1 NOT = "Q"
                 GO TO GET-010.
@@ -3360,11 +3361,10 @@
             PERFORM ERROR1-020
             PERFORM ERROR-020
             MOVE 2910 TO POS
-            MOVE " " TO WS-AUTO-FAX
             DISPLAY "Send By: F=Fax, E=Email, N=Neither :[ ]" AT POS
             ADD 37 TO POS.
 
-           MOVE ' '       TO CDA-DATA.
+           MOVE 'N'       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
            MOVE 26        TO CDA-ROW.
            MOVE 46        TO CDA-COL.
@@ -3409,11 +3409,11 @@
             DISPLAY WS-FAX-NUMBER AT POS.
 
            MOVE WS-FAX-NUMBER TO CDA-DATA.
-           MOVE 20        TO CDA-DATALEN.
-           MOVE 26        TO CDA-ROW.
-           MOVE 46        TO CDA-COL.
-           MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE 20            TO CDA-DATALEN.
+           MOVE 26            TO CDA-ROW.
+           MOVE 46            TO CDA-COL.
+           MOVE CDA-WHITE     TO CDA-COLOR.
+           MOVE 'F'           TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-FAX-NUMBER.
 
@@ -4900,9 +4900,9 @@
        RLZ-002.
            MOVE WS-QUOTATION TO WS-QUOTE-CHECK.
 
-           MOVE 1 TO SUB-1.
+           MOVE 1   TO SUB-1.
            MOVE "Q" TO AL-RATE (SUB-1).
-           MOVE 2 TO SUB-2.
+           MOVE 2   TO SUB-2.
       * NEW LINE BELOW TO NOT REMOVE LEADING ZEROS AS THIS LEADS TO 
       * QUOTE NUMBERS BELOW 100000 LOOKING LIKE Q67890 -03
            GO TO RLZ-005.
@@ -7632,6 +7632,9 @@
              EXIT.
       *-----------------------------------------------------------*
        Z1-HEADINGS SECTION.
+      *      SYMBOLS ARE: "´¶" = HEX B4B6      START OF RECORD
+      *                    "¶" = HEX B6        START OF LINE
+      *                    "³" = HEX B3          END OF LINE
       *-----------------------------------------------------------*
        Z1-50.
             MOVE ALL SPACES TO WS-FST-LINE WS-OTH-LINE-1.
@@ -7645,6 +7648,27 @@
             MOVE "CompLine"    TO WS-O-L
             MOVE WS-OTH-LINE-1 TO WS-DATA-F
             WRITE PRINT-REC FROM WS-FST-LINE AFTER 0.
+            
+            MOVE 3110 TO POS
+            DISPLAY "´¶" AT POS
+            MOVE 3115 TO POS
+            DISPLAY X"B4B6" AT POS
+            
+            ADD 5 TO POS
+            DISPLAY "³" AT POS
+            MOVE 3125 TO POS
+            DISPLAY X"B3" AT POS
+            ADD 5 TO POS
+
+            DISPLAY WS-DELIM-F AT POS
+            ADD 5 TO POS 
+            DISPLAY WS-DELIM-O AT POS
+            ADD 5 TO POS 
+            DISPLAY WS-DELIM-END1 AT POS
+            ADD 5 TO POS 
+            DISPLAY WS-DELIM-END2 AT POS
+            PERFORM ERROR-010
+            PERFORM ERROR-020.
        Z1-51.
             ADD 1              TO SUB-1
             IF SUB-1 > 10
