@@ -997,9 +997,9 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-PROF-TYPE.
-            IF WS-PROF-TYPE = "Q" OR = "P"
+            IF WS-PROF-TYPE = "Q" OR = "P" OR = "R"
                 GO TO GET-007.
-            MOVE "ENTER Q=QUOTE, P=P/SLIP, 'ESC' TO RE-ENTER."
+            MOVE "ENTER Q=QUOTE, P=P/SLIP, R=REPAIR, 'ESC' TO RE-ENTER."
              TO WS-MESSAGE
             PERFORM ERROR-MESSAGE
             GO TO GET-005.
@@ -2779,9 +2779,11 @@
        READ-REGISTER SECTION.
        RQP-000.
            IF WS-PROF-TYPE = "Q"
-               MOVE 8 TO INCR-TRANS
-           ELSE
+               MOVE 8 TO INCR-TRANS.
+           IF WS-PROF-TYPE = "P"
                MOVE 4 TO INCR-TRANS.
+           IF WS-PROF-TYPE = "R"
+               MOVE 3 TO INCR-TRANS.
            MOVE " " TO WS-BO-REDUCED-MESSAGE
                        WS-BO-FOUND.
            IF WS-ADD-TOGETHER NOT = "Y"
@@ -2826,11 +2828,14 @@
                PERFORM ERROR1-020
                MOVE 0 TO WS-INCR-ST1
                GO TO RQP-005.
-           IF WS-PROF-TYPE = "Q"
-            IF INCR-TRANS = 8
+           IF WS-PROF-TYPE = "R"
+            IF INCR-TRANS = 3
                GO TO RQP-100.
            IF WS-PROF-TYPE = "P"
             IF INCR-TRANS = 4
+               GO TO RQP-100.
+           IF WS-PROF-TYPE = "Q"
+            IF INCR-TRANS = 8
                GO TO RQP-100.
            GO TO RQP-002.
        RQP-050.
@@ -2859,11 +2864,14 @@
            IF INCR-INVOICE > WS-RANGE2
               MOVE "Y" TO WS-COMPLETE
               GO TO RQP-999.
-           IF WS-PROF-TYPE = "Q"
-            IF INCR-TRANS = 8
+           IF WS-PROF-TYPE = "R"
+            IF INCR-TRANS = 3
                GO TO RQP-100.
            IF WS-PROF-TYPE = "P"
             IF INCR-TRANS = 4
+               GO TO RQP-100.
+           IF WS-PROF-TYPE = "Q"
+            IF INCR-TRANS = 8
                GO TO RQP-100.
            GO TO RQP-055.
        RQP-100.
@@ -2923,12 +2931,16 @@
               GO TO RSTT-010.
               
            IF WS-INVCRED = "P"
-            IF WS-PROF-TYPE = "Q"
-             IF STTR-TYPE NOT = 8
+            IF WS-PROF-TYPE = "R"
+             IF STTR-TYPE NOT = 3
               GO TO RSTT-010.
            IF WS-INVCRED = "P"
             IF WS-PROF-TYPE = "P"
              IF STTR-TYPE NOT = 4
+              GO TO RSTT-010.
+           IF WS-INVCRED = "P"
+            IF WS-PROF-TYPE = "Q"
+             IF STTR-TYPE NOT = 8
               GO TO RSTT-010.
               
            PERFORM ERROR-020.

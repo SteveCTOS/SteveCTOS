@@ -3,7 +3,7 @@
              *   I=Invoice, C=C/Notes, P=Proforma Invoice,  : _   *            
              *    D=DocuBase or X=PDF Monthly Disk File           *            
              *                                                    *            
-             *            Proforma from Q=Quote, P=P/Slip   : _   *            
+             *   Proforma from Q=Quote, P=P/Slip, R=Repair  : _   *            
              *            Add Proforma's Into ONE Invoice   : _   *            
              *                                                    *            
              * Select Option   : _          Printer Option  : _   *            
