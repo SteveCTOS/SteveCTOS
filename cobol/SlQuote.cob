@@ -6789,13 +6789,13 @@
       ***************
       *BRANCH OFFICE*
       ***************
-           IF WSAN-CODE = "53"
+           IF WSAN-CODE = "53" OR = "57"
               PERFORM COMPUTE-SPECIAL-PRICES.
       ******************
       *ASSOCIATE OFFICE*
       ******************
-           IF WSAN-CODE = "57"
-              PERFORM COMPUTE-ASSOCIATE-PRICES.
+      *     IF WSAN-CODE = "57"
+      *        PERFORM COMPUTE-ASSOCIATE-PRICES.
        R-ST-999.
            EXIT.
       *
@@ -7648,27 +7648,6 @@
             MOVE "CompLine"    TO WS-O-L
             MOVE WS-OTH-LINE-1 TO WS-DATA-F
             WRITE PRINT-REC FROM WS-FST-LINE AFTER 0.
-            
-            MOVE 3110 TO POS
-            DISPLAY "´¶" AT POS
-            MOVE 3115 TO POS
-            DISPLAY X"B4B6" AT POS
-            
-            ADD 5 TO POS
-            DISPLAY "³" AT POS
-            MOVE 3125 TO POS
-            DISPLAY X"B3" AT POS
-            ADD 5 TO POS
-
-            DISPLAY WS-DELIM-F AT POS
-            ADD 5 TO POS 
-            DISPLAY WS-DELIM-O AT POS
-            ADD 5 TO POS 
-            DISPLAY WS-DELIM-END1 AT POS
-            ADD 5 TO POS 
-            DISPLAY WS-DELIM-END2 AT POS
-            PERFORM ERROR-010
-            PERFORM ERROR-020.
        Z1-51.
             ADD 1              TO SUB-1
             IF SUB-1 > 10

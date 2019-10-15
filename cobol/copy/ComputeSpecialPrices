@@ -62,16 +62,19 @@
       *
            IF WS-PERC > 85
               COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.10
-              GO TO CSP-010.
+              GO TO CSP-020.
            IF WS-PERC > 55
               COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.075
-              GO TO CSP-010.
+              GO TO CSP-020.
            IF WS-PERC > 25
               COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.05
-              GO TO CSP-010.
+              GO TO CSP-020.
            IF WS-PERC < 26
-              COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.025.
+              COMPUTE WS-NEWPRICE ROUNDED = ST-AVERAGECOST * 1.025
+              GO TO CSP-020.
        CSP-010.
+           
+       CSP-020.
            MOVE
            "THE MARGIN ON THIS ITEM IS        %, NORMAL PRICE IS R"
               TO WS-MESSAGE
