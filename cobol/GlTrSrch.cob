@@ -297,6 +297,16 @@
               MOVE GLTRANS-KEY TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
+              
+           MOVE GLTRANS-KEY TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE
+           MOVE GLTRANS-PERIOD TO WS-MESSAGE
+           PERFORM ERROR-000
+           MOVE GLTRANS-ACC-DATE TO WS-MESSAGE
+           PERFORM ERROR1-MESSAGE
+           
+           
+
               MOVE 0 TO WS-GLTRANS-ST1
               GO TO RALT-010.
            IF WS-RANGE1 = WS-RANGE2
