@@ -7459,29 +7459,6 @@
             MOVE "CompLine"    TO WS-O-L
             MOVE WS-OTH-LINE-1 TO WS-DATA-F
             WRITE PRINT-REC FROM WS-FST-LINE AFTER 0.
-            
-            
-            MOVE 3110 TO POS
-            DISPLAY X"B4B6" AT POS
-            ADD 8 TO POS
-            DISPLAY X"B4B6" AT POS
-            
-            ADD 8 TO POS
-            DISPLAY X"B3" AT POS
-            ADD 8 TO POS
-            DISPLAY X"B3" AT POS
-
-            ADD 10 TO POS
-            DISPLAY WS-DELIM-F AT POS
-            ADD 8 TO POS 
-            DISPLAY WS-DELIM-O AT POS
-            ADD 8 TO POS 
-            DISPLAY WS-DELIM-END1 AT POS
-            ADD 8 TO POS 
-            DISPLAY WS-DELIM-END2 AT POS
-            PERFORM ERROR-010
-            PERFORM ERROR-020.
-            
        Z1-51.
             ADD 1              TO SUB-1
             IF SUB-1 > 10
