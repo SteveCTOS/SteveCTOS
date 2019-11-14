@@ -50,6 +50,13 @@ set (copy_list
   GlMonthTemp
   GlDrParamDate.sh
   GlParamDate.Sub
+  MailGunApi.sh
+  MailGunMessage.html
+  MailGunCTJTemplate.html
+  MailGunCTJTemplate2.html
+  MailGunMessage.txt
+  MailGunTemplateApi.sh
+  MailGunTest.py
   MonthEnd.Sub01
   MonthEnd2.Sub01
   MonthEnd.Sub02
