@@ -57,6 +57,7 @@
        77  WS-FOUND             PIC X VALUE " ".
        77  WS-PDFFILE-OPENED    PIC X VALUE " ".
        77  WS-INVOICE           PIC 9(6) VALUE 0.
+       77  WS-INVOICE-PDF       PIC X(30) VALUE " ".
        77  WS-INVCRED           PIC X VALUE " ".
        77  WS-PROF-TYPE         PIC X VALUE " ".
        77  WS-ADD-TOGETHER      PIC X VALUE " ".
@@ -91,6 +92,8 @@
        77  PSW-SUB1             PIC S9(5)9.
        77  PSW-SUB2             PIC S9(5)9.
        77  WS-ACC-ERROR         PIC X VALUE " ".      
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".      
+       77  WS-TYPE-OF-PDF       PIC X(10) VALUE " ".      
        01  WS-EMAIL               PIC X(50).
        01  WS-TEMP-EMAIL-FILE     PIC X(50).
        01  WS-SPACE-CNT           PIC 9(2) VALUE ZEROES.
@@ -119,6 +122,13 @@
            03  FILLER           PIC X VALUE " ".
            03  WS-BO-DATE       PIC 99/99/9999.
            03  FILLER           PIC X(72) VALUE " ".
+       01  WS-SUBJECT.
+           03  WS-SUBJECT-LINE1        PIC X(15) VALUE " ".
+           03  WS-SUBJECT-LINE2        PIC Z(5)9.
+           03  WS-SUBJECT-LINE3        PIC X(7) VALUE " ".
+           03  WS-SUBJECT-LINE4        PIC X(40) VALUE " ".
+       01  WS-EMAIL-COMMENT.
+           03 WS-EMAIL-COMM1           PIC X(2500).
        01  BODY-FIELDS.
            03  BODY-LINE.
                05  B-STOCKNUMBER.
@@ -467,7 +477,8 @@
                GO TO CONT-032.
       *5=WRITE EMAIL RECORD
            IF WS-PRINT-NUM = 5
-               GO TO CONT-050.
+               GO TO CONT-036.
+      *         GO TO CONT-050.
                
            If Sub-1 < 11
              add 1 to Sub-1
@@ -797,6 +808,51 @@
        WOPDF-999.
             EXIT.
       *
+       WORK-OUT-PDF-EMAIL-NAME SECTION.
+       WOPDFEM-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       WOPDFEM-005.
+           MOVE "/ctools/spl" TO ALPHA-RATE.
+      *     MOVE WS-CO-NUMBER  TO DATA-RATE.
+           MOVE 12 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOPDFEM-010.
+      *     MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+      *     ADD 1 TO SUB-1 SUB-2.
+      *     IF SUB-1 < 100
+      *      IF DAT-RATE (SUB-2) NOT = " "
+      *         GO TO WOPDFEM-010.
+           MOVE "/" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+           IF INCR-TRANS = 1
+              MOVE "I" TO AL-RATE (SUB-1)
+           ELSE
+              MOVE "C" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+       WOPDFEM-020.
+      *     MOVE "IN WOPDFEM-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES     TO DATA-RATE.
+           MOVE WS-INVOICE TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOPDFEM-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOPDFEM-025.
+       WOPDFEM-030.
+           MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
+           
+           MOVE WS-PRINTER TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+
+      *     MOVE W-FILENAME TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       WOPDFEM-999.
+            EXIT.
+      *
        WORK-OUT-CSV-FILE-NAME SECTION.
        WOCSV-001.
            MOVE SPACES TO ALPHA-RATE DATA-RATE.
@@ -875,7 +931,7 @@
       * THIS SECTION TO TEST IF DOCU PRINT ("D") IS FINSHED
       * Y = COMPLETE AND E = ERROR INDATE SO FLAGGED COMPLETE
            IF WS-COMPLETE = "Y" OR = "E"
-            IF WS-INVCRED = "X"
+            IF WS-INVCRED = "X" OR = "5"
                CLOSE PRINT-FILE
                GO TO RD-999
             ELSE
@@ -898,10 +954,35 @@
 
            IF WS-PRINT-NUM NOT = 4 AND NOT = 5
               PERFORM PRINT.
+      *
            IF WS-PRINT-NUM = 4
               PERFORM LASER-PRINT-INVOICE.
+
+      *     IF WS-PRINT-NUM = 5
+      *        PERFORM EMAIL-PRINT-INVOICE.
+      * NEW SECTION TO EMAIL OUR OWN GENERATED PDF's
            IF WS-PRINT-NUM = 5
-              PERFORM EMAIL-PRINT-INVOICE.
+              PERFORM WORK-OUT-PDF-EMAIL-NAME
+              OPEN OUTPUT LASER-FILE
+              PERFORM ZL1-LASER-HEADINGS
+              PERFORM PDF-PRINT-INVOICE
+              MOVE INCR-INVOICE TO WS-INVOICE
+              CLOSE LASER-FILE
+
+            IF INCR-TRANS = 1
+              MOVE "YOUR INVOICE #" TO WS-SUBJECT-LINE1
+              MOVE WS-INVOICE       TO WS-SUBJECT-LINE2
+              MOVE " FROM:"         TO WS-SUBJECT-LINE3 
+              MOVE WS-CO-NAME       TO WS-SUBJECT-LINE4
+              MOVE "InvoicePDF"     TO WS-TYPE-OF-PDF
+              PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
+              PERFORM ADD-PDF-TO-INV
+              PERFORM SETUP-INVOICE-FOR-PDF-EMAIL
+              PERFORM SETUP-INVOICE-FOR-PDF-MGEMAIL
+              GO TO RD-010
+            ELSE
+              PERFORM SETUP-CREDIT-FOR-PDF-ONLY
+              GO TO RD-010.
 
            IF WS-PROG-TYPE = 3
                MOVE 1 TO WS-TYPE-OF-DOCUMENT.
@@ -910,6 +991,68 @@
            
            GO TO RD-010.
        RD-999.
+           EXIT.
+      *
+       ADD-PDF-TO-INV SECTION.
+       ADDPDFTI-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       ADDPDFTI-005.
+       * LAYOUT OF WS-PRINTER = "/ctools/spl/I123456"
+           MOVE WS-PRINTER TO DATA-RATE.
+           MOVE 1  TO SUB-1
+           MOVE 20 TO SUB-2.
+       ADDPDFTI-010.
+           MOVE "." TO DAT-RATE (SUB-2)
+           ADD 1 TO SUB-2.
+           MOVE "p" TO DAT-RATE (SUB-2)
+           ADD 1 TO SUB-2.
+           MOVE "d" TO DAT-RATE (SUB-2)
+           ADD 1 TO SUB-2.
+           MOVE "f" TO DAT-RATE (SUB-2)
+           ADD 1 TO SUB-2.
+       ADDPDFTI-030.
+           MOVE SPACES    TO WS-INVOICE-PDF
+           MOVE DATA-RATE TO WS-INVOICE-PDF.
+           
+           MOVE WS-PRINTER TO WS-MESSAGE
+           PERFORM ERROR1-000.
+
+           MOVE WS-INVOICE-PDF TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       ADDPDFTI-999.
+           EXIT.
+      *
+       TAKE-OUT-BLANKS-IN-CO-NAME SECTION.
+       TOBICN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       TOBICN-005.
+           MOVE WS-SUBJECT TO DATA-RATE.
+           MOVE 1 TO SUB-1
+           MOVE 1 TO SUB-2.
+           MOVE 0 TO SUB-3.
+           MOVE "'" TO AL-RATE (SUB-2).
+           MOVE 2 TO SUB-1.
+       TOBICN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+                MOVE 0 TO SUB-3
+               GO TO TOBICN-010
+            ELSE ADD 1 TO SUB-3.
+           IF SUB-3 = 1 
+              GO TO TOBICN-010.
+           MOVE "'" TO AL-RATE (SUB-1).
+       TOBICN-030.
+           MOVE SPACES       TO WS-SUBJECT-FIXED
+           MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
+           
+           MOVE WS-SUBJECT TO WS-MESSAGE
+           PERFORM ERROR1-000.
+
+           MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       TOBICN-999.
            EXIT.
       *
        WRITE-INDEX-KEY SECTION.
@@ -3087,7 +3230,7 @@
            MOVE INCR-INVOICE TO WS-TRANS-DISPLAY
            DISPLAY WS-TRANS-DISPLAY AT POS
            MOVE 3010 TO POS
-           DISPLAY 
+           DISPLAY
            "EMail :[                                                  ]"
               AT POS.
               MOVE 3018 TO POS
@@ -3384,8 +3527,11 @@
        Copy "CTOSCobolAccept".
        Copy "SetupInvoiceForPDF".
        Copy "SetupInvoiceForPDFOnly".
+       Copy "SetupInvoiceForPDFEMail".
+       Copy "SetupInvoiceForPDFMgEMail".
        Copy "SetupCreditForPDF".
        Copy "SetupCreditForPDFOnly".
+      *Copy "SetupCreditForPDFEmail".
        Copy "DeleteBlankEmailInvRecord".
        Copy "DeleteBlankEmailCrnRecord".
        Copy "MoveEmailRecordFromEimage".

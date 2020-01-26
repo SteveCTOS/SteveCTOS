@@ -177,6 +177,7 @@
        01  WS-pbFieldName        PIC X(12) VALUE "MailUserName".
        01  WS-cbFieldName        PIC 9(4) COMP VALUE 12.
        01  WS-USERNAME           PIC X(30) VALUE " ".
+       01  WS-USEREMAILADD       PIC X(50) VALUE " ".
        01  WS-pbValue            PIC X(30) VALUE " ".
       * 01  WS-sValueMax         PIC 9(4) COMP VALUE 30.
       * 01  WS-pcbValueRet       PIC 9(4) COMP-X.

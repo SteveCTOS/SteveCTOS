@@ -1,0 +1,55 @@
+      *
+       SETUP-INVOICE-FOR-PDF-MGEMAIL SECTION.
+       SUIFPMGEM-005.
+      *    ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+          ACCEPT WS-USEREMAILADD FROM ENVIRONMENT "USEREMAILADD".
+          
+          MOVE WS-USEREMAILADD TO WS-MESSAGE
+          PERFORM ERROR-MESSAGE.
+
+       SUIFPMGEM-010.
+      * FOR CTJ LEAVING MOST THINGS AS DEFAULT
+          MOVE CONCATENATE('python MailGunEmail.py ', 
+          ' ', '-f', ' ', WS-INVOICE-PDF,
+          ' ', '-T', ' ', TRIM(WS-EMAIL-NUMBER),
+          ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
+          ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
+          ' ', '-t', ' ', 'MGMessageCTJInv.html',
+          ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED))  
+               TO WS-COMMAND-LINE.
+      *        TRIM(WS-EMAIL-COMMENT)) TO WS-COMMAND-LINE.
+      
+          MOVE WS-COMMAND-LINE TO  WS-MESSAGE
+          PERFORM ERROR-MESSAGE.
+
+      *     DISPLAY WS-COMMAND-LINE  AT 2810
+      *     ACCEPT W-ENTER.
+          CALL "SYSTEM" USING WS-COMMAND-LINE.
+      *               RETURNING W-STATUS.
+      
+      *    MOVE W-STATUS TO  WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    DISPLAY W-STATUS  AT 2810.
+       SUIFPMGEM-999.
+           EXIT.
+      *     STOP RUN.
+      *         ' ', WS-API, ' ', WS-AUTH, ' ', WS-BCC, ' ', WS-FILE,
+      *         ' ', WS-FROM, ' ', WS-REPLY-TO, ' ', WS-SUBJECT,
+      *         ' ', WS-SUJECT, ' ', WS-TMPLATE, ' ', WS-TO,
+      *         ' ', WS-URL)
+
+      *('-A', '--API',      default='api')
+      *('-a', '--auth',     default=
+      *                         'key-14a564ed4dc9242de3b4f09b9fd72587')
+      *('-b', '--bcc',      default='pos@christensen.co.za')
+      *('-f', '--file',     default='Invoice.pdf')
+      *('-F', '--From',     default=
+      *                'CHRISTENSEN TOOLS LTD<sales@christensen.co.za>')
+      *('-r', '--reply_to', default='sales@christensen.co.za')
+      *('-s', '--subject',  default='Invoice 140931 ex Saftec JHB')
+      *('-t', '--template', default='MailGunMessage.html')
+      *('-T', '--To',       default=
+      *                 'sc@christensen.co.za; Steve@Christensen.co.za')
+      *('-u', '--url',      default=
+      *     'https://api.mailgun.net/v3/pos.christensen.co.za/messages')
+      *

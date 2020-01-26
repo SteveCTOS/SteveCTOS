@@ -56,7 +56,9 @@ set (copy_list
   MailGunCTJTemplate2.html
   MailGunMessage.txt
   MailGunTemplateApi.sh
-  MailGunTest.py
+  MailGunEmail.py
+  MailgunTest5.py
+  MGMessageCTJQuote.html
   MonthEnd.Sub01
   MonthEnd2.Sub01
   MonthEnd.Sub02
@@ -181,4 +183,5 @@ set (copy_list
 
 foreach (name ${copy_list})
   file (COPY ${name} DESTINATION /ctools/bin FILE_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ)
+#  attachment (COPY ${name} DESTINATION /ctools/bin attachment_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ)
 endforeach ()

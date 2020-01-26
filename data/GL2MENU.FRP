@@ -6,9 +6,9 @@
 *   *   * 3. Account Short Name Inq                                           *
 *   *   *                                  16. Period/Year End Program        *
 *   *   * 4. Account Entry/Edit - LYR                                         *
-*   *   * 5. Account Enquiry - LYR         17. Maintain Data Files            *
-*   *   * 6. Account Short Name Inq - LYR      (Ensure No Terminal Is Using   *
-*   *   *                                         General Ledger Files)       *
+*   *   * 5. Account Enquiry - LYR                                            *
+*   *   * 6. Account Short Name Inq - LYR                                     *
+*   *   *                                                                     *
 *   *   * 7. Journal Entry/Edit                                               *
 *   *   * 8. Batch Posting Of Journals                                        *
 *   *   *                                                                     *

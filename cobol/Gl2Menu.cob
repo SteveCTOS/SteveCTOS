@@ -56,9 +56,8 @@
                      AND NOT = " 7" AND NOT = " 8" AND NOT = " 9"
                      AND NOT = "10" AND NOT = "11" AND NOT = "12"
                      AND NOT = "13" AND NOT = "14" AND NOT = "15"
-                     AND NOT = "16" AND NOT = "17"
-                     AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 17, Re-Enter."
+                     AND NOT = "16" AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 16, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
