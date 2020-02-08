@@ -124,7 +124,7 @@
            03  FILLER           PIC X(72) VALUE " ".
        01  WS-SUBJECT.
            03  WS-SUBJECT-LINE1        PIC X(15) VALUE " ".
-           03  WS-SUBJECT-LINE2        PIC Z(5)9.
+           03  WS-SUBJECT-LINE2        PIC 9(6).
            03  WS-SUBJECT-LINE3        PIC X(7) VALUE " ".
            03  WS-SUBJECT-LINE4        PIC X(40) VALUE " ".
        01  WS-EMAIL-COMMENT.
@@ -981,7 +981,15 @@
               PERFORM SETUP-INVOICE-FOR-PDF-MGEMAIL
               GO TO RD-010
             ELSE
-              PERFORM SETUP-CREDIT-FOR-PDF-ONLY
+              MOVE "YOUR CR-NOTE #" TO WS-SUBJECT-LINE1
+              MOVE WS-INVOICE       TO WS-SUBJECT-LINE2
+              MOVE " FROM:"         TO WS-SUBJECT-LINE3 
+              MOVE WS-CO-NAME       TO WS-SUBJECT-LINE4
+              MOVE "C-NotesPDF"     TO WS-TYPE-OF-PDF
+              PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
+              PERFORM ADD-PDF-TO-INV
+              PERFORM SETUP-CREDIT-FOR-PDF-EMAIL
+              PERFORM SETUP-CREDIT-FOR-PDF-MGEMAIL
               GO TO RD-010.
 
            IF WS-PROG-TYPE = 3
@@ -996,8 +1004,12 @@
        ADD-PDF-TO-INV SECTION.
        ADDPDFTI-005.
            MOVE SPACES TO ALPHA-RATE DATA-RATE.
+
+           MOVE WS-PRINTER TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
        ADDPDFTI-005.
        * LAYOUT OF WS-PRINTER = "/ctools/spl/I123456"
+       * LAYOUT OF WS-PRINTER = "/ctools/spl/C123456"
            MOVE WS-PRINTER TO DATA-RATE.
            MOVE 1  TO SUB-1
            MOVE 20 TO SUB-2.
@@ -1039,7 +1051,8 @@
             IF DAT-RATE (SUB-2) NOT = " "
                 MOVE 0 TO SUB-3
                GO TO TOBICN-010
-            ELSE ADD 1 TO SUB-3.
+            ELSE 
+               ADD 1 TO SUB-3.
            IF SUB-3 = 1 
               GO TO TOBICN-010.
            MOVE "'" TO AL-RATE (SUB-1).
@@ -3254,7 +3267,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO EEA-005.
- 
+  
             PERFORM CHECK-EMAIL-FOR-VALIDITY.
             IF WS-ACC-ERROR = "Y"
                 GO TO EEA-005.
@@ -3531,7 +3544,8 @@
        Copy "SetupInvoiceForPDFMgEMail".
        Copy "SetupCreditForPDF".
        Copy "SetupCreditForPDFOnly".
-      *Copy "SetupCreditForPDFEmail".
+       Copy "SetupCreditForPDFEMail".
+       Copy "SetupCreditForPDFMgEMail".
        Copy "DeleteBlankEmailInvRecord".
        Copy "DeleteBlankEmailCrnRecord".
        Copy "MoveEmailRecordFromEimage".

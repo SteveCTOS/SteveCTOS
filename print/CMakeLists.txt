@@ -4,6 +4,7 @@ set (copy_list
   fohtotext.py
   PrintCredit
   PrintCreditPdfOnly
+  PrintCreditPdfEmail
   PrintDrOverdue1
   PrintDrOverdue2
   PrintInvoice

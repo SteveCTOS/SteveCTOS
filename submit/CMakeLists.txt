@@ -52,13 +52,19 @@ set (copy_list
   GlParamDate.Sub
   MailGunApi.sh
   MailGunMessage.html
-  MailGunCTJTemplate.html
-  MailGunCTJTemplate2.html
   MailGunMessage.txt
   MailGunTemplateApi.sh
   MailGunEmail.py
   MailgunTest5.py
+  MGMessageCTJCn.html
+  MGMessageCTNCn.html
+  MGMessageSFJCn.html
+  MGMessageCSCCn.html
   MGMessageCTJQuote.html
+  MGMessageCTJInv.html
+  MGMessageCTNInv.html
+  MGMessageSFJInv.html
+  MGMessageCSCInv.html
   MonthEnd.Sub01
   MonthEnd2.Sub01
   MonthEnd.Sub02
