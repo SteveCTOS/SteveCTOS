@@ -824,7 +824,7 @@
       *         GO TO WOPDFEM-010.
            MOVE "/" TO AL-RATE (SUB-1).
            ADD 1 TO SUB-1.
-           IF INCR-TRANS = 1
+           IF INCR-TRANS = 1 OR = 3 OR = 4 OR = 8
               MOVE "I" TO AL-RATE (SUB-1)
            ELSE
               MOVE "C" TO AL-RATE (SUB-1).
@@ -845,11 +845,9 @@
        WOPDFEM-030.
            MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
            
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-
-      *     MOVE W-FILENAME TO WS-MESSAGE
+      *     MOVE WS-PRINTER TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
+
        WOPDFEM-999.
             EXIT.
       *
@@ -969,7 +967,7 @@
               MOVE INCR-INVOICE TO WS-INVOICE
               CLOSE LASER-FILE
 
-            IF INCR-TRANS = 1
+            IF INCR-TRANS = 1 OR = 3 OR = 4 OR = 8
               MOVE "YOUR INVOICE #" TO WS-SUBJECT-LINE1
               MOVE WS-INVOICE       TO WS-SUBJECT-LINE2
               MOVE " FROM:"         TO WS-SUBJECT-LINE3 
@@ -1005,11 +1003,11 @@
        ADDPDFTI-005.
            MOVE SPACES TO ALPHA-RATE DATA-RATE.
 
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        ADDPDFTI-005.
-       * LAYOUT OF WS-PRINTER = "/ctools/spl/I123456"
-       * LAYOUT OF WS-PRINTER = "/ctools/spl/C123456"
+      * LAYOUT OF WS-PRINTER = "/ctools/spl/I123456"
+      * LAYOUT OF WS-PRINTER = "/ctools/spl/C123456"
            MOVE WS-PRINTER TO DATA-RATE.
            MOVE 1  TO SUB-1
            MOVE 20 TO SUB-2.
@@ -1026,11 +1024,11 @@
            MOVE SPACES    TO WS-INVOICE-PDF
            MOVE DATA-RATE TO WS-INVOICE-PDF.
            
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR1-000.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
 
-           MOVE WS-INVOICE-PDF TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE WS-INVOICE-PDF TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        ADDPDFTI-999.
            EXIT.
       *
@@ -1060,11 +1058,11 @@
            MOVE SPACES       TO WS-SUBJECT-FIXED
            MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
            
-           MOVE WS-SUBJECT TO WS-MESSAGE
-           PERFORM ERROR1-000.
+      *     MOVE WS-SUBJECT TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
 
-           MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        TOBICN-999.
            EXIT.
       *
@@ -1467,6 +1465,9 @@
 
            MOVE " "     TO LASER-REC
            MOVE "´¶"    TO PLCR-CHAR1
+           IF WS-INVCRED = "P"
+              MOVE "    PROFORMA INVOICE  " TO PL-TYPE
+              GO TO LP-PDF-011.
            IF INCR-TRANS = 1
               MOVE "      TAX INVOICE     " TO PL-TYPE
               GO TO LP-PDF-011.
@@ -1635,6 +1636,17 @@
            MOVE B-STOCKPRICE        TO PL-PRICE
            MOVE B-DISCOUNTPERITEM   TO PL-DISCOUNT
            MOVE B-NETT              TO PL-NETT.
+           
+           IF WS-INVCRED NOT = "P"  
+             GO TO LP-PDF-025.
+             
+           MOVE B-ORDERQTY        TO PL-ORDER
+                                     PL-SHIP
+           COMPUTE B-NETT = B-ORDERQTY *
+             (B-STOCKPRICE - (B-STOCKPRICE * B-DISCOUNTPERITEM / 100)).
+             
+           MOVE B-NETT  TO PL-NETT.
+           ADD  B-NETT  TO WS-SUBTOTAL.
        LP-PDF-025.
            MOVE SUB-1 TO PL-NO
            WRITE LASER-REC FROM LASER-PDET.
@@ -1687,6 +1699,19 @@
       **********************************************************
       *NEXT FEW LINES ADDED TO ADD IN THE ADD-ONS FOR PRINTING *
       **********************************************************
+           IF WS-INVCRED = "P"
+              ADD INCR-ADDFREIGHT TO WS-SUBTOTAL
+              ADD INCR-ADDLABOUR  TO WS-SUBTOTAL
+              ADD INCR-ADDPOST    TO WS-SUBTOTAL
+              ADD INCR-ADDMISC    TO WS-SUBTOTAL.
+           
+           IF WS-INVCRED = "P"
+            IF INCR-GSTNO NOT = "EXPORT"
+              COMPUTE WS-TAXAMT ROUNDED =
+                   WS-SUBTOTAL * PA-GST-PERCENT / 100
+            ELSE
+              MOVE 0 TO WS-TAXAMT.
+
            MOVE WS-TAXAMT        TO PL-ADD3
            WRITE LASER-REC     FROM LASERPL-ADDLINE.
 
@@ -1695,6 +1720,8 @@
            MOVE INCR-ADDPOST     TO PL-ADD1
            MOVE INCR-ADDMISC     TO PL-ADD2
            MOVE WS-SUBTOTAL      TO PL-ADD3.
+           IF WS-INVCRED = "P"
+              COMPUTE WS-INVOICETOTAL = WS-SUBTOTAL + WS-TAXAMT.
            MOVE "ZAR"            TO PL-CURRENCY.
            MOVE WS-INVOICETOTAL  TO PL-ADD4
            MOVE PL-ADD4          TO PDF-TOTAL.
@@ -1716,6 +1743,8 @@
               MOVE 8         TO STTR-TYPE.
            IF WS-PROF-TYPE = "P"
               MOVE 4         TO STTR-TYPE.
+           IF WS-PROF-TYPE = "R"
+              MOVE 3         TO STTR-TYPE.
        LP-005.
            MOVE INCR-INVOICE TO STTR-REFERENCE1.
            MOVE 1            TO STTR-TRANSACTION-NUMBER.
