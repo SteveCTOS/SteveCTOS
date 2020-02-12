@@ -11,7 +11,7 @@
             03  FILLER                        PIC X(01).
             03  PRICE-IMP-SP-NEW-DEALER-PRICE PIC X(14).
             03  FILLER                        PIC X(01).
-            03  PRICE-IMP-SP-DEALER-DISCOUNT  PIC 9(5).
+            03  PRICE-IMP-SP-DEALER-DISCOUNT  PIC X(5).
             03  FILLER                        PIC X(01).
             03  PRICE-IMP-SP-OLD-LIST-PRICE   PIC X(14).
             03  FILLER                        PIC X(01).

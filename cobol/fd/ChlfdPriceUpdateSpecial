@@ -6,7 +6,7 @@
             03  PRICE-SP-UNIT-OF-SALE     PIC X(4).
             03  PRICE-SP-TARIFF           PIC X(8).
             03  PRICE-SP-NEW-DEALER-PRICE PIC 9(6)V99.
-            03  PRICE-SP-PAGE-NUMBER      PIC 9(3).
+            03  PRICE-SP-PAGE-NUMBER      PIC X(3).
             03  FILLER                    PIC XX.
             03  PRICE-SP-OLD-LIST-PRICE   PIC 9(6)V99.
             03  PRICE-SP-NEW-LIST-PRICE   PIC 9(6)V99.

@@ -1294,6 +1294,36 @@
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
+           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT0"
+            IF WS-CAMS-AMOUNT < 0
+              PERFORM ADD-BANK-VAT
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Speedpoint Charges                          "
+                  TO WS-NARRATIVE 
+              PERFORM WRITE-CARDCHARGE-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT4"
+            IF WS-CAMS-AMOUNT < 0
+              PERFORM ADD-BANK-VAT
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Speedpoint Charges                          "
+                  TO WS-NARRATIVE 
+              PERFORM WRITE-CARDCHARGE-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT9"
+            IF WS-CAMS-AMOUNT < 0
+              PERFORM ADD-BANK-VAT
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Speedpoint Charges                          "
+                  TO WS-NARRATIVE 
+              PERFORM WRITE-CARDCHARGE-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
            IF WS-NAR-1-10 = "DINERSCLUB"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
@@ -1566,7 +1596,7 @@
       *    IF WS-NAR-1ST = "#"
              MOVE WS-CAMS-AMOUNT TO WS-BANK-GROSS-AMT
              COMPUTE WS-BANK-VAT-AMT ROUNDED
-              = (WS-BANK-GROSS-AMT * 14) / 114
+              = (WS-BANK-GROSS-AMT * 15) / 115
              COMPUTE WS-BANK-NETT-AMT
               = WS-BANK-GROSS-AMT - WS-BANK-VAT-AMT.
            
@@ -1590,7 +1620,7 @@
              MOVE WS-NAR-46-47   TO WS-FX-FNL (SUB-3)
              MOVE WS-CAMS-AMOUNT TO WS-FX-GROSS-AMT (SUB-3)
              COMPUTE WS-FX-VAT-AMT (SUB-3) ROUNDED
-              = (WS-FX-GROSS-AMT (SUB-3) * 14) / 114
+              = (WS-FX-GROSS-AMT (SUB-3) * 15) / 115
              COMPUTE WS-FX-NETT-AMT (SUB-3)
               = WS-FX-GROSS-AMT (SUB-3) - WS-FX-VAT-AMT (SUB-3)
              GO TO AFV-020.

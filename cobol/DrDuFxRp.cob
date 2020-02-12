@@ -1380,6 +1380,10 @@
            MOVE 13 TO LINE-CNT.
        PH-020.
            MOVE " " TO PRINT-REC HEAD2.
+           MOVE DR-ACC-EMAIL      TO PRINT-REC
+           WRITE PRINT-REC AFTER 1
+           MOVE " "               TO PRINT-REC
+           
            MOVE DR-ACCOUNT-NUMBER TO DEBT-ACCNO
            MOVE DR-NAME           TO DEBT-NAME
            MOVE DR-ACC-FAX        TO DEBT-FAX
