@@ -60,7 +60,10 @@ set (copy_list
   MGMessageCTNCn.html
   MGMessageSFJCn.html
   MGMessageCSCCn.html
-  MGMessageCTJQuote.html
+  MGMessageCTJQu.html
+  MGMessageCTNQu.html
+  MGMessageCSCQu.html
+  MGMessageSFJQu.html
   MGMessageCTJInv.html
   MGMessageCTNInv.html
   MGMessageSFJInv.html

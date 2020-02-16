@@ -17,10 +17,6 @@
             PAGE-CNT, ' ', WS-AUTO-FAX, ' ', WS-ANSWER, ' ',
                WS-FAX-NUMBER)
                 TO WS-COMMAND-LINE.
-      *    CONCATENATE('PrintQuote2 ', TRIM(WS-USERNAME), ' ',
-      *        WS-CO-NUMBER, ' ', TRIM(WS-PRINTER-SAVE), ' ',
-      *          TRIM(WS-PRINTER)) TO WS-COMMAND-LINE.
-      *          TO WS-COMMAND-LINE.
     
       *    MOVE "SETUP QUOTE2" TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE  

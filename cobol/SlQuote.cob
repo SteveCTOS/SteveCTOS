@@ -165,6 +165,7 @@
        77  WS-PRINTER-DOT       PIC X(100) VALUE " ".
        77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
        77  WS-PRINTER-FAX       PIC X(100) VALUE " ".
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".      
        77  WS-ACC-ERROR         PIC X VALUE " ".      
        77  WS-QUOTE-NAME        PIC X(25) VALUE " ".
        01  WS-EMAIL             PIC X(50).
@@ -416,6 +417,11 @@
        01 WS-HYLA-FROM-LINE2.
            03  FILLER             PIC X(7) VALUE " ".
            03  WS-HYLA-PAGE2      PIC Z9 VALUE " ".
+       01  WS-SUBJECT.
+           03  WS-SUBJECT-LINE1        PIC X(15) VALUE " ".
+           03  WS-SUBJECT-LINE2        PIC 9(6).
+           03  WS-SUBJECT-LINE3        PIC X(7) VALUE " ".
+           03  WS-SUBJECT-LINE4        PIC X(40) VALUE " ".
        01  HEAD1.
            03  H1-1                   PIC XX.
            03  HEAD1-D1               PIC X(19).
@@ -1012,8 +1018,20 @@
                
            IF Fax-PaNumber = 4
                MOVE WS-QUOTEREF TO WS-QUOTE-REFERENCE
+               
+      *         MOVE WS-QUOTEREF TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-QUOTE-REFERENCE TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
                PERFORM REMOVE-SPACES-IN-FAX-NAME
                MOVE WS-PRINTER TO WS-PRINTER-PAGE1.
+               
+      *         MOVE WS-PRINTER TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-PRINTER-PAGE1 TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE.
+               
            
            OPEN OUTPUT PRINT-FILE.
            IF Fax-PaNumber = 3
@@ -1407,6 +1425,14 @@
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-QUOTE2-FOR-PDF
                  PERFORM SETUP-MERGE-QUOTE-FOR-PDF.
+          IF WS-AUTO-FAX = "E"
+              MOVE "YOUR QUOTE # :" TO WS-SUBJECT-LINE1
+              MOVE WS-INVOICE       TO WS-SUBJECT-LINE2
+              MOVE " FROM:"         TO WS-SUBJECT-LINE3 
+              MOVE WS-CO-NAME       TO WS-SUBJECT-LINE4
+              PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
+              PERFORM MAKE-PDF-FINAL-FOR-EMAIL
+              PERFORM SETUP-QUOTE-FOR-PDF-MGEMAIL.
        WRFAX-999.
            EXIT.
       *
@@ -1414,6 +1440,7 @@
        FPTP-040.
            MOVE 1 TO SUB-45.
        FPTP-045.
+      * THIS IS TO FIND THE NAME OF THE ACTUAL PRINTER LIKE CTJ-MP201
            IF WS-PRINTERNAME (SUB-45) = " "
               MOVE 
            "NO PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
@@ -1459,6 +1486,74 @@
            MOVE DATA-RATE        TO WS-PRINTER-PAGE2.
            MOVE SPACES           TO ALPHA-RATE DATA-RATE.
        WOPFN-999.
+           EXIT.
+      *
+       MAKE-PDF-FINAL-FOR-EMAIL SECTION.
+       MFPFE-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       MFPFE-002.
+           MOVE "/ctools/fax/"   TO ALPHA-RATE
+           
+           MOVE WS-CO-NUMBER     TO DATA-RATE
+           MOVE DAT-RATE(1) TO AL-RATE(13)
+           MOVE DAT-RATE(2) TO AL-RATE(14)
+
+           MOVE 1 TO SUB-45
+           MOVE 1 TO SUB-46.
+       MFPFE-005.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO MFPFE-005.
+           MOVE "Q"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "u"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "o"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "t"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "e"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           IF PAGE-CNT = 1
+              GO TO MFPFE-007.
+           MOVE "F"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "i"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "n"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "a"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "l"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+       MFPFE-007.
+           MOVE SPACES TO ALPHA-RATE.
+           IF PAGE-CNT = 1
+              MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE
+           ELSE 
+              MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
+           MOVE 1 TO SUB-45.
+       MFPFE-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO MFPFE-010.
+           MOVE "."  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "p"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "d"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "f"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE DATA-RATE TO WS-PRINTER-PDF.
+
+      *     MOVE WS-PRINTER-PDF TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       MFPFE-999.
            EXIT.
       *
        WRITE-EMAIL-ROUTINE SECTION.
@@ -3507,14 +3602,16 @@
            MOVE 2610 TO POS.
            DISPLAY WS-MESSAGE AT POS.
            IF WS-AUTO-FAX  = "E"
-              GO TO FINAL-ENTRY-950.
+              GO TO FINAL-ENTRY-901.
+      *        GO TO FINAL-ENTRY-950.
            IF WS-AUTO-FAX  = "N"
             IF WS-ANSWER = "P"
               GO TO FINAL-ENTRY-901.
             IF WS-AUTO-FAX  = "F"
               PERFORM CHECK-FAX-NUMBER.
        FINAL-ENTRY-900.
-           IF WS-AUTO-FAX = "N" OR = "E"
+      *     IF WS-AUTO-FAX = "N" OR = "E"
+           IF WS-AUTO-FAX = "N"
               GO TO FINAL-ENTRY-950.
        FINAL-ENTRY-901.
       **********************************
@@ -3540,7 +3637,7 @@
       *******************************************
            MOVE 3010 TO POS.
           IF Fax-PaNumber = 4
-           IF WS-ANSWER NOT = "W"
+           IF WS-ANSWER NOT = "W" AND NOT = "E"
               DISPLAY "SENDING QUOTE BY HylaFax......         " AT POS.
            IF Fax-PaNumber = 4
               PERFORM ERROR1-020
@@ -3548,6 +3645,12 @@
               DISPLAY "GETTING HYLAFAX DETAILS...." AT POS
               PERFORM ENTER-XQS-DETAILS
               PERFORM ERROR1-020
+              MOVE 2910 TO POS
+              DISPLAY "PERFORMING WRITE-ROUTINE..." AT POS
+              PERFORM WRITE-FAX-ROUTINE
+              PERFORM ERROR1-020
+              GO TO FINAL-ENTRY-950.
+           IF WS-ANSWER  = "E"
               MOVE 2910 TO POS
               DISPLAY "PERFORMING WRITE-ROUTINE..." AT POS
               PERFORM WRITE-FAX-ROUTINE
@@ -3613,6 +3716,9 @@
       *********************************************
            IF WS-AUTO-FAX NOT = "E" 
                GO TO GET-999.
+      * NEW EMAIL INSTRUCTION
+           IF WS-AUTO-FAX = "E" 
+               GO TO GET-999.
                
            PERFORM GET-EMAIL-QUOTE-NAME.
            MOVE Spaces              TO WS-PRINTER.
@@ -3632,6 +3738,40 @@
            PERFORM MOVE-EMAIL-RECORD-FROM-EIMAGE.
        GET-999.
             EXIT.
+      *
+       TAKE-OUT-BLANKS-IN-CO-NAME SECTION.
+       TOBICN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       TOBICN-005.
+           MOVE WS-SUBJECT TO DATA-RATE.
+           MOVE 1 TO SUB-1
+           MOVE 1 TO SUB-2.
+           MOVE 0 TO SUB-3.
+           MOVE "'" TO AL-RATE (SUB-2).
+           MOVE 2 TO SUB-1.
+       TOBICN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+                MOVE 0 TO SUB-3
+               GO TO TOBICN-010
+            ELSE 
+               ADD 1 TO SUB-3.
+           IF SUB-3 = 1 
+              GO TO TOBICN-010.
+           MOVE "'" TO AL-RATE (SUB-1).
+       TOBICN-030.
+           MOVE SPACES       TO WS-SUBJECT-FIXED
+           MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
+           
+      *     MOVE WS-SUBJECT TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
+
+      *     MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       TOBICN-999.
+           EXIT.
       *
        CALC-POS-OF-CURSOR SECTION.
        CPOC-005.
@@ -7903,6 +8043,7 @@
        Copy "SetupQuoteForPDF".
        Copy "SetupQuote2ForPDF".
        Copy "SetupMergeQuoteForPDF".
+       Copy "SetupQuoteForPDFMgEmail".
        Copy "MoveEmailRecordFromEimage".
        Copy "CheckEmailForValidity".
        Copy "ZoomBox".
