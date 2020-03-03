@@ -979,6 +979,25 @@
            WRITE PRINT-REC FROM WS-SALESMAN-LINE
            MOVE " " TO PRINT-REC WS-SALESMAN-LINE
            WRITE PRINT-REC.
+           IF WS-CO-NUMBER = 1
+              MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:50340729290 CODE:250205"
+                TO PRINT-REC.
+           IF WS-CO-NUMBER = 3
+             MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:50340031497 CODE:250205"
+                TO PRINT-REC.
+           IF WS-CO-NUMBER = 7
+             MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:62027369059 CODE:250205"
+                TO PRINT-REC.
+           IF WS-CO-NUMBER = 8
+             MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:62027369629 CODE:250205"
+                TO PRINT-REC.
+           WRITE PRINT-REC.
+           MOVE " " TO PRINT-REC
+      *     WRITE PRINT-REC.
            ADD  1 TO COPY-CNT
            MOVE 0 TO WS-PRICETOTAL.
            IF WS-ANSWER = "1" OR = "N" OR = "W"
@@ -1382,6 +1401,25 @@
            MOVE WS-SALESMAN          TO WSS-SALESMAN
            WRITE PRINT-REC FROM WS-SALESMAN-LINE
            MOVE " " TO PRINT-REC WS-SALESMAN-LINE
+           WRITE PRINT-REC.
+           IF WS-CO-NUMBER = 1
+              MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:50340729290 CODE:250205"
+                TO PRINT-REC.
+           IF WS-CO-NUMBER = 3
+             MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:50340031497 CODE:250205"
+                TO PRINT-REC.
+           IF WS-CO-NUMBER = 7
+             MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:62027369059 CODE:250205"
+                TO PRINT-REC.
+           IF WS-CO-NUMBER = 8
+             MOVE 
+              "Banking: FNB CARLTON CENTRE ACC:62027369629 CODE:250205"
+                TO PRINT-REC.
+           WRITE PRINT-REC.
+           MOVE " " TO PRINT-REC
       *     WRITE PRINT-REC.
       *********************************************************
       * FAX-JOBNUMBER IS ONLY FOR EPS TYPE FAXES - CODE 1 & 2 *

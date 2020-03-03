@@ -18,7 +18,7 @@ set (copy_list
   Branch03.Sub
   Branch03.sh
   Branch07.Sub
-  Branch07.sh
+  Branch07.sh 
   Branch08.Sub
   Branch08.sh
   DDCreateImage.sh

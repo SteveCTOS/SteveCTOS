@@ -23,7 +23,7 @@
        77  WS-YEAR-BU         PIC S9(8)V99 VALUE 0.
        77  WS-MARGIN          PIC S9(8)V99 VALUE 0.
        77  WS-TOTALADJ        PIC S9(8)V99 VALUE 0.
-       77  WS-TOTAL-GROSS      PIC S9(8)V99 VALUE 0.
+       77  WS-TOTAL-GROSS     PIC S9(8)V99 VALUE 0.
        77  WS-DISC-PERC       PIC S9(2)V99 VALUE 0.
        77  WS-DISC-AMT        PIC S9(8)V99 VALUE 0.
        77  WS-TOTAL-NETT      PIC S9(8)V99 VALUE 0.
@@ -312,13 +312,14 @@
                MOVE 
            "THE AMOUNT ENTERED IS NOT = THE REMITTANCE AMT GENERATED."
                TO WS-MESSAGE
-               PERFORM ERROR-000
-            ELSE
-               PERFORM ERROR-020.
+               PERFORM ERROR-MESSAGE.
+      *      ELSE
+      *         PERFORM ERROR-020.
             
       *      GO TO GET-001.
        GET-999.
             EXIT.
+      *
        FILL-DATA SECTION.
        FILL-001.
             IF WS-END = "Y"
