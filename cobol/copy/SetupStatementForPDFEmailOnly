@@ -1,6 +1,6 @@
       *
-       SETUP-STATEMENT-FOR-PDF-ONLY SECTION.
-       SUSFPONLY-005.
+       SETUP-STATE-FOR-PDF-EMAIL-ONLY SECTION.
+       SUSFPEONLY-005.
       *    ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
           
       *    MOVE WS-USERNAME TO WS-MESSAGE
@@ -8,9 +8,10 @@
           
       *    MOVE W-FILENAME TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
-       SUSFPONLY-010.
+       SUSFPEONLY-010.
           MOVE 
-          CONCATENATE('PrintStatementPdfOnly ', DR-ACCOUNT-NUMBER, ' ',
+          CONCATENATE('PrintStatementPdfEmailOnly ', 
+            DR-ACCOUNT-NUMBER, ' ',
               WS-CO-NUMBER) TO WS-COMMAND-LINE.
       *          TO WS-COMMAND-LINE.
       
@@ -23,7 +24,7 @@
       *    MOVE W-STATUS TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
       *    DISPLAY W-STATUS  AT 2810.
-       SUSFPONLY-999.
+       SUSFPEONLY-999.
            EXIT.
       *     STOP RUN.
 

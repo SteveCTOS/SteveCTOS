@@ -68,6 +68,10 @@ set (copy_list
   MGMessageCTNInv.html
   MGMessageSFJInv.html
   MGMessageCSCInv.html
+  MGMessageCTJStat.html
+  MGMessageCTNStat.html
+  MGMessageSFJStat.html
+  MGMessageCSCStat.html
   MonthEnd.Sub01
   MonthEnd2.Sub01
   MonthEnd.Sub02

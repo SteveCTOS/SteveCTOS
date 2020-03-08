@@ -65,6 +65,8 @@
        77  WS-TERM-SUB          PIC 9 VALUE 0.    
        77  WS-TERMOFSALE        PIC X(11) VALUE " ".
        77  WS-EMAIL-NUMBER      PIC X(50) VALUE " ".
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
        88  WS-LAST-DAY          VALUES ARE "01" THRU "31".
        01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  W-CRTSTATUS          PIC 9(4) value 0.
@@ -103,6 +105,11 @@
            03  WS-LP-YY         PIC 9999.
            03  WS-LP-MM         PIC 99.
            03  WS-LP-DD         PIC 99.
+       01  WS-SUBJECT.
+           03  WS-SUBJECT-LINE1        PIC X(15) VALUE " ".
+           03  WS-SUBJECT-LINE2        PIC 9(7).
+           03  WS-SUBJECT-LINE3        PIC X(7) VALUE " ".
+           03  WS-SUBJECT-LINE4        PIC X(40) VALUE " ".
        01  PDFLIST-LINE.
            03  PDF-GROUP-NUMBER PIC XX.
            03  FILLER           PIC X VALUE ",".
@@ -344,13 +351,13 @@
                MOVE "/ctools/spl/DrEMailCo" To Alpha-Rate.
            IF WS-PRINTER-TYPE = "4"
                MOVE "/ctools/spl/DrNoMalCo" To Alpha-Rate.
-           IF WS-PRINTER-TYPE = "5"
-               PERFORM ADD-USERNAME-TO-FILE
-               MOVE ALPHA-RATE         TO WS-ESTATEMENT
-               PERFORM GET-EMAIL-STATEMENT-NAME
-               MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME
-               GO TO CONT-030.
-           IF WS-PRINTER-TYPE = "6"
+      *     IF WS-PRINTER-TYPE = "5"
+      *         PERFORM ADD-USERNAME-TO-FILE
+      *         MOVE ALPHA-RATE         TO WS-ESTATEMENT
+      *         PERFORM GET-EMAIL-STATEMENT-NAME
+      *         MOVE WS-TEMP-EMAIL-FILE TO WS-PRINTER W-FILENAME
+      *         GO TO CONT-030.
+           IF WS-PRINTER-TYPE = "5" OR = "6"
                GO TO CONT-035.
                
       *NEXT LINE USED TO CHECK THE VALUE OF SUB-1 WHICH IS THE NAME
@@ -381,6 +388,12 @@
                PERFORM ERROR1-020
                GO TO CONT-030.
        CONT-035.
+           IF WS-PRINTER-TYPE = "5"
+              PERFORM PRINT-PDF-ONLY
+              CLOSE DEBTOR-MASTER
+                    DEBTOR-TRANS-FILE
+              GO TO CONT-950.
+
            IF WS-PRINTER-TYPE = "6"
               PERFORM PRINT-PDF-ONLY
               CLOSE DEBTOR-MASTER
@@ -654,6 +667,70 @@
        WOPDF-030.
            MOVE ALPHA-RATE    TO WS-PRINTER W-FILENAME.
        WOPDF-999.
+            EXIT.
+      *
+       MAKE-PDF-FINAL-FOR-EMAIL SECTION.
+       MFPFE-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       MFPFE-002.
+           MOVE WS-PRINTER       TO DATA-RATE
+           MOVE 23 TO SUB-46.
+       MFPFE-010.
+           MOVE "."  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "p"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "d"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE "f"  TO DAT-RATE (SUB-46)
+                ADD 1 TO SUB-46.
+           MOVE DATA-RATE TO WS-PRINTER-PDF.
+
+           MOVE WS-PRINTER-PDF TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       MFPFE-999.
+           EXIT.
+      *
+       WORK-OUT-EMAIL-PDF-FILE-NAME SECTION.
+       WOEPDF-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       WOEPDF-005.
+           MOVE "/ctools/fax/" TO ALPHA-RATE.
+           MOVE WS-CO-NUMBER  TO DATA-RATE.
+           MOVE 13 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOEPDF-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOEPDF-010.
+      *     MOVE "/" TO AL-RATE (SUB-1).
+      *     ADD 1 TO SUB-1.
+           MOVE "S" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+       WOEPDF-020.
+      *     MOVE "IN WOEPDF-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES     TO DATA-RATE.
+           MOVE DR-ACCOUNT-NUMBER TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOEPDF-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOEPDF-025.
+       WOEPDF-030.
+           MOVE ALPHA-RATE    TO WS-PRINTER W-FILENAME.
+       
+           MOVE WS-PRINTER TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       
+       WOEPDF-999.
             EXIT.
       *
        WRITE-INDEX-KEY SECTION.
@@ -1174,6 +1251,7 @@
            EXIT.
       *
        PRINT-LASER-STATEMENT SECTION.
+      * THIS SECTION USED TO PRINT STATEMENTS ON LASER PRINTER
        PRL-000.
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
            MOVE 0             TO DRTR-DATE.
@@ -1497,6 +1575,9 @@
        PR-PDF-000.
       * THIS SECTION USED FOR PRINTING .PDF FILES FOR EXPORT TO 
       * DOCUMENT WAREHOUSE TO REPLACE THE OLD STYLE COLD DOC'S
+      *
+      *ADDED THE EMAILING OF MAILGUN STATEMENTS TO THIS SECTION BUT
+      *CHANGED THE LOCATON TO /ctools/fax/ FOR EMAIL STATEMENTS.
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER
            MOVE 0             TO DRTR-DATE.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
@@ -1543,7 +1624,6 @@
            IF DRTR-ACCOUNT-NUMBER > WS-ACCNOEND
               MOVE 10 TO WS-DRTRANS-ST1
               MOVE " " TO PRINT-REC
-              PERFORM PR-PDF-050
               GO TO PR-PDF-999.
             MOVE DRTR-ACCOUNT-NUMBER TO DR-ACCOUNT-NUMBER.
             
@@ -1635,6 +1715,15 @@
       *NEXT LINE BEGIN CHAR = HEXB6=¶       *
       *                                     *
       ***************************************
+           IF WS-PRINTER-TYPE = "5"
+            IF DR-ACC-EMAIL = " "
+             IF WS-MONTH-END = "N" 
+               PERFORM ENTER-EMAIL-ADDRESS
+               MOVE WS-EMAIL-NUMBER TO DR-ACC-EMAIL
+             ELSE
+                PERFORM READ-UNTIL-ACC-CHANGES
+                GO TO PR-PDF-005.
+
             MOVE "´¶"         TO WS-DELIM-F.
             MOVE " "          TO PL1-NAME
             MOVE PA-PHONE     TO PL1-TEL
@@ -1789,27 +1878,75 @@
             MOVE 0 TO WS-BF-BAL.
             
             PERFORM PR-PDF-050.
-            
+     
             IF WS-DRTRANS-ST1 NOT = 10
                 GO TO PR-PDF-005
             ELSE
                 GO TO PR-PDF-999.
        PR-PDF-045.
-            PERFORM WORK-OUT-PDF-FILE-NAME.
+            IF WS-PRINTER-TYPE = "5"
+                 PERFORM WORK-OUT-EMAIL-PDF-FILE-NAME
+            ELSE
+                 PERFORM WORK-OUT-PDF-FILE-NAME.
             OPEN OUTPUT PRINT-FILE.
             PERFORM Z1-HEADINGS.
        PR-PDF-050.
             CLOSE PRINT-FILE.
-            PERFORM WRITE-INDEX-KEY.
-            PERFORM SETUP-STATEMENT-FOR-PDF-ONLY. 
+            IF WS-PRINTER-TYPE = "5"
+                MOVE "YOUR STATEMENT"  TO WS-SUBJECT-LINE1
+                MOVE DR-ACCOUNT-NUMBER TO WS-SUBJECT-LINE2
+                MOVE " FROM:"          TO WS-SUBJECT-LINE3 
+                MOVE WS-CO-NAME        TO WS-SUBJECT-LINE4
+                PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
+                PERFORM MAKE-PDF-FINAL-FOR-EMAIL
+                PERFORM SETUP-STATE-FOR-PDF-EMAIL-ONLY
+                PERFORM SETUP-STATEMENT-FOR-PDF-MGEMAIL. 
+            IF WS-PRINTER-TYPE = "6"
+                PERFORM WRITE-INDEX-KEY
+                PERFORM SETUP-STATEMENT-FOR-PDF-ONLY. 
        PR-PDF-999.
             EXIT.
+      *
+       TAKE-OUT-BLANKS-IN-CO-NAME SECTION.
+       TOBICN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       TOBICN-005.
+           MOVE WS-SUBJECT TO DATA-RATE.
+           MOVE 1 TO SUB-1
+           MOVE 1 TO SUB-2.
+           MOVE 0 TO SUB-3.
+           MOVE "'" TO AL-RATE (SUB-2).
+           MOVE 2 TO SUB-1.
+       TOBICN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+                MOVE 0 TO SUB-3
+               GO TO TOBICN-010
+            ELSE 
+               ADD 1 TO SUB-3.
+           IF SUB-3 = 1 
+              GO TO TOBICN-010.
+           MOVE "'" TO AL-RATE (SUB-1).
+       TOBICN-030.
+           MOVE SPACES       TO WS-SUBJECT-FIXED
+           MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
+           
+      *     MOVE WS-SUBJECT TO WS-MESSAGE
+      *     PERFORM ERROR1-000.
+
+      *     MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       TOBICN-999.
+           EXIT.
       *
        PRINT-LASER-TRAILING SECTION.
        PTL-000.
            MOVE " " TO PRINT-REC.
            IF L-CNT < 24
-            IF WS-PRINTER-TYPE = "3" OR = "5"
+      *      IF WS-PRINTER-TYPE = "3" OR = "5"
+            IF WS-PRINTER-TYPE = "3"
                MOVE "³"     TO PLBF-END-CHAR.
        PTL-005.
            IF L-CNT < 24
@@ -1821,7 +1958,8 @@
            MOVE " "                      TO PRINT-REC
            MOVE DR-TERMS-CODE            TO WS-TERM-SUB
            MOVE WS-ST-TERM (WS-TERM-SUB) TO WS-TERMOFSALE.
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                 MOVE "³"                 TO PL6-END-CHAR.
            MOVE "¶"                      TO PL6-CHAR
            MOVE WS-TERMOFSALE            TO PL6-TERMS
@@ -1834,7 +1972,8 @@
            ADD 1 TO L-CNT.
            
            MOVE " "                      TO PRINT-REC LASER-PLINE7
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                  MOVE "³"                TO PL7-END-CHAR.
            MOVE "¶"                      TO PL7-CHAR
       *     MOVE WS-WORKTOTAL            TO PL7-AMOUNT-TO-PAY
@@ -1848,7 +1987,8 @@
            
            MOVE " " TO PRINT-REC
            
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                  MOVE "³"                TO PL7-END-CHAR.
            MOVE "¶"                      TO PL7-CHAR
            MOVE DR-ACCOUNT-NUMBER        TO PL7-ACCOUNT
@@ -1857,7 +1997,8 @@
            WRITE PRINT-REC FROM LASER-PLINE7 AFTER 1.
            ADD 1 TO L-CNT.
             
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                   MOVE "³"   TO PL4-END-CHAR.
            MOVE "¶"          TO PL4-CHAR
            MOVE PA-NAME      TO PL4-NAME
@@ -1869,7 +2010,8 @@
            ADD 1 TO L-CNT.
             
            MOVE " "               TO LASER-PLINE4
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                 MOVE "³"          TO PL4-END-CHAR.
            MOVE "¶"               TO PL4-CHAR
            MOVE PA-ADD2           TO PL4-NAME
@@ -1878,7 +2020,8 @@
            ADD 1 TO L-CNT.
             
            MOVE " "               TO LASER-PLINE4
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                MOVE "³"           TO PL4-END-CHAR.
            MOVE "¶"               TO PL4-CHAR
            MOVE PA-ADD3           TO PL4-NAME
@@ -1886,7 +2029,8 @@
            ADD 1 TO L-CNT.
             
            MOVE " "               TO LASER-PLINE4
-           IF WS-PRINTER-TYPE = "3" OR = "5"
+      *     IF WS-PRINTER-TYPE = "3" OR = "5"
+           IF WS-PRINTER-TYPE = "3"
                   MOVE "³"        TO PL4-END-CHAR.
            MOVE "¶"               TO PL4-CHAR
            MOVE PA-CODE           TO PL4-NAME
@@ -2134,10 +2278,10 @@
        Z1-50.
             MOVE "´¶"  TO WS-DELIM-F.
             MOVE "¶"   TO WS-DELIM-O
-            IF WS-PRINTER-TYPE = "3" OR = "5"
+            IF WS-PRINTER-TYPE = "3"
               MOVE "³" TO WS-DELIM-END1
                           WS-DELIM-END2.
-            
+
             MOVE 1             TO SUB-1
             MOVE SUB-1         TO WS-O-LINE
             MOVE "SuppLine"    TO WS-O-L
@@ -2145,11 +2289,11 @@
             WRITE PRINT-REC FROM WS-FST-LINE AFTER 0.
        Z1-51.
             ADD 1              TO SUB-1
-            IF WS-PRINTER-TYPE = "3" OR = "5"
+            IF WS-PRINTER-TYPE = "3"
              IF SUB-1 > 7
                MOVE 0 TO SUB-1
                GO TO Z1-52.
-            IF WS-PRINTER-TYPE NOT = "3" AND NOT = "5"
+            IF WS-PRINTER-TYPE NOT = "3"
              IF SUB-1 > 6
                MOVE 0 TO SUB-1
                GO TO Z1-52.
@@ -2320,6 +2464,8 @@
        Copy "SetupStatementForPDF".
        Copy "SetupStatementForPDFOnly".
        Copy "SetupStatementNoMailForPDF".
+       Copy "SetupStatementForPDFEmailOnly".
+       Copy "SetupStatementForPDFMgEmail".
        Copy "DeleteBlankEmailStateRecord".
        Copy "MoveEmailRecordFromEimage".
       ******************

@@ -20,6 +20,7 @@ set (copy_list
   PrintStatement
   PrintStatementNoMail
   PrintStatementPdfOnly
+  PrintStatementPdfEmailOnly
 #  creditnote01
 #  invoice01
 #  statement01
