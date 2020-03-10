@@ -13,7 +13,7 @@ if [ "$4" = "01" ] && [ "$5" = "Y" ]
      echo fax-1 queued now .....
  fi
 
-rm *DrOverdue.temp*
+rm /ctools/fax/*DrOverdue.temp*
 
 
 #lp -d $2 $3
