@@ -686,10 +686,10 @@
                 ADD 1 TO SUB-46.
            MOVE DATA-RATE TO WS-PRINTER-PDF.
 
-           MOVE WS-PRINTER-PDF TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *   MOVE WS-PRINTER-PDF TO WS-MESSAGE
+      *   PERFORM ERROR-MESSAGE.
 
-           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+           MOVE SPACES    TO ALPHA-RATE DATA-RATE.
        MFPFE-999.
            EXIT.
       *
@@ -727,8 +727,8 @@
        WOEPDF-030.
            MOVE ALPHA-RATE    TO WS-PRINTER W-FILENAME.
        
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        
        WOEPDF-999.
             EXIT.
