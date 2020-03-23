@@ -613,7 +613,13 @@
                MOVE GL-BEGDATE (WS-PER) TO CBTRANS-DATE.
            START CBTRANS-FILE KEY NOT < CBTRANS-ALT-KEY
                INVALID KEY NEXT SENTENCE.
-           IF WS-CBTRANS-ST1 = 23 OR 35 OR 49
+           IF WS-CBTRANS-ST1 NOT = 0
+            MOVE "CBTRANS BAD START, RDALL-010 'ESC' TO exit."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
                GO TO RDALL-900.
        RDALL-010.
            READ CBTRANS-FILE NEXT
@@ -621,16 +627,17 @@
            IF WS-CBTRANS-ST1 = 10
                GO TO RDALL-900.
            IF WS-CBTRANS-ST1 NOT = 0
-            MOVE "CBTRANS BUSY ON READ-NEXT, RDALL-020 'ESC' TO RETRY."
+            MOVE "CBTRANS BUSY ON READ-NEXT, RDALL-010 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
-              PERFORM ERROR1-MESSAGE
+              PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CBTRANS-ST1
               GO TO RDALL-010.
            IF CBTRANS-CBMASTER NOT = CB-NUMBER
                GO TO RDALL-900.
+               
            IF CBTRANS-FUTURE = "F"
                GO TO RDALL-010.
            IF WS-PER NOT = 0
@@ -1276,7 +1283,7 @@
               PERFORM ERROR1-MESSAGE
               PERFORM ERROR1-020
               MOVE 0 TO WS-CBTRANS-ST1
-              CLOSE CBTRANS-FILE
+      *        CLOSE CBTRANS-FILE
               GO TO OPEN-006.
        OPEN-007.
            PERFORM READ-PARAMETER
