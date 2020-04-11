@@ -53,8 +53,8 @@
        77  WS-STILL-ON-ORDER    PIC X VALUE "Y".
        77  WS-SUPPLIER          PIC 9(7) VALUE 0.
        77  WS-SUPPLIER-ACCEPT   PIC X(7) VALUE " ".
-       77  WS-SUPPLIER-AMOUNT   PIC 9(6)V99 VALUE 0.
-       77  WS-VAT-AMT           PIC 9(6)V99 VALUE 0.
+       77  WS-SUPPLIER-AMOUNT   PIC 9(7)V99 VALUE 0.
+       77  WS-VAT-AMT           PIC 9(7)V99 VALUE 0.
        77  WS-COPIES            PIC 9 VALUE 0.
        77  WS-SLIP-COPIES       PIC 9 VALUE 0.
        77  WS-COPIES-ACCEPT     PIC X VALUE " ".
@@ -70,6 +70,8 @@
        77  WS-COMM-MESSAGE      PIC X(60) VALUE " ".
        77  WS-PRINTER-PAGE1     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE2     PIC X(100) VALUE " ".
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
        77  WS-PRINTING-TYPE     PIC X VALUE " ".
        77  WS-ACC-ERROR         PIC X VALUE " ".      
        01  WS-EMAIL             PIC X(50).
@@ -107,6 +109,11 @@
            03  WS-DAILY-2ND         PIC X(20) VALUE " ".
            03  WS-DAILY-3RD         PIC X(20) VALUE " ".
            03  WS-DAILY-4TH         PIC X(20) VALUE " ".
+       01  WS-SUBJECT.
+           03  WS-SUBJECT-LINE1        PIC X(15) VALUE " ".
+           03  WS-SUBJECT-LINE2        PIC X(18).
+           03  WS-SUBJECT-LINE3        PIC X(7) VALUE " ".
+           03  WS-SUBJECT-LINE4        PIC X(40) VALUE " ".
        01  BODY-FIELDS.
            03  BODY-LINE.
                05  B-STOCKNUMBER      PIC X(15).
@@ -114,7 +121,7 @@
                05  B-DESCRIPTION2     PIC X(20).
                05  B-QUANTITY         PIC S9(4) LEADING SEPARATE.
                05  B-UNITPRICE        PIC 9(6)V999.
-               05  B-TOTALPRICE       PIC 9(6)V999.
+               05  B-TOTALPRICE       PIC 9(7)V999.
                05  B-REFNO            PIC X(20).
                05  B-DATE             PIC 9(8) BLANK WHEN ZERO.
        01  WS-NAME-LENGTH.
@@ -230,8 +237,8 @@
            03  S-DISC          PIC Z9.99.
        01  SLIP-TOTAL.
            03  FILLER          PIC X(42) VALUE " ".
-           03  SLIP-TOT-COM    PIC X(17) VALUE " ".
-           03  TOT-GRV         PIC Z(6)9.99.
+           03  SLIP-TOT-COM    PIC X(19) VALUE " ".
+           03  TOT-GRV         PIC Z,ZZZ,ZZ9.99.
            03  FILLER          PIC X(1) VALUE " ".
        01  SLIP-COMMENT.
            03  SLIP-COMM-LINE.
@@ -392,9 +399,9 @@
            PERFORM OPEN-020.
            MOVE 0 TO FAX-JOBNUMBER.
        CONTROL-016.
-      * SEND BY EMAIL
-           IF WS-FAX-Y-N = "E"
-               GO TO CONTROL-020.
+      * SEND BY EMAIL - OLD VERSION
+      *     IF WS-FAX-Y-N = "E"
+      *         GO TO CONTROL-020.
       * XQS FAX ONLY
            IF Fax-PaNumber = 3
             IF WS-FAX-Y-N = "F"
@@ -404,12 +411,12 @@
                GO TO CONTROL-040.
                
       * ALL BELOW NOW FOR FAX-PANUMBER = 4
-      * NO FAX BUT A PDF PRINT
+      * NO FAX BUT A PDF PRINT OR MAILGUN EMAIL
            IF WS-FAX-Y-N = "N"
             IF WS-PRINTING-TYPE = "P"
                GO TO CONTROL-017.
       * FAX BUT NO PDF PRINT
-           IF WS-FAX-Y-N = "F"
+           IF WS-FAX-Y-N = "F" OR = "E"
             IF WS-PRINTING-TYPE = "N"
                GO TO CONTROL-017.
 
@@ -437,7 +444,13 @@
            PERFORM ERROR-020.
            IF Fax-PaNumber = 3 OR = 4
             IF WS-FAX-Y-N = "F"
-            OR WS-PRINTING-TYPE = "P"
+               OR WS-PRINTING-TYPE = "P"
+               PERFORM PRINT-XQSORDER-SLIP
+               PERFORM ERROR-020
+               PERFORM ERROR1-020
+               GO TO CONTROL-018.
+           IF Fax-PaNumber = 3 OR = 4
+            IF WS-FAX-Y-N = "E"
                PERFORM PRINT-XQSORDER-SLIP
                PERFORM ERROR-020
                PERFORM ERROR1-020
@@ -510,7 +523,7 @@
            DISPLAY "PRINTING OF ORDER TO:                      " AT POS.
            ADD 22 TO POS
            DISPLAY WS-PRINTER AT POS.
-           IF WS-FAX-Y-N = "F" OR = "P"
+           IF WS-FAX-Y-N = "F" OR = "P" OR = "E"
                PERFORM OPEN-020.
            MOVE WS-ORDER-NUMBER TO OO-ORDER-NUMBER.
            MOVE " "             TO OO-STOCK-NUMBER.
@@ -764,7 +777,7 @@
             IF WS-FAX-Y-N = "N"
                 MOVE "N"      TO WS-PRINTING-TYPE
                 GO TO UPOO-040.
-            IF WS-FAX-Y-N = "F"
+            IF WS-FAX-Y-N = "F" 
                 MOVE "N"      TO WS-PRINTING-TYPE
                 MOVE CR-FAX   TO WS-FAX-NUMBER
                 GO TO UPOO-035.
@@ -779,8 +792,10 @@
                 MOVE CR-FAX   TO WS-FAX-NUMBER
                 GO TO UPOO-035.
             IF WS-FAX-Y-N = "E"
+                MOVE "P"      TO WS-PRINTING-TYPE
                 MOVE CR-EMAIL TO WS-EMAIL-ADDR
                 MOVE CR-FAX   TO WS-FAX-NUMBER
+                PERFORM ENTER-XQS-DETAILS
                 GO TO UPOO-038.
                 
       *      MOVE CR-FAX TO WS-FAX-NUMBER.
@@ -880,6 +895,8 @@
                GO TO UPOO-038.
        UPOO-040.
            IF WS-FAX-Y-N NOT = "N"
+                GO TO UPOO-050.
+           IF WS-PRINTING-TYPE = "P"
                 GO TO UPOO-050.
            MOVE 2810 TO POS.
            DISPLAY "HOW MANY COPIES DO YOU WANT? ENTER 1-9: [ ]."
@@ -1774,7 +1791,151 @@
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-PORDER2-FOR-PDF
                  PERFORM SETUP-MERGE-PORDER-FOR-PDF.
+
+           IF Fax-PaNumber = 4
+            IF WS-FAX-Y-N = "E"
+                MOVE "PURCHASE ORDER"  TO WS-SUBJECT-LINE1
+                MOVE WS-ORDER-NUMBER   TO WS-SUBJECT-LINE2
+                MOVE " FROM:"          TO WS-SUBJECT-LINE3 
+                MOVE WS-CO-NAME        TO WS-SUBJECT-LINE4
+                PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
+                PERFORM MAKE-PDF-FINAL-FOR-EMAIL
+                PERFORM SETUP-PORDER-FOR-PDF-MGEMAIL. 
        POSXQS-999.
+           EXIT.
+      *
+       MAKE-PDF-FINAL-FOR-EMAIL SECTION.
+       MFPFE-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       MFPFE-002.
+           MOVE "/ctools/fax/"   TO ALPHA-RATE
+           
+           MOVE WS-CO-NUMBER     TO DATA-RATE
+           MOVE DAT-RATE(1) TO AL-RATE(13)
+           MOVE DAT-RATE(2) TO AL-RATE(14)
+
+           MOVE 1 TO SUB-45
+           MOVE 1 TO SUB-50.
+       MFPFE-005.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-50)
+           ADD 1 TO SUB-45 SUB-50.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO MFPFE-005.
+           MOVE "P"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "O"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "r"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "d"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "e"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "r"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           IF PAGE-CNT = 1
+              GO TO MFPFE-007.
+           MOVE "F"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "i"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "n"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "a"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "l"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+       MFPFE-007.
+           MOVE SPACES TO ALPHA-RATE.
+           IF PAGE-CNT = 1
+              MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE
+           ELSE 
+              MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
+           MOVE 1 TO SUB-45.
+       MFPFE-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-50)
+           ADD 1 TO SUB-45 SUB-50.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO MFPFE-010.
+           MOVE "."  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "p"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "d"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "f"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE DATA-RATE TO WS-PRINTER-PDF.
+           MOVE SPACES    TO ALPHA-RATE DATA-RATE.
+       MFPFE-999.
+           EXIT.
+      *
+       WORK-OUT-EMAIL-PDF-FILE-NAME SECTION.
+       WOEPDF-001.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       WOEPDF-005.
+           MOVE "/ctools/fax/" TO ALPHA-RATE.
+           MOVE WS-CO-NUMBER  TO DATA-RATE.
+           MOVE 13 TO SUB-1
+           MOVE 1  TO SUB-2.
+       WOEPDF-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOEPDF-010.
+      *     MOVE "/" TO AL-RATE (SUB-1).
+      *     ADD 1 TO SUB-1.
+           MOVE "S" TO AL-RATE (SUB-1).
+           ADD 1 TO SUB-1.
+       WOEPDF-020.
+      *     MOVE "IN WOEPDF-020." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+
+           MOVE SPACES     TO DATA-RATE.
+           MOVE CR-ACCOUNT-NUMBER TO DATA-RATE.
+           MOVE 1  TO SUB-2.
+       WOEPDF-025.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+               GO TO WOEPDF-025.
+       WOEPDF-030.
+           MOVE ALPHA-RATE    TO WS-PRINTER W-FILENAME.
+       
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+       
+       WOEPDF-999.
+            EXIT.
+      *
+       TAKE-OUT-BLANKS-IN-CO-NAME SECTION.
+       TOBICN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       TOBICN-005.
+           MOVE WS-SUBJECT TO DATA-RATE.
+           MOVE 1 TO SUB-1
+           MOVE 1 TO SUB-2.
+           MOVE 0 TO SUB-3.
+           MOVE "'" TO AL-RATE (SUB-2).
+           MOVE 2 TO SUB-1.
+       TOBICN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+                MOVE 0 TO SUB-3
+               GO TO TOBICN-010
+            ELSE 
+               ADD 1 TO SUB-3.
+           IF SUB-3 = 1 OR = 2
+              GO TO TOBICN-010.
+           MOVE "'" TO AL-RATE (SUB-1).
+       TOBICN-030.
+           MOVE SPACES       TO WS-SUBJECT-FIXED
+           MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
+       TOBICN-999.
            EXIT.
       *
        FIND-PDF-TYPE-PRINTER SECTION.
@@ -1812,7 +1973,6 @@
            IF AL-RATE (SUB-45) NOT = " "
                GO TO WOPFN-010.
            MOVE DATA-RATE TO WS-PRINTER-PAGE1.
-           
            MOVE SPACES           TO ALPHA-RATE DATA-RATE
            MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
            MOVE 13 TO SUB-45
@@ -2654,6 +2814,8 @@
        Copy "SetupPOrderForPDF".
        Copy "SetupPOrder2ForPDF".
        Copy "SetupMergePOrderForPDF".
+       Copy "SetupPOrderForPDFMgEMail".
+       Copy "SetupPOrderForPDFEmailOnly".
        Copy "CheckEmailForValidity".
        Copy "MoveEmailRecordFromEimage".
       ******************

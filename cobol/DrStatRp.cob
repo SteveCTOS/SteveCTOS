@@ -917,6 +917,14 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO GET-065.
+      * NEXT PHRASE ENTERED TO NOT ALLOW THE SENDING OF ACCOUNTS
+      * WHERE THERE IS NO EMAIL ADDRESS ON THE DEBTOR MASTER FILE     
+      * AT THE MONTHEND RUN.  IF ONE ENTERS THE SAME ACCOUNT FOR
+      * BEGIN AND END ACCOUNTS THEN THE PROGRAM WILL ASK THE USER
+      * TO ENTER AN EMAIL ADDRESS.
+           IF WS-PRINTER-TYPE = "5"
+            IF WS-ACCNOEND > WS-ACCNOBEGIN
+                MOVE "Y" TO WS-MONTH-END.
        GET-075.
            MOVE WS-ACCNOBEGIN TO DRTR-ACCOUNT-NUMBER.
            START DEBTOR-TRANS-FILE KEY NOT < DRTR-ACC-KEY
@@ -1719,9 +1727,14 @@
             IF DR-ACC-EMAIL = " "
              IF WS-MONTH-END = "N" 
                PERFORM ENTER-EMAIL-ADDRESS
-               MOVE WS-EMAIL-NUMBER TO DR-ACC-EMAIL
-             ELSE
+               MOVE WS-EMAIL-NUMBER TO DR-ACC-EMAIL.
+           IF WS-PRINTER-TYPE = "5"
+            IF DR-ACC-EMAIL = " "
+             IF WS-MONTH-END = "Y" 
                 PERFORM READ-UNTIL-ACC-CHANGES
+            IF WS-DEBTOR-ST1 NOT = 10
+                GO TO PR-PDF-999
+            ELSE
                 GO TO PR-PDF-005.
 
             MOVE "´¶"         TO WS-DELIM-F.

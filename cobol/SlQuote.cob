@@ -3754,7 +3754,7 @@
       *********************************************
            IF WS-AUTO-FAX NOT = "E" 
                GO TO GET-999.
-      * NEW EMAIL INSTRUCTION
+      * NEW MAILGUN EMAIL INSTRUCTION
            IF WS-AUTO-FAX = "E" 
                GO TO GET-999.
                

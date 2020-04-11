@@ -60,14 +60,22 @@ set (copy_list
   MGMessageCTNCn.html
   MGMessageSFJCn.html
   MGMessageCSCCn.html
-  MGMessageCTJQu.html
-  MGMessageCTNQu.html
-  MGMessageCSCQu.html
-  MGMessageSFJQu.html
   MGMessageCTJInv.html
   MGMessageCTNInv.html
   MGMessageSFJInv.html
   MGMessageCSCInv.html
+  MGMessageCTJPO.html
+  MGMessageCTNPO.html
+  MGMessageSFJPO.html
+  MGMessageCSCPO.html
+  MGMessageCTJQu.html
+  MGMessageCTNQu.html
+  MGMessageCSCQu.html
+  MGMessageSFJQu.html
+  MGMessageCTJRemit.html
+  MGMessageCTNRemit.html
+  MGMessageCSCRemit.html
+  MGMessageSFJRemit.html
   MGMessageCTJStat.html
   MGMessageCTNStat.html
   MGMessageSFJStat.html

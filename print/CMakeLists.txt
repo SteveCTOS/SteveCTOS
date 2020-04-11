@@ -13,10 +13,14 @@ set (copy_list
   PrintMergeDrOverdue
   PrintMergePOrder 
   PrintMergeQuote
+  PrintMergeRemit
   PrintPOrder1
   PrintPOrder2
   PrintQuote1
   PrintQuote2
+  PrintRemit1
+  PrintRemit2
+  PrintRemitPdfEmailOnly
   PrintStatement
   PrintStatementNoMail
   PrintStatementPdfOnly

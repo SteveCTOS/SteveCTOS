@@ -1569,26 +1569,35 @@
                MOVE INCR-BIN         TO PL-BIN
                MOVE INCR-SB-TYPE     TO PL-SOLDBY.
                
-           IF WS-INVCRED = "X"
+           IF WS-INVCRED = "X" 
             IF INCR-BO-INV-NO NOT = WS-INVOICE
-             MOVE INCR-BO-DATE     TO SPLIT-DATE
-             PERFORM CONVERT-DATE-FORMAT
-             MOVE DISPLAY-DATE     TO PL-ORDERDATE
-             MOVE INCR-BO-INV-NO   TO PL-SLIP
-             MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
+              MOVE INCR-BO-DATE     TO SPLIT-DATE
+              PERFORM CONVERT-DATE-FORMAT
+              MOVE DISPLAY-DATE     TO PL-ORDERDATE
+              MOVE INCR-BO-INV-NO   TO PL-SLIP
+              MOVE "/"              TO PL-SLIP-SLASH
+              MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
+           IF WS-PRINT-NUM = 5
+            IF INCR-BO-INV-NO NOT = WS-INVOICE
+              MOVE INCR-BO-DATE     TO SPLIT-DATE
+              PERFORM CONVERT-DATE-FORMAT
+              MOVE DISPLAY-DATE     TO PL-ORDERDATE
+              MOVE INCR-BO-INV-NO   TO PL-SLIP
+              MOVE "/"              TO PL-SLIP-SLASH
+              MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
 
-             MOVE INCR-DATE        TO SPLIT-DATE
-             PERFORM CONVERT-DATE-FORMAT
-             MOVE DISPLAY-DATE     TO PL-DATE.
+           MOVE INCR-DATE           TO SPLIT-DATE
+           PERFORM CONVERT-DATE-FORMAT
+           MOVE DISPLAY-DATE        TO PL-DATE.
              
-           MOVE WS-INVOICE         TO PL-INV.
-           MOVE WS-PAGE            TO PL-PAGE
+           MOVE WS-INVOICE          TO PL-INV.
+           MOVE WS-PAGE             TO PL-PAGE
            WRITE LASER-REC FROM LASER-PLINE4.
            
-           MOVE " "              TO LASER-REC LASER-PLINE4
-                                    LASER-PDET.
-      *         MOVE "AT LP-PDF-020, STARTING STOCK LINES" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE.
+           MOVE " "                 TO LASER-REC LASER-PLINE4
+                                       LASER-PDET.
+      *    MOVE "AT LP-PDF-020, STARTING STOCK LINES" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
 
        LP-PDF-020.
            IF SUB-1 < 299
@@ -1886,6 +1895,7 @@
              PERFORM CONVERT-DATE-FORMAT
              MOVE DISPLAY-DATE     TO PL-ORDERDATE
              MOVE INCR-BO-INV-NO   TO PL-SLIP
+             MOVE "/"              TO PL-SLIP-SLASH
              MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
            IF WS-ADD-TOGETHER = "Y"
              IF PL-DATE = " "
@@ -2260,6 +2270,7 @@
              PERFORM CONVERT-DATE-FORMAT
              MOVE DISPLAY-DATE     TO PL-ORDERDATE
              MOVE INCR-BO-INV-NO   TO PL-SLIP
+             MOVE "/"              TO PL-SLIP-SLASH
              MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
            IF WS-ADD-TOGETHER = "Y"
              IF PL-DATE = " "
@@ -2542,10 +2553,13 @@
                
            IF WS-INVCRED = "I" OR = "P" OR = "D"
             IF INCR-BO-INV-NO NOT = WS-INVOICE
-             MOVE INCR-BO-DATE   TO SPLIT-DATE
+             MOVE INCR-BO-DATE     TO SPLIT-DATE
              PERFORM CONVERT-DATE-FORMAT
-             MOVE DISPLAY-DATE   TO P-ORDERDATE
-             MOVE INCR-BO-INV-NO TO P-SLIP.
+             MOVE DISPLAY-DATE     TO P-ORDERDATE
+             MOVE INCR-BO-INV-NO   TO P-SLIP
+             MOVE "/"              TO PL-SLIP-SLASH
+             MOVE INCR-COPY-NUMBER TO PL-SLIP-COPY.
+
            IF WS-ADD-TOGETHER = "Y"
              IF P-DATE = " "
               MOVE INCR-DATE        TO SPLIT-DATE
