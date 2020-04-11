@@ -2,7 +2,7 @@
 # The renaming of Payslyp 'MAIN' Files to 'Main' & add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
-months = ['Mar19', 'Apr19', 'May19', 'Jun19', 'Jul19', 'Aug19', 'Sep19', 'Oct19', 'Nov19', 'Dec19', 'Jan20', 'Feb20']
+months = ['Mar20', 'Apr20', 'May20', 'Jun20', 'Jul20', 'Aug20', 'Sep20', 'Oct20', 'Nov20', 'Dec20', 'Jan21', 'Feb21']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):
