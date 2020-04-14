@@ -602,7 +602,6 @@
            
            PERFORM GET-EMAIL-PDF-FILE-NAME           
            PERFORM PR-PDF-00001.
-      *      PERFORM PR-PDF-00011.
 
            IF LINE-CNT < 62
                GO TO PR-PDF-010.
@@ -613,7 +612,6 @@
                CLOSE PRINT-FILE
                PERFORM GET-EMAIL-PDF-FILE-NAME           
                PERFORM PR-PDF-00001
-      *         PERFORM PR-PDF-00011
                MOVE " "                TO PRINT-REC
                MOVE CRREM-ACC-NUMBER   TO H07-OUR-ACC
                MOVE CR-SUPPLIER-NUMBER TO H07-YOUR-ACC
@@ -782,7 +780,7 @@
                PERFORM PR-PDF-800
                MOVE "N" TO WS-END
                GO TO PR-PDF-010.
-           
+      
            MOVE " "                 TO PRINT-REC
            MOVE CRREM-DESC (SUB-1)  TO SA-DESC
            MOVE CRREM-AMT (SUB-1)   TO SA-UNIT
@@ -797,28 +795,48 @@
            ADD CRREM-AMT (SUB-1) TO WS-TOTAL-ADJ.
 
            ADD 1 TO LINE-CNT SUB-1.
-      *     IF LINE-CNT > 15
-           IF LINE-CNT > 25
-              PERFORM PR-PDF-660
-              PERFORM PR-PDF-600
-              PERFORM PR-PDF-006
-              PERFORM PR-PDF-0061
-              PERFORM PR-PDF-007
-              MOVE 1 TO LINE-CNT
-              GO TO PR-PDF-008.
-           IF SUB-1 < 35
-              GO TO PR-PDF-008.
-      *     IF LINE-CNT < 15
+      *    IF WS-END NOT = "Y" 
+           IF LINE-CNT > 26
+               ADD 1 TO PAGE-CNT
+            IF PAGE-CNT < 3
+               CLOSE PRINT-FILE
+               PERFORM GET-EMAIL-PDF-FILE-NAME           
+               PERFORM PR-PDF-00001
+               MOVE " "                     TO PRINT-REC
+               MOVE "* REMITTANCE ADVICE *" TO S-PDFT-TRAIL
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 1
+               MOVE " "                     TO SLIP-PDF-TRAILER
+               MOVE PAGE-CNT                TO S-PDFT-PAGE
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 3
+               MOVE " "                     TO PRINT-REC
+               WRITE PRINT-REC AFTER 3
+               MOVE 1 TO LINE-CNT 
+               GO TO PR-PDF-008
+            ELSE
+               MOVE " "                     TO PRINT-REC
+               WRITE PRINT-REC AFTER PAGE
+               MOVE "* REMITTANCE ADVICE *" TO S-PDFT-TRAIL
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 1
+               MOVE " "                     TO SLIP-PDF-TRAILER
+               MOVE PAGE-CNT                TO S-PDFT-PAGE
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 3
+               MOVE " "                     TO PRINT-REC
+               WRITE PRINT-REC AFTER 3
+               MOVE 1 TO LINE-CNT 
+               GO TO PR-PDF-008.
+               
+           IF SUB-1 < 40
+              GO TO PR-PDF-008
+           ELSE
+               PERFORM PR-PDF-900
+               PERFORM PR-PDF-800
+               MOVE "N" TO WS-END
+               GO TO PR-PDF-010.
            IF LINE-CNT < 27
                PERFORM PR-PDF-650.
        PR-PDF-010.
-            MOVE "LINE-CNT =" TO WS-MESSAGE
-            PERFORM ERROR1-000
-            MOVE LINE-CNT TO WS-MESSAGE
-            PERFORM ERROR-MESSAGE
-            PERFORM ERROR1-020.
-       
-           IF LINE-CNT > 20
+      *     IF LINE-CNT > 20
+           IF LINE-CNT > 50
                ADD 1                        TO PAGE-CNT
            IF PAGE-CNT > 1
             IF PAGE-CNT < 3
@@ -833,13 +851,6 @@
                WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 3
                MOVE " "                     TO PRINT-REC
                WRITE PRINT-REC AFTER 3
-
-               MOVE "AT PR-PDF-010 CAUGHT IN IF SECTION" TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE LINE-CNT TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-
                MOVE 1 TO LINE-CNT.
        
            MOVE " "                         TO PRINT-REC SLIPE-ADJ
@@ -890,10 +901,10 @@
 
            MOVE " "          TO PRINT-REC SLIPE-HEAD11
            IF WS-REMIT-F-L = "F"
-              MOVE "AUTHORISED FOR EFT PAYMENT #" TO SLIPE-COMM-LINE
-              MOVE CRREM-PMT-REF                  TO SLIPE-COMM-REF
+              MOVE "AUTHORISED FOR BANK PAYMENT " TO SLIPE-COMM-LINE
            ELSE
-              MOVE "AUTHORISED FOR BANK PAYMENT " TO SLIPE-COMM-LINE.
+              MOVE "AUTHORISED FOR EFT PAYMENT #" TO SLIPE-COMM-LINE
+              MOVE CRREM-PMT-REF                  TO SLIPE-COMM-REF.
            WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 1.
            
            MOVE 1 TO SUB-1.
@@ -913,18 +924,12 @@
       * MUST HAVE BEEN PRINTED SO DO NOT PRINT AN EXTRA LINE IN  *
       * PR-PDF-570.                                              *
       ************************************************************
-      *      PERFORM REWRITE-CRREMIT.
+      *LINE BELOW TAKEN OUT FOR TEST PURPOSES     
+            PERFORM REWRITE-CRREMIT.
            GO TO PR-PDF-00005.
        PR-PDF-570.
-      *     MOVE " "          TO PRINT-REC SLIPE-HEAD11
-      *     WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 1.
-           
-      *     ADD 1 TO LINE-CNT.
-      *     IF LINE-CNT < 10
-      *     IF LINE-CNT < 2
-      *        GO TO PR-PDF-570.
-      *TAKEN OUT FOR TEST PURPOSES     
-      *     PERFORM REWRITE-CRREMIT.
+      *LINE BELOW TAKEN OUT FOR TEST PURPOSES     
+           PERFORM REWRITE-CRREMIT.
            PERFORM PR-PDF-950.
            GO TO PR-PDF-00005.
        PR-PDF-600.
@@ -939,15 +944,11 @@
            WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 1.
            
            ADD 1 TO LINE-CNT.
-      *     IF LINE-CNT < 16
-      *     IF LINE-CNT < 20
-      *        GO TO PR-PDF-650.
        PR-PDF-660.
            MOVE " "          TO PRINT-REC SLIPE-HEAD11
            WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 1.
            
            ADD 1 TO LINE-CNT.
-      *     IF LINE-CNT < 25
            IF LINE-CNT < 20
               GO TO PR-PDF-660.
        PR-PDF-800.
@@ -979,6 +980,7 @@
               MOVE WS-INV-PAY-LINE TO WS-DATA-O
               WRITE PRINT-REC FROM WS-OTH-LINE AFTER 1
               ADD 1 TO LINE-CNT.
+           IF PAGE-CNT = 1
            IF WS-END NOT = "Y" 
             IF LINE-CNT > 26
                ADD 1 TO PAGE-CNT
@@ -995,15 +997,15 @@
                MOVE " "                     TO PRINT-REC
                WRITE PRINT-REC AFTER 3
                MOVE 1 TO LINE-CNT 
-
-               MOVE "AT PR-PDF-800 FIRST IF" TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE LINE-CNT TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-
-               GO TO PR-PDF-800
-            ELSE
+               GO TO PR-PDF-800.
+           IF PAGE-CNT > 1
+           IF WS-END NOT = "Y" 
+            IF LINE-CNT > 50
+               ADD 1 TO PAGE-CNT
+            IF PAGE-CNT < 3
+               CLOSE PRINT-FILE
+               PERFORM GET-EMAIL-PDF-FILE-NAME           
+               PERFORM PR-PDF-00001
                MOVE " "                     TO PRINT-REC
                MOVE "* REMITTANCE ADVICE *" TO S-PDFT-TRAIL
                WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 1
@@ -1013,34 +1015,22 @@
                MOVE " "                     TO PRINT-REC
                WRITE PRINT-REC AFTER 3
                MOVE 1 TO LINE-CNT 
-
-               MOVE "AT PR-PDF-800 AFTER ELSE" TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE LINE-CNT TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-
+               GO TO PR-PDF-800
+            ELSE
+               MOVE " "                     TO PRINT-REC
+               WRITE PRINT-REC AFTER PAGE
+               MOVE "* REMITTANCE ADVICE *" TO S-PDFT-TRAIL
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 1
+               MOVE " "                     TO SLIP-PDF-TRAILER
+               MOVE PAGE-CNT                TO S-PDFT-PAGE
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 3
+               MOVE " "                     TO PRINT-REC
+               WRITE PRINT-REC AFTER 3
+               MOVE 1 TO LINE-CNT 
                GO TO PR-PDF-800.
 
            IF WS-END NOT = "Y" 
-           
-               MOVE "AT PR-PDF-800 NO IF STATEMENT" TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE LINE-CNT TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-
                GO TO PR-PDF-800.
-      *     IF WS-END NOT = "Y" 
-      *      IF LINE-CNT > 15
-      *      IF LINE-CNT > 26
-      *        PERFORM PR-PDF-660
-      *        PERFORM PR-PDF-600
-      *        PERFORM PR-PDF-006
-      *        PERFORM PR-PDF-910
-      *        GO TO PR-PDF-800
-      *       ELSE
-      *        GO TO PR-PDF-800.
 
            PERFORM PR-PDF-650.
        PR-PDF-900.
@@ -1060,13 +1050,6 @@
                MOVE " "                     TO PRINT-REC
                WRITE PRINT-REC AFTER 3
                MOVE 1 TO LINE-CNT.
-      *     IF LINE-CNT > 27
-      *        PERFORM PR-PDF-660
-      *        PERFORM PR-PDF-600
-      *        PERFORM PR-PDF-006
-      *        PERFORM PR-PDF-007
-      *        PERFORM PR-PDF-007
-      *        MOVE 1 TO LINE-CNT.
            MOVE " "          TO PRINT-REC SLIPE-HEAD11
            WRITE PRINT-REC FROM SLIPE-HEAD11 AFTER 1.
            
@@ -1115,13 +1098,6 @@
       * #1 = WS-CO-NUMBER
       * #2 = WS-PRINTER-SAVE (THE PRINTER NAME) E.G. MP140
       * #3 = WS-REFERENCE-NUMBER E.G. 2002Co010300150-1
-
-           MOVE "PAGE-CNT =" TO WS-MESSAGE
-           PERFORM ERROR1-000
-           MOVE PAGE-CNT TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
-           PERFORM ERROR1-020.
-           
            IF PAGE-CNT = 1
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
@@ -1136,25 +1112,11 @@
                  PERFORM SETUP-REMIT2-FOR-PDF
                  PERFORM SETUP-MERGE-REMIT-FOR-PDF.
           IF WS-AUTO-FAX = "E"
-      *        MOVE "REMITTANCE # :"  TO WS-SUBJECT-LINE1
-      *        MOVE CR-ACCOUNT-NUMBER TO WS-SUBJECT-LINE2
-      *        MOVE " FROM:"          TO WS-SUBJECT-LINE3 
-      *        MOVE WS-CO-NAME        TO WS-SUBJECT-LINE4
-      *        PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
               PERFORM MAKE-PDF-FINAL-FOR-EMAIL
-              
-              MOVE "PYTHON MG SETUP" TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-PRINTER-PDF    TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-USEREMAILADD   TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WS-SUBJECT-FIXED  TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              MOVE WSF-MAIL-NUMBER   TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE
-              
               PERFORM SETUP-REMIT-FOR-PDF-MGEMAIL.
+              
+          CALL "C$SLEEP" USING 1.
+              
        PR-PDF-999.
       * 
       *    ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
@@ -1215,25 +1177,25 @@
            MOVE SPACES       TO WS-SUBJECT-FIXED
            MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
            
-           MOVE "TAKE OUT BLANKS" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-           MOVE WS-SUBJECT TO WS-MESSAGE
-           PERFORM ERROR1-000
+      *     MOVE "TAKE OUT BLANKS" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     MOVE WS-SUBJECT TO WS-MESSAGE
+      *     PERFORM ERROR1-000
 
-           MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-           PERFORM ERROR1-020.
+      *     MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+      *     PERFORM ERROR1-020.
            
        TOBICN-999.
            EXIT.
       *
        WORK-OUT-PDF-FILE-NAMES SECTION.
        WOPFN-001.
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR1-000
-           MOVE WS-PRINTER-PAGE1 TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
-           PERFORM ERROR1-020.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-PRINTER-PAGE1 TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
        
            MOVE SPACES           TO ALPHA-RATE DATA-RATE.
            MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE.
@@ -1258,12 +1220,11 @@
            MOVE DATA-RATE        TO WS-PRINTER-PAGE2.
            MOVE SPACES           TO ALPHA-RATE DATA-RATE.
 
-
-           MOVE WS-PRINTER TO WS-MESSAGE
-           PERFORM ERROR1-000
-           MOVE WS-PRINTER-PAGE1 TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
-           PERFORM ERROR1-020.
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-PRINTER-PAGE1 TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
        
        WOPFN-999.
            EXIT.
@@ -1274,8 +1235,6 @@
        MFPFE-002.
            MOVE "/ctools/cr/"   TO ALPHA-RATE
            
-      *     IF PAGE-CNT = 1
-      *        GO TO MFPFE-007.
            MOVE WS-CO-NUMBER    TO DATA-RATE
            MOVE DAT-RATE(1) TO AL-RATE(12)
            MOVE DAT-RATE(2) TO AL-RATE(13)
@@ -1331,11 +1290,11 @@
                 ADD 1 TO SUB-50.
            MOVE DATA-RATE TO WS-PRINTER-PDF.
 
-           MOVE "MAKE-PDF-FINAL ...." TO WS-MESSAGE
-           PERFORM ERROR1-000
-           MOVE WS-PRINTER-PDF TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
-           PERFORM ERROR1-020.
+      *     MOVE "MAKE-PDF-FINAL ...." TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE WS-PRINTER-PDF TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
 
            MOVE SPACES           TO ALPHA-RATE DATA-RATE.
        MFPFE-999.
@@ -1654,6 +1613,7 @@
       * MUST HAVE BEEN PRINTED SO DO NOT PRINT AN EXTRA LINE IN  *
       * PREF-570.                                                 *
       ************************************************************
+      *LINE BELOW TAKEN OUT FOR TEST PURPOSES     
            PERFORM REWRITE-CRREMIT.
            GO TO PREF-00005.
        PREF-570.
@@ -1784,6 +1744,7 @@
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC.
            CLOSE PRINT-FILE.
+           CALL "C$SLEEP" USING 1.
        PREF-999.
            EXIT.
       *
@@ -2398,8 +2359,8 @@
                GO TO RRT-999.
            IF CRREMTR-COMPLETE = "Y"
                GO TO RRT-005.
-      * TAKEN OUT FOR TEST PURPOSES         
-      *     PERFORM REWRITE-CRREMIT-TRANS.
+      * LINE BELOW TAKEN OUT FOR TEST PURPOSES         
+           PERFORM REWRITE-CRREMIT-TRANS.
        RRT-999.
             EXIT.
       *

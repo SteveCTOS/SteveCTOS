@@ -3,13 +3,17 @@ pdftk /ctools/cr/$3.tmp1.pdf background /ctools/dev/source/print/$1QuoteOverlay1
 
 if [ "$4" = "01" ] && [ "$6" = "P" ]
    then
-     lp -d $2 /ctools/cr/$3.pdf
+     lp -d $2 /ctools/cr/$1Remit$3.pdf
  fi
 
 if [ "$4" = "01" ] &&  [ "$5" = "F" ]
    then
-     sendcr -n -d $7 /ctools/cr/$3.pdf
+     sendcr -n -d $7 /ctools/cr/$1Remit$3.pdf
  fi
+
+rm /ctools/cr/$3
+rm /ctools/cr/*$3.tmp1.pdf
+
 
 #lp -d $2 $3
 #--- the following pdftk cats the first statement to a single file from two

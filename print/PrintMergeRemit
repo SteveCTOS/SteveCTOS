@@ -5,8 +5,8 @@ if [ "$5" != "01" ] && [ "$7" = "P" ]
      lp -d $2 /ctools/cr/$1RemitFinal$4.pdf
  fi
 
-#rm /ctools/cr/#3.pdf
-#rm /ctools/cr/#4.pdf
+rm /ctools/cr/$1Remit$3.pdf
+rm /ctools/cr/$1Remit$4.pdf
 
 #FORMAT FOR PRINTING IS:
 #lp -d W-PRINTERNAME W-PRINTFILE

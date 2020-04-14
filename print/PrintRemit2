@@ -1,5 +1,5 @@
-text2pdf /ctools/cr/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/cr/$3.temp1.pdf
-pdftk /ctools/cr/$3.temp1.pdf background /ctools/dev/source/print/$1QuoteOverlay2.pdf output /ctools/cr/$1Remit$3.pdf
+text2pdf /ctools/cr/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/cr/$3.tmp1.pdf
+pdftk /ctools/cr/$3.tmp1.pdf background /ctools/dev/source/print/$1QuoteOverlay2.pdf output /ctools/cr/$1Remit$3.pdf
 
 if [ "$4" = "02" ] && [ "$6" = "P" ]
    then
@@ -10,6 +10,9 @@ if [ "$4" = "02" ] &&  [ "$5" = "F" ]
    then
      sendcr -n -d $7 /ctools/cr/$3.pdf
  fi
+
+rm /ctools/cr/$3
+rm /ctools/cr/*$3.tmp1.pdf
 
 #lp -d $2 $3
 #--- the following pdftk cats the first statement to a single file from two

@@ -538,10 +538,16 @@
             
             IF F-EXIT-CH = X"01"
              IF SUB-1 = 1
-               GO TO FILL-030
-             ELSE
-               SUBTRACT 1 FROM SUB-1 F-INDEX
-               GO TO FILL-045.
+               GO TO FILL-030.
+            IF F-EXIT-CH = X"01"
+             IF SUB-1 > 1
+                SUBTRACT 1 FROM SUB-1 F-INDEX
+              IF F-INDEX < 1
+                MOVE 1 TO F-INDEX
+                GO TO FILL-045
+              ELSE
+                GO TO FILL-045.
+                
             IF CRREM-DESC (SUB-1) = " "
                  MOVE 1 TO SUB-1 F-INDEX
                  GO TO FILL-165.
@@ -1017,8 +1023,8 @@
             MOVE 1 TO F-INDEX. 
             PERFORM CLEAR-BODY.
             MOVE 1 TO F-INDEX. 
-            IF SUB-1 > 27
-               MOVE 27 TO SUB-1.
+            IF SUB-1 > 26
+               MOVE 26 TO SUB-1.
        NEXT-010.
             PERFORM SCROLLING.
        NEXT-020.
