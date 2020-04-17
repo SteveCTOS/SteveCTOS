@@ -77,7 +77,11 @@
        77  WS-PRINTER-PAGE3     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE4     PIC X(100) VALUE " ".
        77  WS-PRINTER-PAGE5     PIC X(100) VALUE " ".
+       77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".
        01  W-CRTSTATUS          PIC 9(4) value 0.
+       01  WS-EMAIL             PIC X(50).
+       01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  WS-ACCOUNT-COMMENT.
            03  WS-ACC-MESSAGE    PIC X(53).
            03  WS-ACC-NUMBER     PIC X(7).
@@ -91,6 +95,11 @@
            03  WS-SPL-ST1          PIC 99.
        01  WS-Fax-STATUS.
            03  WS-Fax-ST1          PIC 99.
+       01  WS-SUBJECT.
+           03  WS-SUBJECT-LINE1        PIC X(15) VALUE " ".
+           03  WS-SUBJECT-LINE2        PIC X(11).
+           03  WS-SUBJECT-LINE3        PIC X(7) VALUE " ".
+           03  WS-SUBJECT-LINE4        PIC X(40) VALUE " ".
        01  WS-XQS-FAX.
            03  WS-XQS-BEG       PIC X(9) VALUE "(:(FaxTo=".
            03  WS-XQS-END       PIC X(3) VALUE "):)".
@@ -129,7 +138,7 @@
        01  WS-HYLA-COMMENT-LINE.
            03  FILLER             PIC X(16) VALUE " ".
            03 WS-HYLA-COMM-DESC   PIC X(23) VALUE
-              "OUR OVERDUE FAX REF #: ".
+              "DEBTOR OVER DUE REF #: ".
            03 WS-HYLA-COMMENT     PIC X(17) VALUE " ".
        01  WS-HYLA-TYPE-LINE2.
            03  FILLER             PIC X(16) VALUE " ".
@@ -401,8 +410,8 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-AUTO-FAX.
-            IF WS-AUTO-FAX NOT = "Y" AND NOT = "N"
-               MOVE "YOU MUST ANSWER 'Y' OR 'N', PLEASE RE-ENTER"
+            IF WS-AUTO-FAX NOT = "Y" AND NOT = "N" AND NOT = "E"
+               MOVE "YOU MUST ANSWER 'Y', 'N' OR 'E', PLEASE RE-ENTER"
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-080.
@@ -433,8 +442,10 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-NOTIFY.
-            IF WS-NOTIFY NOT = "Y" AND NOT = "N"
-               MOVE "YOU MUST ANSWER 'Y' OR 'N', PLEASE RE-ENTER"
+      *      IF WS-NOTIFY NOT = "Y" AND NOT = "N"
+      *         MOVE "YOU MUST ANSWER 'Y' OR 'N', PLEASE RE-ENTER"
+            IF WS-NOTIFY NOT = "N"
+               MOVE "YOU MUST ANSWER 'N', PLEASE RE-ENTER"
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-100.
@@ -449,8 +460,16 @@
             MOVE 1 TO F-CBFIELDLENGTH.
             PERFORM READ-FIELD-ALPHA.
             MOVE F-NAMEFIELD TO WS-PRINT-Y-N.
+            IF WS-AUTO-FAX = "Y" OR = "E"
+              IF WS-PRINT-Y-N NOT = "P"
+               MOVE 
+           "IF FAX/EMAIL = Y OR = E, YOU MUST ANSWER 'P' NOW."
+               TO WS-MESSAGE
+               PERFORM ERROR-000
+               GO TO GET-105.
+               
             IF WS-PRINT-Y-N NOT = "Y" AND NOT = "N" AND NOT = "P"
-               MOVE "YOU MUST ANSWER 'Y', 'N' OR 'P', PLEASE RE-ENTER"
+               MOVE "YOU MUST ANSWER 'Y', 'N' OR 'P', PLEASE RE-ENTER."
                TO WS-MESSAGE
                PERFORM ERROR-000
                GO TO GET-105.
@@ -638,11 +657,11 @@
       * TO PRINT HARD COPY FIRST.         *
       *************************************
            IF WS-PRINT-Y-N = "N"
-               MOVE "P" TO WS-AUTO-FAX
+      *         MOVE "P" TO WS-AUTO-FAX
                GO TO RDM-021.
            MOVE Ws-DOTPrinter TO WS-PRINTER.
-           IF WS-AUTO-FAX = "Y"
-               MOVE "P" TO WS-AUTO-FAX.
+      *     IF WS-AUTO-FAX = "Y" OR = "E"
+      *         MOVE "P" TO WS-AUTO-FAX.
            IF WS-AUTO-FAX = "N"
                MOVE "O" TO WS-AUTO-FAX.
            IF WS-PRINT-Y-N = "Y"
@@ -717,7 +736,7 @@
                GO TO RDM-010.
            PERFORM CHECK-REFERENCE.
            PERFORM PREPARE-FAX-SENDING.
-       RDM-030.           
+       RDM-030.
            ADD 1 TO WS-FAXED-TOT.
            MOVE WS-FAXED-TOT TO WS-FAXED-TOT-DIS.
            MOVE 2650 TO POS.
@@ -744,7 +763,7 @@
       *                       W-DELAY.
 
            IF WS-DELAY-FAX = "Y"
-               CALL "C$SLEEP" USING 5.
+               CALL "C$SLEEP" USING 2.
            MOVE " " TO WS-PRINTER.
            MOVE WS-DOTPRINTER TO WS-PRINTER.
            GO TO RDM-010.
@@ -1015,7 +1034,7 @@
        PRXQS-010.
            IF LINE-CNT = 999
               PERFORM PRINT-HEADINGS.
-              
+
            IF Fax-PaNumber = 3
             IF PAGE-CNT = 1
              IF LINE-CNT > 55
@@ -1037,7 +1056,8 @@
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 1
-             IF LINE-CNT > 42
+      *       IF LINE-CNT > 42
+             IF LINE-CNT > 55
               ADD 1 TO PAGE-CNT
                  CLOSE PRINT-FILE
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
@@ -1053,13 +1073,14 @@
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
+                 WRITE PRINT-REC
                  WRITE PRINT-REC FROM HEAD5
                  MOVE " " TO PRINT-REC
-                 WRITE PRINT-REC
+      *           WRITE PRINT-REC
                  MOVE 8 TO LINE-CNT.
            IF Fax-PaNumber = 4
             IF PAGE-CNT > 1
-             IF LINE-CNT > 42
+             IF LINE-CNT > 55
               ADD 1 TO PAGE-CNT
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
@@ -1073,9 +1094,10 @@
                  WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
+                 WRITE PRINT-REC
                  WRITE PRINT-REC FROM HEAD5
                  MOVE " " TO PRINT-REC
-                 WRITE PRINT-REC
+      *           WRITE PRINT-REC
                  MOVE 8 TO LINE-CNT.
        PRXQS-020.
       ******************************************************************
@@ -1173,7 +1195,7 @@
               MOVE 2 TO PAGE-CNT.
 
            IF Fax-PaNumber = 4
-            IF WS-ANSWER = "P" OR = "Y"
+            IF WS-ANSWER = "P" OR = "Y" OR = "E"
              IF PAGE-CNT = 1
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
@@ -1187,7 +1209,120 @@
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-OVERDUE2-FOR-PDF
                  PERFORM SETUP-MERGE-OVERDUE-FOR-PDF.
+           
+      *     MOVE WS-AUTO-FAX TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+            IF WS-AUTO-FAX = "E"
+      *       IF WS-ANSWER = "E"
+                MOVE "DEBTOR OVERDUE"  TO WS-SUBJECT-LINE1
+                MOVE WS-HYLA-COMMENT   TO WS-SUBJECT-LINE2
+                MOVE " FROM:"          TO WS-SUBJECT-LINE3 
+                MOVE WS-CO-NAME        TO WS-SUBJECT-LINE4
+                PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
+                PERFORM MAKE-PDF-FINAL-FOR-EMAIL
+                PERFORM SETUP-DRDUE-FOR-PDF-MGEMAIL. 
        PRXQS-999.
+           EXIT.
+      *
+       MAKE-PDF-FINAL-FOR-EMAIL SECTION.
+       MFPFE-001.
+           MOVE SPACES           TO ALPHA-RATE DATA-RATE.
+       MFPFE-002.
+           MOVE "/ctools/fax/"   TO ALPHA-RATE
+           
+           MOVE WS-CO-NUMBER     TO DATA-RATE
+           MOVE DAT-RATE(1) TO AL-RATE(13)
+           MOVE DAT-RATE(2) TO AL-RATE(14)
+
+           MOVE 1 TO SUB-45
+           MOVE 1 TO SUB-50.
+       MFPFE-005.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-50)
+           ADD 1 TO SUB-45 SUB-50.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO MFPFE-005.
+           MOVE "D"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "r"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "O"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "v"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "e"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "r"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "d"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "u"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "e"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           IF PAGE-CNT = 1
+              GO TO MFPFE-007.
+           MOVE "F"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "i"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "n"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "a"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "l"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+       MFPFE-007.
+           MOVE SPACES TO ALPHA-RATE.
+           IF PAGE-CNT = 1
+              MOVE WS-PRINTER-PAGE1 TO ALPHA-RATE
+           ELSE 
+              MOVE WS-PRINTER-PAGE2 TO ALPHA-RATE.
+           MOVE 1 TO SUB-45.
+       MFPFE-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-50)
+           ADD 1 TO SUB-45 SUB-50.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO MFPFE-010.
+           MOVE "."  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "p"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "d"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE "f"  TO DAT-RATE (SUB-50)
+                ADD 1 TO SUB-50.
+           MOVE DATA-RATE TO WS-PRINTER-PDF.
+           MOVE SPACES    TO ALPHA-RATE DATA-RATE.
+       MFPFE-999.
+           EXIT.
+      *
+       TAKE-OUT-BLANKS-IN-CO-NAME SECTION.
+       TOBICN-005.
+           MOVE SPACES TO ALPHA-RATE DATA-RATE.
+       TOBICN-005.
+           MOVE WS-SUBJECT TO DATA-RATE.
+           MOVE 1 TO SUB-1
+           MOVE 1 TO SUB-2.
+           MOVE 0 TO SUB-3.
+           MOVE "'" TO AL-RATE (SUB-2).
+           MOVE 2 TO SUB-1.
+       TOBICN-010.
+           MOVE DAT-RATE (SUB-2) TO AL-RATE (SUB-1)
+           ADD 1 TO SUB-1 SUB-2.
+           IF SUB-1 < 100
+            IF DAT-RATE (SUB-2) NOT = " "
+                MOVE 0 TO SUB-3
+               GO TO TOBICN-010
+            ELSE 
+               ADD 1 TO SUB-3.
+           IF SUB-3 = 1 OR = 2 OR = 3 OR = 4
+              GO TO TOBICN-010.
+           MOVE "'" TO AL-RATE (SUB-1).
+       TOBICN-030.
+           MOVE SPACES       TO WS-SUBJECT-FIXED
+           MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
+       TOBICN-999.
            EXIT.
       *
        FIND-PDF-TYPE-PRINTER SECTION.
@@ -1352,7 +1487,7 @@
                      LINE-CNT.
        PH-010.
            IF Fax-PaNumber = 3 OR = 4
-            IF WS-AUTO-FAX = "Y"
+            IF WS-AUTO-FAX = "P" OR = "Y" OR = "E"
                GO TO PH-020.
            Move Ws-Print-Bold        To Comp-Dig1
            Move Ws-Print-Unbold      To Comp-Dig2.
@@ -1379,6 +1514,11 @@
            WRITE PRINT-REC FROM HEAD2 AFTER 1.
            MOVE 13 TO LINE-CNT.
        PH-020.
+           IF DR-ACC-EMAIL > " "
+              MOVE DR-ACC-EMAIL                         TO WS-EMAIL
+           ELSE
+              MOVE "Statements@AccountingOptions.co.za" TO WS-EMAIL.
+
            MOVE " " TO PRINT-REC HEAD2.
            MOVE DR-ACC-EMAIL      TO PRINT-REC
            WRITE PRINT-REC AFTER 1
@@ -1395,7 +1535,9 @@
            WRITE PRINT-REC FROM HEAD3-1 AFTER 1
            WRITE PRINT-REC FROM HEAD3-2 AFTER 1
            WRITE PRINT-REC FROM HEAD5 AFTER 2
-           MOVE 4 TO LINE-CNT.
+           MOVE " "               TO PRINT-REC
+           WRITE PRINT-REC AFTER 1
+           MOVE 19 TO LINE-CNT.
        PH-999.
            EXIT.
       *
@@ -1889,6 +2031,7 @@
        Copy "SetupDrOverdueForPDF".
        Copy "SetupDrOverdue2ForPDF".
        Copy "SetupMergeDrOverdueForPDF".
+       Copy "SetupDrOverdueForPDFMgEMail".
       ******************
       *Mandatory Copies*
       ******************

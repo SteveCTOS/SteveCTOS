@@ -1,4 +1,4 @@
-        *********{** DEBTOR FAX REPORT FOR AMOUNTS OVERDUE **}*********         
+        *********{***  DEBTOR OVERDUE FAX / EMAIL REPORT  ***}*********         
         *                                                             *         
         *                From Account Number   : _______              *         
         *                  To Account Number   : _______              *         
@@ -11,8 +11,8 @@
         *                       5= 121+ Days   : _                    *         
         *   Our Accounts Contact Person        : _______________      *         
         *   Enter A Starting Reference No      : ____                 *         
-        *   Automatically Fax Letters          : _                    *         
-        *   Create A Delay Between Faxes       : _                    *         
+        *   Y=Fax, E=Email, N=Report Only      : _                    *         
+        *   Create A Delay Between Faxes/Emails: _                    *         
         *   Notify Sender Of Fax Status        : _                    *         
         *   Print a HARD copy to a Printer     : _                    *         
         *    (DotMatrix: Y or N, Or P=PDF Copy)                       *         

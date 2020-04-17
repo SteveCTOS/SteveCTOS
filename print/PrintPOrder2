@@ -1,16 +1,19 @@
 text2pdf /ctools/fax/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/fax/$1POrder.temp1.pdf
-#text2pdf /ctools/fax/$3 -fCourier-Bold -x588 -y828 -l66 -c88 -V16 -H41 > /ctools/fax/$1POrder.temp1.pdf
 pdftk /ctools/fax/$1POrder.temp1.pdf background /ctools/dev/source/print/$1QuoteOverlay2.pdf output /ctools/fax/$1POrder$3.pdf
 
-if [ "$4" = "02" ] && [ "$6" = "P" ]
-   then
-     lp -d $2 /ctools/fax/$1POrder$3.pdf
- fi
+#the below is taken care of in "PrintMergeDrOverdue" if page-cnt = 2 or higher
+#if [ "$4" = "02" ] && [ "$6" = "P" ]
+#   then
+#     lp -d $2 /ctools/fax/$1POrder$3.pdf
+# fi
 
-if [ "$4" = "02" ] &&  [ "$5" = "F" ]
-   then
-     sendfax -n -d $7 /ctools/fax/$1POrder$3.pdf
- fi
+#if [ "$4" = "02" ] &&  [ "$5" = "F" ]
+#   then
+#     sendfax -n -d $7 /ctools/fax/$1POrder$3.pdf
+# fi
+
+rm /ctools/fax/$3
+rm /ctools/fax/$1POrder.temp1.pdf
 
 #lp -d $2 $3
 #--- the following pdftk cats the first statement to a single file from two

@@ -1,4 +1,3 @@
-#text2pdf /ctools/fax/$3 -fCourier-Bold -x595 -y842 -l66 -c88 -V16 -H41 > /ctools/fax/$1DrOverdue.temp1.pdf
 text2pdf /ctools/fax/$3 -fCourier-Bold -x595 -y830 -l66 -c88 -V16 -H41 > /ctools/fax/$1DrOverdue.temp1.pdf
 pdftk /ctools/fax/$1DrOverdue.temp1.pdf background /ctools/dev/source/print/$1QuoteOverlay1.pdf output /ctools/fax/$1DrOverdue$3.pdf
 
@@ -13,7 +12,8 @@ if [ "$4" = "01" ] && [ "$5" = "Y" ]
      echo fax-1 queued now .....
  fi
 
-rm /ctools/fax/*DrOverdue.temp*
+rm /ctools/fax/$3
+rm /ctools/fax/$1DrOverdue.temp1.*
 
 
 #lp -d $2 $3

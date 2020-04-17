@@ -864,8 +864,7 @@
            MOVE 'F'           TO CDA-ATTR.
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-EMAIL-ADDR F-NAMEFIELD.
-
-            IF W-ESCAPE-KEY = 4
+           IF W-ESCAPE-KEY = 4
                GO TO UPOO-030.
                
            MOVE FUNCTION LOWER-CASE(F-NAMEFIELD) TO WS-EMAIL-ADDR
@@ -882,6 +881,7 @@
             PERFORM CHECK-EMAIL-FOR-VALIDITY.
             IF WS-ACC-ERROR = "Y"
                 GO TO UPOO-038.
+
             IF WS-SPACE-CNT < 10
                 MOVE 
             "EMAIL ADDRESS INVALID AS IT'S TOO SHORT, 'ESC' TO RETRY." 
@@ -1929,12 +1929,15 @@
                GO TO TOBICN-010
             ELSE 
                ADD 1 TO SUB-3.
-           IF SUB-3 = 1 OR = 2
+           IF SUB-3 = 1 OR = 2 OR = 3 OR = 4
               GO TO TOBICN-010.
            MOVE "'" TO AL-RATE (SUB-1).
        TOBICN-030.
            MOVE SPACES       TO WS-SUBJECT-FIXED
            MOVE ALPHA-RATE   TO WS-SUBJECT-FIXED.
+           
+      *     MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        TOBICN-999.
            EXIT.
       *

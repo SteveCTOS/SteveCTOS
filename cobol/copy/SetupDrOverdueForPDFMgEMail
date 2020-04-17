@@ -1,6 +1,6 @@
       *
-       SETUP-PORDER-FOR-PDF-MGEMAIL SECTION.
-       SUPOFPGEM-005.
+       SETUP-DRDUE-FOR-PDF-MGEMAIL SECTION.
+       SUPDRFOPGEM-005.
       *    ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
           ACCEPT WS-USEREMAILADD FROM ENVIRONMENT "USEREMAILADD".
           
@@ -8,64 +8,64 @@
       *    PERFORM ERROR-MESSAGE.
 
         IF WS-CO-NUMBER = 1
-           GO TO SUPOFPGEM-010.
+           GO TO SUPDRFOPGM-010.
         IF WS-CO-NUMBER = 3
-           GO TO SUPOFPGEM-020.
+           GO TO SUPDRFOPGM-020.
         IF WS-CO-NUMBER = 7
-           GO TO SUPOFPGEM-030.
+           GO TO SUPDRFOPGM-030.
         IF WS-CO-NUMBER = 8
-           GO TO SUPOFPGEM-040.
+           GO TO SUPDRFOPGM-040.
            
-       GO TO SUPOFPGEM-999.
-       SUPOFPGEM-010.
+       GO TO SUPDRFOPGM-999.
+       SUPDRFOPGM-010.
       * FOR CTJ LEAVING MOST THINGS AS DEFAULT
           MOVE CONCATENATE('python MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
-          ' ', '-t', ' ', 'MGMessageCTJPO.html',
+          ' ', '-t', ' ', 'MGMessageCTJDrDu.html',
           ' ', '-T', ' ', TRIM(WS-EMAIL))
                TO WS-COMMAND-LINE.
-          GO TO SUPOFPGEM-500.
-       SUPOFPGEM-020.
+          GO TO SUPDRFOPGM-500.
+       SUPDRFOPGM-020.
       * FOR CTN LEAVING MOST THINGS AS DEFAULT
           MOVE CONCATENATE('python MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
-          ' ', '-t', ' ', 'MGMessageCTNPO.html',
+          ' ', '-t', ' ', 'MGMessageCTNDrDu.html',
           ' ', '-T', ' ', TRIM(WS-EMAIL))
                TO WS-COMMAND-LINE.
-          GO TO SUPOFPGEM-500.
-       SUPOFPGEM-030.
+          GO TO SUPDRFOPGM-500.
+       SUPDRFOPGM-030.
       * FOR SFJ CHANGING THE DEFAULT
           MOVE CONCATENATE('python MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
-          ' ', '-t', ' ', 'MGMessageSFJPO.html',
+          ' ', '-t', ' ', 'MGMessageSFJDrDu.html',
           ' ', '-T', ' ', TRIM(WS-EMAIL))
                TO WS-COMMAND-LINE.
-          GO TO SUPOFPGEM-500.
-       SUPOFPGEM-040.
+          GO TO SUPDRFOPGM-500.
+       SUPDRFOPGM-040.
       * FOR CSC LEAVING MOST THINGS AS  DEFAULT
           MOVE CONCATENATE('python MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
-          ' ', '-t', ' ', 'MGMessageCSCPO.html',
+          ' ', '-t', ' ', 'MGMessageCSCDrDu.html',
           ' ', '-T', ' ', TRIM(WS-EMAIL))
                TO WS-COMMAND-LINE.
-          GO TO SUPOFPGEM-500.
-       SUPOFPGEM-500.      
+          GO TO SUPDRFOPGM-500.
+       SUPDRFOPGM-500.      
       *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
 
-      *     DISPLAY WS-COMMAND-LINE  AT 2801
+      *     DISPLAY WS-COMMAND-LINE  AT 2810
       *     ACCEPT W-ENTER.
           CALL "SYSTEM" USING WS-COMMAND-LINE.
       *               RETURNING W-STATUS.
@@ -73,7 +73,7 @@
       *    MOVE W-STATUS TO  WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
       *    DISPLAY W-STATUS  AT 2810.
-       SUPOFPGEM-999.
+       SUPDRFOPGM-999.
            EXIT.
       *     STOP RUN.
       *

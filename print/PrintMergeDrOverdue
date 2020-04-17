@@ -1,15 +1,17 @@
 pdftk /ctools/fax/$1DrOverdue$3.pdf /ctools/fax/$1DrOverdue$4.pdf cat output /ctools/fax/$1DrOverdueFinal$4.pdf 
 
-if [ "$5" != "01" ] && [ "$7" = "P" ]
+if [ "$5" != "02" ] && [ "$7" = "P" ]
    then
      lp -d $2 /ctools/fax/$1DrOverdueFinal$4.pdf
  fi
 
-if [ "$5" != "01" ] && [ "$6" = "F" ]
+if [ "$5" != "02" ] && [ "$6" = "F" ]
    then
-    sendfax -n -d $8 /ctools/fax/$1DrOverdue$3.pdf
+    sendfax -n -d $8 /ctools/fax/$1DrOverdueFinal$4.pdf
  fi
 
+rm /ctools/fax/$1DrOverdue$3.pdf
+rm /ctools/fax/$1DrOverdue$4.pdf
 
 
 #FORMAT FOR PRINTING IS:
