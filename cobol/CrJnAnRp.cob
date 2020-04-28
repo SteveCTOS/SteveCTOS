@@ -407,6 +407,11 @@
            WRITE PRINT-REC AFTER 1
            ADD 4 TO WS-LINE.
        PR-020.
+           IF CRJRN-DUE-DATE > WS-CHECKDATE
+               GO TO PR-002.
+           IF CRJRN-COMPLETE = "N"
+               GO TO PR-002.
+       
            MOVE CRJRN-REFERENCE           TO TRANS-REFERENCE
            MOVE CRJRN-TRANS               TO TRANS-TRANS
            MOVE WS-TYPE-DESC (CRJRN-TYPE) TO TRANS-TYPE
@@ -421,6 +426,12 @@
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE              TO TRANS-DUEDATE
            MOVE CRJRN-UNAPPLIED-AMT       TO WS-AMT-OF-INVOICE.
+
+      *     MOVE WS-CALC-PERIOD TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE CRJRN-TRANS TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
 
            IF WS-CALC-PERIOD = 0
                ADD WS-AMT-OF-INVOICE TO WS-TOT-CURRENT
@@ -617,8 +628,8 @@
            EXIT.
       *
        Copy "ComputeCRDatePeriod".
-      * Copy "EnterCRPeriodDates".
-       Copy "EnterPeriodDates".
+       Copy "EnterCRPeriodDates".
+      * Copy "EnterPeriodDates".
        Copy "GetSystemY2KDate".
        Copy "GetReportY2KDate".
        Copy "GetUserMailName".
