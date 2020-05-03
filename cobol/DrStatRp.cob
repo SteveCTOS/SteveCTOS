@@ -1731,7 +1731,7 @@
            IF WS-PRINTER-TYPE = "5"
             IF DR-ACC-EMAIL = " "
              IF WS-MONTH-END = "Y" 
-                MOVE "steve@christensen.co.za" TO WS-EMAIL-NUMBER 
+                MOVE "Info.AccountingOptions.co.za" TO WS-EMAIL-NUMBER 
                   DR-ACC-EMAIL.
       *          PERFORM READ-UNTIL-ACC-CHANGES
       *      IF WS-DEBTOR-ST1 NOT = 10
