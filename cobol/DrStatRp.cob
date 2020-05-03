@@ -1731,11 +1731,13 @@
            IF WS-PRINTER-TYPE = "5"
             IF DR-ACC-EMAIL = " "
              IF WS-MONTH-END = "Y" 
-                PERFORM READ-UNTIL-ACC-CHANGES
-            IF WS-DEBTOR-ST1 NOT = 10
-                GO TO PR-PDF-999
-            ELSE
-                GO TO PR-PDF-005.
+                MOVE "steve@christensen.co.za" TO WS-EMAIL-NUMBER 
+                  DR-ACC-EMAIL.
+      *          PERFORM READ-UNTIL-ACC-CHANGES
+      *      IF WS-DEBTOR-ST1 NOT = 10
+      *          GO TO PR-PDF-999
+      *      ELSE
+      *          GO TO PR-PDF-005.
 
             MOVE "´¶"         TO WS-DELIM-F.
             MOVE " "          TO PL1-NAME
