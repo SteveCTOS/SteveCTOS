@@ -18,7 +18,7 @@ rm /ctools/fax/$1POrder$4.pdf
 #---$3 = The Print File name for Page 1
 #---$4 = The Print File Name for Page 2 and more
 #---$5 = The page-cnt.  If page-cnt =01 don't print, If =02 OR HIGHER then print
-#---$6 = WS-AUTO-FAX. IF = F then send by fax
+#---$6 = WS-FAX-Y-N. IF = F then send by fax
 #---$7 = WS-ANSWER. If = P then print PDF.
 #---$8 = WS-fax-number.  Used ONLY if sending by fax.
 #--- add any extra commands here - perhaps cups printing

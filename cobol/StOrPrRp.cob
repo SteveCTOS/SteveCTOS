@@ -792,7 +792,7 @@
                 MOVE CR-FAX   TO WS-FAX-NUMBER
                 GO TO UPOO-035.
             IF WS-FAX-Y-N = "E"
-                MOVE "P"      TO WS-PRINTING-TYPE
+      *          MOVE "P"      TO WS-PRINTING-TYPE
                 MOVE CR-EMAIL TO WS-EMAIL-ADDR
                 MOVE CR-FAX   TO WS-FAX-NUMBER
                 PERFORM ENTER-XQS-DETAILS
@@ -1767,6 +1767,7 @@
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-PORDER-FOR-PDF
+                 GO TO POSXQS-999
              ELSE
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
@@ -1774,16 +1775,17 @@
                  PERFORM SETUP-PORDER-FOR-PDF
                  MOVE WS-PRINTER-PAGE2   TO WS-PRINTER
                  PERFORM SETUP-PORDER2-FOR-PDF
-                 PERFORM SETUP-MERGE-PORDER-FOR-PDF.
+                 PERFORM SETUP-MERGE-PORDER-FOR-PDF
+                 GO TO POSXQS-999.
 
            IF Fax-PaNumber = 4
-            IF WS-PRINTING-TYPE = "P"
-             IF PAGE-CNT = 1
+      *      IF WS-PRINTING-TYPE = "P"
+              IF PAGE-CNT = 1
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER
                  PERFORM SETUP-PORDER-FOR-PDF
-             ELSE
+              ELSE
                  PERFORM WORK-OUT-PDF-FILE-NAMES
                  MOVE WS-PRINTER-PAGE1   TO WS-PRINTER
                  PERFORM FIND-PDF-TYPE-PRINTER

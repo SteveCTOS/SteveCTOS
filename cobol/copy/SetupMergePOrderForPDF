@@ -7,7 +7,7 @@
           CONCATENATE('PrintMergePOrder ', ' ', WS-CO-NUMBER, ' ',
            TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTER-PAGE1), ' ', 
             TRIM(WS-PRINTER-PAGE2), ' ', 
-            PAGE-CNT, ' ', WS-AUTO-FAX, ' ', WS-PRINTING-TYPE, ' ',
+            PAGE-CNT, ' ', WS-FAX-Y-N, ' ', WS-PRINTING-TYPE, ' ',
                WS-FAX-NUMBER)
                TO WS-COMMAND-LINE.
       
