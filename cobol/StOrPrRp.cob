@@ -1582,7 +1582,7 @@
                
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
-            IF LINE-CNT < 40
+            IF LINE-CNT < 41
       *         MOVE "GOING TO PRINT, PAGE-CNT =1" TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
@@ -1731,7 +1731,7 @@
            MOVE 1 TO SUB-1.
        POSXQS-910.
            MOVE WS-COMMENT (SUB-1)     TO SLIP-COMM-LINE
-           WRITE PRINT-REC              FROM SLIP-COMMENT AFTER 1.
+           WRITE PRINT-REC           FROM SLIP-COMMENT AFTER 1.
            IF SUB-1 < 5
               ADD 1 TO SUB-1
             IF WS-COMMENT (SUB-1) NOT = "   "
