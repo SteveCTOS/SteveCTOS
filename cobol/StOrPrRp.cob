@@ -1582,13 +1582,13 @@
                
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
-            IF LINE-CNT < 43
+            IF LINE-CNT < 40
       *         MOVE "GOING TO PRINT, PAGE-CNT =1" TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT > 1
-            IF LINE-CNT < 58
+            IF LINE-CNT < 56
       *         MOVE "GOING TO PRINT, PAGE-CNT > 1" TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
@@ -1622,11 +1622,7 @@
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 2
-             IF LINE-CNT > 42
-             
-      *          MOVE "PG=2 CLOSING PRINT-SLIP" TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-             
+             IF LINE-CNT > 40
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1645,11 +1641,7 @@
                  GO TO POSXQS-008.
            IF Fax-PaNumber = 4
             IF PAGE-CNT > 2
-             IF LINE-CNT > 57
-             
-      *          MOVE "PG>2 CLOSING PRINT-SLIP" TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-             
+             IF LINE-CNT > 55
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
