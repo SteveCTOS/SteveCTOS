@@ -1582,13 +1582,13 @@
                
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
-            IF LINE-CNT < 41
+            IF LINE-CNT < 36
       *         MOVE "GOING TO PRINT, PAGE-CNT =1" TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT > 1
-            IF LINE-CNT < 56
+            IF LINE-CNT < 51
       *         MOVE "GOING TO PRINT, PAGE-CNT > 1" TO WS-MESSAGE
       *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
@@ -1622,7 +1622,7 @@
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 2
-             IF LINE-CNT > 40
+             IF LINE-CNT > 35
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1633,7 +1633,7 @@
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT       TO WS-HYLA-PAGE2
-                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2 AFTER 1
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC
@@ -1641,7 +1641,7 @@
                  GO TO POSXQS-008.
            IF Fax-PaNumber = 4
             IF PAGE-CNT > 2
-             IF LINE-CNT > 55
+             IF LINE-CNT > 50
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
@@ -1650,7 +1650,7 @@
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  MOVE PAGE-CNT TO WS-HYLA-PAGE2
-                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2 AFTER 1
                  MOVE SPACES TO PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC
@@ -1700,6 +1700,52 @@
            
            GO TO POSXQS-005.
        POSXQS-900.
+           IF PAGE-CNT = 1
+              ADD 1 TO PAGE-CNT.
+      *          MOVE "POSXQS-900" TO WS-MESSAGE 
+      *          MOVE PAGE-CNT TO WS-MESSAGE 
+      *          PERFORM ERROR1-000
+      *          MOVE LINE-CNT TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020.
+
+           IF Fax-PaNumber = 4
+            IF PAGE-CNT = 2
+             IF LINE-CNT > 35
+                 CLOSE PRINT-SLIP
+                 PERFORM REMOVE-SPACES-IN-FAX-NAME
+                 MOVE WS-PRINTER TO WS-PRINTER-PAGE2
+                 OPEN OUTPUT PRINT-SLIP
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT       TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2 AFTER 1
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM SLIP-HEAD8
+                 GO TO POSXQS-902.
+           IF Fax-PaNumber = 4
+            IF PAGE-CNT > 2
+             IF LINE-CNT > 50
+                 MOVE " " TO PRINT-REC
+                 WRITE PRINT-REC BEFORE PAGE
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM WS-HYLA-TYPE-LINE2
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 MOVE PAGE-CNT TO WS-HYLA-PAGE2
+                 WRITE PRINT-REC FROM WS-HYLA-FROM-LINE2 AFTER 1
+                 MOVE SPACES TO PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC
+                 WRITE PRINT-REC FROM SLIP-HEAD8.
+       POSXQS-902.
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
            MOVE "      ORDER VALUE :"     TO SLIP-TOT-COM
            MOVE WS-SUPPLIER-AMOUNT        TO TOT-GRV
@@ -1708,7 +1754,7 @@
            
       * CHANGED 8/12/2016 SO THAT THE EMAILING OF ORDERS WORKS IN POS
       *     IF CR-FOREIGN-LOCAL = "F"
-      *         GO TO POSXQS-901.
+      *         GO TO POSXQS-905.
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
            MOVE "       VAT AMOUNT :"  TO SLIP-TOT-COM.
            IF CR-FOREIGN-LOCAL = "L"
@@ -1727,7 +1773,7 @@
            WRITE PRINT-REC              FROM SLIP-TOTAL AFTER 1
            MOVE " "                    TO PRINT-REC.
            COMPUTE WS-SUPPLIER-AMOUNT = WS-SUPPLIER-AMOUNT - WS-VAT-AMT.
-       POSXQS-901.
+       POSXQS-905.
            MOVE 1 TO SUB-1.
        POSXQS-910.
            MOVE WS-COMMENT (SUB-1)     TO SLIP-COMM-LINE
@@ -1737,7 +1783,7 @@
             IF WS-COMMENT (SUB-1) NOT = "   "
               GO TO POSXQS-910.
            MOVE " "             TO PRINT-REC SLIP-COMMENT.
-           WRITE PRINT-REC.
+      *     WRITE PRINT-REC.
            MOVE "**** PLEASE ACKNOWLEDGE RECEIPT OF THIS ORDER ****"
                 TO SLIP-COMM-LINE.
            WRITE PRINT-REC              FROM SLIP-COMMENT AFTER 1.
