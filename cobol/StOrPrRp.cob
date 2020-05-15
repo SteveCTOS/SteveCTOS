@@ -75,6 +75,7 @@
        77  WS-PRINTING-TYPE     PIC X VALUE " ".
        77  WS-ACC-ERROR         PIC X VALUE " ".      
        01  WS-EMAIL             PIC X(50).
+       01  WS-PAGE-CHANGED      PIC X VALUE "N".
        01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  W-CRTSTATUS          PIC 9(4) value 0.
@@ -1701,7 +1702,8 @@
            GO TO POSXQS-005.
        POSXQS-900.
            IF PAGE-CNT = 1
-              ADD 1 TO PAGE-CNT.
+              ADD 1 TO PAGE-CNT
+              MOVE "Y" TO WS-PAGE-CHANGED.
       *          MOVE "POSXQS-900" TO WS-MESSAGE 
       *          MOVE PAGE-CNT TO WS-MESSAGE 
       *          PERFORM ERROR1-000
@@ -1746,6 +1748,12 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC FROM SLIP-HEAD8.
        POSXQS-902.
+      * HERE WE DEDUCT 1 FROM PAGE-CNT TO RESET THE POSXQS-900 = ADD 1
+           IF PAGE-CNT = 2
+            IF WS-PAGE-CHANGED = "Y"
+              MOVE "N" TO WS-PAGE-CHANGED
+              SUBTRACT 1 FROM PAGE-CNT.
+           
            MOVE " " TO PRINT-REC SLIP-DETAIL SLIP-TOTAL
            MOVE "      ORDER VALUE :"     TO SLIP-TOT-COM
            MOVE WS-SUPPLIER-AMOUNT        TO TOT-GRV
@@ -1815,6 +1823,9 @@
                  PERFORM SETUP-PORDER2-FOR-PDF
                  PERFORM SETUP-MERGE-PORDER-FOR-PDF
                  GO TO POSXQS-999.
+
+      *        MOVE PAGE-CNT TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE.
 
            IF Fax-PaNumber = 4
       *      IF WS-PRINTING-TYPE = "P"
