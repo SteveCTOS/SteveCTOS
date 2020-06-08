@@ -1574,24 +1574,18 @@
        POSXQS-005.
            PERFORM READ-OUTSTANDING-ORDERS.
            IF WS-OUTORD-ST1 = 10
+            IF LINE-CNT = 36
+               ADD 1 TO PAGE-CNT
+               GO TO POSXQS-900
+            ELSE
                GO TO POSXQS-900.
-               
-      *         IF LINE-CNT > 40
-      *            MOVE LINE-CNT TO WS-MESSAGE
-      *            PERFORM ERROR-MESSAGE.
-               
-               
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
             IF LINE-CNT < 36
-      *         MOVE "GOING TO PRINT, PAGE-CNT =1" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT > 1
             IF LINE-CNT < 51
-      *         MOVE "GOING TO PRINT, PAGE-CNT > 1" TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
                GO TO POSXQS-010.
                
            MOVE OO-DELIVERY-METHOD       TO WS-DEL-SUB.
