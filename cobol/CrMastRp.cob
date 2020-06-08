@@ -390,7 +390,7 @@
             IF WS-CR-ST1 NOT = 0
                GO TO PRR-999.
        PRR-002.
-            READ CREDITOR-MASTER NEXT
+            READ CREDITOR-MASTER NEXT WITH LOCK
                AT END NEXT SENTENCE.
             IF WS-CR-ST1 = 10
                MOVE 0 TO WS-CR-ST1
@@ -558,9 +558,26 @@
            ADD CR-PURCHASE-LAST TO WS-PURCH-LY (SUB-1)
            ADD CR-BALANCE       TO WS-BALANCE (SUB-1).
            
+           IF CR-CURRENCY = "RAND" OR "RANDS"
+              MOVE " " TO CR-CURRENCY
+              PERFORM REWRITE-CREDITOR-RECORD.
+           
            GO TO PRR-002.
        PRR-999.
            EXIT.
+      *
+       REWRITE-CREDITOR-RECORD SECTION.
+       RCR-010.
+            REWRITE CREDITOR-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-CR-ST1 NOT = 0
+                MOVE 0 TO WS-CR-ST1
+                MOVE "CREDITORS BUSY ON REWRITE, 'ESC' TO RETRY."
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO RCR-010.
+       RCR-999.
+            EXIT.
       *
        OPEN-FILES SECTION.
        OPEN-000.
