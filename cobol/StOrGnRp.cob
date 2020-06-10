@@ -37,6 +37,7 @@
        77  WS-SEA-AIR-ORDER     PIC X VALUE " ".
        77  WS-VALIDORDER        PIC X VALUE " ".
        77  WS-VALID-LINES-ONLY  PIC X VALUE " ".
+       77  WS-USE-MIN-BUY-QTY   PIC X VALUE " ".
        77  WS-TEMPORD           PIC X VALUE " ".
        77  WS-RANGE1            PIC X(10) VALUE " ".
        77  WS-RANGE2            PIC X(10) VALUE " ".
@@ -739,7 +740,7 @@
            MOVE 2762 TO POS.
 
            MOVE ' '       TO CDA-DATA.
-           MOVE 1        TO CDA-DATALEN.
+           MOVE 1         TO CDA-DATALEN.
            MOVE 24        TO CDA-ROW.
            MOVE 61        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
@@ -753,10 +754,37 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-1020.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5 OR = X"1B"
-               GO TO CONTROL-1050
+               GO TO CONTROL-1030
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO CONTROL-1020.
+       CONTROL-1030.
+           MOVE 2810 TO POS.
+           DISPLAY "If ST-ANALYSIS=S, Use MIN-BUY-QTY FOR ORDER-QTY?"
+              AT POS.
+           MOVE 2858 TO POS.
+           DISPLAY " : [ ]" AT POS.
+           MOVE 2862 TO POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 25        TO CDA-ROW.
+           MOVE 61        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-USE-MIN-BUY-QTY.
+           
+           IF W-ESCAPE-KEY = 4
+               GO TO CONTROL-1020.
+           IF WS-USE-MIN-BUY-QTY NOT = "Y" AND NOT = "N"
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-1030.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5 OR = X"1B"
+               GO TO CONTROL-1050
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-1030.
        CONTROL-1050.
            PERFORM OPEN-FILES.
            IF WS-CHECK-ORDERS = "A"
@@ -1531,6 +1559,7 @@
        COMPUTE-BOX-QTY SECTION.
        CBQ-010.
            IF ST-ANALYSIS = "S"
+            IF WS-USE-MIN-BUY-QTY = "N"
               GO TO CBQ-999.
            MOVE 0 TO WS-BOX-ORDER.
            IF WS-BOX-ORDERED = 0
@@ -1546,7 +1575,7 @@
        CBQ-020.
       * NEW IF STATEMENT BELOW.  ADDED 23/1/2016
       *  THERE SEEMS TO BE AN ERROR IN THE GNUCOBOL FOR THE B-RATE
-      *  SECTION WHERE BOX RDER SOMETIMES COMES BACK AS 0.
+      *  SECTION WHERE BOX ORDER SOMETIMES COMES BACK AS 0.
            IF ST-MINBUYQTY = 1
                MOVE WS-BOX-ORDERED TO WS-BOX-ORDER
                GO TO CBQ-040.
@@ -1573,6 +1602,9 @@
        SDFO-010.
            COMPUTE WS-TODAY = (WS-MM * 30) + WS-DD.
        SDFO-020.
+      *NEW LINE ADDED TO SEE IF DUE DATE BEFORE TODAY, THEN USE TODAY
+      *     IF WS-DUEDATE (SUB-1) NOT > WS-TODAY
+      *        MOVE WS-TODAY TO WS-DUEDATE (SUB-1).
            MOVE WS-DUEDATE (SUB-1) TO WS1-DATE.
            IF WS1-YY NOT = WS-YY
               COMPUTE WS-DUEDAY = ((((WS1-MM + 12) * 30)
@@ -1608,7 +1640,7 @@
            IF WS-ORDER (SUB-1) NOT = "    "
             MOVE " " TO PRINT-REC
             MOVE "                 ORDER NO                 DUE DATE" &
-            "    SHIP VIA                  SUPPLIER" TO PRINT-REC
+            "       SHIP VIA                  SUPPLIER" TO PRINT-REC
             WRITE PRINT-REC AFTER 2.
            MOVE " " TO PRINT-REC.
        SL-020.
@@ -1689,6 +1721,15 @@
            MOVE "ONLY ITEMS TO BE ORDERED HAVE BEEN PRINTED."
             TO PRINT-REC.
            WRITE PRINT-REC.
+           IF WS-USE-MIN-BUY-QTY = "Y"
+              MOVE 
+          "** MIN-BUY-QTY USED FOR ST-ANALYSIS='S' CALCULATIONS. **"
+             TO PRINT-REC
+           ELSE
+              MOVE
+          "** MIN-BUY-QTY NOT USED FOR ST-ANALYSIS='S' CALCULATIONS. **"
+             TO PRINT-REC.
+           WRITE PRINT-REC AFTER 1.
        SL-999.
            EXIT.
       *
