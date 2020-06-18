@@ -1612,8 +1612,15 @@
                  INVALID KEY NEXT SENTENCE.
             IF WS-DRTRANS-ST1 = 23 OR 35 OR 49
                  GO TO WRTR-000.
+      * ERC 22 = ATTEMPT TO DUPLICATE A KEY VALUE
+            IF WS-DRTRANS-ST1 = 22
+                MOVE 
+             "DRTRANS ERC22=ATTEMPT TO DUPLICATE A KEY, 'ESC' TO RETRY." 
+                TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE.
             IF WS-DRTRANS-ST1 NOT = 0
-                MOVE "DRTRANS BUSY ON WRITE WRTR-010, 'ESC' TO RETRY." 
+                MOVE 
+             "DRTRANS BUSY ON PMT WRITE WRTR-010, 'ESC' TO RETRY." 
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE WS-DRTRANS-ST1 TO WS-MESSAGE
