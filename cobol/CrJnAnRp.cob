@@ -407,7 +407,8 @@
            WRITE PRINT-REC AFTER 1
            ADD 4 TO WS-LINE.
        PR-020.
-           IF CRJRN-DUE-DATE > WS-CHECKDATE
+      *     IF CRJRN-DUE-DATE > WS-CHECKDATE
+           IF CRJRN-INV-DATE > WS-CHECKDATE
                GO TO PR-002.
            IF CRJRN-COMPLETE = "N"
                GO TO PR-002.
@@ -422,7 +423,8 @@
            MOVE DISPLAY-DATE              TO TRANS-DATE
            PERFORM COMPUTE-DATE-PERIOD.
                       
-           MOVE CRJRN-DUE-DATE            TO SPLIT-DATE
+      *     MOVE CRJRN-DUE-DATE            TO SPLIT-DATE
+           MOVE CRJRN-INV-DATE            TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE              TO TRANS-DUEDATE
            MOVE CRJRN-UNAPPLIED-AMT       TO WS-AMT-OF-INVOICE.
