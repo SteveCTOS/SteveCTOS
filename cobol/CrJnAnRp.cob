@@ -423,8 +423,8 @@
            MOVE DISPLAY-DATE              TO TRANS-DATE
            PERFORM COMPUTE-DATE-PERIOD.
                       
-      *     MOVE CRJRN-DUE-DATE            TO SPLIT-DATE
-           MOVE CRJRN-INV-DATE            TO SPLIT-DATE
+           MOVE CRJRN-DUE-DATE            TO SPLIT-DATE
+      *     MOVE CRJRN-INV-DATE            TO SPLIT-DATE
            PERFORM CONVERT-DATE-FORMAT
            MOVE DISPLAY-DATE              TO TRANS-DUEDATE
            MOVE CRJRN-UNAPPLIED-AMT       TO WS-AMT-OF-INVOICE.

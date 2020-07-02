@@ -1046,7 +1046,7 @@
                WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 1
                MOVE " "                     TO SLIP-PDF-TRAILER
                MOVE PAGE-CNT                TO S-PDFT-PAGE
-               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 2
+               WRITE PRINT-REC FROM SLIP-PDF-TRAILER AFTER 3
                MOVE " "                     TO PRINT-REC
                WRITE PRINT-REC AFTER 3
                MOVE 1 TO LINE-CNT.
