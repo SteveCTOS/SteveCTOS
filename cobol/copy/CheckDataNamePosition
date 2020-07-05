@@ -151,5 +151,7 @@
             Move Alpha-Rate to Ws-DrMasterTemp.
            If Sub-4 = 75
             Move Alpha-Rate to Ws-GlTransTemp.
+           If Sub-4 = 76
+            Move Alpha-Rate to Ws-SlQuoteBatch.
        CDNN-999.
            Exit.

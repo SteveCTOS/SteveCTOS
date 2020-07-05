@@ -113,4 +113,5 @@
           03 WS-DRTRANSTEMP       PIC X(40).
           03 WS-DRMASTERTEMP      PIC X(40).
           03 WS-GLTRANSTEMP       PIC X(40).
+          03 WS-SLQUOTEBATCH      PIC X(40).
       *

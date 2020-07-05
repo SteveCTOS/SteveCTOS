@@ -692,6 +692,7 @@
        CDS-999.
           EXIT.
       *
+      * THIS BELOW FOR CTOS - NOT LINUX
        OPEN-NODE-FILE SECTION.
        ONF-001.
            PERFORM CDS-005.
@@ -722,6 +723,7 @@
        ONF-999.
             EXIT.
       *
+      * THIS BELOW FOR CTOS - NOT LINUX
        OPEN-FILES SECTION.
        OPEN-001.
             PERFORM OPEN-NODE-FILE.
@@ -762,7 +764,8 @@
       *  <COPY>CHECKDATANAMEPOSITION & <COPY>CHLFDLINKAGE CHANGED.     *
       * ALSO RECOMPILE MainCont.cob                                    *
       *                                                                *
-      * IN LINUX DO A make clean AND THEN A make install TO RECOMPILE  *
+      * IN LINUX DO "make clean" AND THEN "make -k" then               *
+      * "make install" TO RECOMPILE                                    *
       * ALL PROGRAMS TO TAKE CARE OF THE CHANGES                       *
       ******************************************************************
        Copy "CheckDataNamePosition".
