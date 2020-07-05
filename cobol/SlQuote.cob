@@ -31,6 +31,7 @@
          Copy "SelectCoFaxParam".
          Copy "SelectStDiscAcc".
          Copy "SelectBmMaster".
+         Copy "SelectSlQuoteBatch".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                ORGANIZATION IS LINE SEQUENTIAL.
       *
@@ -48,6 +49,7 @@
            COPY ChlfdFaxParam.
            COPY ChlfdStDiscAcc.
            COPY ChlfdToolkit.
+           COPY ChlfdSlQuoteBatch.
       *
        FD  PRINT-FILE.
        01  PRINT-REC.
@@ -203,6 +205,8 @@
            03  WS-STDISC-ST1          PIC 99.
        01  WS-TOOLKIT-STATUS.
            03  WS-TOOLKIT-ST1         PIC 99.
+       01  WS-QUBATCH-STATUS.
+           03  WS-QUBATCH-ST1         PIC 99.
        01  WS-QUOTE-CHECK.
            03  WS-O-C           PIC X OCCURS 25.
        01  WS-NAME-LENGTH.
@@ -1471,7 +1475,44 @@
               PERFORM TAKE-OUT-BLANKS-IN-CO-NAME
               PERFORM MAKE-PDF-FINAL-FOR-EMAIL
               PERFORM SETUP-QUOTE-FOR-PDF-MGEMAIL.
+          IF WS-AUTO-FAX = "E"
+                PERFORM WRITE-QUOTE-BATCH.
        WRFAX-999.
+           EXIT.
+      *
+       WRITE-QUOTE-BATCH SECTION.
+       WQEBI-010.
+            MOVE WS-INVOICE               TO QB-QUOTENUMBER
+            MOVE WS-PRINTER-PDF           TO QB-PDF-PRINT-FILE
+            MOVE WS-USEREMAILADD          TO QB-EMAIL-SENDER
+            MOVE WSF-MAIL-NUMBER          TO QB-EMAIL-RECIPIENT
+            MOVE WS-SUBJECT-FIXED         TO QB-SUBJECT-FIXED.
+       WQEBI-020.
+            WRITE QUOTEBATCH-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-QUBATCH-ST1 NOT = 0
+                MOVE "QUOTE BATCH FILE BUSY ON WRITE, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-QUBATCH-ST1
+                GO TO WQEBI-030.
+             GO TO WQEBI-999.
+       WQEBI-030.
+            REWRITE QUOTEBATCH-RECORD
+                  INVALID KEY NEXT SENTENCE.
+            IF WS-QUBATCH-ST1 NOT = 0
+                MOVE "QUOTE BATCH BUSY ON REWRITE, 'ESC' TO RETRY"
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-QUBATCH-ST1
+                GO TO WQEBI-020.
+       WQEBI-999.
            EXIT.
       *
        FIND-PDF-TYPE-PRINTER SECTION.
@@ -8030,6 +8071,24 @@
               MOVE 0 TO WS-TOOLKIT-ST1
               GO TO OPEN-020.
        OPEN-021.
+          OPEN I-O QUOTEBATCH.
+          IF WS-QUBATCH-ST1 = 35
+             CLOSE QUOTEBATCH
+             OPEN OUTPUT QUOTEBATCH
+             CLOSE QUOTEBATCH
+             GO TO OPEN-021.
+          IF WS-QUBATCH-ST1 NOT = 0
+              MOVE "QUBATCH FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE WS-SLQUOTEBATCH TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE 0 TO WS-QUBATCH-ST1
+              GO TO OPEN-021.
+       OPEN-040.
            MOVE Ws-Forms-Name   TO F-FILENAME
            MOVE Ws-cbForms-name TO F-CBFILENAME.
            MOVE "SlQuote"       TO F-FORMNAME.
@@ -8052,7 +8111,8 @@
                  INCR-REGISTER
                  STOCK-TRANS-FILE
                  TOOLKITS
-                 STDISC-MASTER.
+                 STDISC-MASTER
+                 QUOTEBATCH.
        END-900.
            EXIT PROGRAM.
       *     STOP RUN.
