@@ -1491,26 +1491,26 @@
             WRITE QUOTEBATCH-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-QUBATCH-ST1 NOT = 0
-                MOVE "QUOTE BATCH FILE BUSY ON WRITE, 'ESC' TO RETRY"
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-QUBATCH-ST1
+      *          MOVE "QUOTE BATCH FILE BUSY ON WRITE, 'ESC' TO RETRY"
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *          MOVE 0 TO WS-QUBATCH-ST1
                 GO TO WQEBI-030.
              GO TO WQEBI-999.
        WQEBI-030.
             REWRITE QUOTEBATCH-RECORD
                   INVALID KEY NEXT SENTENCE.
             IF WS-QUBATCH-ST1 NOT = 0
-                MOVE "QUOTE BATCH BUSY ON REWRITE, 'ESC' TO RETRY"
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-QUBATCH-ST1
+      *          MOVE "QUOTE BATCH BUSY ON REWRITE, 'ESC' TO RETRY"
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *          MOVE 0 TO WS-QUBATCH-ST1
                 GO TO WQEBI-020.
        WQEBI-999.
            EXIT.
