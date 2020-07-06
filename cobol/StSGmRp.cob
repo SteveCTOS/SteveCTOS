@@ -1028,13 +1028,13 @@
                      WSI-SALESAMT
                      WSI-COST
                      WSI-MARGIN
-                     WSI-PERC
-                     WSI-SALESQTY-YTD
+                     WSI-PERC.
+           MOVE 0 TO WSI-SALESQTY-YTD
                      WSI-SALESAMT-YTD
                      WSI-COST-YTD
                      WSI-MARGIN-YTD
-                     WSI-PERC-YTD
-                     WSI-SALESQTY-LAST
+                     WSI-PERC-YTD.
+           MOVE 0 TO WSI-SALESQTY-LAST
                      WSI-SALESAMT-LAST
                      WSI-COST-LAST
                      WSI-MARGIN-LAST
@@ -1079,6 +1079,7 @@
            WRITE PRINT-REC AFTER 1.
 
            ADD 4 TO LINE-CNT.
+
            MOVE 1610 TO POS.
            DISPLAY "Category: " AT POS.
            MOVE 1620 TO POS.
@@ -1088,17 +1089,18 @@
            MOVE 1733 TO POS.
            MOVE WS-SALESAMT TO WS-SALES-DIS.
            DISPLAY WS-SALES-DIS AT POS.
+
            MOVE 0 TO WS-SALESQTY
                      WS-SALESAMT
                      WS-COST
                      WS-MARGIN
-                     WS-PERC
-                     WS-SALESQTY-YTD
+                     WS-PERC.
+           MOVE 0 TO WS-SALESQTY-YTD
                      WS-SALESAMT-YTD
                      WS-COST-YTD
                      WS-MARGIN-YTD
-                     WS-PERC-YTD
-                     WS-SALESQTY-LAST
+                     WS-PERC-YTD.
+           MOVE 0 TO WS-SALESQTY-LAST
                      WS-SALESAMT-LAST
                      WS-COST-LAST
                      WS-MARGIN-LAST
@@ -1112,6 +1114,7 @@
       *
        READ-BRANCH-STOCK SECTION.
        RBRST-100.
+           PERFORM CLEAR-BRANCH-AMOUNTS.
            IF WS-END = "Y"
                GO TO RBRST-900.
             IF WS-STOCK1 = " "
@@ -1128,14 +1131,23 @@
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK1-ST1 = 23 OR 35 OR 49
                 MOVE "UNKNOWN        " TO WS-BRANCH-STOCK (SUB-1)
-                MOVE 0         TO WS-BRANCH-QTYSOLDMTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDYTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDLYR    (SUB-1)
-                                  WS-BRANCH-RANDSOLDMTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDYTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDLYR   (SUB-1)
-                                  WS-BRANCH-RANDCOSTMTD   (SUB-1)
-                                  WS-BRANCH-RANDCOSTYTD   (SUB-1)
+                MOVE 0         TO WS-BRANCH-QTYSOLDMTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDYTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDSOLDMTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDYTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDCOSTMTD (SUB-1)
+                                  WS-BRANCH-RANDCOSTYTD (SUB-1)
+                                  ST1-SALESUNITMTD
+                                  ST1-SALESUNITSYTD
+                                  ST1-SALESUNITSLAST
+                                  ST1-SALESRANDSMTD
+                                  ST1-SALESRANDSYTD
+                                  ST1-SALESRANDSLAST
+                                  ST1-SALESCOSTMTD
+                                  ST1-SALESCOSTYTD
+                                  ST1-SALESCOSTLAST
                 GO TO RBRST-200.
              IF WS-STOCK1-ST1 NOT = 0
                 MOVE "STOCK RECORD1 BUSY ON READ, 'ESC' TO RETRY."
@@ -1169,14 +1181,24 @@
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK2-ST1 = 23 OR 35 OR 49
                 MOVE "UNKNOWN        " TO WS-BRANCH-STOCK (SUB-1)
-                MOVE 0         TO WS-BRANCH-QTYSOLDMTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDYTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDLYR    (SUB-1)
-                                  WS-BRANCH-RANDSOLDMTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDYTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDLYR   (SUB-1)
-                                  WS-BRANCH-RANDCOSTMTD   (SUB-1)
-                                  WS-BRANCH-RANDCOSTYTD   (SUB-1)
+                MOVE 0         TO WS-BRANCH-QTYSOLDMTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDYTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDSOLDMTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDYTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDCOSTMTD (SUB-1)
+                                  WS-BRANCH-RANDCOSTYTD (SUB-1)
+                                  ST2-SALESUNITMTD
+                                  ST2-SALESUNITSYTD
+                                  ST2-SALESUNITSLAST
+                                  ST2-SALESRANDSMTD
+                                  ST2-SALESRANDSYTD
+                                  ST2-SALESRANDSLAST
+                                  ST2-SALESCOSTMTD
+                                  ST2-SALESCOSTYTD
+                                  ST2-SALESCOSTLAST
+
                 GO TO RBRST-300.
              IF WS-STOCK2-ST1 NOT = 0
                 MOVE "STOCK RECORD2 BUSY ON READ, 'ESC' TO RETRY."
@@ -1210,14 +1232,23 @@
                 INVALID KEY NEXT SENTENCE.
              IF WS-STOCK3-ST1 = 23 OR 35 OR 49
                 MOVE "UNKNOWN        " TO WS-BRANCH-STOCK (SUB-1)
-                MOVE 0         TO WS-BRANCH-QTYSOLDMTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDYTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDLYR    (SUB-1)
-                                  WS-BRANCH-RANDSOLDMTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDYTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDLYR   (SUB-1)
-                                  WS-BRANCH-RANDCOSTMTD   (SUB-1)
-                                  WS-BRANCH-RANDCOSTYTD   (SUB-1)
+                MOVE 0         TO WS-BRANCH-QTYSOLDMTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDYTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDSOLDMTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDYTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDCOSTMTD (SUB-1)
+                                  WS-BRANCH-RANDCOSTYTD (SUB-1)
+                                  ST3-SALESUNITMTD
+                                  ST3-SALESUNITSYTD
+                                  ST3-SALESUNITSLAST
+                                  ST3-SALESRANDSMTD
+                                  ST3-SALESRANDSYTD
+                                  ST3-SALESRANDSLAST
+                                  ST3-SALESCOSTMTD
+                                  ST3-SALESCOSTYTD
+                                  ST3-SALESCOSTLAST
                 GO TO RBRST-400.
              IF WS-STOCK3-ST1 NOT = 0
                 MOVE "STOCK RECORD3 BUSY ON READ, 'ESC' TO RETRY."
@@ -1251,14 +1282,23 @@
                  INVALID KEY NEXT SENTENCE.
              IF WS-STOCK4-ST1 = 23 OR 35 OR 49
                 MOVE "UNKNOWN        " TO WS-BRANCH-STOCK (SUB-1)
-                MOVE 0         TO WS-BRANCH-QTYSOLDMTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDYTD    (SUB-1)
-                                  WS-BRANCH-QTYSOLDLYR    (SUB-1)
-                                  WS-BRANCH-RANDSOLDMTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDYTD   (SUB-1)
-                                  WS-BRANCH-RANDSOLDLYR   (SUB-1)
-                                  WS-BRANCH-RANDCOSTMTD   (SUB-1)
-                                  WS-BRANCH-RANDCOSTYTD   (SUB-1)
+                MOVE 0         TO WS-BRANCH-QTYSOLDMTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDYTD (SUB-1)
+                                  WS-BRANCH-QTYSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDSOLDMTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDYTD (SUB-1)
+                                  WS-BRANCH-RANDSOLDLYR (SUB-1)
+                                  WS-BRANCH-RANDCOSTMTD (SUB-1)
+                                  WS-BRANCH-RANDCOSTYTD (SUB-1)
+                                  ST4-SALESUNITMTD
+                                  ST4-SALESUNITSYTD
+                                  ST4-SALESUNITSLAST
+                                  ST4-SALESRANDSMTD
+                                  ST4-SALESRANDSYTD
+                                  ST4-SALESRANDSLAST
+                                  ST4-SALESCOSTMTD
+                                  ST4-SALESCOSTYTD
+                                  ST4-SALESCOSTLAST
                 GO TO RBRST-900.
              IF WS-STOCK4-ST1 NOT = 0
                 MOVE "STOCK RECORD4 BUSY ON READ, 'ESC' TO RETRY."
@@ -1282,6 +1322,25 @@
              PERFORM ERROR4-020.
        RBRST-999.
              EXIT.
+      *
+       CLEAR-BRANCH-AMOUNTS SECTION.
+       CBA-010.
+            MOVE 1 TO SUB-1.
+       CBA-020.
+            MOVE 0 TO  WS-BRANCH-QTYSOLDMTD (SUB-1)
+                       WS-BRANCH-QTYSOLDYTD (SUB-1)
+                       WS-BRANCH-QTYSOLDLYR (SUB-1)
+                       WS-BRANCH-RANDSOLDMTD (SUB-1)
+                       WS-BRANCH-RANDSOLDYTD (SUB-1)
+                       WS-BRANCH-RANDSOLDLYR (SUB-1)
+                       WS-BRANCH-RANDCOSTMTD (SUB-1)
+                       WS-BRANCH-RANDCOSTYTD (SUB-1)
+                       WS-BRANCH-RANDCOSTLYR (SUB-1).
+           IF SUB-1 < 10
+               ADD 1 TO SUB-1
+               GO TO CBA-020.
+       CBA-999.
+            EXIT.
       *
        READ-NEXT-COMPANY SECTION.
        RNC-005.
