@@ -5,7 +5,7 @@
           
       *    MOVE WS-USERNAME TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
-          
+            
       *    MOVE W-FILENAME TO WS-MESSAGE
       *    PERFORM ERROR-MESSAGE.
       

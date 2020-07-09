@@ -2,24 +2,24 @@
 *   ************************{** SALES CONTROL MENU  **}*******************     
 *   *    *********************{* SALES REPORTING MENU *}***********************
 *   *    *                                                                    *
-*   *    *  1. Sales Analysis By Code          12. Salesman Corp. A/c Analysis*
-*   *    *  2. Sales Analysis Master List      13. Soldby List By Rep.        *
-*   *    *                                                                    *
-*   *    *  3. Distribution List               14. Daily Exception Report     *
-*   *    *  4. Tax File List                                                  *
+*   *    *  1. Sales Analysis By Code          14. Daily Exception Report     *
+*   *    *  2. Sales Analysis Master List                                     *
 *   *    *                                     15. Stores Pullby Report       *
-*   *    *  5. Invoice/Credit Note Print                                      *
-*   *    *  6. Invoice Register Report         16. Cash Sales report          *
+*   *    *  3. Distribution List                                              *
+*   *    *  4. Tax File List                   16. Cash Sales report          *
 *   *    *                                                                    *
-*   *    *  7. Customer Orders Final Print     17. Stock Specials By Invoice  *
-*   *    *  8. Customer Orders Register By Rep                                *
-*   *    *  9. Customer Orders Inv. By Month   18. Invoice Delivery Report    *
-*   *    * 10. Customer Orders - Suspended                                    *
-*   *    *                                     19. Sales Profitability by Rep *
+*   *    *  5. Invoice/Credit Note Print       17. Stock Specials By Invoice  *
+*   *    *  6. Invoice Register Report                                        *
+*   *    *                                     18. Invoice Delivery Report    *
+*   *    *  7. Customer Orders Final Print                                    *
+*   *    *  8. Customer Orders Register By Rep 19. Sales Profitability by Rep *
+*   *    *  9. Customer Orders Inv. By Month                                  *
+*   *    * 10. Customer Orders - Suspended     20. Invoice Register By Date   *
+*   *    *                                          & Account Number          *
 *   *    * 11. Quotations Register By Rep                                     *
-*   *    *                                     20. Invoice Register By Date   *
-*****    *                                          & Account Number          *
-    ******                                     21. Salesledger Checking Report*
+*   *    *                                     21. Salesledger Checking Report*
+*****    * 12. Salesman Corp. A/c Analysis                                    *
+    ****** 13. Soldby List By Rep.             22. Quote Batch Re-Send Program*
          *                                                                    *
          ************************ENTER SELECTION : __**************************
                                                                                

@@ -108,7 +108,7 @@ set (sales_list
   SlPSlpIq SlPsPuMt SlPuByMt SlPuByRp SlQuAcIq SlQuRgRp SlQuote  SlQuStIq
   SlRgAcRp SlRgName SlRgNaIq SlRgNaMy SlRgNaLy SlRgLyMt SlRgChLy SlRgAcLy
   SlRgChMt SlSBChMt SlSaleRp SlSManRp SlSoByMt SlSoByRp SlSpecRp SlSRepMt
-  SlTermMt SlRegisterMv
+  SlTermMt SlRegisterMv      SlQuBhRp
 )
 
 set (stock_list 

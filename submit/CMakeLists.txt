@@ -58,14 +58,17 @@ set (copy_list
   MailgunTest5.py
   MGMessageCTJCn.html
   MGMessageCTNCn.html
+  MGMessageKRSCn.html
   MGMessageSFJCn.html
   MGMessageCSCCn.html
   MGMessageCTJDrDu.html
   MGMessageCTNDrDu.html
+  MGMessageKRSDrDu.html
   MGMessageSFJDrDu.html
   MGMessageCSCDrDu.html
   MGMessageCTJInv.html
   MGMessageCTNInv.html
+  MGMessageKRSInv.html
   MGMessageSFJInv.html
   MGMessageCSCInv.html
   MGMessageCTJPO.html
@@ -76,12 +79,17 @@ set (copy_list
   MGMessageCTNQu.html
   MGMessageCSCQu.html
   MGMessageSFJQu.html
+  MGMessageCTJQuBatch.html
+  MGMessageCTNQuBatch.html
+  MGMessageCSCQuBatch.html
+  MGMessageSFJQuBatch.html
   MGMessageCTJRemit.html
   MGMessageCTNRemit.html
   MGMessageCSCRemit.html
   MGMessageSFJRemit.html
   MGMessageCTJStat.html
   MGMessageCTNStat.html
+  MGMessageKRSStat.html
   MGMessageSFJStat.html
   MGMessageCSCStat.html
   MonthEnd.Sub01

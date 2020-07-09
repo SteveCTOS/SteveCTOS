@@ -15,6 +15,8 @@
            GO TO SUCFPMGEM-030.
         IF WS-CO-NUMBER = 8
            GO TO SUCFPMGEM-040.
+        IF WS-CO-NUMBER = 9 OR = 10 OR = 11 OR = 12
+           GO TO SUCFPMGEM-050.
            
        GO TO SUCFPMGEM-999.
        SUCFPMGEM-010.
@@ -58,6 +60,17 @@
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
           ' ', '-t', ' ', 'MGMessageCSCCn.html',
+          ' ', '-T', ' ', TRIM(WS-EMAIL-NUMBER))
+               TO WS-COMMAND-LINE.
+          GO TO SUCFPMGEM-500.
+       SUCFPMGEM-050.
+      * FOR KRS, HKY, QTM & SFI LEAVING MOST THINGS AS  DEFAULT
+          MOVE CONCATENATE('python MailGunEmail.py ', 
+          ' ', '-f', ' ', WS-INVOICE-PDF,
+          ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
+          ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
+          ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
+          ' ', '-t', ' ', 'MGMessageKRSCn.html',
           ' ', '-T', ' ', TRIM(WS-EMAIL-NUMBER))
                TO WS-COMMAND-LINE.
           GO TO SUCFPMGEM-500.

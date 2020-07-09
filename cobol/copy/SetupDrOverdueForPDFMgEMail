@@ -15,6 +15,8 @@
            GO TO SUPDRFOPGM-030.
         IF WS-CO-NUMBER = 8
            GO TO SUPDRFOPGM-040.
+        IF WS-CO-NUMBER = 9 OR = 10 OR = 11 OR = 12
+           GO TO SUPDRFOPGM-050.
            
        GO TO SUPDRFOPGM-999.
        SUPDRFOPGM-010.
@@ -58,6 +60,17 @@
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
           ' ', '-t', ' ', 'MGMessageCSCDrDu.html',
+          ' ', '-T', ' ', TRIM(WS-EMAIL))
+               TO WS-COMMAND-LINE.
+          GO TO SUPDRFOPGM-500.
+       SUPDRFOPGM-050.
+      * FOR KRS, HKY, QTM & SFI LEAVING MOST THINGS AS  DEFAULT
+          MOVE CONCATENATE('python MailGunEmail.py ', 
+          ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
+          ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
+          ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
+          ' ', '-s', ' ', TRIM(WS-SUBJECT-FIXED),
+          ' ', '-t', ' ', 'MGMessageKRSDrDu.html',
           ' ', '-T', ' ', TRIM(WS-EMAIL))
                TO WS-COMMAND-LINE.
           GO TO SUPDRFOPGM-500.
