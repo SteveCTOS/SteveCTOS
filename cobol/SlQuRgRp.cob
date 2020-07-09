@@ -9,6 +9,7 @@
         FILE-CONTROL.
         Copy "SelectSlRegister".
         Copy "SelectDrMaster".
+         Copy "SelectSlQuoteBatch".
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                ORGANIZATION IS LINE SEQUENTIAL.
       *
@@ -16,6 +17,7 @@
        FILE SECTION.
            COPY ChlfdRegister.
            COPY ChlfdDebtor.
+           COPY ChlfdSlQuoteBatch.
       *
        FD  PRINT-FILE.
        01  PRINT-REC                PIC X(255).
@@ -39,6 +41,8 @@
            03  WS-INCR-ST1      PIC 99.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1    PIC 99.
+       01  WS-QUBATCH-STATUS.
+           03  WS-QUBATCH-ST1         PIC 99.
        01  SPLIT-STOCK.
            03  SP-1STCHAR       PIC X.
            03  SP-REST          PIC X(14).
@@ -76,7 +80,7 @@
            03  FILLER           PIC X(7) VALUE "  BY".
        01  DETAIL-LINE.
            03  D-INVNO          PIC Z(5)9.
-           03  FILLER           PIC X(1) VALUE " ".
+           03  D-QB-FOUND       PIC X(1) VALUE " ".
            03  D-CUSTNO         PIC X(8) VALUE " ".
            03  D-NAME           PIC X(25) VALUE " ".
            03  FILLER           PIC X VALUE " ".
@@ -374,6 +378,9 @@
        PR-010.
            IF WS-LINE > 59
                PERFORM PRINT-HEADINGS.
+               
+           PERFORM READ-QUOTE-BATCH.
+               
            MOVE INCR-INVOICE      TO D-INVNO
            MOVE INCR-ACCOUNT      TO D-CUSTNO
            MOVE INCR-NAME         TO D-NAME
@@ -478,6 +485,31 @@
        PT-999.
            EXIT.
       *
+       READ-QUOTE-BATCH SECTION.
+       RQB-010.
+            MOVE INCR-INVOICE TO QB-QUOTENUMBER.
+            START QUOTEBATCH KEY NOT < QB-KEY
+                   INVALID KEY NEXT SENTENCE.
+           IF WS-QUBATCH-ST1 NOT = 0
+                MOVE " " TO D-QB-FOUND
+              GO TO RQB-999.
+       RQB-020.
+            READ QUOTEBATCH
+                INVALID KEY NEXT SENTENCE.
+            IF WS-QUBATCH-ST1 NOT = 0
+      *          MOVE "QUOTE BATCH FILE BUSY ON READ, 'ESC' TO RETRY"
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *          MOVE 0 TO WS-QUBATCH-ST1
+                MOVE " " TO D-QB-FOUND
+                GO TO RQB-999.
+            MOVE "*" TO D-QB-FOUND.
+       RQB-999.
+           EXIT.
+      *
        OPEN-FILES SECTION.
        OPEN-020.
            OPEN I-O INCR-REGISTER.
@@ -488,6 +520,19 @@
               PERFORM ERROR-MESSAGE
               GO TO OPEN-020.
            MOVE Ws-Co-Name TO CO-NAME.
+       OPEN-021.
+          OPEN I-O QUOTEBATCH.
+          IF WS-QUBATCH-ST1 NOT = 0
+              MOVE "QUBATCH FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE WS-QUBATCH-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE WS-SLQUOTEBATCH TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE 0 TO WS-QUBATCH-ST1
+              GO TO OPEN-021.
        OPEN-030.
            OPEN I-O DEBTOR-MASTER.
            IF WS-DEBTOR-ST1 NOT = 0
@@ -512,7 +557,8 @@
            CLOSE PRINT-FILE.
            PERFORM SEND-REPORT-TO-PRINTER.
            CLOSE INCR-REGISTER
-                 DEBTOR-MASTER.
+                 DEBTOR-MASTER
+                 QUOTEBATCH.
        END-900.
            EXIT PROGRAM.
       *     STOP RUN.

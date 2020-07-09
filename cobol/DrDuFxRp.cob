@@ -1214,7 +1214,6 @@
       *     PERFORM ERROR-MESSAGE.
            
             IF WS-AUTO-FAX = "E"
-      *       IF WS-ANSWER = "E"
                 MOVE "DEBTOR OVERDUE"  TO WS-SUBJECT-LINE1
                 MOVE WS-HYLA-COMMENT   TO WS-SUBJECT-LINE2
                 MOVE " FROM:"          TO WS-SUBJECT-LINE3 
@@ -1294,6 +1293,9 @@
                 ADD 1 TO SUB-50.
            MOVE DATA-RATE TO WS-PRINTER-PDF.
            MOVE SPACES    TO ALPHA-RATE DATA-RATE.
+           
+      *     MOVE WS-PRINTER-PDF TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
        MFPFE-999.
            EXIT.
       *
