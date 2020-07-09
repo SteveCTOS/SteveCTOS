@@ -110,9 +110,6 @@
       *
        IMPORT-DATA SECTION.
        ID-000.
-           MOVE 2510 TO POS
-           DISPLAY "QUOTE RECORDS BEING IMPORTED...." AT POS.
-           
            MOVE 0   TO SUB-20.
            MOVE " " TO QUOTE-IMP-KEY.
        ID-005.
@@ -122,7 +119,7 @@
        ID-010.
            MOVE 2610 TO POS
            DISPLAY "QUOTE RECORD BEING IMPORTED:      " AT POS
-           ADD 27 TO POS
+           ADD 30 TO POS
            DISPLAY QUOTE-IMP-QB-NUM AT POS.
 
            MOVE QUOTE-IMP-QB-NUM TO ALPHA-RATE.
