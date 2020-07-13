@@ -180,6 +180,8 @@ This repository is in bitbucket being used for free and as such it has a maximum
     -  Open "Software Manager" and search for Dropbox and install.
 
   19.  Setup Hylafax once connected to the fax modem.
+    -  run "faxsetup"
+    -  and you may need to run "faxaddmodem" when yo have a modem connected
 
   20.  Install ALL user .bashrc files having first made a copy by running "CreateBashrcEntries.sh" found on the server
     -  in /ctool/bin and also in /ctools/dev/source/CreateAllUsers.sh.
