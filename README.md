@@ -131,14 +131,22 @@ This repository is in bitbucket being used for free and as such it has a maximum
 	
   11. Set user passwords by 
     - su <enter>  (this to enter the root user which has powers to change user passwords)
-	  - ctos 
+	  - ctos (password)
 	  -
     - passwd <username>
     - enter the temp password then enter a new password
     - See the List of passwords for users in "Logon.txt"
+    
+    - OR
+    
+    - Run the "/ctools/dev/source/CreatePasswordsAllUsers.sh" to set the whole lot in one go.
 
   12. Add all the users into the same group namely ctools
     - sudo usermod -g ctools <username>
+    
+    - OR
+
+    - Run the "/ctools/dev/source/CreateGroupAllUsers.sh" to set ALL users to ctools group in one go.
 
   13. Change the WORKGROUP in Samba to allow printers to work in the group  
     - edit /etc/samba/smb.conf using sublime-text editor 
@@ -192,4 +200,9 @@ This repository is in bitbucket being used for free and as such it has a maximum
     -  On the new server run "CreateUpdateBashrcEntries.sh" which will copy the saved .bashrc files to their respective
     -  users home folders.
 
+  21.  Install Deadlock utility
+    -  sudo apt install db-util
+
+    - Now you can run Deadlock.sh each morning the server is switched on.
+    -
     - ***END***
