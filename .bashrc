@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 export PATH=/ctools/bin:/snap/bin:$PATH
+=======
+export PATH=/ctools/bin:$PATH
+>>>>>>> b25c74fb864308bae6ec354146524c05c812ecf0
 . ddexport.sh
 export USERFULLNAME="Admin Server"
 export USEREMAILADD="Info@AccountingOptions.co.za"
 cd /ctools/bin
 Menu
+<<<<<<< HEAD
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -121,3 +126,5 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+=======
+>>>>>>> b25c74fb864308bae6ec354146524c05c812ecf0
