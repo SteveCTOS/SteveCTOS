@@ -204,5 +204,15 @@ This repository is in bitbucket being used for free and as such it has a maximum
     -  sudo apt install db-util
 
     - Now you can run Deadlock.sh each morning the server is switched on.
+    
+  22. Setup Proxy Server - if running the serer @ CTJ through Kerio
+    - Click on the network connection icon in the bottom right hand corner of the screen.
+    - Click on "Proxy Settings"
+    - Enter the following:
+    -    "Method"      = Manual
+    -    "http proxy"  = 192.168.100.254        3128
+    -    "https proxy" = 192.168.100.254        3128
+    -
+    -  See /ctools/dev/source/ProxySettings.png
     -
     - ***END***
