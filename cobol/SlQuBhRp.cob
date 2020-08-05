@@ -135,7 +135,8 @@
        ID-020.
             PERFORM READ-QUOTE-BATCH.
 
-            PERFORM SETUP-QUOTE-FOR-PDF-MGEMAIL.
+            IF WS-QUBATCH-ST1 = 0
+               PERFORM SETUP-QUOTE-FOR-PDF-MGEMAIL.
 
             CALL "C$SLEEP" USING 2.
             GO TO ID-005.

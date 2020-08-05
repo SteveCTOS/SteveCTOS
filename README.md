@@ -24,7 +24,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
      right of the screen.
 	
   2. From a terminal install the following using apt-get install
-   - sudo apt-get install git git-gui g++ cmake open-cobol pdftk
+   - sudo apt-get install git git-gui g++ cmake 
 	
    - For PUtty & pdftk see new instructions - 8 & 9. below - for installing on Linux mint 19.1 & greater
 	 - as the apt-get does not bring back the latest software for Mint 19.1 as far as these two packages are concerned
@@ -35,6 +35,8 @@ This repository is in bitbucket being used for free and as such it has a maximum
    - openssh server
    - sublime text
    - gtk 
+   - GNUcobol 
+   - pdftk
    - Geany
 	 - Hylafax-server and hylafax-client
 	
@@ -75,10 +77,10 @@ This repository is in bitbucket being used for free and as such it has a maximum
    - in /ctools/dev/source/putty there are a number of files and folders that can be copied into /home/.putty to 
    - get the current config 
 	 
-  7. .bashrc needs to be copied to the users home directory with ALL the CTOS dependent entries in it.  
+  7. .bashrc needs to be copied to the users home directory with ALL the CTOS dependent entries in it.
    -  A copy is found in /ctools/dev/source/installs   Three types of file for auto-exit of putty or not ...
     
-  8.  Installing pdftk Linux Mint 19.1 > - installation instructions also found here:  
+  8.  Installing pdftk Linux Mint 19.1 > - installation instructions also found here:
    -    https://linuxhint.com/install_pdftk_ubuntu/
 	 - sudo add-apt-repository ppa:malteworld/ppa
 	 - sudo apt update
@@ -171,18 +173,21 @@ This repository is in bitbucket being used for free and as such it has a maximum
     -  then the Options tab, then "Alt/win behaviour" and change the default to "Alt and Meta are on Alt keys"
     -  then the right-Alt works like the Left-Alt key.....
 
-  17.  Install TeamViewer.
+  17.  Install TeamViewer.  32bit OS
     -  cd /tmp
-
     -  wget https://download.teamviewer.com/download/linux/signature/TeamViewer2017.asc
-
     -  sudo apt-key add TeamViewer2017.asc
-
     -  sudo sh -c 'echo "deb http://linux.teamviewer.com/deb stable main" >> /etc/apt/sources.list.d/teamviewer.list'
+    -  sudo apt update
+    -  sudo apt install teamviewer
+
+       OR 64 BIT OS
 
     -  sudo apt update
+    -  sudo apt install wget
+    -  wget https://download.teamviewer.com/download/linux/TeamViewer_amd64.deb
+    -  sudo apt install -y ./teamviewer_amd64.deb
 
-    -  sudo apt install teamviewer
 
   18.  Install Dropbox.
     -  Open "Software Manager" and search for Dropbox and install.
