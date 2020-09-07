@@ -447,12 +447,14 @@
            PERFORM MERGE-PARTS.
            MOVE WS-STOCK-PREFIX            TO PRICE-SP-ST-NUM.
            
-           MOVE 2510 TO POS
-           DISPLAY "STOCK ITEM BEING IMPORTED:      " AT POS
+           MOVE 2210 TO POS
+           DISPLAY "STOCK ITEM BEING IMPORTED:          " AT POS
            ADD 27 TO POS
            DISPLAY PRICE-SP-ST-NUM AT POS.
-           ADD 18 TO POS
+           ADD 12 TO POS
            DISPLAY PRICE-IMP-SP-ST-NUM AT POS.
+           
+      *      PERFORM ERROR-010.
            
            MOVE PRICE-IMP-SP-DESCRIPTION      TO PRICE-SP-DESCRIPTION
            PERFORM ENTER-UNIT-OF-SALE.
@@ -517,7 +519,7 @@
 
             GO TO ID-SPEC-005.
        ID-SPEC-900.
-            MOVE "IMPORT FINISHED.........." TO WS-MESSAGE
+            MOVE "'Z' TYPE IMPORT FINISHED.........." TO WS-MESSAGE
             PERFORM ERROR-MESSAGE.   
        ID-SPEC-999.
            EXIT.

@@ -31,7 +31,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
 	
   3. Using Software Manager install
     
-   - putty - Only for Linux Mint 17.1, 2 or 3
+   - putty - Only for Linux Mint 17.1-3
    - openssh server
    - sublime text
    - gtk 
@@ -86,21 +86,12 @@ This repository is in bitbucket being used for free and as such it has a maximum
 	 - sudo apt update
 	 - sudo apt install pdftk
 
-   - OR for Mint 19.1 > sometime the ppa:malteworld has had pdftk removed as of 10/07/2020 so use:
-   - sudo apt update
-   - sudo apt install snapd
-   - sudo snap install pdftk
-
-   - This  was taken from snapcraft.io/install/pdftk/mint
-
-
-   - look at .bashrc for a line like export PATH=... and add it to that line with a : as a delimiter 
-   - export PATH=xxx:/snap/bin
-
-   - where xxx is whatever is there
-
-   - Command 'pdftk' is available in '/snap/bin/pdftk'
-   - The command could not be located because '/snap/bin' is not included in the PATH environment variable.
+   - OR for Mint 19.1 > sometimes the ppa:malteworld (also try ppa:malteworld1) has had pdftk removed as of 10/07/2020 so use:
+   
+   - Download pdftk-java_3.0.9-1_all.deb from https://packages.ubuntu.com/focal/pdftk-java  
+         choose to download from za.archive.ubuntu.com/ubuntu in the first page of the link in red under Africa
+   - sudo dpkg -i pdftk-java_3.0.9-1_all.deb
+   - sudo apt-get install -f
 	
   9. Installing PUtty on Linux Mint 19.1 >
 	 - Download  putty-0.72.tar.gz from the PUtty website
