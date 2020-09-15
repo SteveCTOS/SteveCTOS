@@ -4125,7 +4125,7 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-010.
-            IF F-EXIT-CH = X"87"
+            IF F-EXIT-CH = X"87" OR = X"9F"
               IF WS-NEWORDER = "N"
                IF WS-CODETAB = "N"
                 MOVE "Y" TO WS-MUST-PRINT
