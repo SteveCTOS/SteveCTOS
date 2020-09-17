@@ -330,7 +330,7 @@
            03  WS-QUOTE-CODE       PIC X.
            03  WS-QUOTE-TERM       PIC X(60).
        01  BODY-FIELDS.
-           03  BODY-LINE OCCURS 151.
+           03  BODY-LINE OCCURS 201.
                05  B-STOCKNUMBER.
                    07  B-1ST-CHAR      PIC X.
                    07  B-REST          PIC X(14).
@@ -846,9 +846,9 @@
               WRITE PRINT-REC BEFORE PAGE
               PERFORM WR-002 THRU WR-003.
               
-           IF SUB-1 > 150
+           IF SUB-1 > 200
               MOVE 
-              "150 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
+              "200 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
               GO TO WR-500.
@@ -1229,9 +1229,9 @@
                  WRITE PRINT-REC
                  PERFORM WRFAX-003.
               
-           IF SUB-1 > 150
+           IF SUB-1 > 200
               MOVE 
-              "150 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
+              "200 LINES ARE UP, WE CANNOT PRINT MORE, 'ESC' TO EXIT"
                TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                GO TO WRFAX-500.
@@ -1885,7 +1885,7 @@
               PERFORM WEMR-00010 THRU WEMR-003
               MOVE 0 TO LINE-CNT.
               
-           IF SUB-1 > 150
+           IF SUB-1 > 200
               GO TO WEMR-400.
            IF B-STOCKNUMBER (SUB-1) = " "
               GO TO WEMR-400.
@@ -3958,7 +3958,7 @@
       *****************************************************************
       * <CODE-TAB> (CTOS); <ALT-F8> =X"9D" IN LINUX
       * CTOS SECTION
-           IF F-EXIT-CH = X"89" AND SUB-25 < 150
+           IF F-EXIT-CH = X"89" AND SUB-25 < 200
                 PERFORM EMPTY-LINE
                 MOVE SUB-3 TO SUB-1
                 ADD 1 TO SUB-25
@@ -3974,7 +3974,7 @@
                 ADD 1 TO SUB-25
                 GO TO FILL-005.
       * LINUX SECTION
-           IF F-EXIT-CH = X"9D" AND SUB-25 < 150
+           IF F-EXIT-CH = X"9D" AND SUB-25 < 200
                 PERFORM EMPTY-LINE
                 MOVE SUB-3 TO SUB-1
                 ADD 1 TO SUB-25
@@ -4125,22 +4125,23 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-010.
+
+      *CANCEL A LINE ITEM IN A OLD QUOTE
             IF F-EXIT-CH = X"87" OR = X"9F"
               IF WS-NEWORDER = "N"
-               IF WS-CODETAB = "N"
-                MOVE "Y" TO WS-MUST-PRINT
-                PERFORM CANCEL-STOCK-TRANS
-               ELSE
+               IF WS-CODETAB  = "Y"
                 MOVE
-            "BY ADDING A LINE YOU MUST SAVE THIS VERSION 1ST, THEN YOU"
+            "BY ADDING A LINE IN OLD QUOTE SAVE THIS VERSION 1ST, THEN"
                 TO WS-MESSAGE
                 PERFORM ERROR1-000
                 MOVE 
-            " MAY DELETE A LINE.  NO DELETE & ADD IN THE SAME SESSION."
+           "YOU MAY DELETE A LINE. NO DELETE & ADD IN THE SAME SESSION."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
                 GO TO FILL-010.
+                
+      *CANCEL A LINE ITEM IN A NEW QUOTE
             IF F-EXIT-CH = X"87" OR = X"9F"
                 MOVE SUB-1 TO SUB-7
                 MOVE "Y" TO WS-MUST-PRINT
@@ -4851,9 +4852,9 @@
                 MOVE SUB-1 TO SUB-25.
             MOVE "N" TO WS-LINECHANGED.
             MOVE 0 TO SUB-3.
-            IF SUB-1 > 150             
-                MOVE 150 TO SUB-1 SUB-25
-                MOVE "150 LINES ARE UP, PRESS 'ESC' TO TAB."
+            IF SUB-1 > 200             
+                MOVE 200 TO SUB-1 SUB-25
+                MOVE "200 LINES ARE UP, PRESS 'ESC' TO TAB."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-999.
@@ -5078,7 +5079,7 @@
            IF WS-DISCOUNT-CODE = "9"
                MOVE ST-DISCOUNT9 TO B-DISCOUNTPERITEM (SUB-1).
        R-KIT-900.
-           IF SUB-1 < 150
+           IF SUB-1 < 200
               ADD 1 TO SUB-1
               GO TO R-KIT-010.
        R-KIT-999.
@@ -5743,7 +5744,7 @@
                MOVE B-MAX-DISC (SUB-1) TO B-DISCOUNTPERITEM (SUB-1).
        CDPL-030.
             ADD 1 TO SUB-1.
-            IF SUB-1 < 151
+            IF SUB-1 < 201
                GO TO CDPL-020.
        CDPL-999.
             EXIT.
@@ -5796,6 +5797,7 @@
            MOVE WS-INVOICE        TO STTR-REFERENCE1.
            MOVE 8                 TO STTR-TYPE.
            MOVE B-STTRANS (SUB-1) TO STTR-TRANSACTION-NUMBER.
+
            START STOCK-TRANS-FILE KEY NOT < STTR-KEY.
            READ STOCK-TRANS-FILE WITH LOCK
                INVALID KEY NEXT SENTENCE.
@@ -5809,7 +5811,10 @@
                CALL "C$SLEEP" USING 2
                PERFORM ERROR1-020 
                PERFORM ERROR-020
-               CALL "C$SLEEP" USING 1
+               MOVE STTR-KEY TO WS-MESSAGE
+               PERFORM ERROR-000
+               CALL "C$SLEEP" USING 2
+               PERFORM ERROR-020
                MOVE 0 TO WS-STTRANS-ST1
                GO TO CAN-TRANS-000.
        CAN-TRANS-002.
@@ -5835,8 +5840,8 @@
        CAN-005.
             COMPUTE SUB-2 = SUB-1 + 1.
        CAN-010.
-            IF SUB-2 > 150 
-               MOVE 150 TO SUB-1 SUB-2
+            IF SUB-2 > 200 
+               MOVE 200 TO SUB-1 SUB-2
                GO TO CAN-090.
              IF B-STOCKNUMBER (SUB-2) = " "
                  MOVE " " TO C-LINE (SUB-1)
@@ -5963,7 +5968,7 @@
                 PERFORM SCROLLING.
        RUN-015.
            ADD 1 TO SUB-3.
-           IF SUB-3 > 150
+           IF SUB-3 > 200
                GO TO RUN-020.
            GO TO RUN-010.
        RUN-020.
@@ -6025,9 +6030,9 @@
            MOVE WS-WORKTOTAL TO B-NETT (SUB-1).
        CT-015.
            ADD 1 TO SUB-1.
-           IF SUB-1 > 150
+           IF SUB-1 > 200
                GO TO CT-020.
-           IF SUB-1 < 151
+           IF SUB-1 < 201
                GO TO CT-010.
        CT-020.
            COMPUTE WS-SUBTOTAL = WS-TAXABLETOTAL + 
@@ -6057,7 +6062,7 @@
       *       IF F-EXIT-CH = X"1D"
       *         MOVE WS-INVOICEDISCOUNT TO B-DISCOUNTPERITEM (SUB-1).
             ADD 1 TO SUB-1.
-            IF SUB-1 < 151
+            IF SUB-1 < 201
                GO TO SG-010.
        SG-999.
             EXIT.
@@ -6325,7 +6330,7 @@
                INVALID KEY NEXT SENTENCE.
        DST-950.
            ADD 1 TO SUB-1.
-           IF SUB-1 > 150
+           IF SUB-1 > 200
               GO TO DST-999.
            GO TO DST-010.
        DST-999.
@@ -6391,8 +6396,8 @@
        RSTT-050.
            ADD 1 TO SUB-1.
            MOVE SUB-1 TO SUB-25.
-           IF SUB-1 > 150
-              MOVE 150 TO SUB-1 SUB-25
+           IF SUB-1 > 200
+              MOVE 200 TO SUB-1 SUB-25
               GO TO RSTT-999.
            GO TO RSTT-010.
        RSTT-999.
@@ -6468,10 +6473,10 @@
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE.
             ADD 1 TO SUB-1.
-            IF SUB-1 < 151
+            IF SUB-1 < 201
               IF B-STOCKNUMBER (SUB-1) = " "
                 GO TO WST-999.
-            IF SUB-1 < 151
+            IF SUB-1 < 201
                 GO TO WST-000.
        WST-999.
             EXIT.
@@ -6723,8 +6728,8 @@
             MOVE B-DISCOUNTPERITEM (SUB-1) TO WS-INVOICEDISCOUNT.
        C-DIS-020.
             ADD 1 TO SUB-1.
-            IF SUB-1 > 150
-               MOVE 150 TO SUB-1
+            IF SUB-1 > 200
+               MOVE 200 TO SUB-1
                GO TO C-DIS-999.
             IF B-STOCKNUMBER (SUB-1) = " "
                GO TO C-DIS-999.
@@ -7188,7 +7193,7 @@
        CHK-000.
             MOVE 1 TO SUB-1.
        CHK-010.
-           IF SUB-1 < 150
+           IF SUB-1 < 200
             IF B-STOCKNUMBER (SUB-1) NOT = " "
                 ADD 1 TO SUB-1
                 GO TO CHK-010.
@@ -7272,7 +7277,7 @@
             PERFORM SCROLLING.
        NEXT-020.
             ADD 1 TO F-INDEX SUB-1.
-            IF SUB-1 > 150  
+            IF SUB-1 > 200  
                 GO TO NEXT-030.
             IF B-STOCKNUMBER (SUB-1) = " "
                 MOVE " " TO B-TAX (SUB-1)
@@ -7281,9 +7286,9 @@
                 GO TO NEXT-010.
        NEXT-030.
             SUBTRACT 7 FROM SUB-1.
-            IF SUB-1 > 143
-             IF SUB-25 > 143
-               COMPUTE F-INDEX = 7 - (150 - SUB-25)
+            IF SUB-1 > 193
+             IF SUB-25 > 193
+               COMPUTE F-INDEX = 7 - (200 - SUB-25)
                MOVE SUB-25 TO SUB-1
             ELSE
                MOVE 1 TO F-INDEX. 
@@ -7314,7 +7319,7 @@
             PERFORM SCROLLING.
        NEXT-PAGE-020.
             ADD 1 TO F-INDEX SUB-1.
-            IF SUB-1 > 150  
+            IF SUB-1 > 200  
                 GO TO NEXT-PAGE-030.
             IF B-STOCKNUMBER (SUB-1) = " "
                 MOVE " " TO B-TAX (SUB-1)
@@ -7323,14 +7328,14 @@
                 GO TO NEXT-PAGE-010.
        NEXT-PAGE-030.
             SUBTRACT 7 FROM SUB-1.
-            IF SUB-1 > 143
-             IF SUB-25 > 143
-               COMPUTE F-INDEX = 7 - (150 - SUB-25)
+            IF SUB-1 > 193
+             IF SUB-25 > 193
+               COMPUTE F-INDEX = 7 - (200 - SUB-25)
                MOVE SUB-25 TO SUB-1
             ELSE
                MOVE 1 TO F-INDEX.
-            IF SUB-1 > 150
-               MOVE 144 TO SUB-1.
+            IF SUB-1 > 200
+               MOVE 194 TO SUB-1.
             IF F-INDEX > 7
                 MOVE 1 TO F-INDEX.
             IF SUB-1 < 1
@@ -7354,7 +7359,7 @@
             PERFORM SCROLLING.
        PREV-020.
             ADD 1 TO F-INDEX SUB-1.
-            IF SUB-1 > 150
+            IF SUB-1 > 200
                 GO TO PREV-030.
             IF B-STOCKNUMBER (SUB-1) = " "
                 MOVE " " TO B-TAX (SUB-1)
@@ -7693,7 +7698,7 @@
                          B-INVOICED (SUB-1)
                          B-NETT (SUB-1).
              ADD 1 TO SUB-1.
-             IF SUB-1 < 151
+             IF SUB-1 < 201
                  GO TO CF-010.
        CF-999.
              EXIT.
