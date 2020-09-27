@@ -211,4 +211,10 @@ This repository is in bitbucket being used for free and as such it has a maximum
     -
     -  See /ctools/dev/source/ProxySettings.png
     -
-    - ***END***
+  23. To setup the BackupHDD drive so that it mounts correctly 
+   -   Copy the line in fstab-17.3Mint to the servers /etc/fstab file
+   -     #
+   -      UUID=08cb88af-11c3-4ed7-b320-ab018353c95a /BACKUPHDD      ext4    defaults        0       2
+   -
+   -     #
+   - ***END***
