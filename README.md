@@ -216,5 +216,18 @@ This repository is in bitbucket being used for free and as such it has a maximum
    -     #
    -      UUID=08cb88af-11c3-4ed7-b320-ab018353c95a /BACKUPHDD      ext4    defaults        0       2
    -
-   -     #
+  24. To add python pip & requests module to python 2.7 as the Email python script MailGunEmail.py uses the python requests module
+   -  su ctools <return>
+   -  ctos
+   -  sudo apt install python-pip
+   -
+   - su <return>
+   - ctos (as the password)
+   - sudo pip install -U requests
+   -
+   - To see that requests has been installed type:
+   -  pip show requests <return>
+   -  this will get a number of lines prnted on the screen showing info about therequests module
+   -
+   -
    - ***END***
