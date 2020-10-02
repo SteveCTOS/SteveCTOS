@@ -221,13 +221,31 @@ This repository is in bitbucket being used for free and as such it has a maximum
    -  ctos
    -  sudo apt install python-pip
    -
-   - su <return>
-   - ctos (as the password)
-   - sudo pip install -U requests
+   -  su <return>
+   -  ctos (as the password)
+   -  sudo pip install -U requests
    -
-   - To see that requests has been installed type:
+   -  To see that requests has been installed type:
    -  pip show requests <return>
    -  this will get a number of lines prnted on the screen showing info about therequests module
+   -
+  25. To speed up the process of copying files to and from USB & to the BACKUPHDD do the following:
+   -  edit using Sublimetext, the file /etc/sysctrl.conf and add the following lines to the top of the file.
+   -  See the sample file in /ctools/dev/source/sysctrl.conf
+   -
+   -
+   - vm.dirty_background_ratio = 5
+   - vm.dirty_ratio = 10
+
+   #
+   # /etc/sysctl.conf - Configuration file for setting system variables
+   # See /etc/sysctl.d/ for additional system variables.
+   # See sysctl.conf (5) for information.
+   #
+
+   #kernel.domainname = example.com
+
+   - fs.file-max = 2097152
    -
    -
    - ***END***
