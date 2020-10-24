@@ -15,6 +15,7 @@ set (copy_list
   Backup07.sh
   BackupCtools.sh
   Branch01.Sub
+  Branch01.sh
   Branch03.Sub
   Branch03.sh
   Branch07.Sub
