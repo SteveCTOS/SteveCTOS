@@ -19,7 +19,7 @@ set (copy_list
   PrintQuote1
   PrintQuote2
   PrintRemit1
-  PrintRemit2 
+  PrintRemit2
   PrintRemitPdfEmailOnly
   PrintStatement
   PrintStatementNoMail

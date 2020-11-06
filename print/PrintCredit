@@ -1,5 +1,5 @@
 python fohtotext.py -r creditnote -T /ctools/spl/$1.tempcr0.txt /ctools/spl/$1CrPrintCo$2 
-text2pdf /ctools/spl/$1.tempcr0.txt -fCourier-Bold -s10 -t8 -x842 -y595 -c135 -l48 > /ctools/spl/$1.tempcr1.pdf
+text2pdf /ctools/spl/$1.tempcr0.txt -fCourier-Bold -s10 -t8 -x842 -y587 -c135 -l48 > /ctools/spl/$1.tempcr1.pdf
 pdftk /ctools/spl/$1.tempcr1.pdf background /ctools/dev/source/print/CNoteOverlay$2.pdf output /ctools/spl/$1.tempcr2.pdf
 #pdftk /ctools/spl/$1.tempcr2.pdf cat 1-endsouth output /ctools/spl/$1CrPrintCo$2.pdf
 

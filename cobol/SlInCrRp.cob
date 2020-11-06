@@ -900,7 +900,7 @@
            IF WS-INVCRED = "P"
               PERFORM READ-REGISTER.
               
-           IF WS-INVCRED = "X"
+           IF WS-INVCRED = "X" 
             IF WS-DATE = 0
               PERFORM GET-SYSTEM-Y2K-DATE
               MOVE 01 TO WS-DD
@@ -965,7 +965,7 @@
               PERFORM ZL1-LASER-HEADINGS
               PERFORM PDF-PRINT-INVOICE
               MOVE INCR-INVOICE TO WS-INVOICE
-              CLOSE LASER-FILE
+              CLOSE LASER-FILE.
 
             IF INCR-TRANS = 1 OR = 3 OR = 4 OR = 8
               MOVE "YOUR INVOICE #" TO WS-SUBJECT-LINE1
@@ -1723,7 +1723,7 @@
 
            MOVE WS-TAXAMT        TO PL-ADD3
            WRITE LASER-REC     FROM LASERPL-ADDLINE.
-
+      
            MOVE " "              TO LASERPL-ADDLINE LASER-REC.
            MOVE "¶"              TO PLADD-CHAR
            MOVE INCR-ADDPOST     TO PL-ADD1
@@ -2836,6 +2836,9 @@
              DISPLAY "INVOICE" AT POS
            ELSE
              DISPLAY "C/NOTE" AT POS.
+           ADD 10 TO POS
+           DISPLAY INCR-DATE AT POS.
+           
               
            MOVE INCR-INVOICE        TO WS-INVOICE
            MOVE INCR-INVCRED-AMT    TO WS-INVOICETOTAL
