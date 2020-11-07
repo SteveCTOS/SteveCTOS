@@ -965,8 +965,7 @@
               PERFORM ZL1-LASER-HEADINGS
               PERFORM PDF-PRINT-INVOICE
               MOVE INCR-INVOICE TO WS-INVOICE
-              CLOSE LASER-FILE.
-
+              CLOSE LASER-FILE
             IF INCR-TRANS = 1 OR = 3 OR = 4 OR = 8
               MOVE "YOUR INVOICE #" TO WS-SUBJECT-LINE1
               MOVE WS-INVOICE       TO WS-SUBJECT-LINE2

@@ -1,7 +1,7 @@
 project (ctools_print)
 
 set (copy_list
-  fohtotext.py
+  fohtotext.py  
   PrintCredit
   PrintCreditPdfOnly
   PrintCreditPdfEmail
@@ -15,7 +15,7 @@ set (copy_list
   PrintMergeQuote
   PrintMergeRemit
   PrintPOrder1
-  PrintPOrder2
+  PrintPOrder2 
   PrintQuote1
   PrintQuote2
   PrintRemit1
