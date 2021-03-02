@@ -27,7 +27,7 @@ set (copy_list
   DataTestAll.sh
   DB_CONFIG
   Deadlock.sh
-  Doculogix.sh
+  Doculogix.sh 
   DoculogixPDF.sh
   DoculogixPDF1.sh
   DoculogixPDF2.sh
