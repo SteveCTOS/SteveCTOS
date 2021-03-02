@@ -6007,7 +6007,8 @@
            MOVE 1 TO SUB-1.
            MOVE 0 TO WS-TAXABLETOTAL WS-NONTAXABLETOTAL
                      WS-WORKTOTAL    WS-DISCOUNT    WS-COSTTOTAL
-                     WS-PRICETOTAL   WSF-XPORTTOTAL WS-DISCOUNTREG.
+                     WS-PRICETOTAL   WSF-XPORTTOTAL WS-DISCOUNTREG
+                     WS-TAXAMT.
        CT-010.
            IF B-STOCKNUMBER (SUB-1) = " "
                GO TO CT-020.
@@ -6040,7 +6041,8 @@
                                  WSF-XPORTTOTAL.
            COMPUTE WS-ADDONAMT = WS-ADDONFREIGHT + WS-POSTADDON + 
                                  WS-HANDADDON + WS-MISCADDON.
-           COMPUTE WS-TAXAMT ROUNDED =
+           IF WS-GSTNO NOT = "EXPORT"
+            COMPUTE WS-TAXAMT ROUNDED =
              (WS-TAXABLETOTAL + WS-ADDONAMT) * WS-GST-PERCENT / 100.
        CT-999.
              EXIT.
