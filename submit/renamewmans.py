@@ -2,7 +2,7 @@
 # The renaming of W/Mans Comp 'COID' Files to 'WMans' & add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
-months = ['Feb16', 'Feb17', 'Feb18', 'Feb19', 'Feb20', 'Feb21', 'Feb22']
+months = ['Feb16', 'Feb17', 'Feb18', 'Feb19', 'Feb20', 'Feb21', 'Feb22', 'Feb23']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):
