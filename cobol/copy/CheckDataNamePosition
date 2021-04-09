@@ -148,7 +148,7 @@
            If Sub-4 = 73
             Move Alpha-Rate to Ws-DrTransTemp.
            If Sub-4 = 74
-            Move Alpha-Rate to Ws-DrMasterTemp.
+            Move Alpha-Rate to Ws-DebtorTemp.
            If Sub-4 = 75
             Move Alpha-Rate to Ws-GlTransTemp.
            If Sub-4 = 76

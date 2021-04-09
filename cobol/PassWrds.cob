@@ -667,7 +667,7 @@
            PERFORM CDN-025
            PERFORM CHECK-DATA-NAME-POSITION           
            
-      *     IF SUB-4 > 65
+      *     IF SUB-4 > 70
       *        MOVE ALPHA-RATE TO WS-MESSAGE
       *        PERFORM ERROR-MESSAGE.
 
