@@ -177,7 +177,7 @@
              PERFORM ERROR1-020
              ADD 1 TO STTR-TRANSACTION-NUMBER
                       STTR-REFERENCE1
-                      START STOCK-TRANS-FILE KEY > STTR-KEY.
+             START STOCK-TRANS-FILE KEY > STTR-KEY.
                       
       *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
       *       DISPLAY WS-STAT1
