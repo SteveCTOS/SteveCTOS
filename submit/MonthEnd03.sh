@@ -1,8 +1,13 @@
 rm /ctools/ctn/*
 rm /ctools/pdf03/*
 
+echo Removing Lock files.....
+rm /ctools/lock/*db.00*
 
 Submit MainCont MonthEnd.Sub03
+
+echo Removing Lock files.....
+rm /ctools/lock/*db.00*
 
 Submit MainCont MonthEnd2.Sub03
 

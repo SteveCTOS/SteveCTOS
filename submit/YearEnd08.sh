@@ -1,7 +1,13 @@
 rm /ctools/csc/*
 rm /ctools/pdf08/*
 
+echo Removing Lock files.....
+rm /ctools/lock/*db.00*
+
 Submit MainCont YearEnd.Sub08
+
+echo Removing Lock files.....
+rm /ctools/lock/*db.00*
 
 Submit MainCont YearEnd2.Sub08
 
