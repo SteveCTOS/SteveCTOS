@@ -7,7 +7,7 @@ set (copy_list
   Auto08.sh 
   AutoAllocations.Sub01 
   AutoAllocations.Sub03
-  AutoAllocations.Sub07 
+  AutoAllocations.Sub07
   AutoAllocations.Sub08
   Backup03.sh
   Backup05.sh
