@@ -248,8 +248,9 @@
             PERFORM WRITE-FIELD-ALPHA.
 
             IF GL-DESCRIPTION = "UNKNOWN"
+                MOVE 2801 TO POS
                 DISPLAY " " AT 3079 WITH BELL
-                GO TO GET-000.
+                GO TO GET-001.
 
             MOVE "BALANCE" TO F-FIELDNAME.
             MOVE 7 TO F-CBFIELDNAME.
@@ -271,6 +272,7 @@
                  GO TO GET-001.
             MOVE 11         TO F-CBFIELDLENGTH.
             IF F-EXIT-CH = X"07"
+                 CLOSE GLTRANS-FILE
                  GO TO GET-999.
             IF F-EXIT-CH NOT = X"0A" AND NOT = X"0C"
                      AND NOT = X"1F" AND NOT = X"05"
