@@ -218,12 +218,12 @@
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                GO TO GET-000.
+                GO TO GET-001.
            IF WS-RESTOFACCOUNT = "      "
                 MOVE "YOU CAN ONLY ENQUIRE ON A DETAIL ACCOUNT."
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
-                GO TO GET-000.
+                GO TO GET-001.
             MOVE "ACCNO" TO F-FIELDNAME.
             MOVE 5 TO F-CBFIELDNAME.
             MOVE WS-GLNUMBER TO F-NAMEFIELD.

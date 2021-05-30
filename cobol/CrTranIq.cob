@@ -339,6 +339,10 @@
            IF SUB-1 < 1
               MOVE 1 TO SUB-1 F-INDEX.
 
+            MOVE 3010 TO POS
+            DISPLAY "TRANS NUM:" AT POS
+            ADD 11 TO POS
+            DISPLAY WS-CRTR-TRANS (SUB-1) AT POS.            
 
             MOVE "PERIOD" TO F-FIELDNAME.
             MOVE 6        TO F-CBFIELDNAME.
