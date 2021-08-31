@@ -183,11 +183,11 @@
                    07  B-SHIPQTY           PIC 9(5).
                    07  B-STOCKDESCRIPTION  PIC X(20).
                    07  B-STOCKDESCRIPTION2 PIC X(20).
-                   07  B-STOCKPRICE        PIC 9(6)V99.
-                   07  B-STOCKCOST         PIC 9(6)V99.
+                   07  B-STOCKPRICE        PIC 9(8)V99.
+                   07  B-STOCKCOST         PIC 9(8)V99.
                    07  B-DISCOUNTPERITEM   PIC 9(2)V99.
                    07  B-TAX               PIC X.
-                   07  B-NETT              PIC 9(5)V99.
+                   07  B-NETT              PIC 9(8)V99.
                    07  B-UNIT              PIC X(4).
                05  C-LINE REDEFINES B-REMAINDER.
                    07  C-SHIP              PIC X(5).
@@ -201,8 +201,8 @@
            03  WS-STOCKNUMBER      PIC X(15).
            03  WS-SHIPQTY          PIC 9(5).
            03  WS-STOCKDESCRIPTION PIC X(20).
-           03  WS-STOCKPRICE       PIC 9(6)V99.
-           03  WS-STOCKCOST        PIC 9(6)V99.
+           03  WS-STOCKPRICE       PIC 9(8)V99.
+           03  WS-STOCKCOST        PIC 9(8)V99.
            03  WS-DISCOUNTPERITEM  PIC 9(2)V99.
            03  WS-TAX              PIC X.
        01  WS-DAILY-MESSAGE.
