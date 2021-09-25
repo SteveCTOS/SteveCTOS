@@ -114,4 +114,5 @@
           03 WS-DEBTORTEMP        PIC X(40).
           03 WS-GLTRANSTEMP       PIC X(40).
           03 WS-SLQUOTEBATCH      PIC X(40).
+          03 WS-STORDERSTEMP      PIC X(40).
       *
