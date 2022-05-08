@@ -40,21 +40,28 @@ This repository is in bitbucket being used for free and as such it has a maximum
    - Geany
 	 - Hylafax-server and hylafax-client
 	
-  4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
+  4. Set up to retrieve the repository - note you must use ssh-keygen to produce id_rsa.pub with its equivalent private key id_rsa in './home/{user}/.ssh' directory.
+     When doing this do not create a passphrase but leave them blank when two are asked for. 
+
+    4.1 Set up the SSH security.
+     - run https://github.com/SteveCTOS in the browser.
+     - login as SteveCTOS
+     - left click on the avatar icon and select settings at the bottom of the drop down menu.
+     - In the Access block of the new drop down menu select SSH and GPG keys
+     - Use the New SSH Key green button
+     - edit the id_rsa.pub file and copy the data to clipboard - Ctrl A - Ctrl C
+     - Paste the clipboard data into the Key and hit the green Add SSH Key - this will allow you to read and write the repo.
+     - sudo mkdir /ctools
 	
-   - sudo mkdir /ctools
-	
-    4.1  Set all folders in ctools to ctools ownership.
+    4.2  Set all folders in ctools to ctools ownership.
       - cd /ctools
       - sudo chown -R ctools:ctools *
-      - Also can do like this:    sudo chown ctools:ctools /ctools
-  
+      - Also can do like this:    sudo chown -R ctools:ctools /ctools
       - mkdir /ctools/dev
       - cd /ctools/dev
       - git config --global user.email "Steve@Christensen.co.za"
       - git config --global user.name "Steve Christensen"
-                         <username>   <pswd>
-      - sudo git clone https://VincentRisi:Atl45514n@bitbucket.org/VincentRisi/ctos4ctools source
+      - sudo git clone git@github.com:SteveCTOS/SteveCTOS.git source
       - mkdir build
       - cd build
       - sudo cmake ../source
