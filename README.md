@@ -43,7 +43,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
   4. Set up to retrieve the repository - note you must use ssh-keygen to produce id_rsa.pub with its equivalent private key id_rsa in './home/{user}/.ssh' directory.
      When doing this do not create a passphrase but leave them blank when two are asked for. 
 
-    4.1 Set up the SSH security.
+     A. Set up the SSH security.
      - run https://github.com/SteveCTOS in the browser.
      - login as SteveCTOS
      - left click on the avatar icon and select settings at the bottom of the drop down menu.
@@ -52,8 +52,8 @@ This repository is in bitbucket being used for free and as such it has a maximum
      - edit the id_rsa.pub file and copy the data to clipboard - Ctrl A - Ctrl C
      - Paste the clipboard data into the Key and hit the green Add SSH Key - this will allow you to read and write the repo.
      - sudo mkdir /ctools
-	
-    4.2  Set all folders in ctools to ctools ownership.
+     	
+     B. Set all folders in ctools to ctools ownership.
       - cd /ctools
       - sudo chown -R ctools:ctools *
       - Also can do like this:    sudo chown -R ctools:ctools /ctools
