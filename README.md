@@ -40,28 +40,51 @@ This repository is in bitbucket being used for free and as such it has a maximum
    - Geany
 	 - Hylafax-server and hylafax-client
 	
-  4. Set up to retrieve the repository - note you must use ssh-keygen to produce id_rsa.pub with its equivalent private key id_rsa in './home/{user}/.ssh' directory.
-     When doing this do not create a passphrase but leave them blank when two are asked for. 
-
-     A. Set up the SSH security.
-     - run https://github.com/SteveCTOS in the browser.
-     - login as SteveCTOS
-     - left click on the avatar icon and select settings at the bottom of the drop down menu.
-     - In the Access block of the new drop down menu select SSH and GPG keys
-     - Use the New SSH Key green button
-     - edit the id_rsa.pub file and copy the data to clipboard - Ctrl A - Ctrl C
-     - Paste the clipboard data into the Key and hit the green Add SSH Key - this will allow you to read and write the repo.
-     - sudo mkdir /ctools
-     	
-     B. Set all folders in ctools to ctools ownership.
+  4. Set up to retrieve the repository - note you must supply <user> and <password> in git clone below.
+	
+   - sudo mkdir /ctools
+	
+    4.1  Set all folders in ctools to ctools ownership.  This is the old way for Bitbucket. See 4.2 below instead.
       - cd /ctools
       - sudo chown -R ctools:ctools *
-      - Also can do like this:    sudo chown -R ctools:ctools /ctools
+      - Also can do like this:    sudo chown ctools:ctools /ctools
+  
       - mkdir /ctools/dev
       - cd /ctools/dev
       - git config --global user.email "Steve@Christensen.co.za"
       - git config --global user.name "Steve Christensen"
-      - sudo git clone git@github.com:SteveCTOS/SteveCTOS.git source
+                         <username>   <pswd>
+      - sudo git clone https://VincentRisi:Atl45514n@bitbucket.org/VincentRisi/ctos4ctools source
+      - mkdir build
+      - cd build
+      - sudo cmake ../source
+      - sudo make -k
+      - sudo make install
+
+
+    4.2  Set all folders in ctools to ctools ownership.  This is the NEW way for using Github using ssh keys for security.
+      - cd /ctools
+      - sudo chown -R ctools:ctools *
+      - Also can do like this:    sudo chown ctools:ctools /ctools
+      - On the server create a folder /home/ctools/.ssh
+      - cd /home/ctools/.ssh
+
+      - run the following: ssh-keygen and just press enter twice when prompted.  This creates two files in the .ssh folder.
+      - id_rsa and id_rsa.pub
+      - a. On a browser log into https://github.com/SteveCTOS 
+        - b: login as SteveCTOS
+        - c: left click on the avatar icon and select settings at the bottom of the drop down menu.
+        - d: In the Access block of the new drop down menu select SSH and GPG keys
+        - e: Use the New SSH Key green button
+        - f: edit the id_rsa.pub file and copy the data to clipboard - Ctrl A - Ctrl C
+        - g: Paste the clipboard data into the Key and hit the green Add SSH Key - this will allow you to read and write the repo.
+
+      - mkdir /ctools/dev
+      - cd /ctools/dev
+      - git config --global user.email "Steve@Christensen.co.za"
+      - git config --global user.name "Steve Christensen"
+                         
+      - sudo git clone git@github.com:SteveCTOS/SteveCTOS.git /ctools/dev/source      
       - mkdir build
       - cd build
       - sudo cmake ../source
