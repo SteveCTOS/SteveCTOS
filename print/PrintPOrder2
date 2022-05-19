@@ -12,8 +12,8 @@ pdftk /ctools/fax/$1POrder.temp1.pdf background /ctools/dev/source/print/$1Quote
 #     sendfax -n -d $7 /ctools/fax/$1POrder$3.pdf
 # fi
 
-rm /ctools/fax/$3
-rm /ctools/fax/$1POrder.temp1.pdf
+##rm /ctools/fax/$3
+##rm /ctools/fax/$1POrder.temp1.pdf
 
 #lp -d $2 $3
 #--- the following pdftk cats the first statement to a single file from two
