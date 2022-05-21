@@ -21,7 +21,7 @@
        GO TO SUPDRFOPGM-999.
        SUPDRFOPGM-010.
       * FOR CTJ LEAVING MOST THINGS AS DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -32,7 +32,7 @@
           GO TO SUPDRFOPGM-500.
        SUPDRFOPGM-020.
       * FOR CTN LEAVING MOST THINGS AS DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -43,7 +43,7 @@
           GO TO SUPDRFOPGM-500.
        SUPDRFOPGM-030.
       * FOR SFJ CHANGING THE DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -54,7 +54,7 @@
           GO TO SUPDRFOPGM-500.
        SUPDRFOPGM-040.
       * FOR CSC LEAVING MOST THINGS AS  DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -65,7 +65,7 @@
           GO TO SUPDRFOPGM-500.
        SUPDRFOPGM-050.
       * FOR KRS, HKY, QTM & SFI LEAVING MOST THINGS AS  DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),

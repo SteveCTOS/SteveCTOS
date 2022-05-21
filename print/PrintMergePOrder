@@ -5,8 +5,8 @@ if [ "$5" != "02" ] && [ "$7" = "P" ]
      lp -d $2 /ctools/fax/$1POrderFinal$4.pdf
  fi
 
-##rm /ctools/fax/$1POrder$3.pdf
-##rm /ctools/fax/$1POrder$4.pdf
+rm /ctools/fax/$1POrder$3.pdf
+rm /ctools/fax/$1POrder$4.pdf
 
 
 #FORMAT FOR PRINTING IS:

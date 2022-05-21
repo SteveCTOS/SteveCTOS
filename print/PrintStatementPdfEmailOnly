@@ -1,4 +1,4 @@
-python fohtotext.py -r statement -T /ctools/fax/$2S$1.temp0.txt /ctools/fax/$2S$1
+python3 fohtotext.py -r statement -T /ctools/fax/$2S$1.temp0.txt /ctools/fax/$2S$1
 text2pdf /ctools/fax/$2S$1.temp0.txt -fCourier-Bold -x595 -y842 -l66 -c88 -V18 -H41 > /ctools/fax/$2S$1.temp1.pdf
 pdftk /ctools/fax/$2S$1.temp1.pdf background /ctools/dev/source/print/StatementOverlay$2.pdf output /ctools/fax/$2S$1.pdf
 

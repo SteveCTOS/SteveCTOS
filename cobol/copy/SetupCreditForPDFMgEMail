@@ -21,7 +21,7 @@
        GO TO SUCFPMGEM-999.
        SUCFPMGEM-010.
       * FOR CTJ LEAVING MOST THINGS AS DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', WS-INVOICE-PDF,
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -32,7 +32,7 @@
           GO TO SUCFPMGEM-500.
        SUCFPMGEM-020.
       * FOR CTN LEAVING MOST THINGS AS DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', WS-INVOICE-PDF,
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -43,7 +43,7 @@
           GO TO SUCFPMGEM-500.
        SUCFPMGEM-030.
       * FOR SFJ CHANGING THE DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', WS-INVOICE-PDF,
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -54,7 +54,7 @@
           GO TO SUCFPMGEM-500.
        SUCFPMGEM-040.
       * FOR CSC LEAVING MOST THINGS AS  DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', WS-INVOICE-PDF,
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -65,7 +65,7 @@
           GO TO SUCFPMGEM-500.
        SUCFPMGEM-050.
       * FOR KRS, HKY, QTM & SFI LEAVING MOST THINGS AS  DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', WS-INVOICE-PDF,
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),

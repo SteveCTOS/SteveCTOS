@@ -1,4 +1,4 @@
-python fohtotext.py -r invoice -T /ctools/spl/$1.temp0.txt /ctools/spl/$1InPrintCo$2
+python3 fohtotext.py -r invoice -T /ctools/spl/$1.temp0.txt /ctools/spl/$1InPrintCo$2
 #text2pdf /ctools/spl/$1.temp0.txt -fCourier-Bold -t8 -s10 -x842 -y595 -c135 -l48 > /ctools/spl/$1.temp1.pdf
 text2pdf /ctools/spl/$1.temp0.txt -fCourier-Bold -t8 -s10 -x842 -y605 -c135 -l48 > /ctools/spl/$1.temp1.pdf
 pdftk /ctools/spl/$1.temp1.pdf background /ctools/dev/source/print/InvoiceOverlay$2.pdf output /ctools/spl/$1.temp2.pdf

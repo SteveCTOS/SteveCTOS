@@ -46,6 +46,7 @@
        WORKING-STORAGE SECTION.
        77  LINE-CNT             PIC 9(3) VALUE 66.
        77  WS-LINE-NO           PIC 9(3) VALUE 0.
+       77  WS-LINE-NO-TOT       PIC 9(3) VALUE 0.
        77  PAGE-CNT             PIC 9(2) VALUE 0.
        77  WS-ABOVE-BODY        PIC X VALUE " ".
        77  WS-DOTPRINTER        PIC X(100) VALUE " ".
@@ -1281,7 +1282,9 @@
            ADD 1 TO WS-LINE-NO.
            GO TO RTFNOI-112.
        RTFNOI-900.
-           MOVE WS-LINE-NO TO S6-ITEMS SE6-ITEMS.
+           MOVE WS-LINE-NO TO S6-ITEMS 
+                             SE6-ITEMS
+                              WS-LINE-NO-TOT.
            CLOSE OUTSTANDING-ORDERS.
            MOVE 2910 TO POS.
            DISPLAY "                                        " AT POS.
@@ -1574,8 +1577,10 @@
        POSXQS-005.
            PERFORM READ-OUTSTANDING-ORDERS.
            IF WS-OUTORD-ST1 = 10
-            IF LINE-CNT = 36
+            IF LINE-CNT > 36
                ADD 1 TO PAGE-CNT
+      *           MOVE "ST1=10" TO WS-MESSAGE 
+      *           PERFORM ERROR-MESSAGE
                GO TO POSXQS-900
             ELSE
                GO TO POSXQS-900.
@@ -1583,9 +1588,34 @@
            IF PAGE-CNT = 1
             IF LINE-CNT < 36
                GO TO POSXQS-010.
+               
           IF Fax-PaNumber = 3 OR = 4
-           IF PAGE-CNT > 1
-            IF LINE-CNT < 51
+           IF PAGE-CNT = 1
+            IF LINE-CNT < 37
+      *      MOVE LINE-CNT TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE OO-STOCK-NUMBER TO WS-MESSAGE
+      *      PERFORM ERROR5-000
+      *      MOVE "PAGE=2/1 LINE-CNT<37" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+      *      PERFORM ERROR5-020     
+               GO TO POSXQS-010.
+
+      *    MOVE "HERE @ PAGE-CNT1 > 2" TO WS-MESSAGE 
+      *    PERFORM ERROR-MESSAGE
+
+          IF Fax-PaNumber = 3 OR = 4
+           IF PAGE-CNT = 2 OR > 2
+            IF LINE-CNT < 57
+      *      MOVE LINE-CNT TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE OO-STOCK-NUMBER TO WS-MESSAGE
+      *      PERFORM ERROR5-000
+      *      MOVE "PAGE > 2 LINE-CNT<57" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+      *      PERFORM ERROR5-020
                GO TO POSXQS-010.
                
            MOVE OO-DELIVERY-METHOD       TO WS-DEL-SUB.
@@ -1595,6 +1625,9 @@
            MOVE PA-CO-VAT-NO             TO S6-VAT-NO.
            
            ADD 1 TO PAGE-CNT.
+
+      *     MOVE PAGE-CNT TO WS-MESSAGE 
+      *     PERFORM ERROR-MESSAGE
 
           IF Fax-PaNumber = 3 OR = 4
            IF PAGE-CNT = 1
@@ -1617,7 +1650,8 @@
               
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 2
-             IF LINE-CNT > 35
+             IF LINE-CNT > 36
+      * THIS NEXT SECTION FOR END OF PAGE 1 GOING TO 2
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1633,10 +1667,28 @@
                  WRITE PRINT-REC
                  WRITE PRINT-REC
                  WRITE PRINT-REC FROM SLIP-HEAD8
+      *           MOVE "PAGE=1 TO PAGE2" TO WS-MESSAGE
+      *           PERFORM ERROR1-000
+      *           MOVE LINE-CNT TO WS-MESSAGE 
+      *           PERFORM ERROR-MESSAGE
+      *           PERFORM ERROR1-020
                  GO TO POSXQS-008.
+                 
+      *           MOVE "HERE AFTER PAGE-CNT=1" TO WS-MESSAGE 
+      *           PERFORM ERROR-MESSAGE
+                 
            IF Fax-PaNumber = 4
             IF PAGE-CNT > 2
-             IF LINE-CNT > 50
+             IF LINE-CNT > 56
+      * THIS NEXT SECTION FOR END OF PAGE 2 ONWARDS........
+      *           MOVE "LINE>56,PAGE-CNT>2" TO WS-MESSAGE
+      *           PERFORM ERROR5-000
+      *           MOVE LINE-CNT TO WS-MESSAGE 
+      *           PERFORM ERROR1-000
+      *           MOVE PAGE-CNT TO WS-MESSAGE 
+      *           PERFORM ERROR-MESSAGE
+      *           PERFORM ERROR1-020
+      *           PERFORM ERROR5-020
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
@@ -1707,7 +1759,9 @@
 
            IF Fax-PaNumber = 4
             IF PAGE-CNT = 2
-             IF LINE-CNT > 35
+             IF LINE-CNT > 36
+      *      MOVE "POXQS-900, PAGE-CNT=2" TO WS-MESSAGE 
+      *      PERFORM ERROR-MESSAGE
                  CLOSE PRINT-SLIP
                  PERFORM REMOVE-SPACES-IN-FAX-NAME
                  MOVE WS-PRINTER TO WS-PRINTER-PAGE2
@@ -1726,7 +1780,9 @@
                  GO TO POSXQS-902.
            IF Fax-PaNumber = 4
             IF PAGE-CNT > 2
-             IF LINE-CNT > 50
+             IF LINE-CNT > 56
+      *      MOVE "POXQS-900, PAGE-CNT>2" TO WS-MESSAGE 
+      *      PERFORM ERROR-MESSAGE
                  MOVE " " TO PRINT-REC
                  WRITE PRINT-REC BEFORE PAGE
                  MOVE SPACES TO PRINT-REC
@@ -2874,6 +2930,7 @@
        Copy "ClearScreen".
        Copy "ErrorMessage".
        Copy "Error1Message".
+       Copy "Error5Message".
        Copy "CTOSCobolAccept".
        Copy "WriteDailyExcep1".
       *

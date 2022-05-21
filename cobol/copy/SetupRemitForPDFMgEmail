@@ -19,7 +19,7 @@
        GO TO SURFPMGEM-999.
        SURFPMGEM-010.
       * FOR CTJ LEAVING MOST THINGS AS DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -30,7 +30,7 @@
           GO TO SURFPMGEM-500.
        SURFPMGEM-020.
       * FOR CTN LEAVING MOST THINGS AS DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -41,7 +41,7 @@
           GO TO SURFPMGEM-500.
        SURFPMGEM-030.
       * FOR SFJ CHANGING THE DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
@@ -52,7 +52,7 @@
           GO TO SURFPMGEM-500.
        SURFPMGEM-040.
       * FOR CSC LEAVING MOST THINGS AS  DEFAULT
-          MOVE CONCATENATE('python MailGunEmail.py ', 
+          MOVE CONCATENATE('python3 MailGunEmail.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-PDF),
           ' ', '-F', ' ', TRIM(WS-USEREMAILADD),
           ' ', '-r', ' ', TRIM(WS-USEREMAILADD),
