@@ -1274,7 +1274,8 @@
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
 
-           IF WS-NAR-1-21 = "FIRSTCARD     0000000"
+      *SFJ
+           IF WS-NAR-1-21 = "F/CARD COMRENTAL00937"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
               MOVE " *" TO BANK-CAMS-FOUND
@@ -1284,56 +1285,59 @@
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-           IF WS-NAR-1-21 = "SPEEDPOINT    0000000"
+           IF WS-NAR-1-21 = "F/CARD COMCOMMIS00937"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
-              MOVE " Speedpoint Charges                          "
+              MOVE " Firstcard Charges                           "
                   TO WS-NARRATIVE 
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT0"
+      * CTJ
+           IF WS-NAR-1-21 = "F/CARD COMRENTAL00052"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
-              MOVE " Speedpoint Charges                          "
+              MOVE " Firstcard Charges                           "
                   TO WS-NARRATIVE 
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT "
+           IF WS-NAR-1-21 = "F/CARD COMCOMMIS00052"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
-              MOVE " Speedpoint Charges                          "
+              MOVE " Firstcard Charges                           "
                   TO WS-NARRATIVE 
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT4"
+      *CTN
+           IF WS-NAR-1-21 = "F/CARD COMRENTAL00483"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
-              MOVE " Speedpoint Charges                          "
+              MOVE " Firstcard Charges                           "
                   TO WS-NARRATIVE 
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-           IF WS-NAR-1-21 = "F/CARD COMSPEEDPOINT9"
+           IF WS-NAR-1-21 = "F/CARD COMCOMMIS00483"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
-              MOVE " Speedpoint Charges                          "
+              MOVE " Firstcard Charges                           "
                   TO WS-NARRATIVE 
               PERFORM WRITE-CARDCHARGE-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
+              
            IF WS-NAR-1-10 = "DINERSCLUB"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
