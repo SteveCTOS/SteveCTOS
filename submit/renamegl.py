@@ -14,5 +14,5 @@ if month in months and comp == 'ALL':
 elif comp in comps and month in months:
   rename(comp, month)
 else:
-  print sys.argv
-  print 'Please supply a valid Company (or ALL) & Valid Month Name'
+  print((sys.argv))
+  print('Please supply a valid Company (or ALL) & Valid Month Name')

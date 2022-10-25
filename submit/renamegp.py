@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import glob, os, sys
 comps = ['gp1', 'gp2', 'gp3', 'gpa',]
 months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
@@ -14,5 +14,5 @@ if month in months and comp == 'ALL':
 elif comp in comps and month in months:
   rename(comp, month)
 else:
-  print sys.argv
-  print 'Please supply a valid Group (or ALL) & Valid Month Name'
+  print(sys.argv)
+  print('Please supply a valid Group (or ALL) & Valid Month Name')

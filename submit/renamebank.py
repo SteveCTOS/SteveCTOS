@@ -2,7 +2,7 @@
 # The renaming of Payslyp 'BANK' Files to 'Bank' & add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS']
-months = ['Mar21', 'Apr21', 'May21', 'Jun21', 'Jul21', 'Aug21', 'Sep21', 'Oct21', 'Nov21', 'Dec21', 'Jan22', 'Feb22']
+months = ['Mar20', 'Apr20', 'May20', 'Jun20', 'Jul20', 'Aug20', 'Sep20', 'Oct20', 'Nov20', 'Dec20', 'Jan21', 'Feb21']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):
@@ -15,5 +15,5 @@ if month in months and comp == 'ALL':
 elif comp in comps and month in months:
   rename(comp, month)
 else:
-  print sys.argv
-  print 'Please supply a valid Company (or ALL) & Valid Month Name'
+  print(sys.argv)
+  print('Please supply a valid Company (or ALL) & Valid Month Name')
