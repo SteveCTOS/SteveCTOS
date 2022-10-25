@@ -46,6 +46,10 @@ set (copy_list
   GlGroupReports.Sub
   GlJrnReports.Sub
   GlJrnReports.sh
+  GlJrnReportsDisk.Sub
+  GlJrnReportsDisk.sh
+  GlIntercoReportsDisk.Sub
+  GlIntercoReportsDisk.sh
   GlMonthly.sh
   GlMonthly.Sub
   GlMonthTemp
