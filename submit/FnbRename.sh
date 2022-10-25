@@ -6,6 +6,6 @@
 # example.  From the command line run the following:
 # FnbRename.sh ALL Jun16
 
-python renamefnbcams.py $1 $2
+python3 renamefnbcams.py $1 $2
 echo   The rename of all .Exp files Run Successfully 
 
