@@ -11,7 +11,7 @@ parser.add_option('-r', '--rule',    dest='rule',                         defaul
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
-  print ('usage: python fohtotext.py [options] filename')
+  print('usage: python fohtotext.py [options] filename')
   parser.print_usage()
   exit(1)
 filename = args[0]
@@ -21,8 +21,8 @@ fnode, fext  = os.path.splitext(fname)
 def cleanup(line):
   result = ''
   for i, ch in enumerate(line):
-    if ch >= 32 and ch < 128:
-      result += chr(ch)
+    if ord(ch) >= 32 and ord(ch) < 128:
+      result += ch
   if len(result) > 0 and result[0] == ' ':
     result = result[1:]    
   return result    
@@ -40,7 +40,7 @@ def read_file(filename):
   lineno = 0
   pageno = 0
   for line in lines:
-    if line[0] == 0xb4: 
+    if ord(line[0]) == 0xb4: 
       if first == True:
         skip = True
         first = False
@@ -97,7 +97,7 @@ rules['statement']['RemtLine01'] = (58, 0)
   
 def to_text():  
   if not options.rule in rules:
-    print('Rule %s not in current text production rules' % (options.rule))
+    print(('Rule %s not in current text production rules' % (options.rule)))
     return
   rule = rules[options.rule]
   if len(options.txtfile) == 0:
