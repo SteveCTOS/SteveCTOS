@@ -235,7 +235,7 @@
        CONTROL-030.
            MOVE " " TO WS-DATE-ZERO.
            MOVE 1510 TO POS.
-           DISPLAY "PRINT DATES THAT = 0, Y OR N       : [ ]" AT POS.
+           DISPLAY "PRINT SALE DATES THAT = 0, Y OR N  : [ ]" AT POS.
            MOVE 1548 TO POS.
 
            MOVE ' '       TO CDA-DATA.
@@ -429,7 +429,7 @@
             IF WS-MMC = 0
              IF WS-DDC = 0
               IF WS-DATE-ZERO = "N"
-               IF ST-DATE-CREATED > WS-DATE-ENTER
+      *         IF ST-DATE-CREATED > WS-DATE-ENTER
                GO TO PRR-005.
                
       ******************* CHANGED 24/8/2011
