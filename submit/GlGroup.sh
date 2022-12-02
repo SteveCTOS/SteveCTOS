@@ -5,6 +5,6 @@
 #  GlGroup.sh ALL Jun
 Submit MainCont GlGroupReports.Sub
 
-python renamegp.py $1 $2
+python3 renamegp.py $1 $2
 
 echo   CT Group GL Monthly Reports Run Successfully 
