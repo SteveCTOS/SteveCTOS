@@ -26,10 +26,13 @@
        77  WS-LINE-NO           PIC 9(3) VALUE 0.
        77  WS-RANGE1            PIC X(7) VALUE " ".
        77  WS-RANGE2            PIC X(10) VALUE " ".
+       77  WS-RANGE3            PIC X VALUE " ".
+       77  WS-RANGE4            PIC X(10) VALUE " ".
        77  WS-STORE             PIC X(17) VALUE " ".
        01  WS-IMPRECEIPT-STATUS.
            03  WS-IMPORT-ST1    PIC 99.
        01  WS-DATE-RANGE        PIC 9(8).
+       01  WS-DATE-RANGE-END    PIC 9(8).
        01  HEAD1.
            03  FILLER         PIC X(5) VALUE "DATE".
            03  H1-DATE        PIC X(10).
@@ -91,7 +94,7 @@
       *
        GET-DATA SECTION.
        GET-000.
-           MOVE " " TO WS-RANGE1 WS-RANGE2.
+           MOVE " " TO WS-RANGE1 WS-RANGE2 WS-RANGE3 WS-RANGE4.
            MOVE 1010 TO POS
            DISPLAY "Enter SUPPLIER, Leave Blank for ALL  : [       ]"
                       AT POS
@@ -134,14 +137,14 @@
            IF W-ESCAPE-KEY = 4
                GO TO GET-000.
            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
-               GO TO GET-020
+               GO TO GET-011
            ELSE
                DISPLAY " " AT 3079 WITH BELL
                GO TO GET-010.
-       GET-020.
+       GET-011.
            IF WS-RANGE2 = " "
               MOVE 0 TO WS-DATE-RANGE
-              GO TO GET-550.
+              GO TO GET-012.
            MOVE WS-RANGE2       TO SPLIT-DATE CONVERT-DATE.
            MOVE WS-CONVERT-DATE TO DISPLAY-DATE
            MOVE DISPLAY-DATE    TO H2-COMM2.
@@ -150,6 +153,78 @@
            MOVE CONVERT-DATE    TO WS-DATE-RANGE SPLIT-DATE.
            PERFORM CONVERT-SPLIT-FORMAT.
            MOVE SPLIT-DATE TO WS-DATE-RANGE.
+       GET-012.
+           MOVE 1510 TO POS
+           DISPLAY "FLAG THE RECORDS AS IF RECOSTED ??   : [N]"
+                      AT POS
+           MOVE 1550 TO POS.
+
+           MOVE 'N'       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 12        TO CDA-ROW.
+           MOVE 49        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-RANGE3.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO GET-011.
+		   IF WS-RANGE3 = "N"
+		       MOVE " " TO WS-RANGE4
+		       GO TO GET-550.
+		   IF WS-RANGE3 NOT = "Y"
+		       GO TO GET-012.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO GET-013
+           ELSE
+               MOVE 3010 TO POS
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO GET-000.
+       GET-013.
+           MOVE 1710 TO POS.
+           DISPLAY "Enter DATE to stop RECOSTING at      : [          ]"
+                AT POS
+           MOVE 1836 TO POS
+           DISPLAY "Date Format:  DDMMYYYY" AT POS
+           MOVE 1750 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 10        TO CDA-DATALEN.
+           MOVE 14        TO CDA-ROW.
+           MOVE 49        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-RANGE4.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO GET-011.
+           IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO GET-020
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO GET-013.
+       GET-020.
+           IF WS-RANGE3 = "Y"
+            IF WS-RANGE4 = " "
+              MOVE "IF RE-COSTING IS SET TO YES THEN THIS MUST BE > 0"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 GO TO GET-013.
+           MOVE WS-RANGE4       TO SPLIT-DATE CONVERT-DATE.
+           MOVE WS-CONVERT-DATE TO DISPLAY-DATE
+           MOVE DISPLAY-DATE    TO H2-COMM2.
+           MOVE 1750 TO POS.
+           DISPLAY DISPLAY-DATE AT POS.
+           MOVE CONVERT-DATE    TO WS-DATE-RANGE-END SPLIT-DATE.
+           PERFORM CONVERT-SPLIT-FORMAT.
+           MOVE SPLIT-DATE TO WS-DATE-RANGE-END.
+           IF WS-DATE-RANGE-END < WS-DATE-RANGE
+              MOVE "THIS FIELD MUST BE > THE SECOND FIELD ENTERED"
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 GO TO GET-013.
        GET-550.
             MOVE 2710 TO POS.
             DISPLAY "The report is being compiled........." AT POS.
@@ -189,7 +264,7 @@
                 MOVE 0 TO WS-IMPORT-ST1
                 GO TO PRR-999.
        PRR-002.
-            READ IMPRECEIPTS-FILE NEXT
+            READ IMPRECEIPTS-FILE NEXT WITH LOCK 
                AT END NEXT SENTENCE.
             IF WS-IMPORT-ST1 = 10
                PERFORM PRR-025
@@ -214,7 +289,11 @@
             IF WS-DATE-RANGE NOT = 0
              IF IMRE-DATERECEIVED < WS-DATE-RANGE
                GO TO PRR-002.
+            IF WS-DATE-RANGE-END NOT = 0
+             IF IMRE-DATERECEIVED > WS-DATE-RANGE-END
+               GO TO PRR-999.
 
+      * FIRST TIME THE RECORD IS READ SO THE FIRST RECORD IS LOADED
             IF WS-STORE = " "
                MOVE IMRE-ALT-KEY TO WS-STORE
                MOVE 2820 TO POS
@@ -242,6 +321,8 @@
                GO TO PRR-002.
        PRR-010.
             ADD 1 TO WS-LINE-NO.
+            IF WS-RANGE3 = "Y"
+		       PERFORM PRR-090.
             IF LINE-CNT > 60
                PERFORM PRR-015.
             GO TO PRR-002.
@@ -284,12 +365,30 @@
            MOVE DISPLAY-DATE            TO D-DATE
            MOVE IMRE-TRANSACTION-NUMBER TO D-TRANS
            MOVE IMRE-UPDATED-YN         TO D-RECOSTED.
+		   
+		   IF WS-RANGE3 = "Y"
+		       PERFORM PRR-090.
        PRR-025.
            MOVE WS-LINE-NO              TO D-LINES
            MOVE " " TO PRINT-REC
            WRITE PRINT-REC FROM DETAIL-LINE
            MOVE " " TO PRINT-REC
            ADD 1 TO LINE-CNT.
+           IF WS-RANGE3 = "Y"
+		       PERFORM PRR-090.
+	   PRR-090.
+	       MOVE "Y"                     TO IMRE-UPDATED-YN.
+           REWRITE IMPORT-RECEIPTS-REC
+                INVALID KEY NEXT SENTENCE.
+             IF WS-IMPORT-ST1 NOT = 0
+               MOVE "IMPRECEIPT RECORD BUSY, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-IMPORT-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-IMPORT-ST1
+			   GO TO PRR-090.
        PRR-999.
            EXIT.
       *
