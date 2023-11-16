@@ -875,7 +875,7 @@
               MOVE WS-COMMENT2 TO PRINT-REC
               WRITE PRINT-REC.
            MOVE " " TO PRINT-REC
-           WRITE PRINT-REC.
+      *     WRITE PRINT-REC.
            IF WS-PRINT-TOTALS = "N"
               MOVE 1 TO SUB-1
               GO TO WR-600.
@@ -953,7 +953,7 @@
             WRITE PRINT-REC FROM WF-UNDERLINE.
 
            MOVE " " TO WS-STOCK-LINE WSF-STOCK-LINE PRINT-REC
-           WRITE PRINT-REC.
+      *      WRITE PRINT-REC.
            MOVE 1 TO SUB-1.
        WR-600.
            IF WS-QUOTE-TERM (SUB-1) = " "
@@ -1288,9 +1288,10 @@
                  WRITE PRINT-REC.
               
            MOVE " " TO WS-STOCK-LINE PRINT-REC
-           WRITE PRINT-REC
-           MOVE WS-COMMENTLINE TO PRINT-REC
-           WRITE PRINT-REC.
+      *     WRITE PRINT-REC
+           IF WS-COMMENTLINE > " "
+               MOVE WS-COMMENTLINE TO PRINT-REC
+               WRITE PRINT-REC.
            IF WS-COMMENT1 > " "
               MOVE WS-COMMENT1 TO PRINT-REC
               WRITE PRINT-REC.
@@ -1389,7 +1390,7 @@
            MOVE 1 TO SUB-1.
        WRFAX-605.
            MOVE " " TO PRINT-REC
-           WRITE PRINT-REC.
+      *     WRITE PRINT-REC.
            IF WS-PRINT-SUF-COMMENT = "Y"
               MOVE
               "'*' IN FRONT OF DESCRIPTION = SUFFICIENT STOCK ON HAND"
@@ -1437,6 +1438,7 @@
            MOVE 0 TO WS-PRICETOTAL.
        WRFAX-700.
            IF Fax-PaNumber = 3 OR = 4
+            IF LINE-CNT < 63
                 PERFORM GET-USER-MAIL-NAME
                 PERFORM GET-REPORT-Y2K-DATE
                 PERFORM PRINT-REPORT-INFO.

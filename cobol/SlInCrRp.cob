@@ -139,10 +139,10 @@
                05  B-SHIPPEDQTY        PIC 9(5).
                05  B-STOCKDESCRIPTION  PIC X(20).
                05  B-STOCKDESCRIPTION2 PIC X(20).
-               05  B-STOCKPRICE        PIC 9(6)V99.
-               05  B-STOCKCOST         PIC 9(6)V99.
+               05  B-STOCKPRICE        PIC 9(8)V99.
+               05  B-STOCKCOST         PIC 9(8)V99.
                05  B-DISCOUNTPERITEM   PIC 9(4)V99.
-               05  B-NETT              PIC 9(7)V99.
+               05  B-NETT              PIC 9(8)V99.
                05  B-BORDER            PIC X.
                05  B-UNIT              PIC X(4).
        01  COMM-LINES.
@@ -260,12 +260,12 @@
                05  P-BO             PIC Z(4)9.
                05  FILLER           PIC X(1).
                05  P-SHIPPED        PIC Z(4)9.
-               05  FILLER           PIC X(1).
-               05  P-PRICE          PIC Z(5)9.99.
+      *         05  FILLER           PIC X(1).
+               05  P-PRICE          PIC Z(6)9.99.
                05  FILLER           PIC X(2).
                05  P-DISCOUNT       PIC Z9.99.
-               05  FILLER           PIC X(1).
-               05  P-NETT           PIC Z(7)9.99.
+      *         05  FILLER           PIC X(1).
+               05  P-NETT           PIC Z(8)9.99.
                05  FILLER           PIC X(13).
        01  P-COMMENTLINE.
            03  FILLER           PIC X(11) VALUE " ".
@@ -286,8 +286,8 @@
            03  P-ADD3           PIC Z(6)9.99.
            03  FILLER           PIC X(13) VALUE " ".
            03  P-CURRENCY       PIC X(5) VALUE " ".
-           03  P-ADD4           PIC Z(6)9.99.
-           03  FILLER           PIC X(14) VALUE " ".
+           03  P-ADD4           PIC Z(8)9.99.
+           03  FILLER           PIC X(12) VALUE " ".
        01  P-CONTINUED.
            03  FILLER           PIC X(40) VALUE " ".
            03  FILLER           PIC X(22) VALUE "Continued To.....Page".
@@ -384,12 +384,12 @@
                05  PL-BO             PIC Z(4)9.
                05  FILLER            PIC X(2).
                05  PL-SHIPPED        PIC Z(4)9.
-               05  FILLER            PIC X(3).
-               05  PL-PRICE          PIC Z(5)9.99.
+               05  FILLER            PIC X(2).
+               05  PL-PRICE          PIC Z(6)9.99.
                05  FILLER            PIC X(2).
                05  PL-DISCOUNT       PIC Z9.99.
-               05  FILLER            PIC X(2).
-               05  PL-NETT           PIC Z(6)9.99.
+               05  FILLER            PIC X(1).
+               05  PL-NETT           PIC Z(8)9.99.
            03  PLDET-CHAR2           PIC X(1) VALUE " ".
        01  LASERPL-COMMENTLINE.
            03  PLCOM-CHAR        PIC X(2) VALUE " ".
@@ -409,9 +409,9 @@
            03  PL-ADD2           PIC Z(6)9.99.
            03  FILLER            PIC X(17) VALUE " ".
            03  PL-ADD3           PIC Z(6)9.99.
-           03  FILLER            PIC X(15) VALUE " ".
+           03  FILLER            PIC X(13) VALUE " ".
            03  PL-CURRENCY       PIC X(5) VALUE " ".
-           03  PL-ADD4           PIC Z(6)9.99.
+           03  PL-ADD4           PIC Z(8)9.99.
            03  PLADD-CHAR2       PIC X(1) VALUE " ".
        01  PL-CONTINUED.
            03  PLCONT-CHAR     PIC X(2) VALUE " ".
@@ -1730,7 +1730,8 @@
            MOVE WS-SUBTOTAL      TO PL-ADD3.
            IF WS-INVCRED = "P"
               COMPUTE WS-INVOICETOTAL = WS-SUBTOTAL + WS-TAXAMT.
-           MOVE "ZAR"            TO PL-CURRENCY.
+      *     MOVE "ZAR"            TO PL-CURRENCY.
+           MOVE WS-CURRENCY      TO PL-CURRENCY.
            MOVE WS-INVOICETOTAL  TO PL-ADD4
            MOVE PL-ADD4          TO PDF-TOTAL.
            WRITE LASER-REC     FROM LASERPL-ADDLINE.
