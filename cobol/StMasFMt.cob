@@ -954,10 +954,29 @@
        OPEN-005.
             OPEN I-O STOCKCHANGE-MASTER.
             IF WS-STCHANGE-ST1 NOT = 0
-               MOVE 0 TO WS-STCHANGE-ST1
-               MOVE "STCHANGE FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               MOVE "STCHANGE I-O FILE BUSY ON OPEN, 'ESC' TO RETRY."
                TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE WS-STCHANGE TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               CLOSE STOCKCHANGE-MASTER
+               GO TO OPEN-006.
+            GO TO OPEN-014.
+       OPEN-006.
+            OPEN OUTPUT STOCKCHANGE-MASTER.
+            IF WS-STCHANGE-ST1 NOT = 0
+               MOVE "STCHANGE OP FILE BUSY ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STCHANGE-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE WS-STCHANGE TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               CLOSE STOCKCHANGE-MASTER
                GO TO OPEN-005.
        OPEN-014.
            OPEN I-O PARAMETER-FILE.

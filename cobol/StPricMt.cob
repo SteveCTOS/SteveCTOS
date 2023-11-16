@@ -406,6 +406,12 @@
                  PERFORM ERROR1-020
                  GO TO ID-005.
            IF WS-PRICE-ST1 = 22
+                 MOVE "INVALID WRITE erc 22, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE PRICE-ST-NUM TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  GO TO ID-005.
            IF WS-PRICE-ST1 NOT = 0
                  MOVE "INVALID WRITE OF PRICE IMPORT, 'ESC' TO RETRY."
@@ -416,8 +422,15 @@
                  PERFORM ERROR1-020
                  GO TO ID-020.
 
-            ADD 1 TO SUB-20.
-           
+            ADD 1 TO SUB-20 SUB-21.
+      *     IF SUB-21 = 1000
+      *         MOVE PRICE-IMP-ST-NUM TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE PRICE-ST-NUM TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         PERFORM ERROR1-020
+      *         MOVE 0 TO SUB-21.
+
             MOVE 2010 TO POS
             DISPLAY "NUMBER OF RECORDS:" AT POS
             ADD 20 TO POS

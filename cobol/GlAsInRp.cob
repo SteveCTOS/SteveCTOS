@@ -23,17 +23,17 @@
        77  WS-PRINTANSWER       PIC X(10) VALUE " ".
        77  WS-COMMENT           PIC X(15) VALUE " ".
        77  WS-ACCEPT            PIC X VALUE " ".
-       77  WS-CAPITAL           PIC S9(8)V99 VALUE 0.
-       77  WS-CAPITAL-STORE     PIC S9(8)V99 VALUE 0.
-       77  WS-CAPITAL-PORTION   PIC S9(8)V99 VALUE 0.
-       77  WS-CAPITAL-PAID      PIC S9(8)V99 VALUE 0.
-       77  WS-PAYMENT           PIC S9(8)V99 VALUE 0.
-       77  WS-PAYMENT-SAVE      PIC S9(8)V99 VALUE 0.
-       77  WS-PAID              PIC S9(8)V99 VALUE 0.
-       77  WS-TOTAL-PAID        PIC S9(8)V99 VALUE 0.
+       77  WS-CAPITAL           PIC S9(10)V99 VALUE 0.
+       77  WS-CAPITAL-STORE     PIC S9(10)V99 VALUE 0.
+       77  WS-CAPITAL-PORTION   PIC S9(10)V99 VALUE 0.
+       77  WS-CAPITAL-PAID      PIC S9(10)V99 VALUE 0.
+       77  WS-PAYMENT           PIC S9(10)V99 VALUE 0.
+       77  WS-PAYMENT-SAVE      PIC S9(10)V99 VALUE 0.
+       77  WS-PAID              PIC S9(10)V99 VALUE 0.
+       77  WS-TOTAL-PAID        PIC S9(10)V99 VALUE 0.
        77  WS-INTEREST          PIC S9(6)V9999 VALUE 0.
        77  WS-INT-SAVE          PIC S9(6)V9999 VALUE 0.
-       77  WS-INTEREST-BAL      PIC S9(8)V99 VALUE 0.
+       77  WS-INTEREST-BAL      PIC S9(10)V99 VALUE 0.
        77  WS-INTEREST-RATE     PIC S9(6)V9999 VALUE 0.
        77  WS-MONTH-PERC        PIC S9(6)V9999 VALUE 0.
        77  WS-PERC-ASCII        PIC X(11) VALUE " ".
@@ -80,16 +80,16 @@
            03  FILLER         PIC X(5) VALUE "PAGE:".
            03  H1-PAGE        PIC Z9.
        01  HEAD2.
-           03  FILLER         PIC X(16) VALUE " ".
+           03  FILLER         PIC X(18) VALUE " ".
            03  FILLER         PIC X(33) VALUE ALL "*".
-           03  FILLER         PIC X(25) VALUE " ".
+           03  FILLER         PIC X(23) VALUE " ".
        01  HEAD3.
            03  FILLER         PIC X(8) VALUE "CAPITAL:".
            03  H3-CAPITAL     PIC Z(7)9.99-.
            03  FILLER         PIC X(4) VALUE " ".
            03  FILLER         PIC X(8) VALUE "PAYMENT:".
-           03  H3-PAYMENT     PIC Z(7)9.99-.
-           03  FILLER         PIC X(4) VALUE " ".
+           03  H3-PAYMENT     PIC Z(9)9.99-.
+           03  FILLER         PIC X(2) VALUE " ".
            03  FILLER         PIC X(7) VALUE "MONTHS:".
            03  H3-MONTHS      PIC Z(2)9.
            03  FILLER         PIC X(3) VALUE " ".
@@ -97,33 +97,33 @@
            03  H3-INTEREST    PIC Z9.9999.
        01  HEAD4.
            03  FILLER         PIC X(52) VALUE
-           "PMT    DATE   CAPITAL PAID     INTEREST PAID".
+           "PMT    DATE    CAPITAL PAID     INTEREST PAID".
            03  FILLER         PIC X(28) VALUE
-           "AMT. PAID        BALANCE".
+           " AMT. PAID        BALANCE".
        01  DETAIL-LINE.
            03  D-MONTH        PIC Z(2)9.
            03  FILLER         PIC X(2) VALUE " ".
            03  D-MNTH-TYPE    PIC X(4) VALUE " ".
-           03  D-YEAR         PIC X(6) VALUE " ".
-           03  D-CAPITAL      PIC Z(7)9.99-.
-           03  FILLER         PIC X(6) VALUE " ".
-           03  D-INTEREST     PIC Z(7)9.99-.
-           03  FILLER         PIC X(5) VALUE " ".
-           03  D-TOTAL-PAID   PIC Z(7)9.99-.
+           03  D-YEAR         PIC X(5) VALUE " ".
+           03  D-CAPITAL      PIC Z(9)9.99-.
+           03  FILLER         PIC X(4) VALUE " ".
+           03  D-INTEREST     PIC Z(9)9.99-.
            03  FILLER         PIC X(3) VALUE " ".
-           03  D-BALANCE      PIC Z(7)9.99-.
+           03  D-TOTAL-PAID   PIC Z(9)9.99-.
+           03  FILLER         PIC X(1) VALUE " ".
+           03  D-BALANCE      PIC Z(9)9.99-.
            03  FILLER         PIC X(7) VALUE " ".
        01  TOTAL-LINE.
-           03  FILLER         PIC X(8) VALUE " ".
-           03  FILLER         PIC X(7) VALUE "TOTALS:".
-           03  T-CAPITAL      PIC Z(7)9.99-.
-           03  FILLER         PIC X(6) VALUE " ".
-           03  T-INTEREST     PIC Z(7)9.99-.
-           03  FILLER         PIC X(5) VALUE " ".
-           03  T-TOTAL-PAID   PIC Z(7)9.99-.
-           03  FILLER         PIC X(3) VALUE " ".
-           03  T-BALANCE      PIC Z(7)9.99-.
            03  FILLER         PIC X(7) VALUE " ".
+           03  FILLER         PIC X(7) VALUE "TOTALS:".
+           03  T-CAPITAL      PIC Z(9)9.99-.
+           03  FILLER         PIC X(4) VALUE " ".
+           03  T-INTEREST     PIC Z(9)9.99-.
+           03  FILLER         PIC X(3) VALUE " ".
+           03  T-TOTAL-PAID   PIC Z(9)9.99-.
+           03  FILLER         PIC X(1) VALUE " ".
+           03  T-BALANCE      PIC Z(9)9.99-.
+           03  FILLER         PIC X(5) VALUE " ".
        Copy "WsDateInfo".
        Copy "FormsInfo".
        Linkage Section.
