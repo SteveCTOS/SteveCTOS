@@ -380,9 +380,9 @@
             MOVE "GLACCNO"   TO F-FIELDNAME
             MOVE 7           TO F-CBFIELDNAME
             PERFORM USER-FILL-FIELD.
-      ***********************
-      *X"8A" = <CODE-RETURN>*
-      ***********************
+      ***************************************************************
+      *X"8A" = <CODE-RETURN> TO READ THE GLNUMBER AS THE LINE BEFORE*
+      ***************************************************************
             IF F-EXIT-CH = X"8A"
              IF SUB-20 > 1
              COMPUTE SUB-4 = SUB-20 - 1
@@ -390,9 +390,9 @@
                             WS-ACCOUNT-NUMBER (SUB-20) F-NAMEFIELD
               MOVE 12 TO F-CBFIELDLENGTH
               PERFORM WRITE-FIELD-ALPHA.
-      **************************
-      *X"8C" = <CODE-NEXT-PAGE>*
-      **************************
+      *****************************************************
+      *X"8C" = <CODE-NEXT-PAGE> TO READ NEXT GLNUMBER ITEM*
+      *****************************************************
            IF F-EXIT-CH = X"8C" OR = X"85"
             IF SUB-1 = 1
               PERFORM FILL-021
@@ -411,13 +411,13 @@
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 GO TO FILL-020.
-      ************************************************
-      *<CODE-PREV-PAGE> TO READ PREVIOUS STOCK ITEM. *
-      ************************************************
+      **********************************************************
+      *X"85"= <CODE-PREV-PAGE> TO READ PREVIOUS GLNUMBER ITEM. *
+      **********************************************************
             IF F-EXIT-CH = X"85"
               PERFORM READ-PREV-GLNUMBER
               IF WS-GLMAST-ST1 = 0
-                MOVE GL-NUMBER TO WS-ACCOUNT-NUMBER (SUB-1)
+                MOVE GL-NUMBER TO WS-ACCOUNT-NUMBER (SUB-20)
                                    F-NAMEFIELD
                 MOVE 12        TO  F-CBFIELDLENGTH
                 PERFORM WRITE-FIELD-ALPHA
@@ -449,11 +449,11 @@
                PERFORM ERROR-000
                GO TO FILL-020.
        FILL-023.
-            MOVE GL-DESCRIPTION    TO WS-GLDESC (SUB-20)
-            MOVE "GLACCNAME"       TO F-FIELDNAME
-            MOVE 9                 TO F-CBFIELDNAME
+            MOVE GL-DESCRIPTION     TO WS-GLDESC (SUB-20)
+            MOVE "GLACCNAME"        TO F-FIELDNAME
+            MOVE 9                  TO F-CBFIELDNAME
             MOVE WS-GLDESC (SUB-20) TO F-NAMEFIELD
-            MOVE 40                TO F-CBFIELDLENGTH
+            MOVE 40                 TO F-CBFIELDLENGTH
             PERFORM WRITE-FIELD-ALPHA.
             IF WS-MESSAGE NOT = " "
                PERFORM ERROR-020.
