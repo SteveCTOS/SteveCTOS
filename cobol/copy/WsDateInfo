@@ -40,8 +40,8 @@
        77  WS-MESSAGE1          PIC X(79) VALUE " ".
        77  WS-MESSAGE2          PIC X(79) VALUE " ".
        77  WS-AMOUNT            PIC 9(4)V99 VALUE 0.
+       01  W-CRTSTATUS          PIC 9(4) value 0.
        01  SIGN-FOUND           PIC 9(4) COMP.
-      * 01  WS-COMMAND-LINE      PIC X(256).                                    
        01  WS-COMMAND-LINE      PIC X(512).                                    
        01  W-PRINTCOMMAND.
            03  W-PRINTCOM1A     PIC X(6) VALUE SPACES.

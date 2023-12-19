@@ -7,6 +7,14 @@
            FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
           CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-' '#'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -121,7 +129,6 @@
        77  WS-CREDITOR-ACCEPT   PIC X(7) VALUE " ".
        77  WS-CURRENTGLPER      PIC 99 VALUE 0.
        77  WS-WRITE-MESSAGE     PIC X(60) VALUE " ".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
        01  W-READ-KEY           PIC X(11) VALUE " ".
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 3.

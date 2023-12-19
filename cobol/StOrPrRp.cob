@@ -79,7 +79,6 @@
        01  WS-PAGE-CHANGED      PIC X VALUE "N".
        01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
-       01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-COMMENT-LINE.
            03  WS-COMMENT       PIC X(60) OCCURS 5.
        01  WS-ORDER-CHECK.

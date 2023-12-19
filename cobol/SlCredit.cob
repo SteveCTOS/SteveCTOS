@@ -105,7 +105,6 @@
        77  WS-DRTRANS-NO        PIC 9(6).
        77  WS-TERM-SUB          PIC 9 VALUE 0.
        77  WS-DEL-SUB           PIC 9 VALUE 0.
-       01  W-CRTSTATUS             PIC 9(4) value 0.
        01  WS-DEBTOR-STATUS.
            03  WS-DEBTOR-ST1       PIC 99.
        01  WS-STOCK-STATUS.

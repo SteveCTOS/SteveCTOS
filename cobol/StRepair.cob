@@ -167,7 +167,6 @@
        01  WS-TEMP-EMAIL-FILE   PIC X(50).
        01  WS-SPACE-CNT         PIC 9(2) VALUE ZEROES.
        01  W-READ-KEY             PIC X(11).
-       01  W-CRTSTATUS            PIC 9(4) value 0.
        01  WS-STDESC.
            03  WS-DESC1           PIC X(20) VALUE " ".
            03  WS-DESC2           PIC X(20) VALUE " ".

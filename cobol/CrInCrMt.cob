@@ -3,8 +3,18 @@
        AUTHOR.  CHRISTENSEN.
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
-           CRT STATUS IS W-CRTSTATUS.
+          CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-' '#'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
        SOURCE-COMPUTER. B20.
        OBJECT-COMPUTER. B20.
        INPUT-OUTPUT SECTION.
@@ -62,7 +72,6 @@
        77  WS-PAGE              PIC 99 VALUE 0.
        77  WS-INQUIRY           PIC X(8) VALUE "CrNameIq".
        01  W-READ-KEY           PIC X.
-       01  W-CRTSTATUS             PIC 9(4) VALUE 0.
        01  WS-GLMAST-STATUS.
            03  WS-GLMAST-ST1       PIC 99.
        01  WS-GLPARAMETER-STATUS.

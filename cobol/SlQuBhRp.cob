@@ -52,7 +52,6 @@
        77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
        77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".      
        77  WSF-MAIL-NUMBER      PIC X(50) VALUE " ".
-       01  W-CRTSTATUS          PIC 9(4) value 0.
        01  WS-QUBATCH-STATUS.
            03  WS-QUBATCH-ST1         PIC 99.
        01  WS-IMPORT-STATUS.

@@ -6,7 +6,15 @@
         REPOSITORY. 
            FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
-           CRT STATUS IS W-CRTSTATUS.
+          CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-' '#'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -42,7 +50,6 @@
        77  PSW-SUB1               PIC S9(5) VALUE 0.
        77  PSW-SUB2               PIC S9(5) VALUE 0.
        01  W-READ-KEY             PIC X(11).
-       01  W-CRTSTATUS            PIC 9(4) VALUE 0.
        01  WS-PASSWORD-KEY.
            03  WS-PA-KEY          PIC X OCCURS 11.
        01  WS-STOCK-STATUS.

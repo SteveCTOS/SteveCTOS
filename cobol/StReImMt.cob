@@ -123,7 +123,6 @@
        77  WS-CREDITOR-ACCEPT   PIC X(7) VALUE " ".
        77  WS-CURRENTGLPER      PIC 99 VALUE 0.
        77  WS-RECOMPUTE-CHECK-VAL PIC X VALUE " ".
-       01  W-CRTSTATUS           PIC 9(4) value 0.
        01  WS-MONTH-DESCRIPTIONS.
            03  FILLER          PIC X(3) VALUE "JAN".
            03  FILLER          PIC X(3) VALUE "FEB".

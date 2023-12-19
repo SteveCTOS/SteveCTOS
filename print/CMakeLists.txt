@@ -14,8 +14,9 @@ set (copy_list
   PrintMergePOrder 
   PrintMergeQuote
   PrintMergeRemit
+  PrintPdf.sh
   PrintPOrder1
-  PrintPOrder2 
+  PrintPOrder2
   PrintQuote1
   PrintQuote2
   PrintRemit1

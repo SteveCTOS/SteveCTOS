@@ -5,6 +5,16 @@
         CONFIGURATION SECTION.
         REPOSITORY. 
            FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-' '#'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
@@ -915,3 +925,4 @@
        Copy "Error1Message".
        Copy "CTOSCobolAccept".
       * END-OF-JOB.
+..	

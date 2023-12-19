@@ -5,16 +5,18 @@
         CONFIGURATION SECTION.
         REPOSITORY. 
            FUNCTION ALL INTRINSIC.
-        SOURCE-COMPUTER. B20.
-        OBJECT-COMPUTER. B20.
-    
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
         SPECIAL-NAMES.
         CLASS WS-VALID-EMAIL IS
-          '@' '_' '.' '-'
+          '@' '_' '.' '-' '#'
           'a' THRU 'i'
           'j' THRU 'r'
           's' THRU 'z'
           '0' THRU '9'.
+
+        SOURCE-COMPUTER. B20.
+        OBJECT-COMPUTER. B20.
 
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.

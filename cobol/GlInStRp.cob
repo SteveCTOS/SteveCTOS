@@ -3,10 +3,23 @@
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-' '#'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+
         SOURCE-COMPUTER. B20.
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
+
         Copy "SelectGlMaster".
         Copy "SelectGlParameter".
         Copy "SelectGlTrans".
@@ -52,6 +65,7 @@
        77  WS-COLUMN5-SALES          PIC S9(8)V99 VALUE 0.
        77  WS-COLUMN6-SALES          PIC S9(8)V99 VALUE 0.
        77  WS-COLUMN7-SALES          PIC S9(8)V99 VALUE 0.
+       01  F-RC                 BINARY-SHORT VALUE 0.
        01  WS-GLMAST-STATUS.
            03  WS-GLMAST-ST1         PIC 99.
        01  WS-GLTRANS-STATUS.
