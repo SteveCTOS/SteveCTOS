@@ -1,4 +1,4 @@
-        IDENTIFICATION DIVISION.
+			IDENTIFICATION DIVISION.
         PROGRAM-ID. SlInCrRp.
         AUTHOR.    CHRISTENSEN.
         ENVIRONMENT DIVISION.
@@ -473,7 +473,6 @@
                MOVE Ws-PrinterName (Sub-1) TO WS-PRINTER
                Move Ws-PrinterChars (Sub-1) To Ws-Print-Chars
                GO TO CONT-035.
-               
       *4=LASER PRINTER
            IF WS-PRINT-NUM = 4
                GO TO CONT-032.
@@ -910,6 +909,7 @@
               START INCR-REGISTER KEY NOT < INCR-DATE
                  INVALID KEY NEXT SENTENCE.
            IF WS-INVCRED = "X"
+              MOVE "ZAR" TO WS-CURRENCY
               PERFORM READ-PDF-REGISTER.
               
            IF WS-INVCRED = "D"
@@ -2846,6 +2846,7 @@
            MOVE INCR-INVCRED-AMT    TO WS-INVOICETOTAL
            MOVE INCR-TAX            TO WS-TAXAMT
            MOVE INCR-ADDONS         TO WS-ADDONAMT
+           MOVE "ZAR"               TO WS-CURRENCY
            COMPUTE WS-SUBTOTAL =
                 WS-INVOICETOTAL - (WS-TAXAMT + WS-ADDONAMT).
            MOVE INCR-LINENO         TO SUB-20.
@@ -3219,7 +3220,7 @@
       *
        READ-COMM-FILE SECTION.
        RCOM-005.
-            IF WS-INVCRED = "I" OR = "P"
+            IF WS-INVCRED = "I" OR = "P" OR = "X"
                 MOVE 1 TO PA-RECORD
             ELSE
                 MOVE 2 TO PA-RECORD.

@@ -444,18 +444,35 @@
       *         IF ST-DATE-CREATED > WS-DATE-ENTER
                GO TO PRR-005.
                
-      ******************* CHANGED 24/8/2011
-      * IF NO SALES BUT ITEM CREATED AFTER DATE ENTERED, DON'T
-      * SHOW AS REDUNDANT.
-      *******************
+      ******************* CHANGED 24/8/2011*********************
+      * IF NO SALES BUT ITEM CREATED AFTER DATE ENTERED, DON'T *
+      * SHOW AS REDUNDANT.                                     *
+      **********************************************************
            IF ST-LASTSALEDATE = 0 
             IF ST-DATE-CREATED  > WS-DATE-ENTER
                GO TO PRR-005.
+
+      *     MOVE "HERE AT CHECKING Z" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+          IF WS-REDUN-TYPE = "Z"
+           IF ST-SALESUNITSYTD = 0
+            IF ST-SALESUNITSLAST = 0 
+             IF ST-QTYONHAND = 0
+              IF ST-QTYONRESERVE = 0
+               IF ST-QTYONORDER = 0 
+                IF ST-QTYONBORDER = 0
+      *    MOVE "GOING TO PRR-011" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE
+ 	          GO TO PRR-011
+ 	      ELSE
+      *    MOVE "GOING TO PRR-005" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE
+              GO TO PRR-005.
            
-      ******************* CHANGED 24/8/2011
-      * IF ANY OF THE STOCK QTY FIELDS HAVE A VALUE > 0, DON'T 
-      * SHOW AS REDUNDANT.
-      *******************
+      ******************* CHANGED 24/8/2011*********************
+      * IF ANY OF THE STOCK QTY FIELDS HAVE A VALUE > 0, DON'T *
+      * SHOW AS REDUNDANT.                                     *
+      **********************************************************
            IF ST-LASTSALEDATE = 0 
             IF WS-DATE-ZERO = "Y"
              IF ST-QTYONHAND = 0
@@ -479,6 +496,10 @@
              IF WS-DDC < WS-DDE
                GO TO PRR-010.
                
+      *********************
+      * WS-REDUN-TYPE = X *
+      *********************
+
            IF WS-REDUN-TYPE = "X"
             IF ST-QTYONHAND > ST-MAXIMUMLEVEL
               MOVE "*" TO D-OVERMAX
@@ -488,13 +509,16 @@
              IF WS-QTY NOT > 0
                  GO TO PRR-005
              ELSE
-                MOVE WS-QTY TO ST-QTYONHAND
+                 MOVE WS-QTY TO ST-QTYONHAND
                  GO TO PRR-011.
            GO TO PRR-005.
        PRR-010.
            COMPUTE WS-QTY =
                 ((ST-QTYONHAND + ST-QTYONRESERVE) - ST-QTYONBORDER)
                     - ST-MAXIMUMLEVEL.
+      ***********************************
+      * WS-REDUN-TYPE = N OR = X  OR = Y*
+      ***********************************
            IF WS-REDUN-TYPE = "N" OR = "X" OR = "Y"
             IF WS-QTY NOT > 0
                GO TO PRR-005.

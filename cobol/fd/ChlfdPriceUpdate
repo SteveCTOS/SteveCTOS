@@ -1,4 +1,4 @@
-       fD  PRICE-MASTER.
+       FD  PRICE-MASTER.
        01  PRICE-RECORD.
             03  PRICE-KEY.
                 05  PRICE-ST-NUM       PIC X(15).

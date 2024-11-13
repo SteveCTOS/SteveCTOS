@@ -31,7 +31,8 @@ set (copy_list
   DoculogixPDF.sh
   DoculogixPDF1.sh
   DoculogixPDF2.sh
-  DrFaxSend01.sh
+  PDFMonthly.sh
+  DrFaxSend01.sh																																																																																																																																																						
   DrFaxSend03.sh
   DrFaxSend07.sh
   DrFaxSend08.sh
