@@ -2,7 +2,7 @@
 # The renaming of FNB '*.Exp' Files to add in the month & year for filing
 import glob, os, sys
 comps = ['CTJ', 'GRC', 'CTN', 'ORX', 'SFJ', 'CSC', 'SFI', 'QTM', 'HKY', 'KRS', 'KGI']
-months = ['Mar23', 'Apr23', 'May23', 'Jun23', 'Jul23', 'Aug23', 'Sep23', 'Oct23', 'Nov23', 'Dec23', 'Jan24', 'Feb24']
+months = ['Mar24', 'Apr24', 'May24', 'Jun24', 'Jul24', 'Aug24', 'Sep24', 'Oct24', 'Nov24', 'Dec24', 'Jan25', 'Feb25']
 comp = sys.argv[1]
 month = sys.argv[2]
 def rename (comp, month):

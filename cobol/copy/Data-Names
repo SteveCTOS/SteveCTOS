@@ -1,0 +1,87 @@
+                   Christensen Tools (Pty) Ltd             
+
+
+DATE:10/06/2024     ** DATA-NAME REPORT WITH CODE-NUMBERS. **
+                    *****************************************
+
+NUMBER  DATA NAME
+  1     DrMaster
+  2     DrTrans
+  3     DrContact
+  4     DrMail
+  5     DrDeliver
+ 11     StMaster
+ 12     StTrans
+ 13     StReceipt
+ 14     StReceiptLy
+ 15     StImports
+ 16     StOrders
+ 17     StSpecPr
+ 18     StOrderGen
+ 19     StNewPrices
+ 20     StChanges
+ 21     SlDailyEx
+ 22     SlInvRev
+ 23     SlParameter
+ 24     SlSoldBy
+ 25     SlSbRep
+ 26     SlMaster
+ 27     SlDistTot
+ 28     SlRegister
+ 29     SlSpecials
+ 30     CrMaster
+ 31     CrTrans
+ 32     CrJrn
+ 33     CrCurrency
+ 40     CbMaster
+ 41     CbMasterLy
+ 42     CbTrans
+ 43     CbTransLy
+ 51     GlMaster
+ 52     GlMasterLy
+ 53     GlTrans
+ 54     GlTransLy
+ 55     GlJrn
+ 56     GlParameter
+ 60     BmMaster
+ 80     CoCompany
+ 81     CoMenu
+ 82     CoDataName
+ 83     CoForms.Lib
+ 84     CoFaxParam
+ 85     CoPullBy
+ 86     CoCashSales
+ 87     CoPullers
+ 88     CoPrinters
+ 89     StCatalogue
+ 90     StAlternative
+ 91     CrFBCHeader
+ 92     CrFBCTrans
+ 93     CrAlias
+ 94     CrCheques
+ 95     StDiscAcc
+ 96     CoStaffInOut
+ 97     StBranchCat
+ 98     StTransLy
+ 99     SlRegLy
+100     CrCamsTrans
+101     BankCamsTrans
+102     CrRemittance
+103     CrRemitTrans
+104     DrMasterOld
+105     StockLookup
+106     CrMasterOld
+107     CoPrintersRemote
+108     StTransTemp
+109     SlRegTemp
+110     OfisData
+111     CrTransTemp
+112     CrJrnTemp
+113     DrTransTemp
+114     DrMasterTemp
+115     GlTransTemp
+116     SlQuoteBatch
+117     StOrdersTemp
+
+Report From Terminal: Steve Christensen        Mon Jun 10, 2024  11:35
+**** END OF PRINT FILE ****

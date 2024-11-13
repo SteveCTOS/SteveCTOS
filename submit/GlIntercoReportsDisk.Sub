@@ -4,7 +4,7 @@ THUTMOSE
 1
 12
 xx
-/ctools/glw/Krs1.tmp
+/ctools/glw/Krs1
 750400500
 
 #1F
@@ -126,6 +126,7 @@ xx
 
 #1F
 #04
+
 12
 xx
 /ctools/glw/Ctj2
@@ -133,6 +134,47 @@ xx
 
 #1F
 #04
+
+12
+xx
+/ctools/glw/Ctj5
+750405000
+
+#1F
+#04
+
+12
+xx
+/ctools/glw/Ctj6
+750405500
+
+#1F
+#04
+
+12
+xx
+/ctools/glw/Ctj7
+750406000
+
+#1F
+#04
+
+12
+xx
+/ctools/glw/Ctj8
+750406500
+
+#1F
+#04
+
+12
+xx
+/ctools/glw/Ctj9
+750407000
+
+#1F
+#04
+
 12
 xx
 /ctools/glw/Ctj3
@@ -140,6 +182,7 @@ xx
 
 #1F
 #04
+
 12
 xx
 /ctools/glw/Ctj4

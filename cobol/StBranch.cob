@@ -281,6 +281,8 @@
               MOVE WS-STAT1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
+              MOVE WS-ORIGINAL TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
               MOVE 0 TO WS-STAT1
               GO TO OPEN-000.
        OPEN-005.
@@ -292,6 +294,8 @@
               MOVE WS-STAT1 TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
+              MOVE WS-CHECK TO WS-MESSAGE
+              PERFORM ERROR1-MESSAGE
               MOVE 0 TO WS-STAT1
               GO TO OPEN-005.
        OPEN-015.

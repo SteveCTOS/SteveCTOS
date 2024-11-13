@@ -749,7 +749,7 @@
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-      * QTM=10
+      * QTM=10 LOANS TO CTJ FROM QTM
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-4-26 = "CTJ-QTM LOAN              "
              IF WS-CO-NUMBER = 1
@@ -757,7 +757,7 @@
               PERFORM CIM-950
               MOVE " Loan To Company                             "
                   TO WS-NARRATIVE 
-              MOVE "75-040-60-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
@@ -770,7 +770,33 @@
               PERFORM CIM-950
               MOVE " Loan Paid                                   "
                   TO WS-NARRATIVE 
-              MOVE "75-040-60-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+      * QTM=10 LOANS TO QTM FROM CTJ
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "QTM-CTJ LO"
+             IF WS-LOAN-4-26 = "AN                        "
+              IF WS-CO-NUMBER = 1
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan To Company                             "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-4-26 = "CTJ-QTM LOAN PD           "
+             IF WS-CO-NUMBER = 1
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan Paid                                   "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
@@ -801,7 +827,7 @@
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
-      * KRS=12
+      * KRS=12  LOAN FROM CTJ TO KRS
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-4-26 = "CTJ-KRS LOAN              "
              IF WS-CO-NUMBER = 1
@@ -818,6 +844,32 @@
             IF WS-LOAN-3-10 = "KRS-CTJ LO"
              IF WS-LOAN-4-26 = "AN PD                     "
               IF WS-CO-NUMBER = 1
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan Paid                                   "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-70-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+      * KRS=12  LOAN FROM KRS TO CTJ
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "KRS-CTJ LO"
+             IF WS-LOAN-4-26 = "AN                        "
+              IF WS-CO-NUMBER = 1
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan To Company                             "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-70-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-4-26 = "CTJ-KRS LOAN PD           "
+             IF WS-CO-NUMBER = 1
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Loan Paid                                   "
@@ -1098,7 +1150,7 @@
               GO TO RCF-030.
               
       * LOANS PROCESSED IN SFI
-      * SFJ=7
+      * SFI=9
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-3-10 = "SFJ-SFI LO"
              IF WS-LOAN-4-26 = "AN                        "
@@ -1152,13 +1204,39 @@
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
+      * QTM=10 LOAN FROM QTM TO CTJ
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-4-26 = "QTM-CTJ LOAN              "
+             IF WS-CO-NUMBER = 10
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan To Company                             "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-05-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "CTJ-QTM LO"
+             IF WS-LOAN-4-26 = "AN PD                     "
+              IF WS-CO-NUMBER = 10
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan Paid                                   "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-05-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
 
       * PROCESSED IN HKY
       * CTJ=1
-           IF WS-LOAN-1-10 = "FNB OB TRF"
-            IF WS-LOAN-3-10 = "CTJ-HKY LO"
+V           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "HKY-CTJ LO"
              IF WS-LOAN-4-26 = "AN                        "
-              IF WS-CO-NUMBER = 11
+              IF WS-CO-NUMBER = 1
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Loan To Company                             "
@@ -1182,7 +1260,7 @@
               GO TO RCF-030.
               
       * PROCESSED IN KRS
-      * CTJ=1
+      * CTJ=1  LOAN FROM CTJ TO KRS
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-3-10 = "CTJ-KRS LO"
              IF WS-LOAN-4-26 = "AN                        "
@@ -1199,6 +1277,32 @@
            IF WS-LOAN-1-10 = "FNB OB TRF"
             IF WS-LOAN-4-26 = "KRS-CTJ LOAN PD           "
              IF WS-CO-NUMBER = 12
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan Paid                                   "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-05-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+      * KRS=12 LOAN FROM KRS TO CTJ
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-4-26 = "KRS-CTJ LOAN              "
+             IF WS-CO-NUMBER = 12
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Loan To Company                             "
+                  TO WS-NARRATIVE 
+              MOVE "75-040-05-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
+              PERFORM WRITE-LOAN-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
+           IF WS-LOAN-1-10 = "FNB OB TRF"
+            IF WS-LOAN-3-10 = "CTJ-KRS LO"
+             IF WS-LOAN-4-26 = "AN PD                     "
+              IF WS-CO-NUMBER = 12
               MOVE " *" TO BANK-CAMS-FOUND
               PERFORM CIM-950
               MOVE " Loan Paid                                   "
@@ -1287,6 +1391,16 @@
               GO TO RCF-030.
 
       *SFJ
+           IF WS-NAR-1-21 = "F/CARD COMMMF00000937"
+            IF WS-CAMS-AMOUNT < 0
+              PERFORM ADD-BANK-VAT
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Firstcard Charges                           "
+                  TO WS-NARRATIVE 
+              PERFORM WRITE-CARDCHARGE-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
            IF WS-NAR-1-21 = "F/CARD COMRENTAL00937"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
@@ -1308,6 +1422,16 @@
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
       * CTJ
+           IF WS-NAR-1-21 = "F/CARD COMMMF00000052"
+            IF WS-CAMS-AMOUNT < 0
+              PERFORM ADD-BANK-VAT
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Firstcard Charges                           "
+                  TO WS-NARRATIVE 
+              PERFORM WRITE-CARDCHARGE-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
            IF WS-NAR-1-21 = "F/CARD COMRENTAL00052"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
@@ -1329,6 +1453,16 @@
               PERFORM UPDATE-CASHBOOK
               GO TO RCF-030.
       *CTN
+           IF WS-NAR-1-21 = "F/CARD COMMMF00000483"
+            IF WS-CAMS-AMOUNT < 0
+              PERFORM ADD-BANK-VAT
+              MOVE " *" TO BANK-CAMS-FOUND
+              PERFORM CIM-950
+              MOVE " Firstcard Charges                           "
+                  TO WS-NARRATIVE 
+              PERFORM WRITE-CARDCHARGE-CBTRANS
+              PERFORM UPDATE-CASHBOOK
+              GO TO RCF-030.
            IF WS-NAR-1-21 = "F/CARD COMRENTAL00483"
             IF WS-CAMS-AMOUNT < 0
               PERFORM ADD-BANK-VAT
