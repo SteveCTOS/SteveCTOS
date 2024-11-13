@@ -1,4 +1,4 @@
-       FD  PRICE-IMP-MASTER.
+         FD  PRICE-IMP-MASTER.
        01  PRICE-IMP-RECORD.
             03  PRICE-IMP-KEY.
                 05  PRICE-IMP-ST-NUM       PIC X(20).

@@ -146,12 +146,12 @@
            MOVE 0401 TO POS
            DISPLAY "USE LOOKUP:" AT POS
            MOVE 0501 TO POS
-           DISPLAY "BKM, FLK, GDR, WLR" AT POS
+           DISPLAY "BKM, CK, FLK, GDR, WLR" AT POS
            
            MOVE 0701 TO POS
            DISPLAY "DON'T USE LOOKUP:" AT POS
            MOVE 0801 TO POS
-           DISPLAY "BRN, CK, DPR, KEN," AT POS.
+           DISPLAY "BRN, DPR, KEN," AT POS.
            MOVE 0901 TO POS
            DISPLAY "MGL, MT, SCS" AT POS.
        GET-005.
@@ -209,11 +209,11 @@
               AT POS
            MOVE 1110 TO POS.
            DISPLAY
-           "I=IMPORT, U=UPDATE, B=I & U, W=BLANK Lookup, S=EXCEL LOOKUP"
+           "I=IMPORT, U=UPDATE, B=I & U, W=BLANK Lookup, S=EXCEL"
             AT POS
            MOVE 1210 TO POS.
            DISPLAY
-           "        Z=SPECIAL IMPORT, X=CREATE STOCK FILE: [ ]"
+           "LOOKUP, Z=SPECIAL IMPORT, X=CREATE STOCK FILE: [ ]"
             AT POS
            ADD 47 TO POS.
 
@@ -406,6 +406,12 @@
                  PERFORM ERROR1-020
                  GO TO ID-005.
            IF WS-PRICE-ST1 = 22
+                 MOVE "INVALID WRITE erc 22, 'ESC' TO RETRY."
+                 TO WS-MESSAGE
+                 PERFORM ERROR1-000
+                 MOVE PRICE-ST-NUM TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE
+                 PERFORM ERROR1-020
                  GO TO ID-005.
            IF WS-PRICE-ST1 NOT = 0
                  MOVE "INVALID WRITE OF PRICE IMPORT, 'ESC' TO RETRY."
@@ -416,12 +422,19 @@
                  PERFORM ERROR1-020
                  GO TO ID-020.
 
-            ADD 1 TO SUB-20.
-           
+            ADD 1 TO SUB-20 SUB-21.
+      *     IF SUB-21 = 1000
+      *         MOVE PRICE-IMP-ST-NUM TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE PRICE-ST-NUM TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         PERFORM ERROR1-020
+      *         MOVE 0 TO SUB-21.
+
             MOVE 2010 TO POS
             DISPLAY "NUMBER OF RECORDS:" AT POS
             ADD 20 TO POS
-				DISPLAY SUB-20 AT POS.
+            DISPLAY SUB-20 AT POS.
 
            GO TO ID-005.
        ID-900.
@@ -450,11 +463,11 @@
            MOVE 2210 TO POS
            DISPLAY "STOCK ITEM BEING IMPORTED:          " AT POS
            ADD 27 TO POS
-           DISPLAY PRICE-SP-ST-NUM AT POS
+           DISPLAY PRICE-SP-ST-NUM AT POS.
            ADD 12 TO POS
            DISPLAY PRICE-IMP-SP-ST-NUM AT POS.
            
-      *     PERFORM ERROR-010.
+      *      PERFORM ERROR-010.
            
            MOVE PRICE-IMP-SP-DESCRIPTION      TO PRICE-SP-DESCRIPTION
            PERFORM ENTER-UNIT-OF-SALE.
@@ -495,7 +508,7 @@
            IF WS-PRICE-ST1 = 22
                  MOVE "ST1=22 @ ID-SPEC-020 ON WRITE." TO WS-MESSAGE
                  PERFORM ERROR1-000
-                 MOVE PRICE-IMP-SP-ST-NUM TO WS-MESSAGE
+                 MOVE PRICE-SP-ST-NUM TO WS-MESSAGE
                  PERFORM ERROR-MESSAGE
                  PERFORM ERROR1-020
                  GO TO ID-SPEC-005.
@@ -512,12 +525,10 @@
 
             ADD 1 TO SUB-20.
            
-		    MOVE 2010 TO POS
+            MOVE 2010 TO POS
             DISPLAY "NUMBER OF RECORDS:" AT POS
             ADD 20 TO POS
-            DISPLAY SUB-20 AT POS
-            ADD 20 TO POS
-            DISPLAY PRICE-SP-ST-NUM AT POS.
+            DISPLAY SUB-20 AT POS.
 
             GO TO ID-SPEC-005.
        ID-SPEC-900.
@@ -615,21 +626,10 @@
        MERGE-PARTS SECTION.
        MP-010.
            MOVE SPACES                 TO ALPHA-RATE DATA-RATE.
-         
-      *     MOVE "MP-010" TO WS-MESSAGE
-      *     PERFORM ERROR1-000.
-      *     MOVE PRICE-IMP-SP-KEY TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
-
 
            IF WS-IMP-UPDATE = "Z" 
             IF WS-EOF = "DPR"
               PERFORM FIX-SIZE-OF-NUMBER
-              MOVE PRICE-IMP-SP-KEY    TO WS-SP2
-                                          WS-STOCK-CHECKING
-              GO TO MP-020.
-           IF WS-IMP-UPDATE = "Z" 
-            IF WS-EOF = "CK "
               MOVE PRICE-IMP-SP-KEY    TO WS-SP2
                                           WS-STOCK-CHECKING
               GO TO MP-020.
@@ -647,6 +647,7 @@
        MP-020.
            MOVE 1 TO SUB-1 SUB-2.
     
+         
       *     MOVE "MP-020" TO WS-MESSAGE
       *     PERFORM ERROR1-000.
       *     MOVE WS-EOF TO WS-MESSAGE
@@ -666,19 +667,27 @@
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
-           IF WS-EOF = "CK "
-              MOVE SPACES            TO ALPHA-RATE
-              MOVE WS-STOCK-CHECKING TO ALPHA-RATE
-              MOVE WS-EOF            TO DATA-RATE
-              MOVE 1 TO SUB-1
-              MOVE 4 TO SUB-2
-              GO TO MP-050.
+
            IF WS-EOF = "DPR"
-              MOVE SPACES            TO ALPHA-RATE
+      *      IF WS-SC1 = "DPR"
+            
+      *      MOVE "YES" TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+            
+              MOVE SPACE             TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
+      *        MOVE PRICE-IMP-SP-KEY  TO ALPHA-RATE
               MOVE WS-EOF            TO DATA-RATE
               MOVE 1 TO SUB-1
               MOVE 5 TO SUB-2
+         
+      *     MOVE "MP-050" TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE ALPHA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     MOVE DATA-RATE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+
               GO TO MP-050.
 
            IF WS-EOF = "KEN"
@@ -713,8 +722,7 @@
               MOVE 4 TO SUB-1
               MOVE 5 TO SUB-2
               GO TO MP-050.
-      *    IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
-           IF WS-EOF = "BKM" OR = "FLK" OR = "GDR" OR = "WLR"
+           IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
               MOVE SPACES            TO ALPHA-RATE
               MOVE WS-STOCK-CHECKING TO ALPHA-RATE
               MOVE SPACES            TO DATA-RATE
@@ -747,10 +755,8 @@
            EXIT.
       *
        CHECK-PREFIX-IN-STOCK SECTION.
-       CPIAS-001.
+       CPIAS-010.
            MOVE WS-RANGE1 TO WS-EOF.
-           IF WS-EOF = "CK "
-             GO TO CPIAS-005.
            IF WS-EOF = "KEN"
              GO TO CPIAS-020.
            IF WS-EOF = "BRN"
@@ -764,20 +770,9 @@
            IF WS-EOF = "DPR"
              GO TO CPIAS-070.
 
-      *   IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
-         IF WS-EOF = "BKM" OR = "FLK" OR = "GDR" OR = "WLR"
+           IF WS-EOF = "BKM" OR = "CK " OR = "FLK" OR = "GDR" OR = "WLR"
               MOVE " " TO WS-STOCK-PREFIX.
            GO TO CPIAS-999.
-       CPIAS-005.
-           MOVE "CK  " TO WS-STOCK-PREFIX
-           
-      *     MOVE WS-EOF TO WS-MESSAGE
-      *     PERFORM ERROR1-000
-      *     MOVE WS-STOCK-PREFIX TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
-      *     PERFORM ERROR1-020
-           
-              GO TO CPIAS-999.
        CPIAS-020.
            MOVE "KEN " TO WS-STOCK-PREFIX
               GO TO CPIAS-999.
@@ -1247,13 +1242,9 @@
            MOVE PRICE-SP-OLD-LIST-PRICE   TO ST-FOREIGNCOST
            MOVE PRICE-SP-NEW-LIST-PRICE   TO ST-PRICE.
 
-           IF WS-RANGE1 = "DPR"
-              MOVE "DRAPER" TO ST-SUPPLIER
-              MOVE "PND"    TO ST-CURRENCY.
+           MOVE "DRAPER" TO ST-SUPPLIER.
+           MOVE "PND"    TO ST-CURRENCY.
            MOVE "IMPORT" TO ST-BINLOCATION.
-           IF WS-RANGE1 = "CK "
-              MOVE "CEKA  " TO ST-SUPPLIER
-              MOVE "EURO"   TO ST-CURRENCY.
            MOVE "N"      TO ST-PERMIT.
 
            MOVE WS-DATE  TO ST-DATE-CREATED
@@ -1269,6 +1260,7 @@
            MOVE 12.5 TO ST-DISCOUNT7  
            MOVE 25   TO ST-DISCOUNT8  
            MOVE 30   TO ST-DISCOUNT9.
+
 
            MOVE 0 TO ST-OLDPRICE
                      ST-SUPPLIERDISC
