@@ -757,7 +757,7 @@
               PERFORM CIM-950
               MOVE " Loan To Company                             "
                   TO WS-NARRATIVE 
-              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE "75-040-60-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
@@ -770,7 +770,7 @@
               PERFORM CIM-950
               MOVE " Loan Paid                                   "
                   TO WS-NARRATIVE 
-              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE "75-040-60-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
@@ -784,7 +784,7 @@
               PERFORM CIM-950
               MOVE " Loan To Company                             "
                   TO WS-NARRATIVE 
-              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE "75-040-60-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
@@ -796,7 +796,7 @@
               PERFORM CIM-950
               MOVE " Loan Paid                                   "
                   TO WS-NARRATIVE 
-              MOVE "75-040-50-00" TO CBTRANS-ACCOUNT-NUMBER
+              MOVE "75-040-60-00" TO CBTRANS-ACCOUNT-NUMBER
               MOVE WS-CAMS-AMOUNT TO WS-BANK-NETT-AMT
               PERFORM WRITE-LOAN-CBTRANS
               PERFORM UPDATE-CASHBOOK
