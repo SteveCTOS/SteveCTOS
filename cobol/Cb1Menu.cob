@@ -55,9 +55,9 @@
                      AND NOT = " 7" AND NOT = " 8" AND NOT = " 9"
                      AND NOT = "10" AND NOT = "11" AND NOT = "12"
                      AND NOT = "13" AND NOT = "14" AND NOT = "15"
-                     AND NOT = "XX"
+                     AND NOT = "16" AND NOT = "XX"
             IF WS-ANSWER = "XX"
-                MOVE "Selection Must Be Between 1 & 15, Re-Enter."
+                MOVE "Selection Must Be Between 1 & 16, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -119,6 +119,8 @@
            IF WS-ANSWER = "15"
                 MOVE "CbPerEnd" TO WS-PROGRAM.
            IF WS-ANSWER = "16"
+                MOVE "CbTranMv" TO WS-PROGRAM.
+           IF WS-ANSWER = "17"
                 MOVE
            "THIS PROCESS HAS BEEN BLOCKED IN THIS APP VERSION, 'Esc'" &
            " TO EXIT" TO WS-MESSAGE
