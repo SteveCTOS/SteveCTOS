@@ -68,8 +68,7 @@ set (billofmaterial_list
 
 set (cashbook_list 
   CbBankTr CbCamsAl  CbCamsMt  CbGlPost  CbMaLyIq  CbMastIq  CbMastMt
-  CbPerEnd CbStAlMt  CbStatRp  CbTranIq  CbTrans  CbTranMv  CbTrFuIq  CbTrLyIq   CbTrOsRp
-
+  CbPerEnd CbStAlMt  CbStatRp  CbTranIq  CbTrans   CbTranMv  CbTrFuIq  CbTrLyIq   CbTrOsRp
 )
 
 set (creditors_list 
@@ -95,7 +94,7 @@ set (general_list
   GlAsInRp  GlAsRgRp  GlBalSRp  GlBlGpRp  GlBudgMt  GlInGpRp  GlInStRp
   GlJrnARp  GlJrnBat  GlJrnlMt  GlJrnLRp  GlMaLyIq  GlMaster  GlMastIq
   GlMastLy  GlMastMt  GlMastRp  GlNameIq  GlNameLy  GlNoChMt  GlParmMt
-  GlPerEnd  GlRandom  GlTbLyRp  GlTranIq  GlTranLy  GlTrans   GlTrBaRp
+  GlPerEnd  GlRandom  GlTbLyRp  GlTranIq  GlTranLy  GlTrans   GlTrBaRp  
   GlTrbSRp  GlTrFuIq  GlTrLyIq  GlTrSrch  GlTranMv
 )
 

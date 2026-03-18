@@ -1,5 +1,5 @@
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. CbTranMv.
+        PROGRAM-ID. CrTransMv.
         AUTHOR.     CHRISTENSEN.
         ENVIRONMENT DIVISION.
         CONFIGURATION SECTION.
@@ -7,29 +7,34 @@
         OBJECT-COMPUTER. B20.
         INPUT-OUTPUT SECTION.
         FILE-CONTROL.
-           SELECT CBTRANS-FILE ASSIGN TO Ws-CbTrans
+           SELECT CRTR-FILE ASSIGN TO Ws-CrTrans
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
-               RECORD KEY IS CBTRANS-KEY
-               ALTERNATE RECORD KEY IS CBTRANS-ALT-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS CBTRANS-PERIOD WITH DUPLICATES
-                     FILE STATUS IS WS-CBTRANS-STATUS.
+               RECORD KEY IS CRTR-KEY
+               ALTERNATE RECORD KEY IS CRTR-PERIOD WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR-ACC-DATE WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR-REFERENCE WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR-INV-NO WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR-DNOTE-NO WITH DUPLICATES
+               FILE STATUS IS WS-CRTR-STATUS.
                      
-           SELECT CBTRANS1-FILE ASSIGN TO WS-CbTransTemp
+           SELECT CRTR1-FILE ASSIGN TO Ws-CrTransTemp
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
-               RECORD KEY IS CBTRANS1-KEY
-               ALTERNATE RECORD KEY IS CBTRANS1-ALT-KEY WITH DUPLICATES
-               ALTERNATE RECORD KEY IS CBTRANS1-PERIOD WITH DUPLICATES
-                     FILE STATUS IS WS-CBTRANS-STATUS.
+               RECORD KEY IS CRTR1-KEY
+               ALTERNATE RECORD KEY IS CRTR1-PERIOD WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR1-ACC-DATE WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR1-REFERENCE WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR1-INV-NO WITH DUPLICATES
+               ALTERNATE RECORD KEY IS CRTR1-DNOTE-NO WITH DUPLICATES
+                     FILE STATUS IS WS-CRTR-STATUS.
       *
         DATA DIVISION.
-
         FILE SECTION.
-           COPY "ChlfdCbTrans".
-           COPY "ChlfdCbTrans1".
+           COPY "ChlfdCrTrans".
+           COPY "ChlfdCrTrans1".
       *
        WORKING-STORAGE SECTION.
            77  WS-EOF        PIC X(3) VALUE "   ".
@@ -38,7 +43,7 @@
            01  WS-CHECK-ST.
                03  WS-CHECK-1    PIC X.
                03  WS-CHECK-BAL  PIC X(14).
-           01  WS-CBTRANS-STATUS.
+           01  WS-CRTR-STATUS.
                03  WS-STAT1      PIC 99.
        Copy "WsDateInfo".
        Copy "FormsInfo".
@@ -62,14 +67,12 @@
       *
        A-ACCEPT SECTION.
        A-AC001.
-           MOVE 0820 TO POS.
-           DISPLAY "** CB-TRANS EXPORT / IMPORT OF DATA **" AT POS
+           MOVE 0810 TO POS.
+           DISPLAY "** CR-TRANS EXPORT / IMPORT OF DATA **" AT POS
            MOVE 1010 TO POS
            DISPLAY 
-           "ENTER E=EXPORT TO CbTransTemp, I=IMPORT FROM Temp: [ ]"
+           "ENTER E=EXPORT TO CrTransTemp, I=IMPORT FROM Temp: [ ]"
               AT POS
-           MOVE 1110 TO POS
-           DISPLAY "OR ENTER X=EXIT THE PROGRAM." AT POS
            MOVE 1062 TO POS
 
            MOVE ' '       TO CDA-DATA.
@@ -89,7 +92,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO A-AC001.
         A-AC010.
-      *     DISPLAY WS-ACCEPT AT 1075.
+           DISPLAY WS-ACCEPT AT 1075.
            IF WS-ACCEPT = "X"
               EXIT PROGRAM.
            IF WS-ACCEPT NOT = "E" AND NOT = "I"
@@ -99,16 +102,16 @@
       *
         A-INIT SECTION.
         A-000.
-           MOVE WS-CbTrans TO WS-MESSAGE
+           MOVE Ws-CrTrans TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
-           MOVE WS-CbTransTemp TO WS-MESSAGE
+           MOVE Ws-CrTransTemp TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
            IF WS-ACCEPT = "I"
-               OPEN OUTPUT CBTRANS-FILE
+               OPEN OUTPUT CRTR-FILE
            ELSE
-               OPEN I-O CBTRANS-FILE.
+               OPEN I-O CRTR-FILE.
            
       *     MOVE WS-ACCEPT TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
@@ -116,13 +119,13 @@
            PERFORM ERROR-MESSAGE.
            
            IF WS-ACCEPT = "E"
-               MOVE 0 TO CBTRANS-KEY
-              START CBTRANS-FILE KEY NOT < CBTRANS-KEY.
+               MOVE 0 TO CRTR-KEY
+              START CRTR-FILE KEY NOT < CRTR-KEY.
             
            IF WS-ACCEPT = "E"
-              OPEN OUTPUT CBTRANS1-FILE
+              OPEN OUTPUT CRTR1-FILE
            ELSE
-              OPEN I-O CBTRANS1-FILE.
+              OPEN I-O CRTR1-FILE.
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
@@ -137,30 +140,47 @@
            EXIT.
       *
         B-EXPORT SECTION.
+        BE-001.
+           MOVE 1 TO CRTR-TYPE
+                     CRTR-TRANS.
         BE-005.
-           READ CBTRANS-FILE NEXT WITH LOCK
+           READ CRTR-FILE NEXT WITH LOCK
                AT END 
              DISPLAY WS-COUNT
              GO TO BE-EXIT.
                
-           DISPLAY CBTRANS-KEY  AT 1505
-           DISPLAY CBTRANS-DATE AT 1540
+           DISPLAY CRTR-KEY   AT 1505
+           DISPLAY CRTR-DATE  AT 1520
+           DISPLAY "ACC NUM:" AT 1535
+           DISPLAY CRTR-ACC-NUMBER AT 1544
+           
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
+       
+           CALL "C$SLEEP" USING 3.
 
-           MOVE CBTRANS-REC           TO CBTRANS1-REC.
+           IF CRTR-KEY NOT > 0
+               MOVE "KEY < 0, GOING TO RE-READ." TO WS-MESSAGE
+               PERFORM ERROR1-MESSAGE
+               GO TO BE-005.
+           IF CRTR-ACC-NUMBER NOT > 0
+               MOVE "ACC NUM < 0, GOING TO RE-READ." TO WS-MESSAGE
+               PERFORM ERROR1-MESSAGE
+               GO TO BE-005.
+
+           MOVE CRTR-REC    TO CRTR1-REC.
         BE-010.
-           WRITE CBTRANS1-REC
+           WRITE CRTR1-REC
                  INVALID KEY
              MOVE "INVALID WRITE FOR ISAM-EXPORT FILE..." TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE WS-STAT1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE CBTRANS1-KEY TO WS-MESSAGE
+             MOVE CRTR1-KEY TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
-             ADD 1 TO CBTRANS-TRANS
-                      START CBTRANS-FILE KEY > CBTRANS-KEY.
+             ADD 1 TO CRTR-TRANS
+                      START CRTR-FILE KEY > CRTR-KEY.
                       
       *       DISPLAY "INVALID WRITE FOR ASCII FILE...."
       *       DISPLAY WS-STAT1
@@ -173,35 +193,33 @@
       *
         B-IMPORT SECTION.
         BI-005.
-           READ CBTRANS1-FILE NEXT WITH LOCK
+           READ CRTR1-FILE NEXT WITH LOCK
                AT END 
              GO TO BI-EXIT.
                
-           DISPLAY CBTRANS1-KEY AT 1505
-           DISPLAY CBTRANS1-DATE AT 1540
+           DISPLAY CRTR1-KEY AT 1505
+           DISPLAY CRTR1-DATE AT 1520
            ADD 1 TO WS-COUNT
            DISPLAY WS-COUNT AT 2510.
            
-           MOVE CBTRANS1-REC    TO CBTRANS-REC.
+           MOVE CRTR1-REC    TO CRTR-REC.
         BI-010.
-           WRITE CBTRANS-REC
+           WRITE CRTR-REC
                  INVALID KEY
              MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE WS-STAT1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             MOVE CBTRANS1-KEY TO WS-MESSAGE
-             PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020.
       *       DISPLAY "INVALID WRITE FOR ISAM FILE..."
       *       DISPLAY WS-STAT1
-      *       CLOSE CBTRANS-FILEx
-      *             CBTRANS1-FILE
+      *       CLOSE CRTR-FILE
+      *             CRTR1-FILE
       *       CALL "C$SLEEP" USING 3
       *         EXIT PROGRAM.
       *       STOP RUN.
       
-      *      MOVE SPACES TO CBTRANS-REC.
+      *      MOVE SPACES TO CRTR-REC.
             
             GO TO BI-005.
         BI-EXIT.
@@ -209,8 +227,8 @@
       *    
         C-END SECTION.
         C-000.
-           CLOSE CBTRANS-FILE
-                 CBTRANS1-FILE.
+           CLOSE CRTR-FILE
+                 CRTR1-FILE.
            MOVE "FINISHED, CLOSING AND EXIT" TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
         C-EXIT.

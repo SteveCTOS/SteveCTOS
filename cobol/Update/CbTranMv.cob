@@ -16,7 +16,7 @@
                ALTERNATE RECORD KEY IS CBTRANS-PERIOD WITH DUPLICATES
                      FILE STATUS IS WS-CBTRANS-STATUS.
                      
-           SELECT CBTRANS1-FILE ASSIGN TO WS-CbTransTemp
+           SELECT CBTRANS1-FILE ASSIGN TO WS-GlTransTemp
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC
@@ -26,7 +26,6 @@
                      FILE STATUS IS WS-CBTRANS-STATUS.
       *
         DATA DIVISION.
-
         FILE SECTION.
            COPY "ChlfdCbTrans".
            COPY "ChlfdCbTrans1".
