@@ -68,7 +68,7 @@ set (billofmaterial_list
 
 set (cashbook_list 
   CbBankTr CbCamsAl  CbCamsMt  CbGlPost  CbMaLyIq  CbMastIq  CbMastMt
-  CbPerEnd CbStAlMt  CbStatRp  CbTranIq  CbTrans  fsf CbTranMv  CbTrFuIq  CbTrLyIq   CbTrOsRp
+  CbPerEnd CbStAlMt  CbStatRp  CbTranIq  CbTrans   CbTranMv  CbTrFuIq  CbTrLyIq   CbTrOsRp
 )
 
 set (creditors_list 
