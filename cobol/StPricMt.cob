@@ -493,6 +493,7 @@
                  PERFORM ERROR1-020
                  GO TO ID-SPEC-005.
            IF WS-PRICE-ST1 = 22
+      *  RECORD EXISTS - TRYING TO WRITE IT AGAIN
                  MOVE "ST1=22 @ ID-SPEC-020 ON WRITE." TO WS-MESSAGE
                  PERFORM ERROR1-000
                  MOVE PRICE-IMP-SP-ST-NUM TO WS-MESSAGE
@@ -512,7 +513,7 @@
 
             ADD 1 TO SUB-20.
            
-		    MOVE 2010 TO POS
+            MOVE 2010 TO POS
             DISPLAY "NUMBER OF RECORDS:" AT POS
             ADD 20 TO POS
             DISPLAY SUB-20 AT POS
@@ -621,13 +622,14 @@
       *     MOVE PRICE-IMP-SP-KEY TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
 
-
            IF WS-IMP-UPDATE = "Z" 
             IF WS-EOF = "DPR"
               PERFORM FIX-SIZE-OF-NUMBER
               MOVE PRICE-IMP-SP-KEY    TO WS-SP2
                                           WS-STOCK-CHECKING
               GO TO MP-020.
+              
+              
            IF WS-IMP-UPDATE = "Z" 
             IF WS-EOF = "CK "
               MOVE PRICE-IMP-SP-KEY    TO WS-SP2
@@ -1250,11 +1252,11 @@
            IF WS-RANGE1 = "DPR"
               MOVE "DRAPER" TO ST-SUPPLIER
               MOVE "PND"    TO ST-CURRENCY.
-           MOVE "IMPORT" TO ST-BINLOCATION.
+           MOVE "IMPORT"    TO ST-BINLOCATION.
            IF WS-RANGE1 = "CK "
               MOVE "CEKA  " TO ST-SUPPLIER
               MOVE "EURO"   TO ST-CURRENCY.
-           MOVE "N"      TO ST-PERMIT.
+           MOVE "N"         TO ST-PERMIT.
 
            MOVE WS-DATE  TO ST-DATE-CREATED
                             ST-LASTPRICECHANGE.
@@ -1300,24 +1302,23 @@
                      ST-DUTYPERCENT
                      ST-SURCHARGE
                      ST-QTY-ST-TAKE.
-
                        
            MOVE 1 TO ST-MINBUYQTY
                      ST-DEL-DELAY.
            
         UP-SPEC-035.
            WRITE STOCK-RECORD.
-      *     IF WS-STOCK-ST1 NOT = 0
-      *        MOVE "STOCK FILE BUSY ON WRITE, 'ESC' TO OMIT"
-      *        TO WS-MESSAGE
-      *         PERFORM ERROR1-000
-      *         MOVE WS-STOCK-ST1 TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *         PERFORM ERROR1-020
-      *         MOVE ST-STOCKNUMBER TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *         .MOVE 0 TO WS-STOCK-ST1
-      *         GO TO UP-SPEC-005.
+           IF WS-STOCK-ST1 NOT = 0
+               MOVE "STOCK FILE BUSY ON WRITE, 'ESC' TO OMIT"
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STOCK-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE ST-STOCKNUMBER TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               MOVE 0 TO WS-STOCK-ST1
+               GO TO UP-SPEC-005.
            
       *          INVALID KEY
       *           MOVE "INVALID WRITE OF STOCK-RECORD" TO WS-MESSAGE

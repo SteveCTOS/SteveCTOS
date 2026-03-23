@@ -11,12 +11,14 @@
           Copy "SelectStChanges".
           Copy "SelectSlParameter".
           Copy "SelectBmMaster".
+          Copy "SelectSlDaily".
       *
         DATA DIVISION.
         FILE SECTION.
            COPY ChlfdStock.
            COPY ChlfdStockChanges.
            COPY ChlfdParam.
+           COPY ChlfdDaily.
            COPY ChlfdToolkit.
 
        WORKING-STORAGE SECTION.
@@ -38,6 +40,24 @@
            03  WS-SLPARAMETER-ST1  PIC 99.
        01  WS-TOOLKIT-STATUS.
            03  WS-TOOLKIT-ST1      PIC 99.
+       01  WS-DAILY-STATUS.
+           03  WS-DAILY-ST1        PIC 99.
+       01  WS-DAILY-MESSAGE.
+           03  WS-DAILY-1ST.
+               05  WS-DAILY-1ST1   PIC X(9) VALUE " ".
+               05  WS-DAILY-1ST2   PIC X(4) VALUE " ".
+               05  WS-DAILY-1ST3   PIC X(7) VALUE " ".
+           03  WS-DAILY-2ND        PIC X(20) VALUE " ".
+           03  WS-DAILY-3RD.
+               05  WS-DAILY-3RD1   PIC X(10) VALUE " ".
+               05  WS-DAILY-3RD2   PIC X(10) VALUE " ".
+           03  WS-DAILY-4TH.
+               05  WS-DAILY-4TH1   PIC X(10) VALUE " ".
+               05  WS-DAILY-4TH2   PIC X(10) VALUE " ".
+       01  WS-REPORT-DATE-STRIP.
+           03  WS-STRIP1          PIC X(4).
+           03  WS-STRIP2          PIC X(18).
+           03  WS-STRIP3          PIC X(3).
        Copy "WsDateInfo".
       **************************************************************
       * FORMS WORK FIELDS
@@ -3413,6 +3433,9 @@
        DELETE-STOCK-RECORD SECTION.
        DSR-000.
             IF NEW-STOCKNO = "Y"
+             MOVE"THIS ITEM HASN'T BEN CREATED, 'ESC' TO CLEAR SCREEN."
+               TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                PERFORM RELEASE-STOCK-RECORD
                GO TO DSR-999.
        DSR-005.
@@ -3452,6 +3475,21 @@
                PERFORM ERROR1-020
                MOVE 0 TO WS-STOCK-ST1
                GO TO DSR-010. 
+               
+           MOVE "STOCKNUMBER DELETED " TO WS-DAILY-1ST
+           MOVE ST-STOCKNUMBER         TO WS-DAILY-2ND
+           MOVE "IN PROGRAM StMaster " TO WS-DAILY-3RD
+           MOVE "BY THE PERSON LISTED" TO WS-DAILY-4TH
+           PERFORM WRITE-DAILY.
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           MOVE "IN THIS EXCEPTION   " TO WS-DAILY-1ST
+           MOVE WS-pbValue             TO WS-DAILY-2ND
+           MOVE "DATE & TIME CHANGED:" TO WS-DAILY-3RD
+           MOVE pbRet                  TO WS-REPORT-DATE-STRIP
+           MOVE WS-STRIP2              TO WS-DAILY-4TH
+           PERFORM WRITE-DAILY.
+               
            IF WS-STOCK-CHANGE NOT = "Y"
              GO TO DSR-900.
            PERFORM WRITE-STOCK-CHANGES.
@@ -3786,7 +3824,9 @@
        Copy "WriteFieldValue".
        Copy "DisplayForm".
        Copy "UserFillField".
+       Copy "GetReportY2KDate".
        Copy "GetSystemY2KDate".
+       Copy "GetUserMailName".
       ******************
       *Mandatory Copies*
       ******************
@@ -3795,5 +3835,6 @@
        Copy "ClearScreen".
        Copy "ErrorMessage".
        Copy "Error1Message".
+       Copy "WriteDailyExcep1".
       *
       * END-OF-JOB
