@@ -421,7 +421,7 @@
             MOVE 2010 TO POS
             DISPLAY "NUMBER OF RECORDS:" AT POS
             ADD 20 TO POS
-				DISPLAY SUB-20 AT POS.
+            DISPLAY SUB-20 AT POS.
 
            GO TO ID-005.
        ID-900.
@@ -494,11 +494,11 @@
                  GO TO ID-SPEC-005.
            IF WS-PRICE-ST1 = 22
       *  RECORD EXISTS - TRYING TO WRITE IT AGAIN
-                 MOVE "ST1=22 @ ID-SPEC-020 ON WRITE." TO WS-MESSAGE
-                 PERFORM ERROR1-000
-                 MOVE PRICE-IMP-SP-ST-NUM TO WS-MESSAGE
-                 PERFORM ERROR-MESSAGE
-                 PERFORM ERROR1-020
+      *           MOVE "ST1=22 @ ID-SPEC-020 ON WRITE." TO WS-MESSAGE
+      *           PERFORM ERROR1-000
+      *           MOVE PRICE-IMP-SP-ST-NUM TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE
+      *           PERFORM ERROR1-020
                  GO TO ID-SPEC-005.
            IF WS-PRICE-ST1 NOT = 0
                  MOVE "INVALID WRITE OF PRICE IMPORT, 'ESC' TO RETRY."
@@ -1309,14 +1309,14 @@
         UP-SPEC-035.
            WRITE STOCK-RECORD.
            IF WS-STOCK-ST1 NOT = 0
-               MOVE "STOCK FILE BUSY ON WRITE, 'ESC' TO OMIT"
-               TO WS-MESSAGE
-               PERFORM ERROR1-000
-               MOVE WS-STOCK-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-               MOVE ST-STOCKNUMBER TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
+      *         MOVE "STOCK FILE BUSY ON WRITE, 'ESC' TO OMIT"
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR1-000  
+      *         MOVE WS-STOCK-ST1 TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         PERFORM ERROR1-020
+      *         MOVE ST-STOCKNUMBER TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
                MOVE 0 TO WS-STOCK-ST1
                GO TO UP-SPEC-005.
            
