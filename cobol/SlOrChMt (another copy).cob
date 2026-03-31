@@ -254,8 +254,6 @@
                GO TO RSN-010.
             IF ST-STOCKNUMBER > WS-RANGE2
                GO TO RSN-999.
-           MOVE ' '       TO CDA-DATA.
-           MOVE 1         TO CDA-DATALEN.
             MOVE 1810 TO POS
             DISPLAY "STOCKNUMBER BEING PROCESSED IS :" AT POS
             MOVE 1844 TO POS
@@ -269,10 +267,11 @@
             PERFORM CHECK-PREVIOUS-ALLOC-TOTAL.
             MOVE 2610 TO POS
             DISPLAY "AFTER CHECK-PREVIOUS.........             " AT POS
-            
+      *  
       ******************************************************************
       * NEW AVERAGE COST CALCULATION - ONLY WHEN THERE IS STOCK TO ALLOCATE
-      * Extra safety included (prevents erroneous costs)
+      * This prevents erroneous costs when no stock is available to ship
+      * EXTRA SAFETY CHECK SDDED TO SVOID DIVISION BY ZERO OR NEGATIVE
       ******************************************************************
             COMPUTE WS-QUANTITY = ST-QTYONHAND + ST-QTYONRESERVE.
             
@@ -283,33 +282,16 @@
                 COMPUTE WS-STOCK-AVE = 
                     (WS-QUANTITY * ST-AVERAGECOST) + WS-AVE-ALLOC
                 
-                IF (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG) < 1
-                    MOVE ST-AVERAGECOST TO WS-ST-AVERAGECOST
-                ELSE
-                    COMPUTE WS-ST-AVERAGECOST ROUNDED =
-                        WS-STOCK-AVE / 
-                        (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG)
-                END-IF
+                COMPUTE WS-ST-AVERAGECOST ROUNDED =
+                    WS-STOCK-AVE / 
+                    (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG)
                 
                 IF WS-ST-AVERAGECOST > 0
                     MOVE WS-ST-AVERAGECOST TO ST-AVERAGECOST
             END-IF.
-
-      ******************************************************************
-      * ALLOCATION GUARD - PREVENTS ALLOCATING STOCK THAT DOES NOT EXIST
-      * (especially important for type 7 Bills of Material)
-      ******************************************************************
-      * Only allocate if there is still positive still available
-            IF (ST-QTYONHAND + ST-QTYONRESERVE - WS-STTR-SHIPQTY) > 0
-               SUBTRACT WS-STTR-SHIPQTY FROM WS-QUANTITY
-               IF WS-ALLOCATE = "Y"
-                  PERFORM READ-TRANSACTIONS
-               ELSE
-                  GO TO RSN-010
-               END-IF
-            ELSE
-               GO TO RSN-010
-            END-IF.
+            IF WS-ST-AVERAGECOST > 0
+                 MOVE WS-ST-AVERAGECOST TO ST-AVERAGECOST
+            END-IF. 
             
       * THIS SECTION ADDED TO FIND PREVIOUSLY ALLOCATED ST-TRANS
       * THAT ARE FLAGGED AS 'B' BUT HAVE THE SL-REGISTER RECORD DELETED
@@ -321,7 +303,45 @@
       *      PERFORM ERROR1-000
       *      MOVE WS-QUANTITY TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE
-      *      PERFORM ERROR1-020.     
+      *      PERFORM ERROR1-020.
+      
+            SUBTRACT WS-STTR-SHIPQTY FROM WS-QUANTITY.
+      
+            IF WS-ALLOCATE = "Y"
+               PERFORM READ-TRANSACTIONS
+            ELSE
+               GO TO RSN-010.
+       
+      *NEW SECTION - SEE CPAT-005.
+      *      COMPUTE WS-QUANTITY =
+      *           WS-QUANTITY - WS-STTR-SHIPQTY
+      *      COMPUTE WS-STOCK-AVE = WS-QUANTITY * ST-AVERAGECOST.
+      *           
+      *      ADD WS-AVE-ALLOC TO WS-STOCK-AVE 
+      *       COMPUTE WS-QUANTITY = ST-QTYONHAND + ST-QTYONRESERVE
+      *      COMPUTE WS-ST-AVERAGECOST ROUNDED =
+      *         WS-STOCK-AVE / (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG).
+      *
+      *      IF (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG < 1
+      *          MOV ST-STAVERAGECOST TO WS-ST-AVERAGECOST
+      *      ELSE 
+      *          COMPUTE WS-ST-AVERAGECOSTROUNDED = 
+      *         
+      *      IF WS-ST-AVERAGECOST > 0
+      *          MOVE WS-ST-AVERAGECOST TO ST-AVERAGECOST.
+      *         
+      * THIS SECTION ADDED TO FIND PREVIOUSLY ALLOCATED ST-TRANS
+      * THAT ARE FLAGGED AS 'B' BUT HAVE THE SL-REGISTER RECORD DELETED
+      * AND ARE THEREFORE "MISSING" IN THE SYSTEM..
+      * SEE ALSO SECTION CPAT-005
+      *      MOVE STTR-REFERENCE1 TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      MOVE WS-STTR-SHIPQTY TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WS-QUANTITY TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020.
+      
             SUBTRACT WS-STTR-SHIPQTY FROM WS-QUANTITY.
       
             IF WS-ALLOCATE = "Y"
