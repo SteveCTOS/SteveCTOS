@@ -1,4 +1,4 @@
-       FD  PRINTER-MASTER.
+       FD  PRINMASTER
        01  PRINTER-REC.
            03  PRNT-KEY.
               05  PRNT-NUMBER           PIC 99.
@@ -28,6 +28,11 @@
       *             8=SERIALA  @ COUNTER
       *             9=SERIALB  @ COUNTER
       *            10=PARALLELCHEQUE @ CREDITORS DESK
+      *            15=MP201    @ the network.  It's the main Invoice /
+       credit note printer)  When all the dot matrix printers are gone
+        - they are very expensive to service and keep working - so we 
+        have decided to scrap them when they fail and to send ALL 
+        reports to the copier / Printer / Scanner)  13 April 2026
       *            20=VIDEO
       *            
       *

@@ -4,29 +4,42 @@
       *   MOVE "PRINTERNAME SELECTED" TO WS-MESSAGE
       *   PERFORM ERROR1-000
       *   MOVE WS-PRINTERSELECTED TO WS-MESSAGE
-      *   PERFORM ERROR-MESSAGE.          
-         IF WS-PRINTERSELECTED = 0 OR = 88
-              GO TO SRTP-999.
+      *   PERFORM ERROR-MESSAGE.
+      
+      *    IF WS-PRINTERSELECTED = 0 OR = 88 
+      *    MOVE "WE GOT CAUGHT HERE AGAIN" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE
+      *    GO TO SRTP-999.
+          
       *   WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       *   WS-PRINTER IS THE FILE NAME BEING PRINTED
       
          IF WS-PRINTERSELECTED = 15
            MOVE 
-          CONCATENATE('PrintPdf.sh ', ' ', TRIM(WS-PRINTER), 		
+          CONCATENATE('PrintPdf.sh ', ' ', TRIM(WS-PRINTER), 
               ' ', TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTERSELECTED))
               TO WS-COMMAND-LINE.
 
           IF WS-PRINTERSELECTED = 15
               CALL "SYSTEM" USING WS-COMMAND-LINE
                          RETURNING W-STATUS
+                         
+      *       MOVE "AT SYSTEM CALL" TO WS-MESSAGE
+      *       PERFORM ERROR-MESSAGE
+                         
              GO TO SRTP-500.
         SRTP-008.
-              DISPLAY WS-COMMAND-LINE
+      *       DISPLAY WS-COMMAND-LINE
           IF WS-PRINTERSELECTED NOT = 15
               MOVE "lp -d "        TO W-PRINTCOM1A
               MOVE WS-PRINTER-SAVE TO W-PRINTCOM1
               MOVE WS-PRINTER      TO W-PRINTCOM2.
         SRTP-010.          
+        
+      *        MOVE "AT SRTP-010" TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+                         
+        
       *    DISPLAY "PRINT COMMAND: " W-PRINTCOMMAND AT 2710.
       *    ACCEPT W-ENTER AT 2810
 

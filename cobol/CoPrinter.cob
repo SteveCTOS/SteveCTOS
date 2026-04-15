@@ -142,7 +142,14 @@
        CP-005.
            MOVE 00 TO WS-PRNT-ST1.
            MOVE 1 TO SUB-1.
+
+      *          MOVE "CP-005 IS TRUE" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE.
        CP-010.
+           IF WS-PRINTERNAME (21) = "/ctools/spl/ctj-aa1"
+      *           MOVE "CP-010 IS TRUE" TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE
+                 MOVE 15 TO WS-PRINTERNUMBER (21).
            IF WS-PRINTERNUMBER (SUB-1) NOT = WS-PRINTERSELECTED
             IF SUB-1 < 20
                 ADD 1 TO SUB-1
