@@ -268,93 +268,19 @@
             MOVE 2610 TO POS
             DISPLAY "AFTER CHECK-PREVIOUS.........             " AT POS
             
-      ******************************************************************
-      * NEW AVERAGE COST CALCULATION - ONLY WHEN THERE IS STOCK TO ALLOCATE
-      ******************************************************************
-            COMPUTE WS-QUANTITY = ST-QTYONHAND + ST-QTYONRESERVE.
-            
-            IF WS-QUANTITY > 0
-               AND (WS-QUANTITY - WS-STTR-SHIPQTY) > 0
-               AND (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG) > 0
-            THEN
-                COMPUTE WS-STOCK-AVE = 
-                    (WS-QUANTITY * ST-AVERAGECOST) + WS-AVE-ALLOC
-                
-                IF (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG) < 1
-                    MOVE ST-AVERAGECOST TO WS-ST-AVERAGECOST
-                ELSE
-                    COMPUTE WS-ST-AVERAGECOST ROUNDED =
-                        WS-STOCK-AVE / 
-                        (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG)
-                END-IF
-                
-                IF WS-ST-AVERAGECOST > 0
-                    MOVE WS-ST-AVERAGECOST TO ST-AVERAGECOST
-            END-IF.
-
-      * Allocate only if there is still stock available after previous allocations
-            IF WS-QUANTITY > WS-STTR-SHIPQTY
-               SUBTRACT WS-STTR-SHIPQTY FROM WS-QUANTITY
-               IF WS-ALLOCATE = "Y"
-                  PERFORM READ-TRANSACTIONS
-               ELSE
-                  GO TO RSN-010
-               END-IF
-            ELSE
-               GO TO RSN-010
-            END-IF.
-
-            MOVE 2610 TO POS
-            DISPLAY "                                         " AT POS.
-
-            MOVE 2610 TO POS
-            DISPLAY "READING BACK-ORDER ITEMS...               " AT POS
+      *NEW SECTION - SEE CPAT-005.
+            COMPUTE WS-QUANTITY =
+                 WS-QUANTITY - WS-STTR-SHIPQTY
+            COMPUTE WS-STOCK-AVE = WS-QUANTITY * ST-AVERAGECOST.
+                 
+            ADD WS-AVE-ALLOC TO WS-STOCK-AVE 
             COMPUTE WS-QUANTITY = ST-QTYONHAND + ST-QTYONRESERVE
-            PERFORM CHECK-PREVIOUS-ALLOC-TOTAL.
-            MOVE 2610 TO POS
-            DISPLAY "AFTER CHECK-PREVIOUS.........             " AT POS
+            COMPUTE WS-ST-AVERAGECOST ROUNDED =
+               WS-STOCK-AVE / (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG).
+            IF WS-ST-AVERAGECOST > 0
+                MOVE WS-ST-AVERAGECOST TO ST-AVERAGECOST.
             
-      ******************************************************************
-      * NEW AVERAGE COST CALCULATION - ONLY WHEN THERE IS STOCK TO ALLOCATE
-      * Extra safety included (prevents erroneous costs)
-      ******************************************************************
-            COMPUTE WS-QUANTITY = ST-QTYONHAND + ST-QTYONRESERVE.
-            
-            IF WS-QUANTITY > 0
-               AND (WS-QUANTITY - WS-STTR-SHIPQTY) > 0
-               AND (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG) > 0
-            THEN
-                COMPUTE WS-STOCK-AVE = 
-                    (WS-QUANTITY * ST-AVERAGECOST) + WS-AVE-ALLOC
-                
-                IF (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG) < 1
-                    MOVE ST-AVERAGECOST TO WS-ST-AVERAGECOST
-                ELSE
-                    COMPUTE WS-ST-AVERAGECOST ROUNDED =
-                        WS-STOCK-AVE / 
-                        (WS-QUANTITY - WS-SHIPQTY-ALLOC-NO-CHNG)
-                END-IF
-                
-                IF WS-ST-AVERAGECOST > 0
-                    MOVE WS-ST-AVERAGECOST TO ST-AVERAGECOST
-            END-IF.
-
-      ******************************************************************
-      * ALLOCATION GUARD - PREVENTS ALLOCATING STOCK THAT DOES NOT EXIST
-      * (especially important for type 7 Bills of Material)
-      ******************************************************************
-      * Only allocate if there is still positive stock available
-            IF (ST-QTYONHAND + ST-QTYONRESERVE - WS-STTR-SHIPQTY) > 0
-               SUBTRACT WS-STTR-SHIPQTY FROM WS-QUANTITY
-               IF WS-ALLOCATE = "Y"
-                  PERFORM READ-TRANSACTIONS
-               ELSE
-                  GO TO RSN-010
-               END-IF
-            ELSE
-               GO TO RSN-010
-            END-IF.
-      ******************************************************************      
+                 
       * THIS SECTION ADDED TO FIND PREVIOUSLY ALLOCATED ST-TRANS
       * THAT ARE FLAGGED AS 'B' BUT HAVE THE SL-REGISTER RECORD DELETED
       * AND ARE THEREFORE "MISSING" IN THE SYSTEM..
@@ -366,7 +292,7 @@
       *      MOVE WS-QUANTITY TO WS-MESSAGE
       *      PERFORM ERROR-MESSAGE
       *      PERFORM ERROR1-020.
-W     *****************************************************************
+      
             SUBTRACT WS-STTR-SHIPQTY FROM WS-QUANTITY.
       
             IF WS-ALLOCATE = "Y"
