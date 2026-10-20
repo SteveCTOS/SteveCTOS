@@ -200,9 +200,10 @@
       *
         GET-DATA SECTION.
         GET-000.
+            PERFORM OPEN-006. 
+        GET-00005.
             MOVE "                               " TO F-NAMEFIELD.
             MOVE "N"     TO WS-ANSWER.
-            PERFORM OPEN-006. 
             PERFORM CLEAR-MEMORY.
         GET-001.
             MOVE "N" TO WS-ANSWER.
@@ -228,7 +229,7 @@
                 PERFORM OPEN-000
                 PERFORM DISPLAY-FORM
                 PERFORM DISPLAY-FORM-CB-TOP-INFO
-                GO TO GET-000.
+                GO TO GET-00005.
            IF ALPHA-RATE > SPACES
                 PERFORM NUMBER-CHECK.
             MOVE WS-GLNO-CHECK TO WS-CBNUMBER.
@@ -255,7 +256,7 @@
 
             IF CB-DESCRIPTION = "UNKNOWN"
                 DISPLAY " " AT 3079 WITH BELL
-                GO TO GET-000.
+                GO TO GET-00005.
 
             MOVE "BALANCE" TO F-FIELDNAME.
             MOVE 7 TO F-CBFIELDNAME.
@@ -618,7 +619,7 @@
        RDALL-005.
            MOVE 0 TO WS-NO-OF-TRANS
                      WS-TRANS-AMT.
-           MOVE CB-NUMBER           TO CBTRANS-CBMASTER.
+           MOVE CB-NUMBER          TO CBTRANS-CBMASTER.
            IF WS-PER = 0
                MOVE GL-BEGDATE (1) TO CBTRANS-DATE
            ELSE
@@ -630,6 +631,9 @@
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-CBTRANS-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR-MESSAGE
+              MOVE CBTRANS-ALT-KEY TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
               PERFORM ERROR1-020
                GO TO RDALL-900.

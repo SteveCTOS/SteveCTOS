@@ -44,7 +44,9 @@ This repository is in bitbucket being used for free and as such it has a maximum
 	
    - sudo mkdir /ctools
 	
-    4.1  Set all folders in ctools to ctools ownership.  This is the old way for Bitbucket. See 4.2 below instead.
+    4.1 This is the old way for Bitbucket. See 4.2 below instead for Github.
+	
+      - Set all folders in ctools to ctools ownership.  
       - cd /ctools
       - sudo chown -R ctools:ctools *
       - Also can do like this:    sudo chown ctools:ctools /ctools
@@ -62,7 +64,9 @@ This repository is in bitbucket being used for free and as such it has a maximum
       - sudo make install
 
 
-    4.2  Set all folders in ctools to ctools ownership.  This is the NEW way for using Github using ssh keys for security.
+    4.2   This is the NEW way for using Github using ssh keys for security.
+	
+      - Set all folders in ctools to ctools ownership. 
       - cd /ctools
       - sudo chown -R ctools:ctools *
       - Also can do like this:    sudo chown ctools:ctools /ctools
@@ -90,9 +94,9 @@ This repository is in bitbucket being used for free and as such it has a maximum
       - sudo cmake ../source
       - sudo make -k
       - sudo make install
-	
+      
   5. Change the key bindings using dconf-editor - you must first install:
-	
+     
    - sudo apt-get install dconf-tools
    - then run the dconf-editor in a terminal session and go to:
    - org
@@ -101,12 +105,12 @@ This repository is in bitbucket being used for free and as such it has a maximum
    - keybindings
    - wm
    - change all the entries in [ ] brackets so that the system does not interfere with the CTOS key strokes
-	
+    
   6. Setup putty.
-	
+    
    - in /ctools/dev/source/putty there are a number of files and folders that can be copied into /home/.putty to 
    - get the current config 
-	 
+     
   7. .bashrc needs to be copied to the users home directory with ALL the CTOS dependent entries in it.
    -  A copy is found in /ctools/dev/source/installs   Three types of file for auto-exit of putty or not ...
     
@@ -122,27 +126,27 @@ This repository is in bitbucket being used for free and as such it has a maximum
          choose to download from za.archive.ubuntu.com/ubuntu in the first page of the link in red under Africa
    - sudo dpkg -i pdftk-java_3.0.9-1_all.deb
    - sudo apt-get install -f
-	
+    
   9. Installing PUtty on Linux Mint 19.1 >
-	 - Download  putty-0.72.tar.gz from the PUtty website
+     - Download  putty-0.72.tar.gz from the PUtty website
    - Put the `putty-0.72.tar.gz` into the directory  `/home/ctools/Downloads`
-	 - cd /home/ctools/Downloads
-	 - tar vxf putty-0.72.tar.gz
-	
-	 - use menu on the pc by pressing the windows button and select Administrator/Synaptic Package Manager
-	 - Select Search - it will pop up a Find dialog
-	 - Look for Gtk selecting Look in Name Search
-	 - Scroll down to libgtk-3-dev, mark it and the libgtk-3-doc for installation then hit the apply button.
-	
-	 - In a Terminal
-	 - cd /home/ctools/Downloads/putty-0.72
-	 - ./configure
-	 - sudo make
-	 - sudo make install
-	
+     - cd /home/ctools/Downloads
+     - tar vxf putty-0.72.tar.gz
+    
+     - use menu on the pc by pressing the windows button and select Administrator/Synaptic Package Manager
+     - Select Search - it will pop up a Find dialog
+     - Look for Gtk selecting Look in Name Search
+     - Scroll down to libgtk-3-dev, mark it and the libgtk-3-doc for installation then hit the apply button.
+    
+     - In a Terminal
+     - cd /home/ctools/Downloads/putty-0.72
+     - ./configure
+     - sudo make
+     - sudo make install
+	 
    - Use "Software Manager" to install putty
 
-	 - putty should now work properly on the Linux box
+     - putty should now work properly on the Linux box
 
   10. Setup all the new users 
     - Press windows key 
@@ -151,11 +155,11 @@ This repository is in bitbucket being used for free and as such it has a maximum
     - Add user with a temp password.  Make sure to add in ctools, lpadmin, plugdev,sambashare
         to the user groups...
     -  See the list of users in "UserList.txt" for ALL users on the Server currently.
-	
+    
   11. Set user passwords by 
     - su <enter>  (this to enter the root user which has powers to change user passwords)
-	  - ctos (password)
-	  -
+      - ctos (password)
+      -
     - passwd <username>
     - enter the temp password then enter a new password
     - See the List of passwords for users in "Logon.txt"
@@ -173,10 +177,10 @@ This repository is in bitbucket being used for free and as such it has a maximum
 
   13. Change the WORKGROUP in Samba to allow printers to work in the group  
     - edit /etc/samba/smb.conf using sublime-text editor 
-	  - look for the WORKGROUP entry and change it to CTJ
-	  - change the Printer entries to allow browsing and guest ok = yes
-	  - change the entry by removing the ; in front of the entry usershare max shares = 100
-	
+    - look for the WORKGROUP entry and change it to CTJ
+    - change the Printer entries to allow browsing and guest ok = yes
+    - change the entry by removing the ; in front of the entry usershare max shares = 100
+     
   14. Copy All the data off your memory stick USB from the ctools folder.
     - Make sure you do NOT copy the /ctools/bin, /ctools/dev, folders which have already been made in this new 
     - installation.
@@ -186,7 +190,7 @@ This repository is in bitbucket being used for free and as such it has a maximum
     - cd /ctools
     - chmod 775 *
     - chmod -R g+rw *
-	
+    
   16. On the Server, to get the Right-Alt key (right Alt being Alt Gr) to work as a Left-Alt key in CTOS do the following:
     -  press <Windows key>
     -  Go to Settings

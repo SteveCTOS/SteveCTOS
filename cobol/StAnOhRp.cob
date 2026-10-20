@@ -21,6 +21,8 @@
         FILE-CONTROL.
          Copy "SelectStMaster".
          Copy "SelectStChanges".
+          Copy "SelectSlDaily".
+      *
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                 ORGANIZATION IS LINE SEQUENTIAL.
       *
@@ -28,6 +30,7 @@
         FILE SECTION.
            COPY ChlfdStock.
            COPY ChlfdStockChanges.
+           COPY ChlfdDaily.
       *
        FD  PRINT-FILE.
        01  PRINT-REC.
@@ -50,6 +53,24 @@
            03  WS-STOCK-ST1     PIC 99.
        01  WS-STCHANGE-STATUS.
            03  WS-STCHANGE-ST1  PIC 99.
+       01  WS-DAILY-STATUS.
+           03  WS-DAILY-ST1        PIC 99.
+       01  WS-DAILY-MESSAGE.
+           03  WS-DAILY-1ST.
+               05  WS-DAILY-1ST1   PIC X(9) VALUE " ".
+               05  WS-DAILY-1ST2   PIC X(4) VALUE " ".
+               05  WS-DAILY-1ST3   PIC X(7) VALUE " ".
+           03  WS-DAILY-2ND        PIC X(20) VALUE " ".
+           03  WS-DAILY-3RD.
+               05  WS-DAILY-3RD1   PIC X(10) VALUE " ".
+               05  WS-DAILY-3RD2   PIC X(10) VALUE " ".
+           03  WS-DAILY-4TH.
+               05  WS-DAILY-4TH1   PIC X(10) VALUE " ".
+               05  WS-DAILY-4TH2   PIC X(10) VALUE " ".
+       01  WS-REPORT-DATE-STRIP.
+           03  WS-STRIP1          PIC X(4).
+           03  WS-STRIP2          PIC X(18).
+           03  WS-STRIP3          PIC X(3).
        01  HEAD1.
            03  FILLER         PIC X(7) VALUE "  DATE".
            03  H1-DATE        PIC X(10).
@@ -423,6 +444,20 @@
                MOVE 0 TO WS-STOCK-ST1
                GO TO DI-010. 
                
+           MOVE "STOCKNUMBER DELETED " TO WS-DAILY-1ST
+           MOVE ST-STOCKNUMBER         TO WS-DAILY-2ND
+           MOVE "IN PROGRAM StAnOhRp " TO WS-DAILY-3RD
+           MOVE "BY THE PERSON LISTED" TO WS-DAILY-4TH
+           PERFORM WRITE-DAILY.
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           MOVE "IN THIS EXCEPTION   " TO WS-DAILY-1ST
+           MOVE WS-pbValue             TO WS-DAILY-2ND
+           MOVE "DATE & TIME CHANGED:" TO WS-DAILY-3RD
+           MOVE pbRet                  TO WS-REPORT-DATE-STRIP
+           MOVE WS-STRIP2              TO WS-DAILY-4TH
+           PERFORM WRITE-DAILY.
+               
            IF WS-STOCK-CHANGE NOT = "Y"
                GO TO DI-999.
 
@@ -521,5 +556,6 @@
        Copy "ErrorMessage".
        Copy "Error1Message".
        Copy "CTOSCobolAccept".
+       Copy "WriteDailyExcep1".
       *
       * END-OF-JOB.

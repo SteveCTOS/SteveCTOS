@@ -17,3 +17,6 @@
             03  FILLER                        PIC X(01).
             03  PRICE-IMP-SP-NEW-LIST-PRICE   PIC X(14).
             03  FILLER                        PIC X(03).
+      *
+      * 159 CHAR O LINE 18.  DEPENDING ON THE E-O-F  LF or CRLF
+      * THE LAST FILLER NEEDS TO BE CHANGED.

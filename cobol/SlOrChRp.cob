@@ -397,15 +397,39 @@
            DISPLAY "***************************************" AT POS.
        CONTROL-003.
            Copy "PrinterAccept".
+           
+      *     MOVE "WS-PRINTER DISPLAYED BELOW THIS" TO WS-MESSAGE
+      *     PERFORM ERROR-000
+      *     MOVE WS-PRINTER TO WS-MESSAGE
+      *     PERFORM ERROR1-MESSAGE
+      *    PERFORM ERROR-020.
+           
+      *     IF WS-PRINTER = "/ctools/spl/ctj-aa1      "
+      *      OR = "/ctools/spl/ctj-aa2      "
+      *       OR = "/ctools/spl/ctj-aa3      "
+      *          MOVE "PRINTER IS" TO WS-MESSAGE
+      *          PERFORM ERROR-000 
+      *          MOVE WS-PRINTER TO WS-MESSAGE
+      *          PERFORM ERROR1-MESSAGE
+      *          PERFORM ERROR-020
+      *          MOVE 15 TO WS-PRINTERNUMBER (21) WS-PRINTERSELECTED
+      *          MOVE WS-PRINTERNAME (21) TO WS-PRINTER-SAVE
+      *                                     WS-MESSAGE
+      *         PERFORM ERROR1-MESSAGE
+      *         MOVE WS-PRINTERNAME (21) TO WS-PRINTER.
+                
+      *          MOVE "DIDN'T GET CAUGHT IN THE ABOVE" TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE.
+      *          MOVE "MP201-3" TO WS-PRINTER.
        CONTROL-010.
            MOVE 1210 TO POS.
            DISPLAY "B=Print BILLS OF MATERIAL Changed." AT POS
            MOVE 1310 TO POS.
            DISPLAY "C=Print Allocated Orders ready to print," AT POS.
-           MOVE 1410 TO POS.
-           DISPLAY "D=Print Allocated Orders Already in store.:[ ]"
-            AT POS.
-           MOVE 1454 TO POS.
+          MOVE 1410 TO POS.
+          DISPLAY "D=Print Allocated Orders Already in store.:[ ]"
+           AT POS.
+          MOVE 1454 TO POS.
 
            MOVE ' '       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
@@ -1953,7 +1977,7 @@
            CLOSE PARAMETER-FILE.
        OPEN-015.
            OPEN I-O STOCK-TRANS-FILE.
-           IF WS-STTRANS-ST1 NOT = 0 
+           IF WS-STTRANS-ST1 NOT = 0   
               MOVE "ST-TRANS BUSY ON OPEN, IN 2 SEC GOING TO RETRY."
                TO WS-MESSAGE
                PERFORM ERROR1-000 
