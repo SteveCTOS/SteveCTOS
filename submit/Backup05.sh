@@ -35,7 +35,7 @@ rm /ctools/spl/*
 mkdir /media/ctools/USB/data01
 #mkdir /media/ctools/USB/data02
 mkdir /media/ctools/USB/data03
-#mkdir /media/ctools/USB/data04
+mkdir /media/ctools/USB/data04
 #mkdir /media/ctools/USB/data05
 #mkdir /media/ctools/USB/data06
 mkdir /media/ctools/USB/data07
@@ -51,8 +51,8 @@ cp -a /ctools/data01/* /media/ctools/USB/data01
 #cp -a /ctools/data02/* /media/ctools/USB/data02
 echo Copying Data03.....
 cp -a /ctools/data03/* /media/ctools/USB/data03
-#echo Copying Data04.....
-#cp -a /ctools/data04/* /media/ctools/USB/data04
+echo Copying Data04.....
+cp -a /ctools/data04/* /media/ctools/USB/data04
 #echo Copying Data05.....
 #cp -a /ctools/data05/* /media/ctools/USB/data05
 #echo Copying Data06.....
@@ -96,3 +96,34 @@ cp -a /ctools/data* /BACKUPHDD/ctools
 
 echo COPYING ALL FOLDERS TO BACKUP DISK ON SERVER
 cp -a /ctools/* /BACKUPHDD/ctools
+
+echo Removing Data Files from the Dropbox folders ....
+rm /home/ctools/Dropbox/ChristensenData/data01/*
+rm /home/ctools/Dropbox/ChristensenData/data02/*
+rm /home/ctools/Dropbox/ChristensenData/data03/*
+rm /home/ctools/Dropbox/ChristensenData/data04/*
+rm /home/ctools/Dropbox/ChristensenData/data05/*
+rm /home/ctools/Dropbox/ChristensenData/data07/*
+rm /home/ctools/Dropbox/ChristensenData/data08/*
+rm /home/ctools/Dropbox/ChristensenData/data09/*
+rm /home/ctools/Dropbox/ChristensenData/data10/*
+rm /home/ctools/Dropbox/ChristensenData/data11/*
+rm /home/ctools/Dropbox/ChristensenData/data12/*
+
+echo Data Files Deleted ...
+
+echo Copying Data Files from Linux Server to Dropbox folders .....
+cp /ctools/data01/* /home/ctools/Dropbox/ChristensenData/data01/
+cp /ctools/data02/* /home/ctools/Dropbox/ChristensenData/data02/
+cp /ctools/data03/* /home/ctools/Dropbox/ChristensenData/data03/
+cp /ctools/data03/* /home/ctools/Dropbox/ChristensenData/data04/
+cp /ctools/data05/* /home/ctools/Dropbox/ChristensenData/data05/
+cp /ctools/data07/* /home/ctools/Dropbox/ChristensenData/data07/
+cp /ctools/data08/* /home/ctools/Dropbox/ChristensenData/data08/
+cp /ctools/data09/* /home/ctools/Dropbox/ChristensenData/data09/
+cp /ctools/data10/* /home/ctools/Dropbox/ChristensenData/data10/
+cp /ctools/data11/* /home/ctools/Dropbox/ChristensenData/data11/
+cp /ctools/data12/* /home/ctools/Dropbox/ChristensenData/data12/
+
+echo Data update to Dropbox is finished ........
+cd /ctools/bin

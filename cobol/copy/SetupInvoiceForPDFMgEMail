@@ -30,6 +30,8 @@
           ' ', '-T', ' ', TRIM(WS-EMAIL-NUMBER))
                TO WS-COMMAND-LINE.
           GO TO SUIFPMGEM-500.
+          
+          
        SUIFPMGEM-020.
       * FOR CTN LEAVING MOST THINGS AS DEFAULT
           MOVE CONCATENATE('python3 MailGunEmail.py ', 
@@ -83,9 +85,9 @@
           CALL "SYSTEM" USING WS-COMMAND-LINE.
       *               RETURNING W-STATUS.
       
-      *    MOVE W-STATUS TO  WS-MESSAGE
-      *    PERFORM ERROR-MESSAGE.
-      *    DISPLAY W-STATUS  AT 2810.
+          MOVE W-STATUS TO  WS-MESSAGE
+          PERFORM ERROR-MESSAGE.
+          DISPLAY W-STATUS  AT 2810.
        SUIFPMGEM-999.
            EXIT.
       *     STOP RUN.

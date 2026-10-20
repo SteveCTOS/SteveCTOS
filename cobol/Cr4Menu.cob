@@ -104,7 +104,7 @@
            IF WS-ANSWER = " 9"
                MOVE "CrTransMv" TO WS-PROGRAM.
            IF WS-ANSWER = "10"
-               MOVE "CrJrnMv" TO WS-PROGRAM.
+               MOVE "CrJrnsMv" TO WS-PROGRAM.
            Call Ws-Program Using Ws-Linkage.
            PERFORM CLEAR-SCREEN
            CANCEL WS-PROGRAM

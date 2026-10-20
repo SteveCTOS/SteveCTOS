@@ -17,6 +17,7 @@
 
        WORKING-STORAGE SECTION.
        77  WS-COMPYYMM              PIC X(4) VALUE " ".
+       77  WS-DD-TYPE               PIC X VALUE " ".
        77  WS-DRYYMM                PIC X(4) VALUE " ".
        01  W-CRTSTATUS              PIC 9(4) value 0.
        01  WS-COMMAND-LINE          PIC X(256).                                    
@@ -185,6 +186,7 @@
                 Go To GET-010.
            IF WS-ANSWER = "22"
                 Move "DDCreateImage.sh" TO Ws-Data-Name
+                PERFORM SETUP-DD-TYPE-OFDISK-NAME
                 MOVE WS-DATA-NAME       TO WS-COMMAND-LINE
                 CALL "SYSTEM" USING        WS-COMMAND-LINE
                              RETURNING      W-STATUS
@@ -301,7 +303,7 @@
            EXIT.
       *
        SETUP-DOCU-MONTH-FILES SECTION.
-       SUDFD-002.
+       SUDDTOD-002.
           MOVE 
           "Enter the Year & Month numbers To Rename Statements to Email"
               TO WS-MESSAGE
@@ -309,7 +311,7 @@
           MOVE
           "files, for e.g. 1506 for 2015 June." TO WS-MESSAGE
              PERFORM ERROR-000.
-       SUDFD-003.
+       SUDDTOD-003.
           MOVE 2710 TO POS
           DISPLAY "ENTER YEAR MONTH AS YYMM. : [    ]" AT POS
 
@@ -323,13 +325,13 @@
            MOVE CDA-DATA TO WS-COMPYYMM.
 
             IF WS-COMPYYMM = " "
-               GO TO SUDFD-003.
+               GO TO SUDDTOD-003.
             IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
-               GO TO SUDFD-010
+               GO TO SUDDTOD-010
             ELSE
                DISPLAY " " AT 3079 WITH BELL
-               GO TO SUDFD-003.
-       SUDFD-010.
+               GO TO SUDDTOD-003.
+       SUDDTOD-010.
           PERFORM ERROR-020
           PERFORM ERROR1-020
           MOVE 2710 TO POS
@@ -341,11 +343,64 @@
       *    ACCEPT W-ENTER.
       *The variables which will be specified are:
       *$1 = The Year / Month numbers             e.g. 1702
+       SUDDTOD-020.
+          CALL "SYSTEM" USING   WS-COMMAND-LINE
+                       RETURNING W-STATUS.
+       SUDDTOD-999.
+           EXIT.
+      *
+       SETUP-DD-TYPE-OFDISK-NAME SECTION.
+       SUDFD-002.
+          MOVE 
+          "Enter 1=DD With No USB Connected. 2=DD WIth USB Connected."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000.
+       SUDFD-003.
+          MOVE 2710 TO POS
+          DISPLAY "ENTER EITHER 1 OR 2 ONLY  : [ ]" AT POS
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 24        TO CDA-ROW.
+           MOVE 38        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DD-TYPE.
+
+            IF WS-DD-TYPE = " "
+               GO TO SUDFD-003.
+            IF WS-DD-TYPE NOT = "1" 
+              AND NOT = "2"
+               GO TO SUDFD-003.
+            IF W-ESCAPE-KEY = 0 OR 1 OR 2 OR 5
+               GO TO SUDFD-010
+            ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO SUDFD-003.
+       SUDFD-010.
+          PERFORM ERROR-020
+          PERFORM ERROR1-020
+          MOVE 2710 TO POS
+          DISPLAY WS-MESSAGE AT POS.
+          IF WS-DD-TYPE = "1"
+            MOVE 
+            CONCATENATE('./DDCreateImage1.sh ') TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.            IF WS-DD-TYPE = "1"
+          IF WS-DD-TYPE = "2"
+            MOVE 
+            CONCATENATE('./DDCreateImage2.sh ') TO WS-COMMAND-LINE.
+      *    DISPLAY WS-COMMAND-LINE.            IF WS-DD-TYPE = "1"
+
+      *    ACCEPT W-ENTER.
+      *The variable which will be specified are:
+      *$1 = NUMBER 1 OR 2
        SUDFD-020.
           CALL "SYSTEM" USING   WS-COMMAND-LINE
                        RETURNING W-STATUS.
        SUDFD-999.
            EXIT.
+      *
       *
        SETUP-MINMAX-FILES SECTION.
        SUMXFD-002.

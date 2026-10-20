@@ -136,8 +136,10 @@
 
             IF WS-QUBATCH-ST1 = 0
                PERFORM SETUP-QUOTE-FOR-PDF-MGEMAIL.
+      *     THE STAFF WON'T KNOW TIME THE PROGRAM HAS GPONE TO SLEEP ***
 
             CALL "C$SLEEP" USING 2.
+            
             GO TO ID-005.
        ID-900.
             MOVE "IMPORT FINISHED.........." TO WS-MESSAGE

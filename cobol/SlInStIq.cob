@@ -687,7 +687,7 @@
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
-           IF F-EXIT-CH = 1
+           IF F-EXIT-CH = "1"
             IF STTR-ST-COMPLETE NOT = "Y"
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
@@ -699,7 +699,7 @@
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
-           IF F-EXIT-CH = 1
+           IF F-EXIT-CH = "1"
             IF WS-ANSWER1 = "Y"
              IF SP-1STCHAR NOT = "/"
                MOVE 1 TO F-INDEX
@@ -711,7 +711,7 @@
                MOVE 1 TO F-INDEX
                CLOSE STOCK-TRANS-FILE
                GO TO RDTR-999.
-           IF F-EXIT-CH = 1
+           IF F-EXIT-CH = "1"
             IF WS-ANSWER1 = "N"
              IF STTR-STOCK-NUMBER NOT = ST-STOCKNUMBER
                MOVE 1 TO F-INDEX

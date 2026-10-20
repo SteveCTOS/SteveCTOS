@@ -1309,7 +1309,7 @@
             PERFORM WRITE-FIELD-ALPHA.
             PERFORM CONVERT-SPLIT-FORMAT.
             MOVE SPLIT-DATE TO INCR-PULL-DATE.
-            PERFORM CHECK-DATE-VALID.
+      *      PERFORM CHECK-DATE-VALID.
             IF SIGN-FOUND = 9
                GO TO FILL-063.
        FILL-064.

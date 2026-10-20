@@ -1,0 +1,397 @@
+            IDENTIFICATION DIVISION.
+        PROGRAM-ID. SlInStCh.
+        AUTHOR. CHRISTENSEN68.
+        ENVIRONMENT DIVISION.
+        CONFIGURATION SECTION.
+        REPOSITORY. 
+           FUNCTION ALL INTRINSIC.
+        SPECIAL-NAMES.
+          CRT STATUS IS W-CRTSTATUS.
+        SPECIAL-NAMES.
+        CLASS WS-VALID-EMAIL IS
+          '@' '_' '.' '-' '#'
+          'a' THRU 'i'
+          'j' THRU 'r'
+          's' THRU 'z'
+          '0' THRU '9'.
+        SOURCE-COMPUTER. B20.
+        OBJECT-COMPUTER. B20.
+
+        INPUT-OUTPUT SECTION.
+        FILE-CONTROL.
+           Copy "SelectInvCheckStatus".
+           
+           SELECT PRINT-FILE ASSIGN TO WS-PRINTER
+               ORGANIZATION IS LINE SEQUENTIAL.
+      *
+       DATA DIVISION.
+       FILE SECTION.
+           COPY ChlfdInvCheckStatus.
+      *
+       FD  PRINT-FILE.
+       01  PRINT-REC                PIC X(255).
+
+      *
+       WORKING-STORAGE SECTION.
+       77  WS-INITIAL           PIC X(2) VALUE " ".
+       77  WS-DATE-ACCEPT       PIC X(10) VALUE " ".
+       77  WS-REP-ONLY          PIC X VALUE " ".
+       77  WS-TODAY-ONLY        PIC X VALUE " ".
+       77  WS-QUANTITY          PIC S9(5) VALUE 0.
+       77  WS-PRINTANSWER       PIC X(10) VALUE " ".
+       77  WS-TRANSNO           PIC 9(3) VALUE 0.
+       77  WS-TOTI-INVOICE      PIC S9(8)V99 VALUE 0.
+       77  WS-INVOICE-NUMBER    PIC 9(6) VALUE 0.
+       77  WS-INVDISPLAY        PIC Z(5)9.
+       77  WS-ACCEPT            PIC XX VALUE "  ".
+       77  WS-PRN-OPTIONS       PIC X VALUE " ".
+       77  WS-DELETE            PIC X VALUE " ".
+       77  PAGE-CNT              PIC 9(3) VALUE 0.
+       77  LINE-CNT              PIC 9(3) VALUE 66.
+       77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".      
+       77  WSF-MAIL-NUMBER      PIC X(50) VALUE " ".
+       01  WS-INV-CH-STATUS.
+           03  WS-INVCHSTATUS-ST1    PIC 99.
+       01  WS-IMPORT-STATUS.
+           03  WS-IMPORT-ST1         PIC 99.
+       01  SPLIT-STOCK.
+           03  SP-1STCHAR       PIC X.
+           03  SP-REST          PIC X(14).
+       01  HEAD1.
+           03  FILLER         PIC X(5) VALUE "DATE".
+           03  H1-DATE        PIC X(10).
+           03  FILLER         PIC X(5) VALUE " ".
+           03  FILLER         PIC X(47) VALUE
+           "INVOICE LIST OF IN-COMPLETE SALES INVOICES".
+           03  FILLER         PIC X(5) VALUE "PAGE:".
+           03  H1-PAGE        PIC ZZ9.
+       01  HEAD2.
+           03  FILLER         PIC X(20) VALUE " ".
+           03  FILLER         PIC X(43) VALUE ALL "*".
+           03  FILLER         PIC X(50) VALUE " ".
+       01  HEAD3.
+           03  FILLER         PIC X(2) VALUE " ".
+           03  FILLER         PIC X(27) VALUE "INVOICE #   STATE".
+       01  DETAIL-LINE.
+           03  FILLER         PIC X(2) VALUE " ".
+           03  D-INVOICE      PIC 9(7) VALUE 100.
+           03  FILLER         PIC X(8) VALUE " ".
+           03  D-STATUS      PIC X(5) VALUE " ".
+           03  FILLER         PIC X(46) VALUE " ".
+      *
+       Copy "WsDateInfo".
+       Copy "FormsInfo".
+       Linkage Section.
+       Copy "ChlfdLinkage".
+      *
+       Procedure Division Using Ws-Linkage.
+       CONTROL-PARAGRAPH SECTION.
+       CONTROL-000.
+           PERFORM CLEAR-SCREEN
+           MOVE 315 TO POS
+           DISPLAY 
+           "** Invoice Status for IN-Completely processed Invoices**"
+                AT POS
+           MOVE 415 TO POS
+           DISPLAY
+           "********************************************************"
+                AT POS.
+       CONTROL-003.
+           Copy "PrinterAccept".
+       CONTROL-015.
+           MOVE 1010 TO POS
+           DISPLAY 
+           "DO YOU WANT TO:  1=SEND EMAIL ONLY,  2=EMAIL & PRINT REPORT"
+              AT POS
+           MOVE 1110 TO POS
+           DISPLAY 
+           "                 3=PRINT THE REPORT ONLY.       [ ]" 
+              AT POS. 
+           ADD 50 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 2         TO CDA-DATALEN.
+           MOVE 1         TO CDA-ROW.
+           MOVE 49        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA  TO WS-PRN-OPTIONS.
+
+           IF WS-PRN-OPTIONS NOT = 1 AND NOT = 2 AND NOT = 3
+            MOVE 
+           "PRINTING OPTIONS MUST BE 1, 2 OR 3.  PLEASE RE-ENTER."
+             TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                GO TO CONTROL-015.
+           IF W-ESCAPE-KEY = 4
+               EXIT PROGRAM.
+               
+           IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
+               GO TO CONTROL-017
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-015.
+       CONTROL-017.
+           MOVE 1310 TO POS.
+           DISPLAY
+           "DELETE EACH EXCEPTION RECORD AS IT GETS PRINTED, Y / N[ ]."
+                 AT POS.
+           ADD 47 TO POS.
+
+           MOVE ' '       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 1         TO CDA-ROW.
+           MOVE 49        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR.
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DELETE.
+
+           IF W-ESCAPE-KEY = 4
+               GO TO CONTROL-015.
+           IF WS-DELETE NOT = "N" AND NOT = "Y"
+               GO TO CONTROL-017.           
+           IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
+               GO TO CONTROL-018
+           ELSE
+               DISPLAY " " AT 3079 WITH BELL
+               GO TO CONTROL-015.
+       CONTROL-018.
+           MOVE 1010 TO POS
+           DISPLAY
+           "THE PRINT FILE NAME FOR NOW IS /ctools/spl/InvChStatus"
+           AT POS.
+       CONTROL-019.
+           PERFORM GET-USER-PRINT-NAME.
+           OPEN OUTPUT PRINT-FILE.
+       CONTROL-020.
+           PERFORM OPEN-FILES.
+           PERFORM PRINT-REPORT.
+              
+      *     PERFORM SETUP-INVOICE-FOR-PDF-EMAIL.
+           
+           MOVE 1510 TO POS
+           DISPLAY "THE REPORT HAS BEEN RUN AND EMAILED TO MANAGEMENT"
+           AT POS
+           MOVE 1610 TO POS
+           DISPLAY "TESTING ....................." AT POS.
+           
+           MOVE 1950 TO POS
+           DISPLAY "PROGRAM HAS GONE TO SLEEP" AT POS.
+           
+           CALL "C$SLEEP" USING 200.
+                      
+           GO TO CONTROL-020.
+
+           PERFORM END-OFF.
+       CONTROL-999.
+          EXIT.
+      *
+      * RUN  215
+      *
+       PRINT-REPORT SECTION.
+       PRR-000.
+           MOVE 0      TO SUB-20.
+           MOVE SPACES TO INVOICE-CH-KEY.
+       PRR-005.
+           READ INVOICE-CH-MASTER 
+             AT END
+                 GO TO PRR-900.
+       PRR-009.
+           MOVE 2610 TO POS
+           DISPLAY "INVOICE DATA BEING CHECKED......" AT POS
+           ADD 30 TO POS
+           DISPLAY INVOICE-CH-KEY AT POS.
+
+           MOVE INVOICE-CH-INV-NUM TO ALPHA-RATE.
+           PERFORM DECIMALISE-RATE
+           MOVE NUMERIC-RATE       TO WS-INVOICE-NUMBER.
+
+           ADD 1 TO SUB-20.
+           MOVE 2010 TO POS
+           DISPLAY "NUMBER OF RECORDS:" AT POS
+           ADD 20 TO POS
+           DISPLAY SUB-20 AT POS.
+       PRR-010.
+            IF LINE-CNT < 60
+               GO TO PRR-020.
+            ADD 1         TO PAGE-CNT
+            MOVE PAGE-CNT TO H1-PAGE
+            MOVE " " TO PRINT-REC.
+            MOVE WS-PRINT-COMP TO PRINT-REC
+            WRITE PRINT-REC.
+            IF PAGE-CNT = 1
+               WRITE PRINT-REC FROM COMPANY-LINE
+            ELSE
+                WRITE PRINT-REC BEFORE PAGE
+                WRITE PRINT-REC FROM COMPANY-LINE.
+            MOVE " " TO PRINT-REC
+            WRITE PRINT-REC FROM HEAD1
+            MOVE " " TO PRINT-REC
+            WRITE PRINT-REC FROM HEAD2
+            MOVE " " TO PRINT-REC
+            WRITE PRINT-REC
+            WRITE PRINT-REC FROM HEAD3
+            MOVE " " TO PRINT-REC
+            WRITE PRINT-REC
+            MOVE 5 TO LINE-CNT.
+       PRR-020.
+      *      IF INVOICE-CH-RETURN-CHAR NOT = "L"
+               MOVE INVOICE-CH-INV-NUM     TO D-INVOICE
+               MOVE INVOICE-CH-RETURN-CHAR TO D-STATUS.
+               .
+           IF WS-DELETE = "Y"
+              PERFORM DELETE-INVOICE-CH-RECORD
+              GO TO PRR-600.
+      *         DO THIS ONLY ONCE ALL THE INVOICES HAVE BEEN FOUND 
+      *         AND PRINTED TO A DISK FILE AND THEN PICKED UP TO EMAIL 
+      *         THE A4 REPORT T0 JOHN 
+       PRR-600.
+            CALL "C$SLEEP" USING 2.
+            GO TO PRR-005.
+       PRR-900.
+            MOVE "READING OF THE INVOICE STATUS FILE FINISHED....."
+                 TO WS-MESSAGE
+                 PERFORM ERROR-MESSAGE.
+       PRR-999.
+           EXIT.
+      *
+       DELETE-INVOICE-CH-RECORD SECTION.
+       DSR-010.
+           DELETE INVOICE-CH-MASTER
+               INVALID KEY NEXT SENTENCE.
+           IF WS-INVCHSTATUS-ST1 NOT = 0
+               MOVE "INVOICE-CHF ILE BUSY ON DELETE, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INVCHSTATUS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INVCHSTATUS-ST1
+               GO TO DSR-010. 
+       DSR-999.
+           EXIT. 
+      *
+       READ-INVOICE-STATUS-RECORD SECTION.
+       RQB-010.
+            MOVE WS-INVOICE-NUMBER TO INVOICE-CH-INV-NUM
+            MOVE " "               TO INVOICE-CH-RETURN-CHAR.
+            START INVOICE-CH-MASTER KEY NOT < INVOICE-CH-KEY   
+                   INVALID KEY NEXT SENTENCE.
+           IF WS-INVCHSTATUS-ST1 NOT = 0
+              GO TO RQB-999.
+       RQB-020.
+            READ INVOICE-CH-MASTER
+                INVALID KEY NEXT SENTENCE.
+            IF WS-INVCHSTATUS-ST1 NOT = 0
+      *          MOVE "QUOTE BATCH FILE BUSY ON READ, 'ESC' TO RETRY"
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-INVCHSTATUS-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *          MOVE 0 TO WS-INVCHSTATUS-ST1
+                GO TO RQB-999.
+      *     MOVE QB-PDF-PRINT-FILE    TO WS-PRINTER-PDF
+      *      MOVE QB-EMAIL-SENDER      TO WS-USEREMAILADD
+      *      MOV E QB-EMAIL-RECIPIENT   TO WSF-MAIL-NUMBER
+      *      MOVE QB-SUBJECT-FIXED     TO WS-SUBJECT-FIXED.
+            
+      *      MOVE WS-PRINTER-PDF TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WS-USEREMAILADD TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+            
+      *      MOVE WS-SUBJECT-FIXED TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WSF-MAIL-NUMBER TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+       RQB-030.
+      *     PERFORM WORK-OUT-PDF-FILE-NAME.
+       RQB-999.
+           EXIT.
+      *
+       WORK-OUT-PDF-FILE-NAME SECTION.
+       WOPFN-001.
+           MOVE SPACES             TO ALPHA-RATE DATA-RATE.
+      *      MOVE WS-PRINTER-PDF     TO ALPHA-RATE.
+           MOVE "/ctools/spl/"     TO DATA-RATE.
+           MOVE 13 TO SUB-45
+           MOVE 17 TO SUB-46.
+       WOPFN-010.
+           MOVE AL-RATE (SUB-45) TO DAT-RATE (SUB-46)
+           ADD 1 TO SUB-45 SUB-46.
+           IF AL-RATE (SUB-45) NOT = " "
+               GO TO WOPFN-010.
+      *     MOVE SPACES    TO WS-PRINTER-PDF
+      *     MOVE DATA-RATE TO WS-PRINTER-PDF.
+
+      *      MOVE WS-PRINTER-PDF TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+       WOPFN-999.
+           EXIT.
+      *
+       OPEN-FILES SECTION.
+       OPEN-023.
+            OPEN I-O INVOICE-CH-MASTER.
+      *      IF WS-INVCHSTATUS-ST1 = 35
+      *         MOVE "GOING TO OPEN OUTPUT TO OPEN FOR FIRST TIME"
+      *         TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+      *        OPEN OUTPUT INVOICE-CH-MASTER
+      *        MOVE "INVOICE STATUS FILE NOW OPEN, 'ESC' TO SEE ERC."
+      *        TO WS-MESSAGE
+      *        PERFORM ERROR1-000
+      *        MOVE WS-INVCHSTATUS-ST1 TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+      *        PERFORM ERROR1-020
+      *        CLOSE INVOICE-CH-MASTER
+      *        GO TO OPEN-023.
+
+            IF WS-INVCHSTATUS-ST1 NOT = 0
+               MOVE "INVOICE STATUS ERC ON OPEN, 'ESC' TO RETRY."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INVCHSTATUS-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INVCHSTATUS-ST1
+               GO TO OPEN-023.
+       OPEN-020.
+           MOVE Ws-Co-Name TO CO-NAME.
+       OPEN-999.
+           EXIT.
+      *
+       END-OFF SECTION.
+       END-000.
+           CLOSE PRINT-FILE.
+           IF WS-PRN-OPTIONS = "2" OR = "3"
+               PERFORM SEND-REPORT-TO-PRINTER.
+           CLOSE INVOICE-CH-MASTER.
+       END-900.
+           EXIT PROGRAM.
+      *     STOP RUN.
+       END-999.
+           EXIT.
+      *      
+       Copy "GetSystemY2KDate".
+       Copy "GetReportY2KDate".
+       Copy "GetUserMailName".
+       Copy "PrintReportInfo".
+       Copy "GetUserPrintName".
+       Copy "SendReportToPrinter".
+      *Copy "SetupInvoiceForPDFEMail".
+      *Copy "SetupInvoiceForPDFMgEMail".
+      ******************
+      *Mandatory Copies*
+      ******************
+       Copy "DecimaliseRate".
+       Copy "ConvertDateFormat".
+       Copy "ClearScreen".
+       Copy "ErrorMessage".
+       Copy "Error1Message".
+       Copy "CTOSCobolAccept".
+      *
+      * END-OF-JOB

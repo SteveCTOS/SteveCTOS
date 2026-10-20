@@ -77,7 +77,7 @@ set (creditors_list
   CrFBCTrs  CrInCrMt  CrInCrRp  CrJnAnRp  CrJrnIq   CrJrnMt   CrLablRp  CrLaPuRp  CrMasOld
   CrMaster  CrMastIq  CrMastMt  CrMastRp  CrNameIq  CrNamOld  CrNmFxRp
   CrNoChMt  CrPayDMt  CrPaymnt  CrPaymRp  CrPerEnd  CrReFrAl  CrRemiEM  CrRemiIq
-  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  CrTransMv
+  CrRemiMt  CrRemiRp  CrReTrMt  CrTrans   CrTranIq  CrTransMv  CrJrnsMv
 )
 
 set (debtors_list 
@@ -108,7 +108,7 @@ set (sales_list
   SlPSlpIq SlPsPuMt SlPuByMt SlPuByRp SlQuAcIq SlQuRgRp SlQuote  SlQuStIq
   SlRgAcRp SlRgName SlRgNaIq SlRgNaMy SlRgNaLy SlRgLyMt SlRgChLy SlRgAcLy
   SlRgChMt SlSBChMt SlSaleRp SlSManRp SlSoByMt SlSoByRp SlSpecRp SlSRepMt
-  SlTermMt SlRegisterMv      SlQuBhRp
+  SlTermMt SlRegisterMv      SlQuBhRp SlInStCh
 )
 
 set (stock_list 
@@ -124,7 +124,7 @@ set (stock_list
   StQyChRp  StReDtRp  StReduRp  StReImMt  StReImRp  StReLoIq  StReLoMt
   StReLoRp  StRepair  StRpAcIq  StRpRgRp  StRpStIq  StSGmRp   StSplit   StStQyMt
   StTariRp  StTranLy  StTrans   StTrChMt  StTrDuMt  StTrDuRp  StValuRp
-  StTranMv StTrLyMv   StCataMv  StOrdrMv
+  StTranMv  StTrLyMv  StCataMv  StOrdrMv
 )
 foreach (name ${company_list})
  cobol_module(${name})

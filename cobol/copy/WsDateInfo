@@ -20,6 +20,7 @@
        77  SUB-45               PIC S9(3) VALUE 0.
        77  SUB-46               PIC S9(3) VALUE 0.
        77  SUB-50               PIC 9(2) VALUE 0.
+       77  SUB-55               PIC 9(2) VALUE 75.
        77  WS-PRINTER           PIC X(100) VALUE " ".
        77  WS-PRINTER-SAVE      PIC X(100) VALUE " ".
        77  WS-PDFPRINTER        PIC X(100) VALUE " ".

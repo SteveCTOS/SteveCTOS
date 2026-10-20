@@ -1,0 +1,33 @@
+         ***************************************************************
+         * THIS PROGRAM HAS ONE GOAL: TO MAKE THE INVOICE PROGRAM MORE *
+         * STABLE USING THE INVOICE-CHECKING-STATUS OF THE INVOICE     *
+         * TO CHECK THAT ALL SECTIONS IN THE INVOICE GET PROCESSED     *
+         * AND REPORTED AS DONE. SO WE WILL KNOW IF IT TERMINATES      *
+         * PREMATURELY.                                                *
+         * 1.   EVERY INVOICE THAT GETS GENERATED WILL OPEN A FILE ON  *
+         *      THIS DATASET WITH THE FIELD INVOICE-CH-KEY BEING THE   *
+         *       INVOICE NUMBER BEING PROCESSED.   AT EVERY STAGE OF   *
+         *       THE INVOICE WHEN THAT STAGE HAS BEEN SUCCESFULLY      *
+         *       COMPLETED THE INVOICE PROGRAM COMES BACK TO THIS      *
+         *       DATA-SET AND UPDATES IT WITH A CHAR FROM THE UPDATE   *
+         *       ROUTINE WHICH TELLS US HOW FAR THE INVOICE HAS        *
+         *       PROCEEDED. SHOULD THE INVOICE PROGRAM COME TO A HALT  *
+         *       IN A NEGATIVE WAY BEFORE IT HAS RUN THE FULL UPDATE,  *
+         *      THIS RECORD WILL BE INCOMPLETE WHEN WE RUN THE         *
+         *      REPORT PROGRAM THIS INCOMPLETENESS WILL BE MADE NOWN.  *
+         * SUB-55                                                      *
+         *  1 = S INVOICE BEGUN, INVOICE #  FROM PARAMETER-FILE.       *                                                                               *
+         *  2 = A = INVOICE PRINTED                                    *
+         *  3 = B = DR-TRANS RECORD WRITTEN                            *
+         *  4 = C = DEBTOR FILE UPDATED                                *
+         *  5 = D = SALES-ANALYIS UPDATED                              *
+         *  6 = E = DISTRIBUTION FILE UPDATED                          *
+         *  7 = F = STOCK-FILES UPDATED                                *
+         *  8 = G = SLREG RECORD FOR THE P/SLIP UPDATED                *
+         *  9 = H = SLREG RECORD FOR THE INVOICE WRITTEN               *
+         * 10 = I = STTRANS WRITTEN FOR THE INVOICE                    *
+         * 11 = J = STTRANS RE-WRITTEN FOR THE P/SLIP TO BE UPDATED    *
+         * 12 = K = SOLDBY RECORD WRITTEN FOR INVOICE TOTALS           *
+         *                                                             *
+         * 13 = L = INVOICE RECORD COMPLETED SUCCESFULLY               *
+         ***************************************************************

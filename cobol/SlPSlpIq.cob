@@ -128,7 +128,7 @@
            DISPLAY "** P/SLIP / INVOICE, QUOTE, CREDIT INQ BY NUM **"
             AT POS
            MOVE 0410 TO POS
-           DISPLAY "************************************************"
+           DISPLAY "****************th year Trying ******************"
             AT POS.
        CONTROL-003.
            Copy "PrinterAccept".
@@ -146,11 +146,11 @@
        GET-000. 
            MOVE "N" TO WS-ANSWER
                        W-INVALID-TYPE.
-           MOVE 1 TO F-INDEX.
+           MOVE 1    TO F-INDEX.
            MOVE 2805 TO POS
            DISPLAY
            "<F1> FOR DEL-INVS, <F3> FOR UN-INVOICED P/SLIP'S, <F5>" &
-           " FOR UN-DEL INVS," AT POS
+           " FOR UN-DEL INVS,xxxxxxx" AT POS
            MOVE 2903 TO POS.
            DISPLAY
            "<F6> FOR SUSPENDED P/SLIPS, <F7> FOR UN-PULLED ORDERS," &
@@ -159,7 +159,7 @@
            DISPLAY
            "OR ENTER A DATE INVOICES WERE FLAGGED AS DELIVERED & <F9>."
                 AT POS
-      
+
            MOVE "TRANS" TO F-FIELDNAME.
            MOVE 5       TO F-CBFIELDNAME.
            PERFORM USER-FILL-FIELD.
@@ -176,17 +176,19 @@
                GO TO GET-010.
                 
             PERFORM DATE-CHECKING.
-            IF SIGN-FOUND = 9
-               GO TO GET-000.
+      *      IF SIGN-FOUND = 9
+      *         GO TO GET-000.
             MOVE WS-NEW-DATE     TO WS-CH-DATE CONVERT-DATE.
             MOVE WS-CONVERT-DATE TO DISPLAY-DATE.
             MOVE DISPLAY-DATE    TO F-NAMEFIELD.
             PERFORM WRITE-FIELD-ALPHA.
             PERFORM CONVERT-SPLIT-FORMAT.
+            
             MOVE SPLIT-DATE TO WS-INVOICEDATE SPLIT-DATE.
             PERFORM CHECK-DATE-VALID.
             IF SIGN-FOUND = 9
                GO TO GET-000.
+      
            MOVE DISPLAY-DATE TO F-DATE.
            MOVE "TRANS"      TO F-FIELDNAME
            MOVE 5            TO F-CBFIELDNAME
@@ -194,7 +196,14 @@
            MOVE 10           TO F-CBFIELDLENGTH
            PERFORM WRITE-FIELD-ALPHA.
        GET-010.
-           IF INCR-INVOICE = " " OR = "0"
+      *      MOVE INCR-INVOICE TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE.
+            
+      * MOVE "DOES IT GEt THIS FAR IN THE RROGRAM" 
+      *      TO WS-MESSAGE    
+      *     PERFORM ERROR-MESSAGE.
+                 
+           IF INCR-INVOICE = " " OR = 0
                CLOSE INCR-REGISTER
                      INCR-LY-REGISTER
                CALL WS-ACCOUNT-PROGRAM USING WS-LINKAGE
@@ -203,7 +212,17 @@
                OPEN I-O INCR-REGISTER
                OPEN I-O INCR-LY-REGISTER
                PERFORM DISPLAY-FORM
+               
+      *         MOVE "HIT END TO PROG GET-010-GET-000, SEE LAST VALID "
+      *         TO WS-MESSAGE
+      *         MOVE INCR-INVOICE TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+               
                GO TO GET-000.
+               
+      *         MOVE "GOT TO GET020 SECTION." TO WS-MESSAGE
+      *         PERFORM  ERROR-MESSAGE.
+               
        GET-020.
       * <F1> DELIVERED INVOICES
            IF F-EXIT-CH = X"15"
@@ -324,7 +343,15 @@
            IF WS-LYR NOT = "L" AND NOT = "T"
                 DISPLAY " " AT 3079 WITH BELL
                 GO TO GET-865.
+
+      *      MOVE "GOT TO GET-870, NOTHING ELSE REALLY MATTERS"
+      *        TO WS-MESSAGE
+      *     PERFORM ERROR1-000
+      *     MOVE INCR-INVOICE TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+      *     PERFORM ERROR1-020.
        GET-870.
+      * F10 key
            IF F-EXIT-CH = X"1F"
             IF WS-LYR = "T"
                 PERFORM ERROR1-020
@@ -386,12 +413,18 @@
             IF WS-LYR = "T"
              IF WS-ANSWER = "Y"
                 CLOSE INCR-REGISTER
+      *     MOVE "NOW AT GET-900 -1ST ERC." TO WS-MESSAGE
+      *     PERFORM ERROR-000
+      *     MOVE INCR-INVOICE TO WS-MESSAGE
+V     *     MOVE "NOW AT GET-880." TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
+
                 GO TO GET-999.
             IF WS-LYR = "L"
              IF WS-ANSWER = "Y"
                 CLOSE INCR-LY-REGISTER
                 GO TO GET-999.
-            IF F-INDEX < 15
+            IF F-INDEX < 5
                MOVE 2910 TO POS
                DISPLAY "Press 'ESC' To Clear The Screen," AT POS
                MOVE 3010 TO POS
@@ -448,7 +481,7 @@
        RDTR-000.
            OPEN I-O INCR-REGISTER.
            IF WS-INCR-ST1 NOT = 0
-              MOVE "REGISTER RECORD USY ON OPEN, 'ESC' TO RETRY."
+              MOVE "REGISTER RECORD BUSY ON OPEN, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-INCR-ST1 TO WS-MESSAGE
@@ -461,7 +494,6 @@
                MOVE WS-INVOICEDATE TO INCR-PULL-DATE
                START INCR-REGISTER KEY NOT < INCR-PULL-DATE
                GO TO RDTR-008.
-                
            MOVE WS-INVOICE      TO INCR-INVOICE.
            IF WS-KEY = "D" OR = "C"
                 MOVE 1          TO INCR-TRANS
@@ -499,8 +531,24 @@
        RDTR-010.
            READ INCR-REGISTER NEXT
                AT END NEXT SENTENCE.
+               
+            MOVE 2465 TO POS
+            DISPLAY INCR-INVOICE AT POS.
+      *         MOVE "SLREG FILE READ, RDTR-0-10, ESC = INV #"
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR1-010
+      *         MOVE INCR-KEY TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE 
+      *        PERFORM ERROR1-020.
            IF WS-INCR-ST1 = 10
-               GO TO RDTR-999.
+               MOVE "SLREG FILE AT END, ST1=10,'ESC TO SHOW erc."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE INCR-KEY TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE 
+               PERFORM ERROR1-020
+               GO TO RDTR-999.               
+
            IF WS-INCR-ST1 = 23
                MOVE "REGISTER ST1=23, 'ESC' TO EXIT." TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
@@ -509,13 +557,20 @@
                PERFORM CLEAR-TRANSACTIONS
                MOVE " " TO F-EXIT-CH
                MOVE "N" TO WS-NEWINPUT
-               MOVE 1 TO F-INDEX.
+               MOVE 1   TO F-INDEX.
                
            IF WS-INCR-ST1 = 91
-               MOVE 1 TO F-INDEX
+               MOVE 1   TO F-INDEX
                MOVE "N" TO WS-ANSWER              
                CLOSE INCR-REGISTER
+      *        MOVE "SLREG FILE AT END, ST1=10,'ESC TO SHOW erc."
+      *        TO WS-MESSAGE
+      *        PERFORM ERROR1-010
+      *        MOVE INCR-KEY TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE 
+      *        PERFORM ERROR1-020
                GO TO RDTR-999.
+               
            IF WS-INCR-ST1 NOT = 0
                MOVE "RECORD LOCKED BY ANOTHER USER, 'ESC' TO RETRY."
                 TO WS-MESSAGE
@@ -523,9 +578,36 @@
                MOVE WS-INCR-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM ERROR1-020
+               MOVE INCR-INVOICE TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
                GO TO RDTR-010.
            PERFORM ERROR1-020.
                
+      * <F1> DELIVERED INVOICES
+      *        MOVE "C" TO WS-KEY.
+      * <F3> UN-INVOICED P/SLIPS
+      *        MOVE "I" TO WS-KEY.
+      * <F5> UN-DELIVERED INVOICES
+      *         MOVE "D" TO WS-KEY.
+      * <F6> SUSPENDED P/SLIPS
+      *         MOVE "S" TO WS-KEY.
+      * <F7> UN-PULLED P/SLIPS
+      *         MOVE "P" TO WS-KEY.
+      * <F8> B/O P/SLIPS
+      *         MOVE "N" TO WS-KEY.
+      * <F9> DELIVERY DATE
+      *         MOVE ""R TO WS-KEY.
+               
+           IF WS-KEY = "D" OR = "C"
+            IF INCR-TRANS NOT = 1
+               MOVE 1 TO F-INDEX
+               CLOSE INCR-REGISTER
+          
+      *          MOVE "WS-KEY = D BUT INCR NOT =1"
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE 
+                 GO TO RDTR-999.
+
            IF WS-KEY = "R"
             IF INCR-TRANS NOT = 1
                GO TO RDTR-010.
@@ -537,11 +619,6 @@
                GO TO RDTR-010.
            IF WS-KEY = "I" OR = "P" OR = "S" OR = "N"
             IF INCR-TRANS NOT = 4 AND NOT = 7
-               MOVE 1 TO F-INDEX
-               CLOSE INCR-REGISTER
-               GO TO RDTR-999.
-           IF WS-KEY = "D" OR = "C"
-            IF INCR-TRANS NOT = 1
                MOVE 1 TO F-INDEX
                CLOSE INCR-REGISTER
                GO TO RDTR-999.
@@ -564,7 +641,11 @@
 
            PERFORM ERROR1-020.
            MOVE INCR-DELIVERY TO WS-DELVIA.
-
+           
+      *    MOVE "MADE IT TO RDTR-013 SECTION POINTER"
+      *     TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+                       
            IF WS-COLLECT = "A"
                GO TO RDTR-013.
                
@@ -584,8 +665,13 @@
                
            GO TO RDTR-010.
        RDTR-013.
+      *     MOVE "MADE IT TO RDTR-013 SECTION AFTERR-DTR013"
+      *     TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
+           
+           
            IF WS-KEY = "I"
-            IF INCR-PRINTED = "P"
+            IF INCR-PRINTED = "P" OR = "Y"
              IF INCR-PULL-DATE > 0
                GO TO RDTR-017.
            IF WS-KEY = "I"
@@ -594,13 +680,22 @@
                GO TO RDTR-999.
                
            IF WS-KEY = "D"
-            IF INCR-PRINTED = "Y"
-             IF INCR-PULL-DATE = 0
+            IF INCR-PRINTED = "P" OR = "Y"
+             IF INCR-PULL-DATE NOT > 0
                GO TO RDTR-017.
            IF WS-KEY = "D"
-            IF INCR-PRINTED NOT = "Y"
+            IF INCR-PRINTED NOT = "Y" AND NOT = "P"
+      *       MOVE
+      *   "ERC2 AT INCR-PULL-DATE SEC, INV NO THEN PULL INFO erc"
+      *       TO WS-MESSAGE
+      *       PERFORM ERROR1-000
+      *       MOVE INCR-KEY TO WS-MESSAGE
+      *       PERFORM ERROR-000
+      *       MOVE INCR-PULL-DATE TO WS-MESSAGE
+      *       PERFORM ERROR-MESSAGE            
+
                CLOSE INCR-REGISTER
-               GO TO RDTR-999.
+               GO TO RDTR-010.
 
            IF WS-KEY = "S"
             IF INCR-PRINTED = "S"
@@ -618,8 +713,8 @@
       *         CLOSE INCR-REGISTER
            MOVE 2910 TO POS
            DISPLAY "Reading NEXT Transaction, Please be patient." AT POS
-               GO TO RDTR-010.
-      *         GO TO RDTR-999.
+      *         GO TO RDTR-010.
+               GO TO RDTR-999.
 
            IF WS-KEY = "N"
             IF INCR-PRINTED = "N"
@@ -813,7 +908,7 @@
                
            IF WS-KEY = "D"
             IF INCR-PRINTED = "Y"
-             IF INCR-PULL-DATE = 0
+             IF INCR-PULL-DATE  NOT >  0
                GO TO PRR-007.
            IF WS-KEY = "D"
             IF INCR-PRINTED NOT = "Y"
@@ -827,7 +922,7 @@
                
            IF WS-KEY = "P"
             IF INCR-PRINTED = "P"
-             IF INCR-PULL-DATE = 0 OR = " "
+             IF INCR-PULL-DATE  NOT > 0 AND NOT > " "
                GO TO PRR-007.
            IF WS-KEY = "P"
             IF INCR-PRINTED NOT = "P"
@@ -1083,9 +1178,10 @@
            DISPLAY "Area Not the Same, Reading next trans......." AT POS
            GO TO RDTR-LY-010.
        RDTR-LY-013.
+       
            IF WS-KEY = "D"
             IF INCR-LY-PRINTED = "Y"
-             IF INCR-LY-PULL-DATE = 0
+             IF INCR-LY-PULL-DATE > 0
                GO TO RDTR-LY-017.
            IF WS-KEY = "D"
             IF INCR-LY-PRINTED NOT = "Y"
@@ -1352,7 +1448,7 @@
             MOVE " " TO PRINT-REC
             WRITE PRINT-REC FROM HEAD2 AFTER 1
             MOVE " " TO PRINT-REC
-            WRITE PRINT-REC FROM HEAD3 AFTER 1
+            WRITE PRINT-REC FROM HEAD3  AFTER 1
             MOVE " " TO PRINT-REC
             WRITE PRINT-REC
             MOVE " " TO PRINT-REC

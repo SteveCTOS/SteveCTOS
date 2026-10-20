@@ -52,7 +52,7 @@ rm /ctools/lock/*db.00*
 mkdir /media/ctools/USB/data01
 #mkdir /media/ctools/USB/data02
 mkdir /media/ctools/USB/data03
-#mkdir /media/ctools/USB/data04
+mkdir /media/ctools/USB/data04
 #mkdir /media/ctools/USB/data05
 #mkdir /media/ctools/USB/data06
 mkdir /media/ctools/USB/data07
@@ -68,8 +68,8 @@ cp -a /ctools/data01/* /media/ctools/USB/data01
 #cp -a /ctools/data02/* /media/ctools/USB/data02
 echo Copying Data03.....
 cp -a /ctools/data03/* /media/ctools/USB/data03
-#echo Copying Data04.....
-#cp -a /ctools/data04/* /media/ctools/USB/data04
+echo Copying Data04.....
+cp -a /ctools/data04/* /media/ctools/USB/data04
 #echo Copying Data05.....
 #cp -a /ctools/data05/* /media/ctools/USB/data05
 #echo Copying Data06.....

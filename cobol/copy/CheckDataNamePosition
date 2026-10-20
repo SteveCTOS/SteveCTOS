@@ -155,7 +155,9 @@
             Move Alpha-Rate to Ws-SlQuoteBatch.
            If Sub-4 = 77
             Move Alpha-Rate to Ws-StOrdersTemp.
-      *     If Sub-4 = 78
-      *      Move Alpha-Rate to Ws-StReceiptTemp.
+           If Sub-4 = 78
+            Move Alpha-Rate to Ws-CbTransTemp.
+           If Sub-4 = 79
+            Move Alpha-Rate to Ws-InvChStatus.
        CDNN-999.
            Exit.

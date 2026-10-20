@@ -21,6 +21,8 @@
       *           90=BAUPMENU,
       *           92=SPECIAL PASSWORDS (EG 92 #1=SLORDERS - CHNGE & DEL
       *                 2=CHNGE DISCOUNT 3= CHNGE P/ONUMBER ON P/SLIPS
+      *                21=VAT PASSWD
       *           95=CONTMENU,
       *           98=MAINCONT,
       *           99=MASTER-PASSWORD.
+C

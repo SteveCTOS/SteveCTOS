@@ -1,0 +1,35 @@
+       FD  CrJrn1-FILE.
+       01  CrJrn1-REC.
+           03  CrJrn1-KEY.
+               05  CrJrn1-REFERENCE   PIC X(10).
+               05  CrJrn1-TRANS       PIC 9(6).
+               05  CrJrn1-TYPE        PIC 9.
+           03  CrJrn1-PERIOD.
+               05  CrJrn1-FUTURE      PIC X.
+               05  CrJrn1-NO          PIC 9(2).
+           03  CrJrn1-CRACC-NUMBER    PIC 9(7).
+           03  CrJrn1-INV-NO          PIC X(10).
+           03  CrJrn1-DNOTE-NO        PIC X(10).
+           03  CrJrn1-INV-DATE        PIC 9(8).
+           03  CrJrn1-DUE-DATE        PIC 9(8).
+           03  CrJrn1-LOC-AMT         PIC S9(7)V99.
+           03  CrJrn1-VAT-AMT         PIC S9(7)V99.
+           03  CrJrn1-UNAPPLIED-AMT   PIC S9(7)V99.
+           03  CrJrn1-FOR-AMT         PIC S9(7)V99.
+           03  CrJrn1-EXCHANGE        PIC 9(3)V9(5).
+           03  CrJrn1-SETT-DISC       PIC S9(7)V99.
+           03  CrJrn1-COMPLETE        PIC X.
+           03  CrJrn1-GL-DATA OCCURS 10.
+               05  CrJrn1-GLACC       PIC X(12).
+               05  CrJrn1-GLAMT       PIC S9(7)V99.
+               05  CrJrn1-GLDISC      PIC S9(7)V99.
+               05  CrJrn1-GLDESC      PIC X(40).
+      *
+      * CrJrn1-PERIOD: (FORMAT=01 ETC OR
+      *                        F02 FOR FUTURE PERIOD)
+      * CrJrn1-REFERENCE: = BATCH NO ENTERED.
+      * CrJrn1-COMPLETE:N=NO(PENDING POSTING), P=POSTED,
+      *                Y=YES (PAID IN FULL), S=SUSPENDED (DOCUMENT LOST
+      *                                        BY STORES)
+      * CrJrn1-TYPE: 1=INVOICE, 2=PAYMENT, 6=CREDIT NOTE, 8=DISCOUNT
+1-

@@ -1,0 +1,5 @@
+       FD  INVOICE-CH-MASTER.
+       01  INVOICE-CH-RECORD.
+            03  INVOICE-CH-KEY.
+                05  INVOICE-CH-INV-NUM       PIC 9(6).
+            03 INVOICE-CH-RETURN-CHAR        PIC X.

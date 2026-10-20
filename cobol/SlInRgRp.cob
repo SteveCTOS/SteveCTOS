@@ -124,6 +124,24 @@
            03  WS-PERC-COMMENT      PIC X(23) VALUE " ".
            03  WS-PERC-NUM          PIC X(12).
            03  WS-PERC-COMMENT2     PIC X(25) VALUE " ".
+       01  HEAD1-CH.
+           03  FILLER           PIC X(7) VALUE "  DATE".
+           03  H-CH-DATE        PIC X(10).
+           03  FILLER           PIC X(32) VALUE " ".
+           03  FILLER           PIC X(70) VALUE 
+        "I N V O I C E   S T A T U S   C H E C K I N G    R E P O R T".
+           03  FILLER           PIC X(6) VALUE "PAGE: ".
+           03  H-CH-PAGE        PIC ZZ9.
+           03  FILLER           PIC X(4) VALUE " ".
+       01  HEAD2-CH.
+           03  FILLER           PIC X(49) VALUE " ".
+           03  FILLER           PIC X(103) VALUE 
+        "***********************************************************".
+       01  HEAD3-CH.
+           03  FILLER           PIC X(12) VALUE " INVOICE #".
+           03  FILLER           PIC X(30) VALUE " STATUS OF MFG".
+
+           03  FILLER           PIC X(33) VALUE " ".
        01  HEAD1.
            03  FILLER           PIC X(7) VALUE "  DATE".
            03  H-DATE           PIC X(10).
@@ -251,7 +269,7 @@
            MOVE 7         TO CDA-ROW.
            MOVE 49        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
-           MOVE 'F'       TO CDA-ATTR.
+           MOVE 'F'       TO CDA-ATTR. 
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-ACCEPT.
 
@@ -346,8 +364,8 @@
                GO TO CONTROL-015.
            MOVE WS-RAND-ACCEPT TO ALPHA-RATE.
            PERFORM DECIMALISE-RATE.
-           MOVE NUMERIC-RATE TO WS-RAND.
-           MOVE WS-RAND      TO WS-RAND-DIS.
+           MOVE NUMERIC-RATE   TO WS-RAND.
+           MOVE WS-RAND        TO WS-RAND-DIS.
            DISPLAY WS-RAND-DIS AT POS.
        CONTROL-015.
            MOVE 2510 TO POS.

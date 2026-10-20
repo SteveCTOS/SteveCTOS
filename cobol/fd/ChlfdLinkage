@@ -115,5 +115,7 @@
           03 WS-GLTRANSTEMP       PIC X(40).
           03 WS-SLQUOTEBATCH      PIC X(40).
           03 WS-STORDERSTEMP      PIC X(40).
-      *    03 WS-STRECEIPTTEMP     PIC X(40).
+          03 WS-CBTRANSTEMP       PIC X(40).
+          03 WS-INVCHSTATUS       PIC X(40).
       *
+ 

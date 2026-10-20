@@ -1,6 +1,6 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. SlInvoic.
-       AUTHOR.  CHRISTENSEN.
+		AUTHOR.  CHRISTENSEN-20102026.
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
         REPOSITORY. 
@@ -14,7 +14,7 @@
           'j' THRU 'r'
           's' THRU 'z'
           '0' THRU '9'.
-
+                       
        SOURCE-COMPUTER. B20.
        OBJECT-COMPUTER. B20.
        INPUT-OUTPUT SECTION.
@@ -38,6 +38,8 @@
          Copy "SelectCoMenu".
          Copy "SelectSlSpecials".
          Copy "SelectStDiscAcc".
+         Copy "SelectInvCheckStatus".
+      *
            SELECT PRINT-FILE ASSIGN TO WS-PRINTER
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT LASER-PRINT ASSIGN TO W-FILENAME
@@ -64,6 +66,7 @@
            COPY ChlfdMenu.
            COPY ChlfdSpecialSales.
            COPY ChlfdStDiscAcc.
+           COPY ChlfdInvCheckStatus.
       *
        FD  PRINT-FILE.
        01  PRINT-REC.
@@ -142,6 +145,7 @@
        77  WS-GST-PERCENT          PIC 99V99 VALUE 0.
        77  WS-BODY-LINE         PIC ZZ9.
        77  WS-PRINTER-LASER     PIC X(20) VALUE " ".
+       77  WS-CH-PRINTER        PIC X(100) VALUE " ".
        77  WS-IMM-PR            PIC X VALUE " ".
        77  WS-MUST-PRINT        PIC X VALUE " ".
        77  WS-TYPE-OF-DOCUMENT  PIC 9.
@@ -178,6 +182,12 @@
        77  WS-PARCEL            PIC 9(2) VALUE 0.
        77  WS-PARCEL-PRINTED    PIC 9(2) VALUE 0.
        77  WS-PasswordSaved     Pic X(10).
+       77  WS-DEL-CH-ST         Pic X.
+       77  WS-LINE              PIC 9(3) VALUE 66.
+       77  WS-PRINTANSWER       PIC X(10) VALUE " ".
+       77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
+       77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".      
+       77  WSF-MAIL-NUMBER      PIC X(50) VALUE " ".
        01  W-READ-KEY           PIC X(11).
        01  WS-STDESC.
            03  WS-DESC1          PIC X(20) VALUE " ".
@@ -220,8 +230,10 @@
            03  WS-SPECIALS-ST1     PIC 99.
        01  WS-STDISC-STATUS.
            03  WS-STDISC-ST1       PIC 99.
+       01  WS-INV-CH-STATUS.
+           03  WS-INV-CH-ST1       PIC 99.
        01  WS-PASSWORD-KEY.
-           03  WS-PA-KEY         PIC X OCCURS 11.
+           03  WS-PA-KEY           PIC X OCCURS 11.
        01  WS-NAMEANDADDRESS.
            03  WS-NAME          PIC X(40) VALUE " ".
            03  WS-ADD1          PIC X(25) VALUE " ".
@@ -264,6 +276,13 @@
            03  WS-DEL-TYPE       PIC X.
            03  WS-DEL-CODE       PIC X.
            03  WS-DEL-TERM       PIC X(20).
+       01  STATUS-CHECKING.
+         02  WS-STAT-OCCUR OCCURS 15.
+           03  WS-STAT-TYPE       PIC X.
+       01  INV-STATUS-LINE-DISPLAY.
+           03  INV-STATUS-DISPLAY     PIC X(40) VAlUE " ".
+           03  FILLER                 PIC X(1).
+           03  INV-CHAR-DISPLAY       PIC X.
        01  WS-BO-REDUCED-MESSAGE.
            03  FILLER           PIC X(7) VALUE " ".
            03  WS-BO-MESSAGE    PIC X(38) VALUE " ".
@@ -359,33 +378,59 @@
            03  fCenterTitle   Pic x.
            
        01  PCREDITLINE.
-           03  P-PRINT8         PIC X(4).
+           03  P-PRINT8         PIC X(4) VALUE " ".
            03  FILLER           PIC X(46) VALUE " ".
            03  P-XES            PIC X(20) VALUE " ".
            03  FILLER           PIC X(8) VALUE " ".
-           03  P-NAME           PIC X(54).
+           03  P-NAME           PIC X(54) VALUE " ".
+       01  INVOICE-CH-RETURN-CHAR-MATRIX.
+           03  INVOICE-CH-RETURN-CHAR-SUB  PIC 9.
+       01  PDET.
+           03  FILLER               PIC X(2).
+           03  P-NO                 PIC Z(2)9.
+           03  FILLER               PIC X(1).
+           03  P-STOCK              PIC X(15).
+           03  PDET-REST.
+               05  FILLER           PIC X(1).
+               05  P-DESC           PIC X(20).
+               05  P-DESC2          PIC X(21).
+               05  P-UNIT           PIC X(4).
+               05  P-ORDER          PIC Z(4)9.
+               05  FILLER           PIC X(1).
+               05  P-SHIP           PIC Z(4)9.
+               05  FILLER           PIC X(1).
+               05  P-BO             PIC Z(4)9.
+               05  FILLER           PIC X(1).
+               05  P-SHIPPED        PIC Z(4)9.
+      *        05  FILLER           PIC X(1).
+               05  P-PRICE          PIC Z(7)9.99.
+               05  FILLER           PIC X(1).
+               05  P-DISCOUNT       PIC Z9.99.
+      *        05  FILLER           PIC X(1).
+               05  P-NETT           PIC Z(7)9.99.
+               05  FILLER           PIC X(14).
        01  PLINE1.
            03  FILLER           PIC X(13) VALUE " ".
            03  P-GSTNO          PIC X(18) VALUE " ".
-           03  P-ACCNO          PIC X(7).
+           03  P-ACCNO          PIC X(7) VALUE " ".
            03  FILLER           PIC X(12) VALUE " ".
            03  P-TYPE           PIC X(20) VALUE " ".
            03  FILLER           PIC X(8) VALUE " ".
-           03  P-ADDNAME        PIC X(54).
+           03  P-ADDNAME        PIC X(54) VALUE " ".
        01  PLINE2.
            03  FILLER           PIC X(13) VALUE " ".
            03  P-ADD.
                05  P-ADDRESS    PIC X(50) VALUE " ".
-               05  P2-DIG1      PIC X.
+               05  P2-DIG1      PIC X VALUE " "..
                05  P2-COMM      PIC X VALUE " ".
-               05  P2-DIG2      PIC X.
+               05  P2-DIG2      PIC X VALUE " "..
                05  FILLER       PIC X(12) VALUE " ".
            03  SUPP-ADD.
                05  SUPP-DIG10   PIC X(7) VALUE " ".
                05  SUPP-DIG30.
                    07  SUPP-DIG-BLANK   PIC X VALUE " ".
                    07  SUPP-DIG-VAT     PIC X(22) VALUE " ".
-               05  SUPP-TIME    PIC X(24).
+               05  SUPP-TIME    PIC X(24) VALUE" "..
        01  PLINE4.
            03  FILLER           PIC X(2) VALUE " ".
            03  P-TERMS          PIC X(11) VALUE " ".
@@ -412,30 +457,6 @@
            03  FILLER           PIC X(2) VALUE " ".
            03  P-PAGE           PIC Z9.
            03  FILLER           PIC X(15) VALUE " ".
-       01  PDET.
-           03  FILLER               PIC X(2).
-           03  P-NO                 PIC Z(2)9.
-           03  FILLER               PIC X(1).
-           03  P-STOCK              PIC X(15).
-           03  PDET-REST.
-               05  FILLER           PIC X(1).
-               05  P-DESC           PIC X(20).
-               05  P-DESC2          PIC X(21).
-               05  P-UNIT           PIC X(4).
-               05  P-ORDER          PIC Z(4)9.
-               05  FILLER           PIC X(1).
-               05  P-SHIP           PIC Z(4)9.
-               05  FILLER           PIC X(1).
-               05  P-BO             PIC Z(4)9.
-               05  FILLER           PIC X(1).
-               05  P-SHIPPED        PIC Z(4)9.
-      *        05  FILLER           PIC X(1).
-               05  P-PRICE          PIC Z(7)9.99.
-               05  FILLER           PIC X(1).
-               05  P-DISCOUNT       PIC Z9.99.
-      *        05  FILLER           PIC X(1).
-               05  P-NETT           PIC Z(7)9.99.
-               05  FILLER           PIC X(14).
        01  P-COMMENTLINE.
            03  FILLER           PIC X(11) VALUE " ".
            03  P-BO-MESSAGE     PIC X(38) VALUE " ".
@@ -477,6 +498,29 @@
               05  PL2-REST-DIG1       PIC X.
               05  PL2-ADD             PIC X(30) VALUE " ".
               05  PL2-DIG2            PIC X.
+       01  HEAD1-CH.
+           03  FILLER           PIC X(7) VALUE "  DATE".
+           03  H-CH-DATE        PIC X(10).
+      *     03  FILLER           PIC X(32) VALUE " ".
+           03  FILLER           PIC X(45) VALUE 
+        "INVOICE STATUS CHECKING REPORT".
+           03  FILLER           PIC X(6) VALUE "PAGE: ".
+           03  H-CH-PAGE        PIC  Z9.
+           03  FILLER           PIC X(4) VALUE " ".
+       01  HEAD2-CH.
+           03  FILLER           PIC X(17) VALUE " ".
+           03  FILLER           PIC X(103) VALUE 
+        "******************************".
+       01  HEAD3-CH.
+           03  FILLER           PIC X(12) VALUE " INVOICE #".
+           03  FILLER           PIC X(30) VALUE " STATUS".
+           03  FILLER           PIC X(33) VALUE " ".
+       01  DETAIL-CHECK-LINE.
+           03  FILLER           PIC X(2) VALUE " ".
+           03  D-INV-NO         PIC Z(5)9.
+           03  FILLER           PIC X(8) VALUE " ".
+           03  D-INV-RET        PIC X(5) VALUE " ".
+           03  FILLER           PIC X(8) VALUE " ".
        01 WS-FST-LINE.
           05  WS-DELIM-F             PIC  X(2).
           05  WS-DATA-F              PIC  X(98).
@@ -615,6 +659,12 @@
            MOVE "ON-RES:"   TO FILLER-ONRES
            MOVE "ON-B/O:"   TO FILLER-ONBO
            MOVE "ON-ORDER:" TO FILLER-ONORD.
+      * SUB-55 IS ONLY USED FOR THE INVOICE-CHECKING STATUS
+      *  IF SUB-55 = 75 THIS MEANS THAT THE PROGRAM HAS LOADED ONLY
+      *  NOT RUN YET OTHERWISE SUB-55 WOULD = THE NUMBER OF THE 
+      *  LAST COMPLETED INVOICE ROUTINE. SUB-55 = 
+           IF SUB-55 NOT = 75
+                MOVE 1 TO SUB-55.
        CONT-010.
            PERFORM ERROR1-020
            PERFORM ERROR-020
@@ -622,12 +672,448 @@
            PERFORM GET-DATA
            PERFORM PRINT-INVOICE
            PERFORM ERROR1-020
-           IF WS-IMM-PR = "S" OR = "H"
-            IF WS-DIS = "Y"
-               PERFORM PRINT-LABEL.
+
            GO TO CONT-010.
       *     Copy "<Copy>PrinterSpecial".
        CONT-999.
+           EXIT.
+
+        WRITE-INVOICE-PROGRESS SECTION.
+        WIPF-005.
+             IF SUB-55 NOT = 75
+                  GO TO WIPF-010.
+            MOVE 1   TO SUB-55.
+            MOVE "S" TO WS-STAT-OCCUR (1).
+            MOVE "A" TO WS-STAT-OCCUR (2).
+            MOVE "B" TO WS-STAT-OCCUR (3).
+            MOVE "C" TO WS-STAT-OCCUR (4).
+            MOVE "D" TO WS-STAT-OCCUR (5).
+            MOVE "E" TO WS-STAT-OCCUR (6).
+            MOVE "F" TO WS-STAT-OCCUR (7).
+            MOVE "G" TO WS-STAT-OCCUR (8).
+            MOVE "H" TO WS-STAT-OCCUR (9).
+            MOVE "I" TO WS-STAT-OCCUR (10).
+            MOVE "J" TO WS-STAT-OCCUR (11).
+            MOVE "K" TO WS-STAT-OCCUR (12).
+            MOVE "L" TO WS-STAT-OCCUR (13).
+        WIPF-010.
+      *  INVOICE-CH-RETURN-CHAR=S MEANS THIS IS THE BEGINNING OF 
+      *   THE PROGRESS STATEMENT, THEREFOHE THE RECORD MUST BE 
+      *   WRITTEN FOR THE FIRST TRIME.   ALL OTHER TIMES IT MUST BE
+      *   RE-WRITTEN.
+      * ERC 23 MEANS THE RECORD IS NOT THERE AT ALL
+      * ERC 35 MEAN'S THE DATA SET OPENED PROPERLY BUT THE  
+      * PARTICULAR RECORD IN THE DATASET ONE IS TRYING TO READ
+      * IS NOT TNERE.
+            IF SUB-55 = 1
+                MOVE WS-STAT-TYPE (SUB-55) TO INVOICE-CH-RETURN-CHAR
+                GO TO WIPF-030.
+            MOVE WS-INVOICE  TO INVOICE-CH-KEY.
+             START INVOICE-CH-MASTER KEY NOT < INVOICE-CH-KEY
+                 INVALID KEY NEXT SENTENCE.
+        WIPF-020.
+            READ INVOICE-CH-MASTER NEXT
+                AT END NEXT SENTENCE.
+            IF WS-INV-CH-ST1 = 10
+              GO TO WIPF-900.
+            IF WS-INV-CH-ST1 NOT = 0
+      *       MOVE "INV-CH-STATUS=23 ON REASD, GOING TO EXIT."
+      *           TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *        CLOSE INVOICE-CH-MASTER
+               GO TO WIPF-999.
+             
+             MOVE WS-INVOICE            TO INVOICE-CH-KEY.
+             MOVE WS-STAT-TYPE (SUB-55) TO INVOICE-CH-RETURN-CHAR.
+             GO TO WIPF-035.
+        WIPF-030.
+            WRITE INVOICE-CH-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-INV-CH-ST1 NOT = 0
+      *          MOVE "WIPF4 INV CHECKFILE ERC ON READ, 'ESC' CODES."
+      *          TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *          MOVE 0 TO WS-INV-CH-ST1
+      *          CLOSE INVOICE-CH-MASTER
+      *          OPEN I-O INVOICE-CH-MASTER
+                GO TO WIPF-500.
+
+             IF SUB-55 = 1
+                 GO TO WIPF-500.
+        WIPF-035.
+            REWRITE INVOICE-CH-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-INV-CH-ST1 NOT = 0
+      *         MOVE 
+      *     "WIPF6 INV CHECKFILE ERC ON REWRITE, 'ESC' FOR ERC MESSAGE."
+      *           TO WS-MESSAGE
+      *           PERFORM ERROR1-000
+      *           MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *           PERFORM ERROR-MESSAGE
+      *           PERFORM ERROR1-020
+      *          MOVE 0 TO WS-INV-CH-ST1
+                GO TO WIPF-900.
+        WIPF-500.
+             ADD 1 TO SUB-55.
+
+                 GO TO WIPF-999.
+             
+             MOVE WS-INVOICE              TO INVOICE-CH-INV-NUM.
+             MOVE WS-STAT-OCCUR (SUB-55)  TO INV-CHAR-DISPLAY.
+             
+        WIPF-900.
+            REWRITE INVOICE-CH-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-INV-CH-ST1 NOT = 0
+      *          MOVE 
+      *    "WIPF-900 INV CHECKFILE ERC ON REWRITE, ESC' FOR ERC MESSAGE."
+      *         TO WS-MESSAGE
+      *         PERFORM ERROR1-000
+      *         MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *         PERFORM ERROR-MESSAGE
+      *         PERFORM ERROR1-020
+      *          MOVE 0 TO WS-INV-CH-ST1
+                GO TO WIPF-900.
+        WIPF-999.
+           EXIT.
+      *
+        CHECK-TO-DELETE-ONCE-PRINTED SECTION.
+        CHECK-TO-DEL-010.
+           MOVE 3010 TO POS.
+           DISPLAY 
+           "Delete the Invoice Status Records Once Printed ? Y/N  [ ]"
+                 AT POS.
+           ADD 55 TO POS.
+
+           MOVE " "       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 64        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR. 
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-DEL-CH-ST.
+           IF W-ESCAPE-KEY = 4
+               GO TO CHECK-TO-DEL-999.
+
+           IF WS-DEL-CH-ST NOT = "N" AND NOT = "Y"
+              MOVE 2510 TO POS
+              DISPLAY "TO DELETE OR NOT MUST BE Yes OR No." AT POS
+              GO TO CHECK-TO-DEL-010.
+        CHECK-TO-DEL-999.
+              EXIT.
+      *        
+       PRINT-INV-CHECK-LIST SECTION.
+       PTICL-001.
+           PERFORM CHECK-TO-DELETE-ONCE-PRINTED.       
+           OPEN OUTPUT PRINT-FILE.
+       PTICL-003.
+            READ INVOICE-CH-MASTER NEXT
+                AT END NEXT SENTENCE.
+            IF WS-INV-CH-ST1 = 10
+                MOVE 0 TO WS-INV-CH-ST1
+                GO TO PTICL-900.
+            IF WS-INV-CH-ST1 = 23
+              MOVE "INV CHECKFILE ERC23 ON READ, 'ESC'=INV #."
+              TO WS-MESSAGE
+              PERFORM ERROR1-000
+              MOVE INVOICE-CH-KEY TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              MOVE 0 TO WS-INV-CH-ST1
+      *        CLOSE INVOICE-CH-MASTER
+              GO TO PTICL-900.
+            IF WS-INV-CH-ST1 NOT = 0
+                MOVE "INV CHECKFILE ERC ON READ, 'ESC' CODES."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INV-CH-ST1
+                GO TO PTICL-003.
+        PTICL-010.
+           IF WS-LINE > 60
+               PERFORM PRINT-CHECK-HEADINGS.
+
+           MOVE INVOICE-CH-KEY         TO D-INV-NO.
+           MOVE INVOICE-CH-RETURN-CHAR TO D-INV-RET.
+                
+           WRITE PRINT-REC FROM DETAIL-CHECK-LINE AFTER 1
+           MOVE " " TO PRINT-REC
+           ADD 1 TO WS-LINE
+           
+           IF WS-DEL-CH-ST = "Y"
+               GO TO PTICL-030.
+               
+           GO TO PTICL-003.
+        PTICL-030.
+            DELETE INVOICE-CH-MASTER
+                INVALID KEY NEXT SENTENCE.
+            IF WS-INV-CH-ST1 NOT = 0
+                MOVE "INV CHECKFILE ERC ON DEL,  'ESC' CODES."
+                TO WS-MESSAGE
+                PERFORM ERROR1-000
+                MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+                PERFORM ERROR-MESSAGE
+                PERFORM ERROR1-020
+                MOVE 0 TO WS-INV-CH-ST1
+                GO TO PTICL-900.
+
+                GO TO PTICL-003.
+       PTICL-900.
+           PERFORM ADD-TAIL-DESCRIPTOR-TO-REPORT.
+       PTICL-955.
+           PERFORM GET-USER-MAIL-NAME.
+           PERFORM GET-REPORT-Y2K-DATE.
+           PERFORM PRINT-REPORT-INFO.
+           
+           CLOSE PRINT-FILE.
+      *     CLOSE INVOICE-CH-MASTER.
+
+            MOVE "When Finished Viewing The Report, Press Q to Quit."
+              TO WS-MESSAGE
+            PERFORM ERROR-MESSAGE. 
+              
+            MOVE 
+            CONCATENATE('less ', ' ', TRIM(WS-PRINTER))
+                TO WS-COMMAND-LINE.
+      
+            CALL "SYSTEM" USING WS-COMMAND-LINE.
+            
+      * WS-PRINTER IS THE PRINT FILE NAME ALREADY IN USE
+      * WS-USEREMAILADD IS THE EMAIL ADD OF THE USER RUNNING THE PROGRAM
+      *                  THIS WILL BE JOHN OR STEVE
+      *WS-SUBJECT-FIXED IS THE NAME OF THE REPORT FOR WHICH GROUP CO
+      *WSF-MAIL-NUMBER IS jOHN OR STEVE'S EMAIL ADD
+               IF WS-CO-NUMBER = 1
+                 MOVE 
+          "REPORT FROM CTJ ON THE STATUS OF INVOICES PROCESSED." 
+                 TO WS-SUBJECT-FIXED.
+      
+               IF WS-CO-NUMBER = 3
+                 MOVE 
+          "REPORT FROM CTN ON THE STATUS OF INVOICES PROCESSED." 
+                 TO WS-SUBJECT-FIXED.
+                 
+               IF WS-CO-NUMBER = 7
+                 MOVE 
+          "REPORT FROM SFJ ON THE STATUS OF INVOICES PROCESSED." 
+                 TO WS-SUBJECT-FIXED.
+      
+            PERFORM SEND-REPORT-TO-PRINTER.
+       PTICL-999.
+           EXIT.
+      *
+       ADD-TAIL-DESCRIPTOR-TO-REPORT SECTION.
+       ATDTR-005.
+            MOVE 
+       "***************************************************************"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 2
+            
+            MOVE 
+       "* THIS PROGRAM HAS ONE GOAL: TO MAKE THE INVOICE PROGRAM MORE *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "* STABLE USING THE INVOICE-CHECKING-STATUS OF THE INVOICE     *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "* TO CHECK THAT ALL SECTIONS IN THE INVOICE GET PROCESSED     *" 
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+       
+            MOVE 
+       "* AND REPORTED AS DONE. SO WE WILL KNOW IF IT TERMINATES      *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1.
+            
+            MOVE 
+       "* PREMATURELY.                                                *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+                                                                      
+            MOVE 
+       "* 1.   EVERY INVOICE THAT GETS GENERATED WILL OPEN A FILE ON  *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+                
+            MOVE 
+       "*      THIS DATASET WITH THE FIELD INVOICE-CH-KEY BEING THE   *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            MOVE 
+       "*       INVOICE NUMBER BEING PROCESSED.   AT EVERY STAGE OF   *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*       THE INVOICE WHEN THAT STAGE HAS BEEN SUCCESFULLY      *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*       COMPLETED THE INVOICE PROGRAM COMES BACK TO THIS      *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*       DATA-SET AND UPDATES IT WITH A CHAR FROM THE UPDATE   *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1.
+
+            MOVE
+       "*       ROUTINE WHICH TELLS US HOW FAR THE INVOICE HAS        *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "*       PROCEEDED. SHOULD THE INVOICE PROGRAM COME TO A HALT  *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*       IN A NEGATIVE WAY BEFORE IT HAS RUN THE FULL UPDATE,  *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*      THIS RECORD WILL BE INCOMPLETE WHEN WE RUN THE         *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1.
+            
+            MOVE 
+       "*      REPORT PROGRAM THIS INCOMPLETENESS WILL BE MADE KNOWN. *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "* SUB-55                                                      *"
+                TO PRINT-REC
+           WRITE PRINT-REC AFTER 1
+           
+            MOVE 
+       "*  1 = S INVOICE BEGUN, INVOICE #  FROM PARAMETER-FILE.       *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*  2 = A = INVOICE PRINTED                                    *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+            
+            MOVE 
+       "*  3 = B = DR-TRANS RECORD WRITTEN                            *"
+                 TO PRINT-REC
+            WRITE PRINT-REC AFTER 1.
+
+            MOVE 
+       "*  4 = C = DEBTOR FILE UPDATED                                *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "*  5 = D = SALES-ANALYIS UPDATED                              *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "*  6 = E = DISTRIBUTION FILE UPDATED                          *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "*  7 = F = STOCK-FILES UPDATED                                *"
+                        TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "*  8 = G = SLREG RECORD FOR THE P/SLIP UPDATED                *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1.
+
+            MOVE 
+       "*  9 = H = SLREG RECORD FOR THE INVOICE WRITTEN               *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "* 10 = I = STTRANS WRITTEN FOR THE INVOICE                    *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "* 11 = J = STTRANS RE-WRITTEN FOR THE P/SLIP TO BE UPDATED    *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "* 12 = K = SOLDBY RECORD WRITTEN FOR INVOICE TOTALS           *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "* 13 = L = INVOICE RECORD COMPLETED SUCCESFULLY               *"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1
+
+            MOVE 
+       "***************************************************************"
+                TO PRINT-REC
+            WRITE PRINT-REC AFTER 1.
+
+        ATDTR-999.
+            EXIT.
+      * 
+       PRINT-CHECK-HEADINGS SECTION.
+       PCH-000.
+           ADD 1        TO WS-PAGE
+           MOVE WS-PAGE TO H-CH-PAGE
+           MOVE 7       TO WS-LINE.
+
+           IF WS-PRINT-TYPE = 2
+               MOVE WS-PRINT-COMP TO PRINT-REC
+               WRITE PRINT-REC.
+
+           IF WS-PAGE = 1
+               WRITE PRINT-REC FROM COMPANY-LINE
+           ELSE
+               WRITE PRINT-REC FROM COMPANY-LINE AFTER PAGE.
+           WRITE PRINT-REC FROM HEAD1-CH AFTER 1
+           WRITE PRINT-REC FROM HEAD2-CH AFTER 1
+           WRITE PRINT-REC FROM HEAD3-CH AFTER 1
+           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC AFTER 1.
+       PCH-999.
+           EXIT.
+      *
+       PRINT-HEADINGS SECTION.
+       PH-000.
+           ADD 1        TO WS-PAGE
+           MOVE WS-PAGE TO H-CH-PAGE
+           MOVE 7       TO WS-LINE.
+
+           IF WS-PRINT-TYPE = 2
+               MOVE WS-PRINT-COMP TO PRINT-REC
+               WRITE PRINT-REC.
+
+           IF WS-PAGE = 1
+               WRITE PRINT-REC FROM COMPANY-LINE
+           ELSE
+               WRITE PRINT-REC FROM COMPANY-LINE AFTER PAGE.
+           WRITE PRINT-REC FROM HEAD1-CH AFTER 1
+           WRITE PRINT-REC FROM HEAD2-CH AFTER 1
+           WRITE PRINT-REC FROM HEAD3-CH AFTER 2
+           MOVE " " TO PRINT-REC
+           WRITE PRINT-REC AFTER 1.
+       PH-999.
            EXIT.
       *
        INITIAL-MESSAGE SECTION.
@@ -638,8 +1124,8 @@
            DISPLAY "** INVOICE PROGRAM **" AT POS
            MOVE 0510 TO POS
            DISPLAY
-           "Is This Batch run, Counter Print, Stores Print OR HP" &
-           " Laser Print ?" AT POS
+           "Is This Batchrun, Counter Print, Stores Print OR HP" &
+           " Laser Print ? OR X" AT POS
            MOVE 0710 TO POS
            DISPLAY
            "B=Batch Print; C=Counter Print; S=Stores Print; H=HP: [ ]"
@@ -655,7 +1141,6 @@
            PERFORM CTOS-ACCEPT.
            MOVE CDA-DATA TO WS-IMM-PR.
            
-      *      ACCEPT WS-IMM-PR AT POS.
            IF W-ESCAPE-KEY = 3
                EXIT PROGRAM.
            IF W-ESCAPE-KEY = 0 OR = 1 OR = 2 OR = 5
@@ -664,7 +1149,7 @@
                DISPLAY " " AT 3079 WITH BELL
                GO TO IM-005.
        IM-010.
-           IF WS-IMM-PR = "B" OR = "C" OR = "H" OR = "S"
+           IF WS-IMM-PR = "B" OR = "C" OR = "H" OR = "S" OR = "X"
               GO TO IM-040.
        IM-020.
            MOVE 1001 TO POS
@@ -673,7 +1158,7 @@
            DISPLAY " " AT 3079 WITH BELL
            GO TO IM-000.
        IM-040.
-           IF WS-IMM-PR = "B"
+           IF WS-IMM-PR = "B" or = "x"
                GO TO IM-999.
            MOVE 1 TO SUB-1.
        IM-045.
@@ -693,29 +1178,24 @@
                                                WS-PRINTER-LASER
                MOVE 3 TO WS-PROG-TYPE
                GO TO IM-999.
+           IF WS-IMM-PR = "X"
+            IF WS-PRINTERNUMBER (SUB-1) = 15
+               MOVE WS-PRINTERNAME (SUB-1)  TO WS-PRINTER-SAVE
+                                               WS-PRINTER-LASER
+               MOVE 3 TO WS-PROG-TYPE
+               GO TO IM-650.
            IF SUB-1 < 11
              ADD 1 TO SUB-1
              GO TO IM-045.
-           MOVE "CAN'T FIND A PRINTERNUMBER, PRN PARAMETER NOT SET UP."
-             TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE.
-      *     MOVE 3               TO WS-PRINTERTYPE (11).
        IM-050.
            GO TO IM-999.
        IM-600.
-      * SECTION REMOVED 6/9/2000.  A/C'S WANT ALL THREE COPIES
-      *
-      *     IF WS-IMM-PR = "H"
-      *      IF WS-ACCOUNT-NUMBER NOT = 0300087 AND NOT = 0300090
-      *     AND NOT = 0300100 AND NOT = 0300150 AND NOT = 0300200
-      *     AND NOT = 9999999
-      *         MOVE 3 TO WS-PROG-TYPE
-      *     ELSE
-      *         MOVE 2 TO WS-PROG-TYPE.
-               MOVE 3 TO WS-PROG-TYPE.
+           MOVE 3 TO WS-PROG-TYPE.
        IM-640.
            GO TO IM-999.
        IM-650.
+           PERFORM OPEN-023.
+
            PERFORM CDNVD-005
            ACCEPT WS-TIMES FROM TIME
            MOVE "/ctools/spl/" To ALPHA-RATE
@@ -726,8 +1206,38 @@
            SUBTRACT 1 FROM SUB-1
            MOVE ALPHA-RATE TO W-FILENAME.
            MOVE SUB-1      TO FS-CBDATAFILE.
+       IM-675.
+           PERFORM WOPFN-040.
+        IF WS-IMM-PR NOT =  "X"
+           GO TO IM-999.
+        PERFORM PRINT-INV-CHECK-LIST.
+        
+        PERFORM CHECK-TO-SEND-REPORT-BY-EMAIL.
+
+           CALL "C$SLEEP" USING 60.
+
+           GO TO IM-000.
        IM-999.
            EXIT.
+      *
+       CHECK-TO-SEND-REPORT-BY-EMAIL SECTION.
+       TSRBE-005.
+           PERFORM GET-USER-MAIL-NAME
+           PERFORM GET-REPORT-Y2K-DATE
+           PERFORM PRINT-REPORT-INFO.
+           
+           MOVE "@TSRBE-010, GOING TO START EMAIL PROCESS"
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE.
+       TSRBE-010.
+           CLOSE PRINT-FILE.
+           CLOSE INVOICE-CH-MASTER.
+           PERFORM SEND-REPORT-TO-PRINTER.
+
+           PERFORM SETUP-INV-STATUS-FOR-MGEMAIL.
+       TSRBE-999.
+            EXIT.
+      *
       *
        WORK-OUT-PRINT-FILE-NAME SECTION.
        WOPFN-001.
@@ -776,13 +1286,17 @@
             IF DAT-RATE (SUB-2) NOT = " "
                GO TO WOPFN-035.
            MOVE ALPHA-RATE   TO WS-PRINTER W-FILENAME.
-           
+           GO TO WOPFN-999.
+       WOPFN-040.
+      *     MOVE 
+      *     "WS-PRINTER, W S-PRINTER-SAVE THEN W-FILENAME" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE.
       *     MOVE WS-PRINTER TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
       *     MOVE WS-PRINTER-SAVE TO WS-MESSAGE
       *     PERFORM ERROR-MESSAGE.
 
-      *     MOVE W-FILENAME TO WS-MESSAGE
+           MOVE W-FILENAME TO WS-PRINTER WS-MESSAGE.
       *     PERFORM ERROR-MESSAGE.
        WOPFN-999.
             EXIT.
@@ -845,6 +1359,11 @@
            MOVE WS-INVOICE TO F-EDNAMEFIELDNUM
            PERFORM WRITE-FIELD-NUMERIC.
            
+      *NEW SECTION REPORTING ON THE PROGRESS OF THE INVOICE.   
+           MOVE WS-INVOICE TO INVOICE-CH-INV-NUM.
+           MOVE "S"        TO INVOICE-CH-RETURN-CHAR. 
+           PERFORM WRITE-INVOICE-PROGRESS.
+
            PERFORM QUES-PULL-CASH.
        PR-005.
            MOVE 1 TO WS-PAGE SUB-1 SUB-2.
@@ -864,7 +1383,7 @@
               PERFORM LASER-PRINT-INVOICE
       *        PERFORM A995-QUEUE-FSD
               GO TO PR-050.
-
+                                      
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
        PR-010.
@@ -1047,8 +1566,14 @@
            WRITE PRINT-REC.
            MOVE " " TO PRINT-REC
            CLOSE PRINT-FILE.
+           
+            MOVE WS-INVOICE TO INVOICE-CH-KEY.
+            MOVE 1 TO SUB-55
+            MOVE "A"        TO INVOICE-CH-RETURN-CHAR. 
+            PERFORM WRITE-INVOICE-PROGRESS.
+            
            PERFORM SEND-REPORT-TO-PRINTER.
-
+           
            MOVE 2958 TO POS
            DISPLAY WS-MESSAGE AT POS.
        PR-050.
@@ -1058,45 +1583,96 @@
            MOVE 2910 TO POS
            DISPLAY "1. DEBTOR-TRANS BEING WRITTEN..........    " AT POS
            PERFORM WRITE-DEBTOR-TRANSACTIONS
+           MOVE 2 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY.
+           MOVE "B"        TO INVOICE-CH-RETURN-CHAR. 
+           PERFORM WRITE-INVOICE-PROGRESS.
            
            MOVE 2910 TO POS
            DISPLAY "2. DEBTOR FILE BEING UPDATED....           " AT POS
            PERFORM UPDATE-DEBTOR
+           MOVE 3 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "C"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
            
            MOVE 2910 TO POS
            DISPLAY "3. SALES ANALYSIS FILE BEING UPDATED....   " AT POS
            PERFORM UPDATE-SALES
-           
+           MOVE 4 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "D"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
+
            MOVE 2910 TO POS
            DISPLAY "4. DISTRIBUTION FILE BEING UPDATED......   " AT POS
            PERFORM UPDATE-DISTRIBUTION
+           MOVE 5 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "E"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
            
            MOVE 2910 TO POS
            DISPLAY "5. STOCK FILES BEING UPDATED..........     " AT POS
            PERFORM UPDATE-STOCK
-           
+           MOVE 6 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "F"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
+
            MOVE 2910 TO POS
            DISPLAY "6. ORDERS FILE BEING UPDATED..........     " AT POS
            PERFORM REWRITE-ORDER-TRANS
+           MOVE 7 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "G"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
            
            MOVE 2910 TO POS
            DISPLAY "7. INVOICE REGISTER BEING WRITTEN.......   " AT POS
            PERFORM WRITE-INCR-REGISTER
+           MOVE 8 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "H"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
            
            MOVE 2910 TO POS
-           DISPLAY "8. STOCK-TRANS BEING WRITTEN..........     " AT POS
-           PERFORM WRITE-STOCK-TRANSACTIONS.  
+           DISPLAY "8. STOCK-TRANS BEING WRITTEN FOR INV...... " AT POS
+           PERFORM WRITE-STOCK-TRANSACTIONS
+           MOVE 9 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "I"        TO INVOICE-CH-RETURN-CHAR.
+           PERFORM WRITE-INVOICE-PROGRESS.
            
            IF WS-NEWORDER = "N"
                MOVE 2910 TO POS
                DISPLAY "9. STOCK-TRANS (ORDER) BEING UPDATED..." AT POS
-               PERFORM REWRITE-STOCK-TRANSACTIONS.
+               PERFORM REWRITE-STOCK-TRANSACTIONS
+               MOVE 10 TO SUB-55
+               MOVE WS-INVOICE TO INVOICE-CH-KEY
+               MOVE "J"        TO INVOICE-CH-RETURN-CHAR
+               PERFORM WRITE-INVOICE-PROGRESS.
+            
            MOVE 2910 TO POS
            DISPLAY "10. SOLDBY FILE BEING WRITTEN..........    " AT POS
-           PERFORM WRITE-SOLD-BY.
+           PERFORM WRITE-SOLD-BY
+           MOVE 11 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "K"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
+           
+  
+      *    THE INVOICE PROCESS IS NOW FINISHED AND WE CAN FLAG THE 
+      *    RECORD 'L' FOR COMPLETE.
+           MOVE 2910 TO POS
+		   DISPLAY "11. INVOICE PROCESSING NOW COMPLETE..... "  AT POS.
+		   MOVE 12 TO SUB-55
+		   MOVE WS-INVOICE TO INVOICE-CH-KEY
+           MOVE "L"        TO INVOICE-CH-RETURN-CHAR
+           PERFORM WRITE-INVOICE-PROGRESS.
        PR-999.
            EXIT.
-      *
+      * 
        LASER-PRINT-INVOICE SECTION.
        LR-005.
            MOVE 1 TO WS-PAGE SUB-1 SUB-2.
@@ -1385,6 +1961,9 @@
             IF WS-IMM-PR = "S"
              MOVE "* INVOICE ENTRY - STORES PRINTING **"
                  TO WS-HEADING-DISPLAY.
+            IF WS-IMM-PR = "X"
+             MOVE "* INVOICE CHECKING REPORT PRINTING **"
+                 TO WS-HEADING-DISPLAY.
             MOVE 320 TO POS.
             DISPLAY WS-HEADING-DISPLAY AT POS.
  
@@ -1397,6 +1976,10 @@
                 MOVE "Press 'CODE-COPY' To Reprint This Invoice"
                 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
+                GO TO GET-010.
+            IF F-EXIT-CH = X"14"
+             IF WS-IMM-PR = "X"
+                PERFORM PRINT-INV-CHECK-LIST
                 GO TO GET-010.
             IF F-EXIT-CH = X"94"
              IF WS-IMM-PR = "C" OR = "S" OR = "H"
@@ -1986,7 +2569,7 @@
             MOVE "                        " TO F-NAMEFIELD.
             MOVE "SALESANALYSIS" TO F-FIELDNAME.
             MOVE 13 TO F-CBFIELDNAME.
-            MOVE 0 TO F-CBFIRSTLINE.
+            MOVE 0  TO F-CBFIRSTLINE.
             MOVE 14 TO F-CBFIELDLENGTH.
             PERFORM USER-FILL-FIELD.
             PERFORM ERROR-020.
@@ -5237,6 +5820,7 @@
                                      GST-AMT-TAXABLE-YTD.
            ADD WS-GST-AMT-NONTAXABLE TO GST-AMT-NONTAXABLE-WEEK
                                         GST-AMT-NONTAXABLE-PTD
+PR-999
                                         GST-AMT-NONTAXABLE-YTD.
            ADD WS-GST-AMT-EXPORT TO GST-AMT-EXPORT-WEEK
                                     GST-AMT-EXPORT-PTD
@@ -6674,7 +7258,7 @@
        OPEN-014.
            OPEN I-O PARAMETER-FILE.
            IF WS-SLPARAMETER-ST1 NOT = 0 
-              MOVE "PARAMETER FILE BUSY ON OPEN, 'ESC' TO RETRY."
+              MOVE "PARAMETER FILE BUSY ON OPEN-014, 'ESC' TO RETRY."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE WS-SLPARAMETER-ST1 TO WS-MESSAGE
@@ -6766,11 +7350,35 @@
                TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-STDISC-ST1 TO WS-MESSAGE
-               PERFORM ERROR-MESSAGE
-               PERFORM ERROR1-020
-               MOVE 0 TO WS-STDISC-ST1
-               GO TO OPEN-022.
-       OPEN-030.
+               PERFORM ERROR-MESSAGE.
+       OPEN-023.
+      * CODE 23= RECORD IN FILE NOT FOUND
+      * CODE 35= THE DATAFILE IS NOT THERE AT ALL.
+      * CODE 47, 48 & 49 AL ARE OPEN I-O ERC'S
+            OPEN I-O INVOICE-CH-MASTER.
+           IF WS-INV-CH-ST1 = 0
+      *        MOVE 
+      *   "THE INVOICE-CH-MASTER DATA-FILE HAS OPENED I-O WELL."
+      *                TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+              GO TO OPEN-030.
+              
+            IF WS-INV-CH-ST1 = 35 OR = 47 OR = 48 OR = 49
+      *        MOVE 
+      *  "INVOICE-CH-MASTER OPEN I-O ERC, SEE NEXT LINE." TO WS-MESSAGE
+      *        PERFORM ERROR1-010
+      *        MOVE WS-INV-CH-ST1 TO Ws-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+               CLOSE INVOICE-CH-MASTER
+               OPEN OUTPUT INVOICE-CH-MASTER
+           IF WS-INV-CH-ST1 = 0
+      *        MOVE 
+      *   "THE INVOICE-CH-MASTER DATA-FILE HAS OPENED IN OUTPUT NOW."
+      *                TO WS-MESSAGE
+      *        PERFORM ERROR-MESSAGE
+              CLOSE INVOICE-CH-MASTER
+              GO TO OPEN-023.
+		OPEN-030.
            MOVE "ACCOUNTNO"    TO F-FIELDNAME
            PERFORM READ-PARAMETER-LOCK
            MOVE PA-CO-VAT-NO   TO WS-CO-VATNO
@@ -6784,6 +7392,9 @@
        Copy "OpenForms".
        OPEN-999.
            EXIT.
+      *
+        OPEN-INV-CH-STATUS-FIRST-TIME SECTION.
+        
       *
        END-OFF SECTION.
        END-000.
@@ -6799,8 +7410,8 @@
                  SOLD-BY
                  INCR-REGISTER
                  STDISC-MASTER.
+       END-900.
            EXIT PROGRAM.
-      *      STOP RUN.
        END-999.
            EXIT.
       *
@@ -6825,7 +7436,9 @@
        Copy "GetReportY2KDate".
        Copy "GetUserPrintName".
        Copy "SetupInvoiceForPDF".
+       Copy "SetupInvStatusForMgEmail".
        Copy "SendReportToPrinter".
+       Copy "PrintReportInfo".
        Copy "GetUserMailName".
        Copy "ZoomBox".
       ******************
