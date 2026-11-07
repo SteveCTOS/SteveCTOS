@@ -14,8 +14,8 @@
 *  *   *  8. Inv/C-Note/P-Slip/Quote Enquiry  23. Stock MinMax YTD Batch Run  *
 *  *   *  9. Invoice Delivery Confirmation    24. Stock MinMax L/Yr Batch Run *
 *  *   * 10. Register Account Enquiry                                         *
-*  *   * 11. Register Name/Address Edit                                       *
-*  *   * 12. Register Enquiry By: Name, Postal                                *
+*  *   * 11. Register Name/Address Edit       25.  Register recreate Reg From *
+*  *   * 12. Register Enquiry By: Name, Postal      A Recent Backup.          *
 *  *   *      or Delivery Address                                             *
 *  *   * 13. Register File Entry / Edit                                       *
 ****   * 14. Register File - Change Acc Number                                *

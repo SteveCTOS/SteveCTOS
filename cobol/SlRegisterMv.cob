@@ -117,27 +117,49 @@
            PERFORM ERROR-MESSAGE.
            
            IF WS-ACCEPT = "I"
-               OPEN OUTPUT INCR-REGISTER
+               OPEN I-O INCR-REGISTER
            ELSE
                OPEN I-O INCR-REGISTER.
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
            
-           IF WS-ACCEPT = "E"
-               MOVE 0 TO INCR-KEY
+          IF WS-ACCEPT = "E"
+              MOVE 0 TO INCR-KEY
               START INCR-REGISTER KEY NOT < INCR-KEY.
-            
+      * this version pulls specific numbers aqcross.  Have a look at 
+      *SlInRgMtfor a temp fix to bring specific p/lips, then invoices 
+      * etc over to the current live system  05/11-2026'
+      * THIS IS A FIX TO BRING BACK THE QUOTES THAT WERE LEFT OFF WHEN
+      * A CORRUPTION WAS DETECTED. THIS PROGRAM EXPORTED EVERYTHING
+      * UP TO THE TIME THIS WAS RUN.  02/11/2026
            IF WS-ACCEPT = "E"
-              OPEN OUTPUT INCR1-REGISTER
+               OPEN OUTPUT INCR1-REGISTER
            ELSE
               OPEN I-O INCR1-REGISTER.
            
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
+      * THIS IS PART OF THE FIX.  REMOVE FOR NORMAL USE.
+      *    MOVE 0 TO IJNCR-KEY
+          IF WS-ACCEPT = "I"
+               MOVE 8 TO INCR1-TRANS
+               MOVE 1 TO INCR1-INVOICE
+               START INCR1-REGISTER KEY NOT < INCR1-KEY
+               GO TO  A-EXIT
+          ELSE
+               MOVE 1 TO INCR1-TRANS
+               MOVE 1 TO INCR1-INVOICE.
            
+           IF WS-ACCEPT = "I"
+               START INCR1-REGISTER KEY NOT < INCR1-KEY
+            
             IF WS-STAT1 NOT = 0
-               MOVE "EXCLUDING TEMP FILE FOR THIS COMPANY" TO WS-MESSAGE
+               MOVE 
+           "EXCLUDING TEMP FILE REGISTER1 FOR THIS COMPANY" 
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-STAT1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE
                PERFORM C-END
                EXIT PROGRAM.
@@ -162,9 +184,21 @@
                  INVALID KEY
              MOVE "INVALID WRITE FOR ISAM1 FILE..." TO WS-MESSAGE
              PERFORM ERROR1-000
+             MOVE 2735 TO POS
+             DISPLAY INCR-KEY AT POS
              MOVE WS-STAT1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             PERFORM ERROR1-020.
+             MOVE INCR1-KEY TO WS-MESSAGE
+             PERFORM ERROR1-000
+             MOVE 
+           ":THE ABOVE LINE IS THE REGISTER RECORD THAT i'M STUCK ON"
+             TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             MOVE WS-STAT1 TO WS-MESSAGE
+             PERFORM ERROR-MESSAGE
+             ADD 1 TO INCR1-INVOICE.
+      *       MOVE 8 TO INCR1-TRANS.
+      *       EXIT PROGRAM.
       *       DISPLAY "INVALID WRITE FOR INCR1 FILE...."
       *       DISPLAY WS-STAT1
       *       EXIT PROGRAM.
@@ -188,12 +222,19 @@
 
         BI-010.
            WRITE INCR-REC
-                 INVALID KEY
-             MOVE "INVALID WRITE FOR ISAM FILE..." TO WS-MESSAGE
+               INVALID KEY
+            MOVE 
+         "INVALID WRITE FOR INCR-REC ISAM FILE...STATUS IS:"
+              TO WS-MESSAGE
              PERFORM ERROR1-000
              MOVE WS-STAT1 TO WS-MESSAGE
              PERFORM ERROR-MESSAGE
-             PERFORM ERROR1-020.
+             PERFORM ERROR1-020
+             
+             ADD 1 TO INCR1-INVOICE
+             START INCR1-REGISTER KEY NOT < INCR1-KEY
+             GO TO BI-005.
+             
       *       CLOSE INCR-REGISTER
       *             INCR1-REGISTER
       *       CALL "C$SLEEP" USING 3

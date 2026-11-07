@@ -156,6 +156,7 @@
            03  FILLER           PIC X(103) VALUE 
            "*******************************".
        01  HEAD3.
+       
            03  FILLER           PIC X(10) VALUE " TRANS TY".
            03  FILLER           PIC X(30) VALUE " ACCOUNT".
            03  FILLER           PIC X(33) VALUE
@@ -403,17 +404,20 @@
               MOVE "REGISTER BUSY ON READ,REG-ST1 = 23, 'ESC' TO RETRY." 
               TO WS-MESSAGE
               PERFORM ERROR-MESSAGE
-              GO TO PR-002.
+              GO TO PR-003.
            IF WS-INCR-ST1 NOT = 0
              MOVE 
            "REGISTER LOCKED PR-003 AT ANOTHER STATION, 'ESC' TO RETRY."
              TO WS-MESSAGE
              PERFORM ERROR1-000
-             MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
+             MOVE "LAST RECORD READ WAS:         STATUS        $$    "
+              TO WS-MESSAGE
              PERFORM ERROR-000
-             MOVE 2837 TO POS
+             MOVE 2833 TO POS
              DISPLAY D-INVNO AT POS
-             PERFORM ERROR-010
+             MOVE 2848 TO POS
+             DISPLAY WS-INCR-ST1 AT POS
+             PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
              PERFORM ERROR-020
              GO TO PR-003.
@@ -701,16 +705,16 @@
               DISPLAY WS-MESSAGE AT POS
               GO TO RBD-900.
            IF WS-INCR-ST1 NOT = 0
-             MOVE 
-           "REGISTER LOCKED RBD AT ANOTHER STATION, 'ESC' TO RETRY."
-             TO WS-MESSAGE
-             PERFORM ERROR1-000
-             MOVE "LAST RECORD READ WAS:" TO WS-MESSAGE
+             MOVE "LAST RECORD READ WAS:         STATUS        $$    "
+              TO WS-MESSAGE
              PERFORM ERROR-000
-             MOVE 3055 TO POS
+             MOVE 2833 TO POS
              DISPLAY D-INVNO AT POS
+             MOVE 2848 TO POS
+             DISPLAY WS-INCR-ST1 AT POS
+             PERFORM ERROR-MESSAGE
              PERFORM ERROR1-020
-             PERFORM ERROR-010
+             PERFORM ERROR-020
              GO TO RBD-003.
            MOVE INCR-INVOICE TO D-INVNO.
            IF INCR-TRANS NOT = 1 AND NOT = 6

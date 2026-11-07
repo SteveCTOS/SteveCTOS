@@ -1,4 +1,4 @@
-      *
+     *
         WRITE-DAILY SECTION.
         WRDA-000.
            OPEN EXTEND DAILY-EXCEPTIONS.
@@ -43,4 +43,4 @@
            MOVE " " TO WS-DAILY-MESSAGE.
         WRDA-999.
            EXIT.
-       *
+      *

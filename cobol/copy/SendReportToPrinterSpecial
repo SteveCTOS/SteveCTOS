@@ -1,0 +1,42 @@
+      *
+        SEND-REPORT-TO-PRINTER-SPECIAL SECTION.
+        SRTPS-005.
+      *   MOVE "PRINTERNAME SELECTED" TO WS-MESSAGE
+      *   PERFORM ERROR1-000
+      *   MOVE WS-PRINTERSELECTED TO WS-MESSAGE
+      *   PERFORM ERROR-MESSAGE.          
+         IF WS-PRINTERSELECTED = 0 OR = 88
+              GO TO SRTPS-999.
+      *   WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
+      *   WS-PRINTER IS THE FILE NAME BEING PRINTED
+      
+         IF WS-PRINTERSELECTED = 15
+           MOVE 
+          CONCATENATE('PrintPdf.sh ', ' ', TRIM(WS-PRINTER), 
+              ' ', TRIM(WS-PRINTER-SAVE), ' ', TRIM(WS-PRINTERSELECTED))
+              TO WS-COMMAND-LINE.
+
+          IF WS-PRINTERSELECTED = 15
+              CALL "SYSTEM" USING WS-COMMAND-LINE
+                         RETURNING W-STATUS
+             GO TO SRTPS-500.
+        SRTPS-008.
+              DISPLAY WS-COMMAND-LINE
+          IF WS-PRINTERSELECTED NOT = 15
+              MOVE "lp -d "        TO W-PRINTCOM1A
+              MOVE WS-PRINTER-SAVE TO W-PRINTCOM1
+              MOVE WS-PRINTER      TO W-PRINTCOM2.
+        SRTPS-010.          
+      *    DISPLAY "PRINT COMMAND: " W-PRINTCOMMAND AT 2710.
+      *    ACCEPT W-ENTER AT 2810
+
+          CALL "SYSTEM" USING W-PRINTCOMMAND 
+             RETURNING W-STATUS
+             END-CALL.
+        SRTPS-500.         
+      *     DISPLAY "STATUS of CALL: " AT 2620
+      *     DISPLAY W-STATUS AT 2635
+      *     ACCEPT W-ENTER AT 2680.
+        SRTPS-999.
+            EXIT.
+      *

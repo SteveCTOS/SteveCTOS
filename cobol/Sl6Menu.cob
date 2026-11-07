@@ -68,8 +68,8 @@
                      AND NOT = "16" AND NOT = "17" AND NOT = "18"
                      AND NOT = "19" AND NOT = "20" AND NOT = "21"
                      AND NOT = "22" AND NOT = "23" AND NOT = "24"
-                     AND NOT = "XX"
-                MOVE "Selection Must Be Between 1 & 24, Re-Enter."
+                     AND NOT = "25	" AND NOT = "XX"
+                MOVE "Selection Must Be Between 1 & 54, Re-Enter."
                 TO WS-MESSAGE
                 PERFORM ERROR-000
                 MOVE "  " TO F-NAMEFIELD WS-ANSWER
@@ -132,6 +132,8 @@
                 MOVE "CoPuByMt" TO WS-PROGRAM.
            IF WS-ANSWER = "17"
                 MOVE "SlRegisterMv" TO WS-PROGRAM.
+           IF WS-ANSWER = "25"
+                MOVE "SlIRegMix" TO WS-PROGRAM.
            IF WS-ANSWER = "18"
                 Move "Auto.sh" TO Ws-Data-Name
                 PERFORM SETUP-AUTO-MONTH-FILES

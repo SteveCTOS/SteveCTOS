@@ -1,8 +1,8 @@
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID. SlInvoic.
-		AUTHOR.  CHRISTENSEN-20102026.
-       ENVIRONMENT DIVISION.
-       CONFIGURATION SECTION.
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. SlInvoic.
+        AUTHOR.  CHRISTENSEN-FIXED25/10/2026.
+        ENVIRONMENT DIVISION.
+        CONFIGURATION SECTION.
         REPOSITORY. 
            FUNCTION ALL INTRINSIC.
         SPECIAL-NAMES.
@@ -650,6 +650,7 @@
        CONTROL-PARAGRAPH SECTION.
        CONTROL-000.
            PERFORM CLEAR-SCREEN
+           MOVE 75 TO SUB-55.
            PERFORM INITIAL-MESSAGE
            MOVE 2910 TO POS
            DISPLAY "The Invoice Program Is Being Loaded !!" AT POS.
@@ -659,13 +660,8 @@
            MOVE "ON-RES:"   TO FILLER-ONRES
            MOVE "ON-B/O:"   TO FILLER-ONBO
            MOVE "ON-ORDER:" TO FILLER-ONORD.
-      * SUB-55 IS ONLY USED FOR THE INVOICE-CHECKING STATUS
-      *  IF SUB-55 = 75 THIS MEANS THAT THE PROGRAM HAS LOADED ONLY
-      *  NOT RUN YET OTHERWISE SUB-55 WOULD = THE NUMBER OF THE 
-      *  LAST COMPLETED INVOICE ROUTINE. SUB-55 = 
-           IF SUB-55 NOT = 75
-                MOVE 1 TO SUB-55.
        CONT-010.
+           MOVE 75 TO SUB-55.
            PERFORM ERROR1-020
            PERFORM ERROR-020
            PERFORM DISPLAY-FORM
@@ -677,107 +673,140 @@
       *     Copy "<Copy>PrinterSpecial".
        CONT-999.
            EXIT.
-
+           
         WRITE-INVOICE-PROGRESS SECTION.
         WIPF-005.
-             IF SUB-55 NOT = 75
-                  GO TO WIPF-010.
+      * FOR THE VERY FIRST TIME, THIS WHEN WE ARE WRITTING THE 
+      * 'S' RECORD.  SO REALLY SUB-55 = 1 IS WHEN THE 'S' GETS WRITTEN.
+      * THEREAFTER SUB-55 SHOULD INCREASE BY 1 EACH TIME.
+      * ONLY WRITE-INVOICE-PROGRESS  FOR LINE 1 ONLY
             MOVE 1   TO SUB-55.
-            MOVE "S" TO WS-STAT-OCCUR (1).
-            MOVE "A" TO WS-STAT-OCCUR (2).
-            MOVE "B" TO WS-STAT-OCCUR (3).
-            MOVE "C" TO WS-STAT-OCCUR (4).
-            MOVE "D" TO WS-STAT-OCCUR (5).
-            MOVE "E" TO WS-STAT-OCCUR (6).
-            MOVE "F" TO WS-STAT-OCCUR (7).
-            MOVE "G" TO WS-STAT-OCCUR (8).
-            MOVE "H" TO WS-STAT-OCCUR (9).
-            MOVE "I" TO WS-STAT-OCCUR (10).
-            MOVE "J" TO WS-STAT-OCCUR (11).
-            MOVE "K" TO WS-STAT-OCCUR (12).
-            MOVE "L" TO WS-STAT-OCCUR (13).
-        WIPF-010.
-      *  INVOICE-CH-RETURN-CHAR=S MEANS THIS IS THE BEGINNING OF 
-      *   THE PROGRESS STATEMENT, THEREFOHE THE RECORD MUST BE 
-      *   WRITTEN FOR THE FIRST TRIME.   ALL OTHER TIMES IT MUST BE
-      *   RE-WRITTEN.
-      * ERC 23 MEANS THE RECORD IS NOT THERE AT ALL
-      * ERC 35 MEAN'S THE DATA SET OPENED PROPERLY BUT THE  
-      * PARTICULAR RECORD IN THE DATASET ONE IS TRYING TO READ
-      * IS NOT TNERE.
-            IF SUB-55 = 1
-                MOVE WS-STAT-TYPE (SUB-55) TO INVOICE-CH-RETURN-CHAR
-                GO TO WIPF-030.
-            MOVE WS-INVOICE  TO INVOICE-CH-KEY.
+            MOVE "S" TO WS-STAT-TYPE (1).
+            MOVE "A" TO WS-STAT-TYPE (2).
+            MOVE "B" TO WS-STAT-TYPE (3).
+            MOVE "C" TO WS-STAT-TYPE (4).
+            MOVE "D" TO WS-STAT-TYPE (5).
+            MOVE "E" TO WS-STAT-TYPE (6).
+            MOVE "F" TO WS-STAT-TYPE (7).
+            MOVE "G" TO WS-STAT-TYPE (8).
+            MOVE "H" TO WS-STAT-TYPE (9).
+            MOVE "I" TO WS-STAT-TYPE (10).
+            MOVE "J" TO WS-STAT-TYPE (11).
+            MOVE "K" TO WS-STAT-TYPE (12).
+            MOVE "L" TO WS-STAT-TYPE (13).
+            MOVE "X" TO WS-STAT-TYPE (14).
+            
+            MOVE 1 TO SUB-55.
+         WIPF-010.
+            MOVE WS-INVOICE TO INVOICE-CH-INV-NUM.
              START INVOICE-CH-MASTER KEY NOT < INVOICE-CH-KEY
                  INVALID KEY NEXT SENTENCE.
-        WIPF-020.
-            READ INVOICE-CH-MASTER NEXT
-                AT END NEXT SENTENCE.
-            IF WS-INV-CH-ST1 = 10
-              GO TO WIPF-900.
-            IF WS-INV-CH-ST1 NOT = 0
-      *       MOVE "INV-CH-STATUS=23 ON REASD, GOING TO EXIT."
-      *           TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *        CLOSE INVOICE-CH-MASTER
-               GO TO WIPF-999.
-             
-             MOVE WS-INVOICE            TO INVOICE-CH-KEY.
+            
              MOVE WS-STAT-TYPE (SUB-55) TO INVOICE-CH-RETURN-CHAR.
-             GO TO WIPF-035.
-        WIPF-030.
+         WIPF-030.
             WRITE INVOICE-CH-RECORD
                 INVALID KEY NEXT SENTENCE.
             IF WS-INV-CH-ST1 NOT = 0
-      *          MOVE "WIPF4 INV CHECKFILE ERC ON READ, 'ESC' CODES."
-      *          TO WS-MESSAGE
+      *          MOVE "WIPF-030 INV CHECKFILE ERC ON WRITE,'ESC' CODES."
+      *         TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+      *          MOVE WS-INVOICE TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE INVOICE-CH-key TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+                GO TO WIPF-035.
+            GO TO WIPF-500.
+        WIPF-035.
+          REWRITE INVOICE-CH-RECORD
+                INVALID KEY NEXT SENTENCE.
+          IF WS-INV-CH-ST1 NOT = 0
+      *       MOVE
+      *      "WIPF-035 CHECKFILE ERC ON REWRITE, 'ESC' FOR ERC MESSAGE."
+      *      TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+      *      MOVE WS-INVOICE TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE INVOICE-CH-key TO WS-MESSAGE
+      *      MOVE 0 TO WS-INV-CH-ST1.
+            GO TO WIPF-500.
+        WIPF-500.
+           ADD 1 TO SUB-55.
+       WIPF-999.
+           EXIT.
+      *
+        REWRITE-INVOICE-PROGRESS SECTION.
+        REWIPF-012.
+             MOVE WS-INVOICE  TO INVOICE-CH-KEY.
+             START INVOICE-CH-MASTER KEY NOT < INVOICE-CH-KEY
+                 INVALID KEY NEXT SENTENCE.
+        REWIPF-012A.
+            IF SUB-55 < 1 
+                MOVE 15 TO SUB-55.
+        REWIPF-020.
+            READ INVOICE-CH-MASTER
+                INVALID KEY NEXT SENTENCE.
+
+            IF WS-INV-CH-ST1 = 23
+      *       MOVE "THE RECORD FOR INVOICE DOESN'T EXIST, EXIT"
+      *           TO WS-MESSAGE
+      *          PERFORM ERROR1-000
+      *          MOVE WS-INVOICE TO WS-MESSAGE
+      *          PERFORM ERROR-MESSAGE
+      *          PERFORM ERROR1-020
+                 GO TO REWIPF-030.
+            IF WS-INV-CH-ST1 NOT = 0
+      *       MOVE "INV-CH-STATUS NOT=0, ON READ, GOING TO EXIT."
+      *           TO WS-MESSAGE
+      *       PERFORM ERROR1-000
+      *       MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *       PERFORM ERROR-MESSAGE
+      *       PERFORM ERROR1-020
+             GO TO REWIPF-500.
+
+             MOVE WS-STAT-TYPE (SUB-55) TO INVOICE-CH-RETURN-CHAR
+             GO TO REWIPF-035.
+        REWIPF-030.
+            WRITE INVOICE-CH-RECORD
+                INVALID KEY NEXT SENTENCE.
+            IF WS-INV-CH-ST1 NOT = 0
+      *        MOVE "REWIPF-030 INV CHECKFILE ERC ON WRITE,'ESC' CODES."
+      *         TO WS-MESSAGE
       *          PERFORM ERROR1-000
       *          MOVE WS-INV-CH-ST1 TO WS-MESSAGE
       *          PERFORM ERROR-MESSAGE
       *          PERFORM ERROR1-020
       *          MOVE 0 TO WS-INV-CH-ST1
-      *          CLOSE INVOICE-CH-MASTER
-      *          OPEN I-O INVOICE-CH-MASTER
-                GO TO WIPF-500.
-
-             IF SUB-55 = 1
-                 GO TO WIPF-500.
-        WIPF-035.
-            REWRITE INVOICE-CH-RECORD
+                GO TO REWIPF-500.
+            GO TO REWIPF-500.
+        REWIPF-035.
+          MOVE WS-STAT-TYPE (SUB-55) TO INVOICE-CH-RETURN-CHAR.
+          REWRITE INVOICE-CH-RECORD
                 INVALID KEY NEXT SENTENCE.
-            IF WS-INV-CH-ST1 NOT = 0
-      *         MOVE 
-      *     "WIPF6 INV CHECKFILE ERC ON REWRITE, 'ESC' FOR ERC MESSAGE."
-      *           TO WS-MESSAGE
-      *           PERFORM ERROR1-000
-      *           MOVE WS-INV-CH-ST1 TO WS-MESSAGE
-      *           PERFORM ERROR-MESSAGE
-      *           PERFORM ERROR1-020
-      *          MOVE 0 TO WS-INV-CH-ST1
-                GO TO WIPF-900.
-        WIPF-500.
-             ADD 1 TO SUB-55.
-
-                 GO TO WIPF-999.
-             
-             MOVE WS-INVOICE              TO INVOICE-CH-INV-NUM.
-             MOVE WS-STAT-OCCUR (SUB-55)  TO INV-CHAR-DISPLAY.
-             
-        WIPF-900.
-            REWRITE INVOICE-CH-RECORD
-                INVALID KEY NEXT SENTENCE.
-            IF WS-INV-CH-ST1 NOT = 0
-      *          MOVE 
-      *    "WIPF-900 INV CHECKFILE ERC ON REWRITE, ESC' FOR ERC MESSAGE."
-      *         TO WS-MESSAGE
-      *         PERFORM ERROR1-000
-      *         MOVE WS-INV-CH-ST1 TO WS-MESSAGE
-      *         PERFORM ERROR-MESSAGE
-      *         PERFORM ERROR1-020
-      *          MOVE 0 TO WS-INV-CH-ST1
-                GO TO WIPF-900.
-        WIPF-999.
+          IF WS-INV-CH-ST1 = 0
+               GO TO REWIPF-500.
+          IF WS-INV-CH-ST1 NOT = 0
+      *       MOVE
+      *    "REWIPF-035 CHECKFILE ERC ON REWRITE, 'ESC' FOR ERC MESSAGE."
+      *      TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+      *      PERFORM ERROR-MESSAGE
+      *      PERFORM ERROR1-020
+      *      MOVE WS-INVOICE TO WS-MESSAGE
+      *      PERFORM ERROR1-000
+      *      MOVE INVOICE-CH-RETURN-CHAR TO WS-MESSAGE
+      *      MOVE 0 TO WS-INV-CH-ST1
+            GO TO REWIPF-500.
+        REWIPF-500.
+          ADD 1 TO SUB-55.
+        REWIPF-999.
            EXIT.
       *
         CHECK-TO-DELETE-ONCE-PRINTED SECTION.
@@ -814,10 +843,11 @@
             READ INVOICE-CH-MASTER NEXT
                 AT END NEXT SENTENCE.
             IF WS-INV-CH-ST1 = 10
-                MOVE 0 TO WS-INV-CH-ST1
-                GO TO PTICL-900.
-            IF WS-INV-CH-ST1 = 23
-              MOVE "INV CHECKFILE ERC23 ON READ, 'ESC'=INV #."
+              MOVE 0 TO WS-INV-CH-ST1
+      *        CLOSE INVOICE-CH-MASTER
+              GO TO PTICL-900.
+            IF WS-INV-CH-ST1 = 46 OR = 47 OR = 48 OR = 49
+              MOVE "INV CHECKFILE ERC46-49 ON READ, 'ESC'=INV #."
               TO WS-MESSAGE
               PERFORM ERROR1-000
               MOVE INVOICE-CH-KEY TO WS-MESSAGE
@@ -826,14 +856,15 @@
               MOVE 0 TO WS-INV-CH-ST1
       *        CLOSE INVOICE-CH-MASTER
               GO TO PTICL-900.
+      *****************************************************************  
             IF WS-INV-CH-ST1 NOT = 0
-                MOVE "INV CHECKFILE ERC ON READ, 'ESC' CODES."
-                TO WS-MESSAGE
-                PERFORM ERROR1-000
-                MOVE WS-INV-CH-ST1 TO WS-MESSAGE
-                PERFORM ERROR-MESSAGE
-                PERFORM ERROR1-020
-                MOVE 0 TO WS-INV-CH-ST1
+              MOVE "INV CHECKFILE ERC ON READ, 'ESC' CODES."
+               TO WS-MESSAGE
+               PERFORM ERROR1-000
+               MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+               PERFORM ERROR-MESSAGE
+               PERFORM ERROR1-020
+               MOVE 0 TO WS-INV-CH-ST1
                 GO TO PTICL-003.
         PTICL-010.
            IF WS-LINE > 60
@@ -903,8 +934,8 @@
                  MOVE 
           "REPORT FROM SFJ ON THE STATUS OF INVOICES PROCESSED." 
                  TO WS-SUBJECT-FIXED.
-      
-            PERFORM SEND-REPORT-TO-PRINTER.
+            
+      *    PERFORM SEND-REPORT-TO-PRINTER.
        PTICL-999.
            EXIT.
       *
@@ -930,7 +961,7 @@
                 TO PRINT-REC
             WRITE PRINT-REC AFTER 1
        
-            MOVE 
+            MOVE
        "* AND REPORTED AS DONE. SO WE WILL KNOW IF IT TERMINATES      *"
                 TO PRINT-REC
             WRITE PRINT-REC AFTER 1.
@@ -1208,36 +1239,21 @@
            MOVE SUB-1      TO FS-CBDATAFILE.
        IM-675.
            PERFORM WOPFN-040.
-        IF WS-IMM-PR NOT =  "X"
-           GO TO IM-999.
-        PERFORM PRINT-INV-CHECK-LIST.
-        
-        PERFORM CHECK-TO-SEND-REPORT-BY-EMAIL.
-
-           CALL "C$SLEEP" USING 60.
-
-           GO TO IM-000.
-       IM-999.
-           EXIT.
-      *
-       CHECK-TO-SEND-REPORT-BY-EMAIL SECTION.
-       TSRBE-005.
-           PERFORM GET-USER-MAIL-NAME
-           PERFORM GET-REPORT-Y2K-DATE
-           PERFORM PRINT-REPORT-INFO.
+           IF WS-IMM-PR NOT =  "X"
+                GO TO IM-999.
+           PERFORM PRINT-INV-CHECK-LIST.
            
-           MOVE "@TSRBE-010, GOING TO START EMAIL PROCESS"
-              TO WS-MESSAGE
-              PERFORM ERROR-MESSAGE.
-       TSRBE-010.
-           CLOSE PRINT-FILE.
+           MOVE "PRINTED THE CHECK LIST, NOW TO EMAIL" TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE
+        
+           CALL "C$SLEEP" USING 1.
            CLOSE INVOICE-CH-MASTER.
-           PERFORM SEND-REPORT-TO-PRINTER.
-
+ 
+           PERFORM SEND-REPORT-TO-PRINTER-SPECIAL.
            PERFORM SETUP-INV-STATUS-FOR-MGEMAIL.
-       TSRBE-999.
+           GO TO IM-000.
+        IM-999.
             EXIT.
-      *
       *
        WORK-OUT-PRINT-FILE-NAME SECTION.
        WOPFN-001.
@@ -1301,6 +1317,32 @@
        WOPFN-999.
             EXIT.
       *
+       FIND-PDF-TYPE-PRINTER SECTION.
+       FPTP-040.
+           MOVE 1 TO SUB-45.
+           MOVE 15 TO WS-PRINTERNUMBER (sub-45).
+       FPTP-045.
+      * THIS IS TO FIND THE NAME OF THE ACTUAL PRINTER LIKE CTJ-MP201
+           IF WS-PRINTERNAME (SUB-45) = " "
+              MOVE 
+           "NO PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+              TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              GO TO FPTP-999.
+           IF WS-PRINTERNUMBER (SUB-45) = 15
+               MOVE WS-PRINTERNAME (SUB-45)  TO WS-PRINTER-SAVE
+                                                WS-PRINTER-PDF
+               GO TO FPTP-999.
+           IF SUB-45 < 25
+             ADD 1 TO SUB-45
+             GO TO FPTP-045.
+           MOVE 
+           "CAN'T FIND A PDF PRINTERNUMBER, PRN PARAMETER NOT SET UP."
+             TO WS-MESSAGE
+           PERFORM ERROR-MESSAGE.
+       FPTP-999.
+            EXIT.           
+      *
        PRINT-INVOICE SECTION.
        PR-000.
            IF F-EXIT-CH = X"94"
@@ -1358,19 +1400,31 @@
            MOVE 6  TO F-CBFIELDLENGTH
            MOVE WS-INVOICE TO F-EDNAMEFIELDNUM
            PERFORM WRITE-FIELD-NUMERIC.
-           
-      *NEW SECTION REPORTING ON THE PROGRESS OF THE INVOICE.   
+          
+           PERFORM QUES-PULL-CASH.
+      **************************************************************
+      * NEW SECTION FOR THE REPORTING OF THE STATUS OF INVOICES    
+      *    MOVE "GOING TO WRITE INVOICE-PROGRESS" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      **************************************************************    
+           MOVE 2910 TO POS
+           DISPLAY "AND SO THE INVOICE IS CONJURED UP.......  " AT POS
            MOVE WS-INVOICE TO INVOICE-CH-INV-NUM.
            MOVE "S"        TO INVOICE-CH-RETURN-CHAR. 
+           MOVE 1 TO SUB-55
            PERFORM WRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
 
-           PERFORM QUES-PULL-CASH.
+      *    MOVE "GOING TO QUES-PULLER" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
        PR-005.
            MOVE 1 TO WS-PAGE SUB-1 SUB-2.
            MOVE " " TO PRINT-REC.
            IF WS-IMM-PR = "B"
                GO TO PR-050. 
            
+      *    MOVE "GOING TO H PRINTER SECTION" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
            IF WS-IMM-PR = "H"
       *        PERFORM IM-600
       *        PERFORM IM-650
@@ -1384,6 +1438,9 @@
       *        PERFORM A995-QUEUE-FSD
               GO TO PR-050.
                                       
+      *    MOVE "GETTING USER-PRINT-NAME" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+
            PERFORM GET-USER-PRINT-NAME.
            OPEN OUTPUT PRINT-FILE.
        PR-010.
@@ -1568,9 +1625,12 @@
            CLOSE PRINT-FILE.
            
             MOVE WS-INVOICE TO INVOICE-CH-KEY.
-            MOVE 1 TO SUB-55
+            MOVE 2910 TO POS
+            DISPLAY "   THE INVOICE HAS JUST PRINTED .....    " AT POS
+            MOVE 2 TO SUB-55
             MOVE "A"        TO INVOICE-CH-RETURN-CHAR. 
-            PERFORM WRITE-INVOICE-PROGRESS.
+            PERFORM REWRITE-INVOICE-PROGRESS.
+            CALL "C$SLEEP" USING 1.
             
            PERFORM SEND-REPORT-TO-PRINTER.
            
@@ -1583,93 +1643,104 @@
            MOVE 2910 TO POS
            DISPLAY "1. DEBTOR-TRANS BEING WRITTEN..........    " AT POS
            PERFORM WRITE-DEBTOR-TRANSACTIONS
-           MOVE 2 TO SUB-55
+           MOVE 3 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY.
            MOVE "B"        TO INVOICE-CH-RETURN-CHAR. 
-           PERFORM WRITE-INVOICE-PROGRESS.
-           
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
+          
            MOVE 2910 TO POS
            DISPLAY "2. DEBTOR FILE BEING UPDATED....           " AT POS
            PERFORM UPDATE-DEBTOR
-           MOVE 3 TO SUB-55
+           MOVE 4 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "C"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
            
            MOVE 2910 TO POS
            DISPLAY "3. SALES ANALYSIS FILE BEING UPDATED....   " AT POS
            PERFORM UPDATE-SALES
-           MOVE 4 TO SUB-55
+           MOVE 5 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "D"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
 
            MOVE 2910 TO POS
            DISPLAY "4. DISTRIBUTION FILE BEING UPDATED......   " AT POS
            PERFORM UPDATE-DISTRIBUTION
-           MOVE 5 TO SUB-55
+           MOVE 6 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "E"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
            
            MOVE 2910 TO POS
            DISPLAY "5. STOCK FILES BEING UPDATED..........     " AT POS
            PERFORM UPDATE-STOCK
-           MOVE 6 TO SUB-55
+           MOVE 7 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "F"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
 
            MOVE 2910 TO POS
            DISPLAY "6. ORDERS FILE BEING UPDATED..........     " AT POS
            PERFORM REWRITE-ORDER-TRANS
-           MOVE 7 TO SUB-55
+           MOVE 8 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "G"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
            
            MOVE 2910 TO POS
            DISPLAY "7. INVOICE REGISTER BEING WRITTEN.......   " AT POS
            PERFORM WRITE-INCR-REGISTER
-           MOVE 8 TO SUB-55
+           MOVE 9 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "H"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
            
            MOVE 2910 TO POS
            DISPLAY "8. STOCK-TRANS BEING WRITTEN FOR INV...... " AT POS
            PERFORM WRITE-STOCK-TRANSACTIONS
-           MOVE 9 TO SUB-55
+           MOVE 10 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "I"        TO INVOICE-CH-RETURN-CHAR.
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
            
            IF WS-NEWORDER = "N"
                MOVE 2910 TO POS
                DISPLAY "9. STOCK-TRANS (ORDER) BEING UPDATED..." AT POS
                PERFORM REWRITE-STOCK-TRANSACTIONS
-               MOVE 10 TO SUB-55
+               MOVE 11 TO SUB-55
                MOVE WS-INVOICE TO INVOICE-CH-KEY
                MOVE "J"        TO INVOICE-CH-RETURN-CHAR
-               PERFORM WRITE-INVOICE-PROGRESS.
+               PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
             
            MOVE 2910 TO POS
            DISPLAY "10. SOLDBY FILE BEING WRITTEN..........    " AT POS
            PERFORM WRITE-SOLD-BY
-           MOVE 11 TO SUB-55
+           MOVE 12 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "K"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
            
   
       *    THE INVOICE PROCESS IS NOW FINISHED AND WE CAN FLAG THE 
       *    RECORD 'L' FOR COMPLETE.
            MOVE 2910 TO POS
-		   DISPLAY "11. INVOICE PROCESSING NOW COMPLETE..... "  AT POS.
-		   MOVE 12 TO SUB-55
-		   MOVE WS-INVOICE TO INVOICE-CH-KEY
+           DISPLAY "11. INVOICE PROCESSING NOW COMPLETE..... "  AT POS.
+           MOVE 13 TO SUB-55
+           MOVE WS-INVOICE TO INVOICE-CH-KEY
            MOVE "L"        TO INVOICE-CH-RETURN-CHAR
-           PERFORM WRITE-INVOICE-PROGRESS.
+           PERFORM REWRITE-INVOICE-PROGRESS.
+           CALL "C$SLEEP" USING 1.
        PR-999.
            EXIT.
       * 
@@ -1917,7 +1988,7 @@
             IF WS-TYPE-OF-DOCUMENT = 3
                GO TO LR-900.
                
-      *PRINT INVOICE & DELIVERY NOTES
+      *PRINT INVOICE & DELIVERY NOTES 
            IF WS-PROG-TYPE = 3
             IF WS-TYPE-OF-DOCUMENT < 3
                ADD 1 TO WS-TYPE-OF-DOCUMENT
@@ -7352,33 +7423,23 @@ PR-999
                MOVE WS-STDISC-ST1 TO WS-MESSAGE
                PERFORM ERROR-MESSAGE.
        OPEN-023.
-      * CODE 23= RECORD IN FILE NOT FOUND
-      * CODE 35= THE DATAFILE IS NOT THERE AT ALL.
-      * CODE 47, 48 & 49 AL ARE OPEN I-O ERC'S
-            OPEN I-O INVOICE-CH-MASTER.
-           IF WS-INV-CH-ST1 = 0
-      *        MOVE 
-      *   "THE INVOICE-CH-MASTER DATA-FILE HAS OPENED I-O WELL."
-      *                TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-              GO TO OPEN-030.
-              
-            IF WS-INV-CH-ST1 = 35 OR = 47 OR = 48 OR = 49
-      *        MOVE 
-      *  "INVOICE-CH-MASTER OPEN I-O ERC, SEE NEXT LINE." TO WS-MESSAGE
-      *        PERFORM ERROR1-010
-      *        MOVE WS-INV-CH-ST1 TO Ws-MESSAGE
-      *        PERFORM ERROR-MESSAGE
-               CLOSE INVOICE-CH-MASTER
-               OPEN OUTPUT INVOICE-CH-MASTER
-           IF WS-INV-CH-ST1 = 0
-      *        MOVE 
-      *   "THE INVOICE-CH-MASTER DATA-FILE HAS OPENED IN OUTPUT NOW."
-      *                TO WS-MESSAGE
-      *        PERFORM ERROR-MESSAGE
+           OPEN I-O INVOICE-CH-MASTER.
+           IF WS-INV-CH-ST1 NOT = 0
+              MOVE "INV-CH-MASTER OPEN-023 I-O STATUS"  TO WS-MESSAGE  
+              PERFORM ERROR1-000
+              MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
+              CLOSE INVOICE-CH-MASTER
+              MOVE "INV-CH-MASTER CLOSE ST1, GOING TO RETRY OPEN" 
+               TO WS-MESSAGE  
+              PERFORM ERROR1-000
+              MOVE WS-INV-CH-ST1 TO WS-MESSAGE
+              PERFORM ERROR-MESSAGE
+              PERFORM ERROR1-020
               CLOSE INVOICE-CH-MASTER
               GO TO OPEN-023.
-		OPEN-030.
+       OPEN-030.
            MOVE "ACCOUNTNO"    TO F-FIELDNAME
            PERFORM READ-PARAMETER-LOCK
            MOVE PA-CO-VAT-NO   TO WS-CO-VATNO
@@ -7392,9 +7453,6 @@ PR-999
        Copy "OpenForms".
        OPEN-999.
            EXIT.
-      *
-        OPEN-INV-CH-STATUS-FIRST-TIME SECTION.
-        
       *
        END-OFF SECTION.
        END-000.
@@ -7438,6 +7496,7 @@ PR-999
        Copy "SetupInvoiceForPDF".
        Copy "SetupInvStatusForMgEmail".
        Copy "SendReportToPrinter".
+       Copy "SendReportToPrinterSpecial".
        Copy "PrintReportInfo".
        Copy "GetUserMailName".
        Copy "ZoomBox".
@@ -7455,3 +7514,26 @@ PR-999
        Copy "CTOSCobolAccept".
        Copy "WriteDailyExcep1".
       * END-OF-JOB
+      ****************************************************************
+      * ERROR CODES FOUND WHEN USING THE CTOS DATA-BASE.
+      *
+      * SUB-55 00= FILE NOT FOUND
+      * SUB-55 02= SUCCESS (DUPLICATE RECORD KEY WRITTEN)
+      * SUB-55 05= SUCCESS (OPTIONAL FILE NOT FOUND)
+      * SUB-55 07= SUCCESS (NO UNIT)
+      * SUB-55 10= END OF FILE 
+      * SUB-55 14= OUT OF KEY RANGE
+      * SUB-55 21= KEY INVALID  
+      * SUB-55 22= ATTEMP TO DUPLICATE KEY VALUE
+      * SUB-55 23= KEY NOT FOUND (NIQUE oR/& DUPLICATE KEYS)
+      * SUB-55 30= PERMANENT I-O ERROR
+      * SUB-55 31= INCONSISTANT FILE NAME
+      * SUB-55 34= BOUNDARY VIOLATION
+      * SUB-55 35= FILE NOT FOUND (NORMALLY A DATA FILE)
+      * SUB-55 37= PERMISSION DENIED
+      * SUB-55 38= CLOSED WNITH LOCK
+      * SUB-55 46= READ ERROR 
+      * SUB-55 47= OPEN INPUT DENIED
+      * SUB-55 48= OPEN OUTPUT DENIED
+      * SUB-55 49= OPEN IO-O DENIED
+      **************************************************************** 
