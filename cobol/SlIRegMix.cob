@@ -47,7 +47,7 @@
        CONTROL-010.
       * THIS VErSION, TODAY 05/11/2026, HAS BEEN CREATED TO MANUALLY
       * IMPORT SPECIFIC iNVOICES, C/NOTES, p=sLIPS ^ QUOTES. ETC
-      * WHEN THEY HAVE GONE MISSING FROM THE REGISTER DATA SET 
+      * WHEN TPPY HAVE GONE MISSING FROM THE REGISTER DATA SET 
       * THE WAY IT WORKS IS:
       *1.  THIS VERSION HAS BEEN CHANGED TO FIRST READ THE REGISTER 
       * DATA SET TEMP
@@ -80,6 +80,10 @@
             MOVE 2910 TO POS
             DISPLAY
           "TRANS TYPE: 1=INV, 3=REPAIR, 4=PSLIP, 6=CRD, 7=B/M, 8=QUOTE."
+             AT POS.
+            MOVE 3010 TO POS
+            DISPLAY
+          "*** THIS PROGRAM USED ONLY FOR ADDING BACK TRANS LOST ***"
              AT POS.
        GET-001.              
             MOVE "                    " TO F-NAMEFIELD.
@@ -2673,14 +2677,14 @@
                 MOVE 0 TO WS-INCR1-ST1
                 GO TO OPEN-005.
           OPEN-010.
-            MOVE Ws-Forms-Name   TO F-FILENAME
+             MOVE Ws-Forms-Name   TO F-FILENAME
              MOVE Ws-cbForms-name TO F-CBFILENAME.
              CALL "OPENFILE" USING  F-ERROR1
                                     F-FH
                                     F-FILENAME
                                     F-CBFILENAME
                                     F-FILENAME
-										F-INTEGERZERO
+                                    F-INTEGERZERO
                                     F-OPENMODE.
             IF F-ERROR1 NOT = 0
                 DISPLAY "OPENFILE ERROR"

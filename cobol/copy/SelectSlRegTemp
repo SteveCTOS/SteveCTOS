@@ -1,4 +1,4 @@
-         SELECT INCR1-REGISTER ASSIGN TO Ws-RegTemp
+         SELECT INCR1-REGISTER ASSIGN TO Ws-SlRegTemp
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

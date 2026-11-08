@@ -37,7 +37,7 @@
        CONTROL-000.
            PERFORM CLEAR-SCREEN.
        CONTROL-001.
-           MOVE "S\\IRegIq"      TO F-FORMNAME
+           MOVE "SlIRegIq"      TO F-FORMNAME
            PERFORM OPEN-FILES.
            PERFORM CLEAR-SCREEN.
        CONTROL-010.

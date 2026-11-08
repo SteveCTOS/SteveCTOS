@@ -127,12 +127,9 @@
           IF WS-ACCEPT = "E"
               MOVE 0 TO INCR-KEY
               START INCR-REGISTER KEY NOT < INCR-KEY.
-      * this version pulls specific numbers aqcross.  Have a look at 
-      *SlInRgMtfor a temp fix to bring specific p/lips, then invoices 
-      * etc over to the current live system  05/11-2026'
-      * THIS IS A FIX TO BRING BACK THE QUOTES THAT WERE LEFT OFF WHEN
-      * A CORRUPTION WAS DETECTED. THIS PROGRAM EXPORTED EVERYTHING
-      * UP TO THE TIME THIS WAS RUN.  02/11/2026
+      * this version is the standard version.  There is a specail 
+      * version which needs to be adjuisted according to the specific
+      * problem in the SlRegister. p08/11/2026
            IF WS-ACCEPT = "E"
                OPEN OUTPUT INCR1-REGISTER
            ELSE
@@ -141,10 +138,8 @@
            MOVE WS-STAT1 TO WS-MESSAGE
            PERFORM ERROR-MESSAGE.
       * THIS IS PART OF THE FIX.  REMOVE FOR NORMAL USE.
-      *    MOVE 0 TO IJNCR-KEY
-          IF WS-ACCEPT = "I"
-               MOVE 8 TO INCR1-TRANS
-               MOVE 1 TO INCR1-INVOICE
+      *    MOVE 0 TO Incr-key
+           IF WS-ACCEPT = "E"
                START INCR1-REGISTER KEY NOT < INCR1-KEY
                GO TO  A-EXIT
           ELSE
