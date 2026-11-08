@@ -1,4 +1,4 @@
-         SELECT INCR-REGISTER ASSIGN TO Ws-Register
+          SELECT INCR-REGISTER ASSIGN TO Ws-Register
                ORGANIZATION IS INDEXED
                LOCK MANUAL
                ACCESS MODE IS DYNAMIC

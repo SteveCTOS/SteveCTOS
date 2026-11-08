@@ -2674,7 +2674,7 @@
                 MOVE WS-INCR1-ST1 TO WS-MESSAGE
                 PERFORM ERROR-MESSAGE
                 PERFORM ERROR1-020
-                MOVE 0 TO WS-INCR1-ST1
+                MOVE 0 TO WS-INCR1-ST1 
                 GO TO OPEN-005.
           OPEN-010.
              MOVE Ws-Forms-Name   TO F-FILENAME

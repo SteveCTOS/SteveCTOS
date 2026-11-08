@@ -1,4 +1,4 @@
-
+ 
        OPEN-023.
             OPEN I-O INVOICE-CH-MASTER.
             IF WS-INV-CH-ST1 NOT = 0

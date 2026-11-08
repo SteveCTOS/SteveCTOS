@@ -29,7 +29,7 @@
       * FORMS WORK FIELDS
       **************************************************************
        Copy "FormsInfo".
-       Linkage Section.
+       Linkage Section. 
        Copy "ChlfdLinkage".
       *
        Procedure Division Using Ws-Linkage.

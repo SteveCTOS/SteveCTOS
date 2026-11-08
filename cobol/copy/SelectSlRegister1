@@ -1,4 +1,3 @@
-
          SELECT INCR1-REGISTER ASSIGN TO Ws-RegTemp
                ORGANIZATION IS INDEXED
                LOCK MANUAL
