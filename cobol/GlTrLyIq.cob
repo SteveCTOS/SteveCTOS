@@ -59,9 +59,9 @@
        01  WS-GL-LY-STATUS.
            03  WS-GL-LY-ST1       PIC 99.
        01  WS-GLTRANS-LY-STATUS.
+           03  WS-GLPARAMETER-ST1 PIC 99.
            03  WS-GLTRANS-LY-ST1  PIC 99.
        01  WS-GLPARAMETER-STATUS.
-           03  WS-GLPARAMETER-ST1 PIC 99.
        01  WS-PERIOD.
            03  WS-1ST-CHAR        PIC X.
            03  WS-PER             PIC 99.
