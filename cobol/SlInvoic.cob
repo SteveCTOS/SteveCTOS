@@ -188,6 +188,7 @@
        77  WS-PRINTER-PDF       PIC X(100) VALUE " ".
        77  WS-SUBJECT-FIXED     PIC X(100) VALUE " ".      
        77  WSF-MAIL-NUMBER      PIC X(50) VALUE " ".
+       77  WS-PRINT-Y-N         PIC X VALUE " ".
        01  W-READ-KEY           PIC X(11).
        01  WS-STDESC.
            03  WS-DESC1          PIC X(20) VALUE " ".
@@ -811,7 +812,7 @@
       *
         CHECK-TO-DELETE-ONCE-PRINTED SECTION.
         CHECK-TO-DEL-010.
-           MOVE 3010 TO POS.
+           MOVE 2810 TO POS.
            DISPLAY 
            "Delete the Invoice Status Records Once Printed ? Y/N  [ ]"
                  AT POS.
@@ -819,7 +820,7 @@
 
            MOVE " "       TO CDA-DATA.
            MOVE 1         TO CDA-DATALEN.
-           MOVE 27        TO CDA-ROW.
+           MOVE 25        TO CDA-ROW.
            MOVE 64        TO CDA-COL.
            MOVE CDA-WHITE TO CDA-COLOR.
            MOVE 'F'       TO CDA-ATTR. 
@@ -832,6 +833,28 @@
               MOVE 2510 TO POS
               DISPLAY "TO DELETE OR NOT MUST BE Yes OR No." AT POS
               GO TO CHECK-TO-DEL-010.
+        CHECK-TO-DEL-020.
+           MOVE 3010 TO POS.
+           DISPLAY 
+           "Do you wish to print thie list of Invoices made? Y/N  [ ]"
+                 AT POS.
+           ADD 55 TO POS.
+
+           MOVE " "       TO CDA-DATA.
+           MOVE 1         TO CDA-DATALEN.
+           MOVE 27        TO CDA-ROW.
+           MOVE 64        TO CDA-COL.
+           MOVE CDA-WHITE TO CDA-COLOR.
+           MOVE 'F'       TO CDA-ATTR. 
+           PERFORM CTOS-ACCEPT.
+           MOVE CDA-DATA TO WS-PRINT-Y-N
+           IF W-ESCAPE-KEY = 4
+               GO TO CHECK-TO-DEL-010.
+
+           IF WS-PRINT-Y-N NOT = "N" AND NOT = "Y"
+              MOVE 2510 TO POS
+              DISPLAY "TO PRINT OR NOT  MUST BE Yes OR No." AT POS
+              GO TO CHECK-TO-DEL-020.
         CHECK-TO-DEL-999.
               EXIT.
       *        
@@ -1248,8 +1271,9 @@
         
            CALL "C$SLEEP" USING 1.
            CLOSE INVOICE-CH-MASTER.
- 
-           PERFORM SEND-REPORT-TO-PRINTER-SPECIAL.
+           
+           IF WS-PRINT-Y-N = "Y"
+                PERFORM SEND-REPORT-TO-PRINTER-SPECIAL.
            PERFORM SETUP-INV-STATUS-FOR-MGEMAIL.
            GO TO IM-000.
         IM-999.
