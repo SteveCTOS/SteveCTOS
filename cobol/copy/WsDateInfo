@@ -43,6 +43,9 @@
        77  WS-AMOUNT            PIC 9(4)V99 VALUE 0.
        01  W-CRTSTATUS          PIC 9(4) value 0.
        01  SIGN-FOUND           PIC 9(4) COMP.
+       01  WS-MESSAGE-SPLIT.
+           03  WS-MESS-SP1       PIC X(40) VALUE " ".
+           03  WS-MESS-SP2       PIC X(39) VALUE " ".
        01  WS-COMMAND-LINE      PIC X(512).                                    
        01  W-PRINTCOMMAND.
            03  W-PRINTCOM1A     PIC X(6) VALUE SPACES.

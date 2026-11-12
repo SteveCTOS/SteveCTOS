@@ -1266,8 +1266,8 @@
                 GO TO IM-999.
            PERFORM PRINT-INV-CHECK-LIST.
            
-           MOVE "PRINTED THE CHECK LIST, NOW TO EMAIL" TO WS-MESSAGE
-           PERFORM ERROR-MESSAGE
+      *     MOVE "PRINTED THE CHECK LIST, NOW TO EMAIL" TO WS-MESSAGE
+      *     PERFORM ERROR-MESSAGE
         
            CALL "C$SLEEP" USING 1.
            CLOSE INVOICE-CH-MASTER.
@@ -1710,7 +1710,7 @@
            CALL "C$SLEEP" USING 1.
 
            MOVE 2910 TO POS
-           DISPLAY "6. ORDERS FILE BEING UPDATED..........     " AT POS
+           DISPLAY "6. ORDERS FILE BEING UPDATED..........     " AT POS.
            PERFORM REWRITE-ORDER-TRANS
            MOVE 8 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
@@ -1719,7 +1719,7 @@
            CALL "C$SLEEP" USING 1.
            
            MOVE 2910 TO POS
-           DISPLAY "7. INVOICE REGISTER BEING WRITTEN.......   " AT POS
+           DISPLAY "7. INVOICE REGISTER BEING WRITTEN.......   " AT POS.
            PERFORM WRITE-INCR-REGISTER
            MOVE 9 TO SUB-55
            MOVE WS-INVOICE TO INVOICE-CH-KEY
@@ -4579,7 +4579,8 @@
             WRITE INCR-REC
                 INVALID KEY NEXT SENTENCE.
             IF WS-INCR-ST1 NOT = 0
-                MOVE "INV-REG BUSY ON INVOICE WRITE, 'ESC' TO RETRY"
+                MOVE 
+            "INV-REG BUSY ON INVOICE WRITE WSRIC-060,'ESC' TO RETRY."
                 TO WS-MESSAGE
                PERFORM ERROR1-000
                MOVE WS-INCR-ST1 TO WS-MESSAGE
@@ -4588,7 +4589,7 @@
                MOVE 0 TO WS-INCR-ST1
                GO TO WRIC-060.
        WRIC-999.
-              EXIT.
+            EXIT.
       *
        REWRITE-ORDER-TRANS SECTION.
        ROT-010.

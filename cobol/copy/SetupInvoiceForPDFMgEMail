@@ -85,9 +85,9 @@
           CALL "SYSTEM" USING WS-COMMAND-LINE.
       *               RETURNING W-STATUS.
       
-          MOVE W-STATUS TO  WS-MESSAGE
-          PERFORM ERROR-MESSAGE.
-          DISPLAY W-STATUS  AT 2810.
+      *    MOVE W-STATUS TO  WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
+      *    DISPLAY W-STATUS  AT 2810.
        SUIFPMGEM-999.
            EXIT.
       *     STOP RUN.
