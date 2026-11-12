@@ -21,7 +21,7 @@
                          RETURNING W-STATUS
              GO TO SRTPS-500.
         SRTPS-008.
-              DISPLAY WS-COMMAND-LINE
+      *        DISPLAY WS-COMMAND-LINE
           IF WS-PRINTERSELECTED NOT = 15
               MOVE "lp -d "        TO W-PRINTCOM1A
               MOVE WS-PRINTER-SAVE TO W-PRINTCOM1
