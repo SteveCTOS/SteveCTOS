@@ -9,7 +9,18 @@
               GO TO SRTP-999.
       *   WS-PRINTER-SAVE IS THE ACTUAL PRINTER NAME
       *   WS-PRINTER IS THE FILE NAME BEING PRINTED
-      
+      *****************************************************************
+      *  The section of PrintPdf.sh added to convert automatically ALL
+      *  print jobs that are simple text based to .pdf files so that
+      *   they can esaily be printed by the  photo copy
+      * type printers EG:  MP2021,   MP201,    MP171 etc
+      *  WE DID THIS AS THE DOT MATRIX PRINTERS WERE ARE OLD AND
+      * WERE COSTING A LOT TO FIX SO AS THE PHOTOCOPIER,PRINTER, FAX
+      * MACHINES WE HAVE FROM NASHUA HAVE AN ALL-IN PRICE COPY
+      * QUIANTITIES SO IT MADE SENSE TO SCRAP THJ DOT MATRIX PRN'S
+      * WHEN THEY BROKE.
+      *  THE USER MUST SELECT PRN #15 FOR THIS TO WORK
+      ****************************************************************** 
          IF WS-PRINTERSELECTED = 15
            MOVE 
           CONCATENATE('PrintPdf.sh ', ' ', TRIM(WS-PRINTER), 

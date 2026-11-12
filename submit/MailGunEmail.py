@@ -1,12 +1,12 @@
-#!/usr/local/bin/python
+`#!/usr/local/bin/python3
 import requests
-import argparse
+import argoparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-A', '--API',      default='api')
 parser.add_argument('-a', '--auth',     default='key-14a564ed4dc9242de3b4f09b9fd72587')
 parser.add_argument('-b', '--bcc',      default='pos@christensen.co.za')
-parser.add_argument('-f', '--file',     default='Invoice.pdf')
+parser.add_argument('-f', '--file',     default='.Invoice.pdf')
 parser.add_argument('-F', '--From',     default='CHRISTENSEN TOOLS LTD<sales@christensen.co.za>')
 parser.add_argument('-r', '--reply_to', default='sales@christensen.co.za')
 parser.add_argument('-s', '--subject',  default='Invoice 140931 ex Saftec JHB')

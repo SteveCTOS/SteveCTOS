@@ -2,40 +2,58 @@
        SETUP-INV-STATUS-FOR-MGEMAIL SECTION.
        SUISFM-005.
           ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
+
+      * REMOVE THE NEXT FEW LINES WHEN WE GET IT WORKING
+          IF WS-USERNAME = "john"
+              GO TO SUISFM-999.
+     
           ACCEPT WS-USEREMAILADD FROM ENVIRONMENT "USEREMAILADD".
           
-          IF WS-USEREMAILADD = SPACES
-          MOVE "Steve@Christensen.co.za" TO WS-USEREMAILADD.
-           
+          IF WS-USEREMAILADD = SPACES 
+              MOVE "Steve@Christensen.co.za" TO WS-USEREMAILADD.
+        SUISFM-006.
+      * WHEN FINISHED TESTING JUST REMOVE THE * FROM THESE 2 LINES AND 
+      * THE LINE JUST BELOW SO THE COMMENTS WILL BE SKIPPED.
+      *   GO TO SUISFM-010.
+      
           MOVE WS-USERNAME TO WS-MESSAGE
           PERFORM ERROR1-000
           MOVE WS-USEREMAILADD TO WS-MESSAGE WSF-MAIL-NUMBER 
+      *    MOVE WS-USEREMAILADD TO WSF-MAIL-NUMBER.
           PERFORM ERROR-MESSAGE
           PERFORM ERROR1-020.
-          
+
+          MOVE "WE ARE NOW IN SEND TO PRINTER SPECIAL" TO WS-MESSAGE
+          PERFORM ERROR1-000
+          MOVE WS-PRINTER       TO WS-MESS-SP1
+          MOVE WS-PRINTER-SAVE  TO WS-MESS-SP2
+          MOVE WS-MESSAGE-SPLIT TO WS-MESSAGE
+          PERFORM ERROR-MESSAGE
+          PERFORM ERROR1-020.          
+
       *   GO TO SUISFM-999.
-       SUISFM-010.
+        SUISFM-010.
       * FOR all group co's we will LEAVE MOST THINGS AS DEFAULT
-         MOVE CONCATENATE('python3 MailGuneMail.py ', 
+         MOVE CONCATENATE('python3 MailGunInvChckStatus.py ', 
           ' ', '-f', ' ', TRIM(WS-PRINTER-SAVE),
           ' ', '-F', ' ', TRIM('Steve@Christensen.co.za'),
           ' ', '-r', ' ', TRIM('Steve@Christensen.co.za'),
           ' ', '-s', ' ', TRIM('ctj invoicing department'),
-          ' ', '-t', ' ', 'MGMessageInvStatus.html',
+          ' ', '-t', ' ', 'MGMessageInvChckStatus.htm',
           ' ', '-T', ' ', TRIM('Nordane1958@gmail.com'))
                 TO WS-COMMAND-LINE.
        SUISFM-500.      
-          MOVE WS-COMMAND-LINE TO  WS-MESSAGE
-          PERFORM ERROR-MESSAGE.
+      *    MOVE WS-COMMAND-LINE TO  WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE.
       *
-           DISPLAY WS-COMMAND-LINE  AT 2701
-           ACCEPT W-ENTER.
+      *     DISPLAY WS-COMMAND-LINE  AT 2701
+      *     ACCEPT W-ENTER.
            CALL "SYSTEM" USING WS-COMMAND-LINE
                      RETURNING W-STATUS.
       
-          MOVE W-STATUS TO  WS-MESSAGE
-          PERFORM ERROR-MESSAGE.
-          DISPLAY W-STATUS  AT 2810.
+     *     MOVE W-STATUS TO  WS-MESSAGE
+     *     PERFORM ERROR-MESSAGE.
+     *     DISPLAY W-STATUS  AT 2810.
        SUISFM-999.
            EXIT.
       *     STOP RUN.
@@ -49,7 +67,7 @@
       *                'CHRISTENSEN TOOLS LTD<sales@christensen.co.za>')
       *('-r', '--reply_to', default='sales@christensen.co.za')
       *('-s', '--subject',  default='QUOTE 140931 ex Saftec JHB')
-      *('-t', '--template', default='MailGunMessage.html')
+      *('-t', '--template', default='MailGunMessage.html'
       *('-T', '--To',       default=
       *                 'SC@christensen.co.za; Steve@Christensen.co.za')
       *('-u', '--url',      default=
