@@ -836,7 +836,7 @@
         CHECK-TO-DEL-020.
            MOVE 3010 TO POS.
            DISPLAY 
-           "Do you wish to print thie list of Invoices made? Y/N  [ ]"
+           "P=PRINT REPORT, N=NO PRINT, B-PRINT & EMAIL, E-EMAIL  [ ]"
                  AT POS.
            ADD 55 TO POS.
 
@@ -851,9 +851,10 @@
            IF W-ESCAPE-KEY = 4
                GO TO CHECK-TO-DEL-010.
 
-           IF WS-PRINT-Y-N NOT = "N" AND NOT = "Y"
+           IF WS-PRINT-Y-N NOT = "B" AND NOT = "E" AND NOT = "N"
+                       AND NOT = "Y"
               MOVE 2510 TO POS
-              DISPLAY "TO PRINT OR NOT  MUST BE Yes OR No." AT POS
+              DISPLAY "ANSWER MUST BE B, E, N OR Y        " AT POS
               GO TO CHECK-TO-DEL-020.
         CHECK-TO-DEL-999.
               EXIT.
@@ -924,6 +925,8 @@
            PERFORM GET-USER-MAIL-NAME.
            PERFORM GET-REPORT-Y2K-DATE.
            PERFORM PRINT-REPORT-INFO.
+
+      *   USERNAME=  WS-TERMINALNAME
            
            CLOSE PRINT-FILE.
       *     CLOSE INVOICE-CH-MASTER.
@@ -1264,17 +1267,19 @@
            PERFORM WOPFN-040.
            IF WS-IMM-PR NOT =  "X"
                 GO TO IM-999.
-           PERFORM PRINT-INV-CHECK-LIST.
+            PERFORM PRINT-INV-CHECK-LIST.
            
-      *     MOVE "PRINTED THE CHECK LIST, NOW TO EMAIL" TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE
+      *    MOVE "PRINTED THE CHECK LIST, NOW TO EMAIL" TO WS-MESSAGE
+      *    PERFORM ERROR-MESSAGE
         
            CALL "C$SLEEP" USING 1.
            CLOSE INVOICE-CH-MASTER.
+      *    WS-PRINTERSELECTED
            
-           IF WS-PRINT-Y-N = "Y"
+           IF WS-PRINT-Y-N = "Y" OR = "B"
                 PERFORM SEND-REPORT-TO-PRINTER-SPECIAL.
-           PERFORM SETUP-INV-STATUS-FOR-MGEMAIL.
+           IF WS-PRINT-Y-N = "B" OR = "e"
+                PERFORM SETUP-INV-STATUS-FOR-MGEMAIL.
            GO TO IM-000.
         IM-999.
             EXIT.
@@ -1287,7 +1292,7 @@
            ACCEPT WS-USERNAME FROM ENVIRONMENT "USER".
            
       *     MOVE "IN WOPFN-001." TO WS-MESSAGE
-      *     PERFORM ERROR-MESSAGE.
+      *     PERFORM ERROR-MESSAGE
        WOPFN-005.
            MOVE "/ctools/spl/" TO ALPHA-RATE.
            MOVE WS-USERNAME    TO DATA-RATE.

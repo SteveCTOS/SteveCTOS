@@ -3584,7 +3584,7 @@
        Copy "QueuePrintLaserInvCred".
        Copy "Z1LaserHeadings".
        Copy "Z1EMailHeadings".
-       Copy "GetSystemY2KDate".
+       Copy "GetSystemY2KDate". 
        Copy "OrderPassword".
        Copy "CTOSCobolAccept".
        Copy "SetupInvoiceForPDF".
@@ -3611,3 +3611,4 @@
        Copy "Error2Message".
       *
       * END-OF-JOB
+   FO
